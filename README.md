@@ -3,4 +3,4 @@
 ##
 
 ### 🛒 Store
-This is the official marketplace of Sine to install mods, themes, and JS.
+This is the official marketplace of Sine for installing mods, themes, and JS.
