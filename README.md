@@ -1,2 +1,6 @@
-# store
-The official marketplace of Sine.
+<img src="https://github.com/user-attachments/assets/87b7dede-1ac7-4122-bcd9-fc18d3dffeb1" alt="Sine logo" width="240">
+
+##
+
+### 🛒 Store
+This is the official marketplace of Sine to install mods, themes, and JS.
