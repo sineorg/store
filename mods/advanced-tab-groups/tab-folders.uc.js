@@ -1,6 +1,6 @@
 /* ==== Tab groups ==== */
 /* https://github.com/Anoms12/Advanced-Tab-Groups */
-/* ====== V2.5.0 ====== */
+/* ====== V2.6.0 ====== */
 
 class ZenGroups {
   #initialized = false;
@@ -21,8 +21,10 @@ class ZenGroups {
   `);
   menuPopup = window.MozXULElement.parseXULToFragment(`
     <menupopup id="tab-group-actions-popup">
-    <menuitem id="zenGroupsRenameGroup" label="Rename" tooltiptext="Rename Group" command="cmd_zenGroupsRenameGroup"/>
       <menuitem id="zenGroupsChangeIcon" label="Change Icon" tooltiptext="Change Icon" command="cmd_zenGroupsChangeIcon"/>
+      <menuitem id="zenGroupsPinGroup" label="Pin Group" tooltiptext="Pin all tabs in this group"/>
+      <menuitem id="zenGroupsUnpinGroup" label="Unpin Group" tooltiptext="Unpin all tabs in this group"/>
+      <menuitem id="zenGroupsRenameGroup" label="Rename" tooltiptext="Rename Group" command="cmd_zenGroupsRenameGroup"/>
       <menuitem id="zenGroupsUngroupGroup" label="Ungroup" tooltiptext="Ungroup Group" command="cmd_zenGroupsUngroupGroup"/>
       <menuitem id="zenGroupsDeleteGroup" label="Delete" tooltiptext="Delete Group" command="cmd_zenGroupsDeleteGroup"/>
     </menupopup>
@@ -112,11 +114,7 @@ class ZenGroups {
           <label class="tab-group-label" role="button"/>
           <toolbarbutton class="toolbarbutton-1 tab-group-tabs-button" tooltiptext="Group tabs button"/>
           <toolbarbutton class="toolbarbutton-1 tab-group-action-button" tooltiptext="Group action button"/>
-        <html:slot/>
         </hbox>
-        <html:div class="tab-group-container">
-          <html:div class="tab-group-start" />
-        </html:div>
       `;
     });
   }
@@ -139,6 +137,19 @@ class ZenGroups {
     this.handlers = new WeakMap();
     this.#initHandlers();
 
+    // --- Context menu integration: 'New Folder' always creates a new folder with an invisible tab ---
+    if (!document.getElementById('zen-context-menu-new-folder')) {
+      const contextMenuItems = window.MozXULElement.parseXULToFragment(`
+        <menuitem id="zen-context-menu-new-folder" label="New Folder"/>
+      `);
+      const sep = document.getElementById('toolbarNavigatorItemsMenuSeparator') || document.getElementById('tabContextMenu').lastChild;
+      sep?.before(contextMenuItems);
+    }
+    document.getElementById('zen-context-menu-new-folder')?.addEventListener('command', () => {
+      this.createFolderWithInvisibleTab();
+    });
+
+    // --- Setup initial groups ---
     const groups = this._groups();
     console.log("Setting up initial groups:", groups.length);
     for (const group of groups) {
@@ -147,38 +158,18 @@ class ZenGroups {
   }
 
   #initHandlers() {
-    // Add the new attribute change observer
-    window.addEventListener(
-      "TabAttrModified",
-      this.#onTabGroupAttributeChanged.bind(this)
-    );
-
-    window.addEventListener(
-      "TabGroupCreate",
-      this.#onTabGroupCreate.bind(this),
-    );
+    window.addEventListener("TabAttrModified", this.#onTabGroupAttributeChanged.bind(this));
+    window.addEventListener("TabGroupCreate", this.#onTabGroupCreate.bind(this));
     window.addEventListener("TabUngrouped", this.#onTabUngrouped.bind(this));
-    window.addEventListener(
-      "TabGroupRemoved",
-      this.#onTabGroupRemoved.bind(this),
-    );
+    window.addEventListener("TabGroupRemoved", this.#onTabGroupRemoved.bind(this));
     window.addEventListener("TabGrouped", this.#onTabGrouped.bind(this));
-    window.addEventListener(
-      "TabGroupExpand",
-      this.#onTabGroupExpand.bind(this),
-    );
-    window.addEventListener(
-      "TabGroupCollapse",
-      this.#onTabGroupCollapse.bind(this),
-    );
-
-    gBrowser.tabContainer.addEventListener(
-      "TabSelect",
-      this.#handleGlobalTabSelect.bind(this),
-    );
+    window.addEventListener("TabPinned", this.#onTabPinned?.bind(this));
+    window.addEventListener("TabUnpinned", this.#onTabUnpinned?.bind(this));
+    window.addEventListener("TabGroupExpand", this.#onTabGroupExpand.bind(this));
+    window.addEventListener("TabGroupCollapse", this.#onTabGroupCollapse.bind(this));
+    gBrowser.tabContainer.addEventListener("TabSelect", this.#handleGlobalTabSelect.bind(this));
   }
 
-  // Add new method to handle attribute changes
   #onTabGroupAttributeChanged(event) {
     const group = event.target;
     if (!group.tagName || group.tagName !== "tabgroup") return;
@@ -191,7 +182,6 @@ class ZenGroups {
       hasSplitView: group.hasAttribute("split-view-group")
     });
 
-    // Handle both header and split-view-group attributes
     if (attrName === "header" || attrName === "split-view-group") {
       if (group.hasAttribute("header") || group.hasAttribute("split-view-group")) {
         console.log("Removing customizations for filtered group:", group.id);
@@ -332,7 +322,6 @@ class ZenGroups {
 
     if (group.hasAttribute("header") || group.hasAttribute("split-view-group")) {
       console.log("Group has header or split-view-group attribute - skipping setup:", group.id);
-      // Still set up observer even if we don't apply customizations initially
       this.#setupGroupObserver(group);
       return;
     }
@@ -366,7 +355,6 @@ class ZenGroups {
       });
     });
 
-    // Start observing the group for attribute changes
     observer.observe(group, {
       attributes: true,
       attributeFilter: ["header", "split-view-group"]
@@ -418,7 +406,6 @@ class ZenGroups {
       hasSplitView: group.hasAttribute("split-view-group")
     });
 
-    // Check if group should be filtered out
     if (group.hasAttribute("header") || group.hasAttribute("split-view-group")) {
       console.log("Skipping setup for filtered group:", group.id);
       return;
@@ -428,12 +415,19 @@ class ZenGroups {
   }
 
   #onTabUngrouped(event) {
-    const tab = event.target;
-    tab.style.removeProperty('visibility');
-    tab.style.removeProperty('z-index');
-    tab.style.removeProperty('margin-top');
-    tab.querySelector('.tab-reset-button').style.removeProperty('display');
-    this.#updateGroupActiveState(group);
+    const tab = event.detail;
+    const group = event.target;
+    if (!tab) return;
+    tab.style?.removeProperty('visibility');
+    tab.style?.removeProperty('z-index');
+    tab.style?.removeProperty('margin-top');
+    const resetBtn = tab.querySelector?.('.tab-reset-button');
+    if (resetBtn) {
+      resetBtn.style.removeProperty('display');
+    }
+    if (group && typeof this.#updateGroupActiveState === 'function') {
+      this.#updateGroupActiveState(group);
+    }
   }
 
   #onTabGrouped(event) {
@@ -530,7 +524,6 @@ class ZenGroups {
       iconContainer = frag.firstElementChild;
       labelContainer.insertBefore(iconContainer, labelContainer.firstChild);
     }
-    // Always ensure SVG is present
     if (!iconContainer.querySelector("svg")) {
       const svgElem = this.folderSVG.cloneNode(true);
       iconContainer.appendChild(svgElem);
@@ -557,7 +550,6 @@ class ZenGroups {
 
   #createGroupButton(group) {
     const labelContainer = group.querySelector(".tab-group-label-container");
-    // Action Button
     let actionButton = labelContainer.querySelector(".tab-group-action-button");
     if (!actionButton) {
       const frag = window.MozXULElement.parseXULToFragment('<toolbarbutton class="toolbarbutton-1 tab-group-action-button" tooltiptext="Group action button"/>' );
@@ -566,7 +558,6 @@ class ZenGroups {
     }
     actionButton.addEventListener("click", this.activeGroupPopup.bind(this));
     this.#createGroupButtonPopup(group);
-    // Tabs Button
     let tabsButton = labelContainer.querySelector(".tab-group-tabs-button");
     if (!tabsButton) {
       const frag = window.MozXULElement.parseXULToFragment('<toolbarbutton class="toolbarbutton-1 tab-group-tabs-button" tooltiptext="Group tabs button"/>' );
@@ -578,10 +569,8 @@ class ZenGroups {
 
   activeGroupPopup(event) {
     event.stopPropagation();
-    // Find the group from the button
     const group = event.currentTarget.closest('tab-group');
     this.#activeGroup = group;
-    // Use the group's own popup
     const popup = group._zenGroupActionsPopup || group.querySelector('.tab-group-actions-popup');
     if (!popup) return;
     const target = event.target;
@@ -608,14 +597,18 @@ class ZenGroups {
       popup = frag.firstElementChild;
       popup.classList.add('tab-group-actions-popup');
       group.appendChild(popup);
+      console.log('[TabFolders] Created group actions popup for group', group.id);
 
       // Use popup.querySelector to get the menu items
       const commandButtons = {
         zenGroupsChangeIcon: popup.querySelector("#zenGroupsChangeIcon"),
+        zenGroupsPinGroup: popup.querySelector("#zenGroupsPinGroup"),
+        zenGroupsUnpinGroup: popup.querySelector("#zenGroupsUnpinGroup"),
         zenGroupsRenameGroup: popup.querySelector("#zenGroupsRenameGroup"),
         zenGroupsUngroupGroup: popup.querySelector("#zenGroupsUngroupGroup"),
         zenGroupsDeleteGroup: popup.querySelector("#zenGroupsDeleteGroup"),
       };
+
       commandButtons.zenGroupsChangeIcon.addEventListener("click", (event) => {
         const iconElem = group.querySelector('.tab-group-icon');
         this.#handleChangeGroupIcon(event, group, iconElem);
@@ -634,6 +627,314 @@ class ZenGroups {
         console.log("Deleting group:", group.id);
         gBrowser.removeTabGroup(group);
       });
+      // Pin Group logic
+      commandButtons.zenGroupsPinGroup.addEventListener("click", () => {
+        const prevSelectedTab = gBrowser.selectedTab;
+        let tabs = Array.from(group.tabs).filter(tab => {
+          // Only check for basic validity here; do not reference tabContainer
+          const valid = tab && tab.parentNode != null && tab.linkedBrowser && tab.ownerGlobal === window && !tab.hidden && !tab.hasAttribute('data-zen-folder-placeholder');
+          if (!valid) {
+            console.warn('[TabFolders] Skipping invalid tab for pin:', tab, {
+              parentNode: tab?.parentNode,
+              linkedBrowser: tab?.linkedBrowser,
+              ownerGlobal: tab?.ownerGlobal,
+              hidden: tab?.hidden,
+              placeholder: tab?.hasAttribute('data-zen-folder-placeholder')
+            });
+          }
+          return valid;
+        });
+        console.log('[TabFolders] Tabs to pin in group', group.id, tabs);
+        if (tabs.length === 0) {
+          console.warn('[TabFolders] No valid tabs to pin in group', group.id);
+          return;
+        }
+        // --- Fix: Deselect group tab before pinning to avoid confusion ---
+        const allTabs = Array.from(gBrowser.tabs);
+        const nonGroupTab = allTabs.find(tab => !tabs.includes(tab) && !tab.hidden && !tab.closing);
+        let tempTab = null;
+        if (nonGroupTab) {
+          gBrowser.selectedTab = nonGroupTab;
+        } else {
+          // Create a temp tab if all tabs are in the group
+          tempTab = gBrowser.addTrustedTab('about:blank', { inBackground: false });
+          gBrowser.selectedTab = tempTab;
+        }
+        // --- End fix ---
+        // --- Refactor: Pin all tabs first, then group, like zenViewSpillter.mjs ---
+        for (const tab of tabs) {
+          if (!tab.pinned) {
+            try {
+              gBrowser.pinTab(tab);
+            } catch (e) {
+              console.warn('[TabFolders] Failed to pin tab before grouping:', tab, e);
+            }
+          }
+        }
+        setTimeout(() => {
+          if (tempTab) {
+            gBrowser.removeTab(tempTab);
+          }
+          const tabContainer = gBrowser.tabContainer.arrowScrollbox || gBrowser.tabContainer;
+          // Move tabs out of tab-group if still present
+          for (const tab of tabs) {
+            const parent = tab?.parentNode;
+            if (parent && parent.tagName && parent.tagName.toLowerCase() === 'tab-group') {
+              // Try to move to workspace tab section or fallback to tabContainer
+              let targetSection = parent.parentNode;
+              if (targetSection && targetSection.classList && targetSection.classList.contains('zen-workspace-tabs-section')) {
+                targetSection.insertBefore(tab, targetSection.lastChild);
+              } else {
+                tabContainer.insertBefore(tab, tabContainer.lastChild);
+              }
+              console.log('[TabFolders] Moved tab out of tab-group for regrouping:', tab);
+            }
+          }
+          let regroupTabs = tabs.filter(tab => {
+            const parent = tab?.parentNode;
+            const isValidParent = parent === tabContainer || (parent && parent.classList && parent.classList.contains('zen-workspace-tabs-section'));
+            const valid = tab && isValidParent && tab.linkedBrowser && tab.ownerGlobal === window && !tab.hidden && !tab.hasAttribute('data-zen-folder-placeholder') && !tab.closing && tab.isConnected;
+            if (!valid) {
+              console.warn('[TabFolders] Skipping invalid tab for regrouping:', tab, {
+                parentNode: tab?.parentNode,
+                linkedBrowser: tab?.linkedBrowser,
+                ownerGlobal: tab?.ownerGlobal,
+                hidden: tab?.hidden,
+                placeholder: tab?.hasAttribute('data-zen-folder-placeholder'),
+                closing: tab?.closing,
+                isConnected: tab?.isConnected
+              });
+            }
+            return valid;
+          });
+          for (const tab of regroupTabs) {
+            if (tab.parentNode !== tabContainer) {
+              try {
+                tabContainer.insertBefore(tab, tabContainer.lastChild);
+                console.log('[TabFolders] Ensured tab is in tabContainer before grouping:', tab);
+              } catch (e) {
+                console.error('[TabFolders] Failed to insert tab into tabContainer:', tab, e);
+              }
+            }
+          }
+          regroupTabs = regroupTabs.filter(tab => tab.parentNode === tabContainer && !tab.closing && tab.isConnected && tab.linkedBrowser);
+          if (regroupTabs.length === 0) {
+            console.error('[TabFolders] No valid tabs to regroup (pin) in group', group.id, regroupTabs);
+            popup.hidePopup();
+            return;
+          }
+          // --- Use split view style group creation ---
+          let newGroup = null;
+          try {
+            if (gBrowser.addTabGroup) {
+              newGroup = gBrowser.addTabGroup(regroupTabs, {
+                label: group.label || '',
+                showCreateUI: false,
+                insertBefore: regroupTabs[0],
+                forSplitView: false // Not a split view, but matches the style
+              });
+              console.log('[TabFolders] Created new pinned group (split view style)', newGroup, 'with tabs', regroupTabs);
+            } else {
+              console.error('[TabFolders] gBrowser.addTabGroup is not available. Cannot create pinned group.');
+              return;
+            }
+          } catch (e) {
+            console.error('[TabFolders] Error creating new pinned group:', e);
+            return;
+          }
+          if (group.tabs.length === 0) {
+            try {
+              gBrowser.removeTabGroup(group);
+            } catch (e) {
+              console.error('[TabFolders] Error removing old group:', e);
+            }
+          }
+          this.#setupGroup(newGroup);
+          // Move the group to the pinned tabs container, like split view
+          const pinnedContainer = gBrowser.verticalPinnedTabsContainer;
+          if (pinnedContainer && newGroup.parentNode !== pinnedContainer) {
+            pinnedContainer.insertBefore(newGroup, pinnedContainer.lastChild);
+            console.log('[TabFolders] Moved new group to pinned tabs container:', newGroup);
+          }
+          // Invalidate tab cache and select first tab to ensure interactivity
+          gBrowser.tabContainer._invalidateCachedTabs();
+          // Only select a tab in the new group if the user was already on a tab in that group
+          if (newGroup.tabs && newGroup.tabs.length > 0) {
+            if (Array.from(newGroup.tabs).includes(prevSelectedTab)) {
+              gBrowser.selectedTab = prevSelectedTab;
+            }
+          }
+          const allPinned = newGroup.tabs.length > 0 && newGroup.tabs.every(tab => tab.pinned);
+          commandButtons.zenGroupsPinGroup.hidden = allPinned;
+          commandButtons.zenGroupsUnpinGroup.hidden = !allPinned;
+          popup.hidePopup();
+          setTimeout(() => {
+            popup.openPopup(newGroup.querySelector('.tab-group-action-button'), "after_start");
+          }, 150);
+        }, 0);
+      });
+      // Unpin Group logic
+      commandButtons.zenGroupsUnpinGroup.addEventListener("click", () => {
+        const prevSelectedTab = gBrowser.selectedTab;
+        let tabs = Array.from(group.tabs).filter(tab => {
+          const valid = tab && tab.parentNode != null && tab.linkedBrowser && tab.ownerGlobal === window && !tab.hidden && !tab.hasAttribute('data-zen-folder-placeholder');
+          if (!valid) {
+            console.warn('[TabFolders] Skipping invalid tab for unpin:', tab, {
+              parentNode: tab?.parentNode,
+              linkedBrowser: tab?.linkedBrowser,
+              ownerGlobal: tab?.ownerGlobal,
+              hidden: tab?.hidden,
+              placeholder: tab?.hasAttribute('data-zen-folder-placeholder')
+            });
+          }
+          return valid;
+        });
+        console.log('[TabFolders] Tabs to unpin in group', group.id, tabs);
+        if (tabs.length === 0) {
+          console.warn('[TabFolders] No valid tabs to unpin in group', group.id);
+          return;
+        }
+        // --- Fix: Deselect group tab before unpinning to avoid confusion ---
+        const allTabs = Array.from(gBrowser.tabs);
+        const nonGroupTab = allTabs.find(tab => !tabs.includes(tab) && !tab.hidden && !tab.closing);
+        let tempTab = null;
+        if (nonGroupTab) {
+          gBrowser.selectedTab = nonGroupTab;
+        } else {
+          tempTab = gBrowser.addTrustedTab('about:blank', { inBackground: false });
+          gBrowser.selectedTab = tempTab;
+        }
+        // --- End fix ---
+        // Unpin all tabs
+        for (const tab of tabs) {
+          if (tab.pinned) {
+            try {
+              gBrowser.unpinTab(tab);
+            } catch (e) {
+              console.warn('[TabFolders] Failed to unpin tab before regrouping:', tab, e);
+            }
+          }
+        }
+        setTimeout(() => {
+          if (tempTab) {
+            gBrowser.removeTab(tempTab);
+          }
+          const tabContainer = gBrowser.tabContainer.arrowScrollbox || gBrowser.tabContainer;
+          // Move tabs out of tab-group if still present
+          for (const tab of tabs) {
+            const parent = tab?.parentNode;
+            if (parent && parent.tagName && parent.tagName.toLowerCase() === 'tab-group') {
+              let targetSection = parent.parentNode;
+              if (targetSection && targetSection.classList && targetSection.classList.contains('zen-workspace-tabs-section')) {
+                targetSection.insertBefore(tab, targetSection.lastChild);
+              } else {
+                tabContainer.insertBefore(tab, tabContainer.lastChild);
+              }
+              console.log('[TabFolders] Moved tab out of tab-group for regrouping:', tab);
+            }
+          }
+          let regroupTabs = tabs.filter(tab => {
+            const parent = tab?.parentNode;
+            const isValidParent = parent === tabContainer || (parent && parent.classList && parent.classList.contains('zen-workspace-tabs-section'));
+            const valid = tab && isValidParent && tab.linkedBrowser && tab.ownerGlobal === window && !tab.hidden && !tab.hasAttribute('data-zen-folder-placeholder') && !tab.closing && tab.isConnected;
+            if (!valid) {
+              console.warn('[TabFolders] Skipping invalid tab for regrouping:', tab, {
+                parentNode: tab?.parentNode,
+                linkedBrowser: tab?.linkedBrowser,
+                ownerGlobal: tab?.ownerGlobal,
+                hidden: tab?.hidden,
+                placeholder: tab?.hasAttribute('data-zen-folder-placeholder'),
+                closing: tab?.closing,
+                isConnected: tab?.isConnected
+              });
+            }
+            return valid;
+          });
+          for (const tab of regroupTabs) {
+            if (tab.parentNode !== tabContainer) {
+              try {
+                tabContainer.insertBefore(tab, tabContainer.lastChild);
+                console.log('[TabFolders] Ensured tab is in tabContainer before grouping:', tab);
+              } catch (e) {
+                console.error('[TabFolders] Failed to insert tab into tabContainer:', tab, e);
+              }
+            }
+          }
+          regroupTabs = regroupTabs.filter(tab => tab.parentNode === tabContainer && !tab.closing && tab.isConnected && tab.linkedBrowser);
+          if (regroupTabs.length === 0) {
+            console.error('[TabFolders] No valid tabs to regroup (unpin) in group', group.id, regroupTabs);
+            popup.hidePopup();
+            return;
+          }
+          // --- Use split view style group creation for unpinned group ---
+          let newGroup = null;
+          try {
+            if (gBrowser.addTabGroup) {
+              newGroup = gBrowser.addTabGroup(regroupTabs, {
+                label: group.label || '',
+                showCreateUI: false,
+                insertBefore: regroupTabs[0],
+                forSplitView: false
+              });
+              console.log('[TabFolders] Created new unpinned group (split view style)', newGroup, 'with tabs', regroupTabs);
+            } else {
+              console.error('[TabFolders] gBrowser.addTabGroup is not available. Cannot create unpinned group.');
+              return;
+            }
+          } catch (e) {
+            console.error('[TabFolders] Error creating new unpinned group:', e);
+            return;
+          }
+          if (group.tabs.length === 0) {
+            try {
+              gBrowser.removeTabGroup(group);
+            } catch (e) {
+              console.error('[TabFolders] Error removing old group:', e);
+            }
+          }
+          this.#setupGroup(newGroup);
+          // Move the group to the current workspace's normal tabs section
+          const currentWorkspaceId = gZenWorkspaces.activeWorkspace;
+          const workspaceContainer = gZenWorkspaces.workspaceElement(currentWorkspaceId);
+          const normalTabsSection = workspaceContainer?.tabsContainer;
+          // Set workspace ID on each tab
+          for (const tab of newGroup.tabs) {
+            tab.setAttribute('zen-workspace-id', currentWorkspaceId);
+          }
+          if (normalTabsSection && newGroup.parentNode !== normalTabsSection) {
+            normalTabsSection.insertBefore(newGroup, normalTabsSection.lastChild);
+            console.log('[TabFolders] Moved new group to workspace normal tabs section:', newGroup);
+          } else if (newGroup.parentNode !== gBrowser.tabContainer) {
+            gBrowser.tabContainer.insertBefore(newGroup, gBrowser.tabContainer.lastChild);
+            console.log('[TabFolders] Fallback: moved new group to global tab container:', newGroup);
+          }
+          // Invalidate tab cache and select first tab to ensure interactivity
+          gBrowser.tabContainer._invalidateCachedTabs();
+          // Only select a tab in the new group if the user was already on a tab in that group
+          if (newGroup.tabs && newGroup.tabs.length > 0) {
+            if (Array.from(newGroup.tabs).includes(prevSelectedTab)) {
+              gBrowser.selectedTab = prevSelectedTab;
+            }
+          }
+          const allPinned = newGroup.tabs.length > 0 && newGroup.tabs.every(tab => tab.pinned);
+          commandButtons.zenGroupsPinGroup.hidden = allPinned;
+          commandButtons.zenGroupsUnpinGroup.hidden = !allPinned;
+          popup.hidePopup();
+          setTimeout(() => {
+            popup.openPopup(newGroup.querySelector('.tab-group-action-button'), "after_start");
+          }, 150);
+        }, 0);
+      });
+      // Show only the relevant menu item depending on group state
+      popup.addEventListener('popupshowing', () => {
+        const tabs = group.tabs;
+        const allPinned = tabs.length > 0 && tabs.every(tab => tab.pinned);
+        commandButtons.zenGroupsPinGroup.hidden = allPinned;
+        commandButtons.zenGroupsUnpinGroup.hidden = !allPinned;
+        console.log('[TabFolders] Pin/Unpin menu visibility updated for group', group.id, 'allPinned:', allPinned);
+      }); 
+    } else {
+      console.log('[TabFolders] Group actions popup already exists for group', group.id);
     }
     // Store a reference for later use
     group._zenGroupActionsPopup = popup;
@@ -671,7 +972,7 @@ class ZenGroups {
       .then(async (emoji) => {
         console.log("Selected emoji:", emoji);
         this.#setGroupIconText(group, emoji);
-        await this.#saveGroupIcon(group, emoji); // Write real method to save group icon
+        await this.#saveGroupIcon(group, emoji);
       })
       .catch((error) => {
         return;
@@ -733,7 +1034,6 @@ class ZenGroups {
     return [];
   }
 
-  // FIX: This is a hack to save group icons to prefs
   #getAllIconsObject() {
     try {
       const jsonString = Services.prefs.getStringPref(this.#iconsPrefName);
@@ -761,7 +1061,6 @@ class ZenGroups {
       iconContainer.remove();
     }
     
-    // Also remove button if it exists
     const button = group.querySelector(".tab-group-button");
     if (button) {
       button.remove();
@@ -861,7 +1160,6 @@ class ZenGroups {
       popup = document.getElementById("tab-group-tabs-popup");
     }
     this.#populateTabsList(this.#activeGroup, popup);
-    // Add search functionality
     const search = popup.querySelector("#zen-group-tabs-list-search");
     search.placeholder = `Search ${this.#activeGroup.name || ''}...`;
     const tabsList = popup.querySelector("#zen-group-tabs-list");
@@ -884,7 +1182,6 @@ class ZenGroups {
   }
 
   _hasActiveTabs(group) {
-    // Consider a group active if any tab does NOT have 'pending'
     return group.tabs.some(tab => !tab.hasAttribute('pending'));
   }
 
@@ -921,7 +1218,75 @@ class ZenGroups {
       group.removeAttribute('has-active');
     }
   }
+
+  // Always create a new folder with an invisible tab, using Firefox's tab group API
+  createFolderWithInvisibleTab() {
+    try {
+      // 1. Create a new tab (about:blank, hidden)
+      let newTab;
+      if (gBrowser.addTrustedTab) {
+        newTab = gBrowser.addTrustedTab('about:blank', { skipAnimation: true, inBackground: true });
+        console.log('[TabFolders] Created new trusted tab for folder', newTab);
+      } else {
+        newTab = document.createElement('tab');
+        console.warn('[TabFolders] Fallback: created plain tab element');
+      }
+      newTab.setAttribute('data-zen-folder-placeholder', 'true');
+      // Ensure the tab has a unique id
+      if (!newTab.id) {
+        newTab.id = 'zen-folder-placeholder-' + Date.now() + '-' + Math.floor(Math.random() * 10000);
+        console.log('[TabFolders] Assigned id to placeholder tab:', newTab.id);
+      }
+      newTab.style.display = 'none';
+      newTab.setAttribute('hidden', 'true');
+      // 2. Use gBrowser.addTabGroup to create a new group with this tab
+      if (gBrowser.addTabGroup) {
+        const groupOptions = {
+          label: 'Folder',
+          color: 'blue',
+          insertBefore: newTab // Place group at the new tab's position
+        };
+        const groupElement = gBrowser.addTabGroup([newTab], groupOptions);
+        console.log('[TabFolders] Created new tab group', groupElement, 'with tab', newTab);
+      } else {
+        console.error('[TabFolders] gBrowser.addTabGroup is not available. Cannot create folder.');
+      }
+    } catch (e) {
+      console.error('[TabFolders] Error creating folder with invisible tab:', e);
+    }
+  }
+
+  #onTabPinned(event) {
+    // Placeholder: implement pinning logic if needed
+    // const tab = event.target;
+    // const group = tab.group;
+    // if (group) { group.pinned = true; }
+  }
+
+  #onTabUnpinned(event) {
+    // Placeholder: implement unpinning logic if needed
+    // const tab = event.target;
+    // const group = tab.group;
+    // if (group) { group.pinned = false; }
+  }
 }
+
+// Inject CSS for hiding hidden tabs in tab groups
+(function addTabFoldersCSS() {
+  if (!document.getElementById('tab-folders-hidden-tab-css')) {
+    const style = document.createElement('style');
+    style.id = 'tab-folders-hidden-tab-css';
+    style.textContent = `
+      tab-group tab[hidden] {
+        display: none !important;
+      }
+      tab[data-zen-folder-placeholder] {
+        display: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+})();
 
 (function () {
   if (!globalThis.zenGroupsInstance) {
