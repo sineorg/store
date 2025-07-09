@@ -5,6 +5,7 @@
 // @version        v3.1
 // @include        main
 // @grant          none
+// @ignorecache
 // ==/UserScript==
 
 (function() {
