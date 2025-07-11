@@ -158,7 +158,7 @@
     "image": "https://github.com/allecsc/Altover/blob/main/image.png",
     "name": "Altover",
     "version": "1.2.2",
-    "description": "Altover is a refined fusion of Zen themes—rooted in Nebula.",
+    "description": "Altover is a refined fusion of Zen themes\u2014rooted in Nebula.",
     "readme": "https://raw.githubusercontent.com/allecsc/Altover/refs/heads/main/README.md"
   },
   "settings-shortcuts-search": {
@@ -206,12 +206,15 @@
     ]
   },
   "Arc-2.0": {
-  "homepage": "https://github.com/YashjitPal/Arc-2.0/",
-  "image": "https://github.com/user-attachments/assets/f9a25afb-2503-421a-bed0-6e94f2ab43db",
-  "name": "Arc 2.0",
-  "version": "3.2.5",
-  "description": "Arc-like Zen Browser theme.",
-  "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/main/README.md",
-  "fork": ["zen"]
-  }
+    "homepage": "https://github.com/YashjitPal/Arc-2.0/",
+    "image": "https://github.com/user-attachments/assets/f9a25afb-2503-421a-bed0-6e94f2ab43db",
+    "name": "Arc 2.0",
+    "version": "3.2.5",
+    "description": "Arc-like Zen Browser theme.",
+    "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/main/README.md",
+    "fork": [
+      "zen"
+    ]
+  },
+  "Neo-Zen": "JustVibingWhileCoding/Neo-Zen"
 }
