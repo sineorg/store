@@ -2137,204 +2137,103 @@
 // @description    Set Zen media coverart via wrapper (v1.7b - Adjusts opacity on hover for consistent brightness). Affects background ONLY.
 // @version        1.7b
 // ==/UserScript==
+// ==UserScript==
+// @name           zen-media-coverart-css-provider
+// @namespace      zenMediaCoverArt
+// @description    Provides track artwork URL as a CSS variable for theme styling.
+// @version        8.0 - The Final Solution
+// ==/UserScript==
 
-(function waitForZenMediaController() {
-  // --- Configuration ---
-  const BACKGROUND_BLUR = '55px';       // Base blur
-  const BACKGROUND_CONTRAST = '95%';    // Base contrast
-  const BACKGROUND_SATURATION = '90%';  // Base saturation
-  const BACKGROUND_BRIGHTNESS = '75%';   // Base brightness
-  const BACKGROUND_BLEND_MODE = 'darken';// Base blend mode
-  const BACKGROUND_OPACITY = '0.8';     // Base opacity (Adjust for base visibility through default backdrop)
+// ==UserScript==
+// @name           zen-media-coverart-css-provider
+// @namespace      zenMediaCoverArt
+// @description    Provides track artwork URL as a CSS variable for theme styling.
+// @version        9.0 - The Clip-Path Solution
+// ==/UserScript==
 
-  // --- Hover Adjustment ---
-  // Slightly adjust opacity/brightness when player is expanded (hovered)
-  // to match the perceived brightness of the collapsed state.
-  // If collapsed looks too dark, INCREASE hover opacity/brightness slightly.
-  // If expanded looks too dark, DECREASE hover opacity/brightness slightly.
-  // Set to the same as BACKGROUND_OPACITY to disable adjustment.
-  const HOVER_BACKGROUND_OPACITY = '0.9'; // Opacity when toolbaritem is hovered
+const ZenCoverArtCSSProvider = {
+  lastArtworkUrl: null,
+  _toolbarItem: null,
+  _currentController: null,
+  _boundMetadataListener: null,
 
-  // --- Constants ---
-  const STYLE_ELEMENT_ID = 'zen-coverart-dynamic-style-v4-wrapper-hoverfix'; // Unique ID
-  const TOOLBAR_ITEM_SELECTOR = '#zen-media-controls-toolbar > toolbaritem';
-  const WRAPPER_ELEMENT_ID = 'zen-coverart-background-wrapper'; // ID for our injected div
-  // --- End Configuration ---
-
-
-  if (typeof window.gZenMediaController?.setupMediaController !== 'function') {
-    setTimeout(waitForZenMediaController, 300);
-    return;
-  }
-
-  let lastArtworkUrl = null;
-  let styleEl = null; // Keep reference to the style element
-
-  // Combine filter strings (using BASE values)
-  const filterValue = [
-      BACKGROUND_BLUR && BACKGROUND_BLUR !== '0px' ? `blur(${BACKGROUND_BLUR})` : '',
-      BACKGROUND_CONTRAST && BACKGROUND_CONTRAST !== '100%' && BACKGROUND_CONTRAST !== '1' ? `contrast(${BACKGROUND_CONTRAST})` : '',
-      BACKGROUND_SATURATION && BACKGROUND_SATURATION !== '100%' && BACKGROUND_SATURATION !== '1' ? `saturate(${BACKGROUND_SATURATION})` : '',
-      BACKGROUND_BRIGHTNESS && BACKGROUND_BRIGHTNESS !== '100%' && BACKGROUND_BRIGHTNESS !== '1' ? `brightness(${BACKGROUND_BRIGHTNESS})` : '',
-  ].filter(Boolean).join(' ') || 'none';
-
-  // Function to setup/update the injected CSS style tag
-  function updateCoverArtStyle(coverUrl) {
-    if (!styleEl) {
-      styleEl = document.getElementById(STYLE_ELEMENT_ID);
-      if (!styleEl) {
-        styleEl = document.createElement('style');
-        styleEl.id = STYLE_ELEMENT_ID;
-        document.head.appendChild(styleEl);
-      }
+  _getToolbarItem() {
+    if (!this._toolbarItem) {
+      this._toolbarItem = document.querySelector("#zen-media-controls-toolbar > toolbaritem");
+      if (!this._toolbarItem) console.error("[ZenCoverArt] Toolbar item not found.");
     }
+    return this._toolbarItem;
+  },
+  
+  _selectLargestArtwork(artworkList) {
+    if (!Array.isArray(artworkList) || artworkList.length === 0) return null;
+    return artworkList.reduce((max, cur) => {
+      const [mw, mh] = max.sizes?.split("x").map(Number) || [0, 0];
+      const [cw, ch] = cur.sizes?.split("x").map(Number) || [0, 0];
+      return cw * ch > mw * mh ? cur : max;
+    });
+  },
 
-    // Determine base opacity
-    const baseTargetOpacity = coverUrl ? BACKGROUND_OPACITY : '0';
-    // Determine hover opacity (use base if hover value is same or invalid)
-    const hoverTargetOpacity = coverUrl
-        ? (HOVER_BACKGROUND_OPACITY && HOVER_BACKGROUND_OPACITY !== BACKGROUND_OPACITY ? HOVER_BACKGROUND_OPACITY : baseTargetOpacity)
-        : '0';
+  _setCoverArtVariable(coverUrl) {
+    const toolbarItem = this._getToolbarItem();
+    if (!toolbarItem) return;
+    this.lastArtworkUrl = coverUrl;
+    toolbarItem.style.setProperty('--zen-cover-art-url', `url("${CSS.escape(coverUrl)}")`);
+  },
 
-
-    // CSS for the WRAPPER element. Includes a rule for the hover state of the PARENT.
-    let cssText = `
-      /* Default state for the wrapper */
-      #${WRAPPER_ELEMENT_ID} {
-        content: "" !important;
-        position: absolute !important;
-        inset: 0 !important;
-        z-index: -1 !important;
-        overflow: hidden !important;
-        border-radius: inherit !important;
-
-        background-image: ${coverUrl ? `url("${coverUrl}")` : 'none'} !important;
-        background-size: cover !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important;
-        background-blend-mode: ${BACKGROUND_BLEND_MODE} !important;
-        filter: ${coverUrl ? filterValue : 'none'} !important;
-        opacity: ${baseTargetOpacity} !important; /* Use base opacity */
-
-        /* Transition applies to both states */
-        transition: background-image 0.4s ease-in-out, filter 0.4s ease-in-out, opacity 0.4s ease-in-out !important;
-        pointer-events: none !important;
-      }
-
-      /* Rule for the wrapper WHEN THE PARENT toolbaritem is hovered */
-      ${TOOLBAR_ITEM_SELECTOR}:hover #${WRAPPER_ELEMENT_ID} {
-        opacity: ${hoverTargetOpacity} !important; /* Use hover opacity */
-        /* You could also add a brightness adjustment here if needed: */
-        /* filter: ${coverUrl ? filterValue.replace(/brightness\([^)]+\)/, '').trim() + ' brightness(HOVER_BRIGHTNESS_VALUE)' : 'none'} !important; */
-      }
-    `;
-
-    // Only update if the CSS text has actually changed
-    if (styleEl.textContent !== cssText) {
-      styleEl.textContent = cssText;
-      // console.log("[ZenCoverArt] Updated dynamic style element (v1.7b - hover fix).");
+  _removeCoverArtVariable() {
+    const toolbarItem = this._getToolbarItem();
+    if (toolbarItem && this.lastArtworkUrl !== null) {
+      this.lastArtworkUrl = null;
+      toolbarItem.style.removeProperty('--zen-cover-art-url');
     }
-  }
+  },
 
-  // --- manageWrapperElement, setBackgroundFromMetadata, Patching, Initialization ---
-  // --- These remain IDENTICAL to the original v1.7 script you provided ---
-
-    // Function to ensure the wrapper div exists or is removed
-    function manageWrapperElement(toolbarItem, shouldExist) {
-      if (!toolbarItem) return;
-      let wrapper = toolbarItem.querySelector(`#${WRAPPER_ELEMENT_ID}`);
-      if (shouldExist && !wrapper) {
-          wrapper = document.createElement('div');
-          wrapper.id = WRAPPER_ELEMENT_ID;
-          toolbarItem.prepend(wrapper);
-           console.log("[ZenCoverArt] Injected background wrapper.");
-      } else if (!shouldExist && wrapper) {
-          wrapper.remove();
-           console.log("[ZenCoverArt] Removed background wrapper.");
-      }
-      return !!toolbarItem.querySelector(`#${WRAPPER_ELEMENT_ID}`);
-  }
-
-
-  function setBackgroundFromMetadata(controller) {
+  _update(controller) {
     const metadata = controller?.getMetadata?.();
-    const artwork = metadata?.artwork;
-    let coverUrl = null;
-
-    const toolbarItem = document.querySelector(TOOLBAR_ITEM_SELECTOR);
-    if (!toolbarItem) {
-        return;
-    }
-
-    if (Array.isArray(artwork) && artwork.length > 0) {
-      const sorted = [...artwork].sort((a, b) => {
-        const [aw, ah] = a.sizes?.split("x").map(Number) || [0, 0];
-        const [bw, bh] = b.sizes?.split("x").map(Number) || [0, 0];
-        return (bw * bh) - (aw * ah);
-      });
-      const bestArtwork = sorted[0];
-      if (bestArtwork?.src) {
-          coverUrl = bestArtwork.src;
-      }
-    }
-
-    const wrapperExists = manageWrapperElement(toolbarItem, !!coverUrl);
-
-    if (wrapperExists || lastArtworkUrl) {
-         updateCoverArtStyle(coverUrl);
-    }
-
-    if(coverUrl !== lastArtworkUrl){
-        // console.log("[ZenCoverArt]", coverUrl ? `Setting new background URL: ${coverUrl}` : "Clearing background URL.");
-    }
-    lastArtworkUrl = coverUrl;
-  }
-
-  const originalSetupMediaController = gZenMediaController.setupMediaController.bind(gZenMediaController);
-  gZenMediaController.setupMediaController = function (controller, browser) {
-    // console.log("[ZenCoverArt] setupMediaController fired for:", controller.id);
-    setBackgroundFromMetadata(controller);
-
-    controller.removeEventListener("metadatachange", setBackgroundFromMetadataWrapper);
-    controller.addEventListener("metadatachange", setBackgroundFromMetadataWrapper);
-
-    return originalSetupMediaController(controller, browser);
-  };
-
-  function setBackgroundFromMetadataWrapper() {
-    if (this && typeof this.getMetadata === 'function') {
-      setBackgroundFromMetadata(this);
+    const bestArtwork = this._selectLargestArtwork(metadata?.artwork);
+    const coverUrl = bestArtwork?.src;
+    if (coverUrl) {
+      if (coverUrl !== this.lastArtworkUrl) this._setCoverArtVariable(coverUrl);
     } else {
-      const currentController = gZenMediaController?._currentMediaController;
-      if (currentController) {
-        setBackgroundFromMetadata(currentController);
-      } else {
-        console.warn("[ZenCoverArt] Controller lost. Attempting cleanup.");
-        const toolbarItem = document.querySelector(TOOLBAR_ITEM_SELECTOR);
-        if(toolbarItem) manageWrapperElement(toolbarItem, false);
-        updateCoverArtStyle(null);
-        lastArtworkUrl = null;
-      }
+      this._removeCoverArtVariable();
     }
+  },
+
+  _attachToController(controller) {
+    if (this._currentController && this._boundMetadataListener) {
+      this._currentController.removeEventListener("metadatachange", this._boundMetadataListener);
+    }
+    this._currentController = controller;
+    if (!controller) {
+      this._removeCoverArtVariable();
+      return;
+    }
+    this._boundMetadataListener = this._update.bind(this, controller);
+    controller.addEventListener("metadatachange", this._boundMetadataListener);
+    this._update(controller);
+  },
+
+  init() {
+    const wait = () => {
+      if (typeof window.gZenMediaController?.setupMediaController !== "function") {
+        setTimeout(wait, 300);
+        return;
+      }
+      const originalSetup = window.gZenMediaController.setupMediaController.bind(window.gZenMediaController);
+      window.gZenMediaController.setupMediaController = (controller, browser) => {
+        this._attachToController(controller);
+        return originalSetup(controller, browser);
+      };
+      if (window.gZenMediaController._currentMediaController) {
+        this._attachToController(window.gZenMediaController._currentMediaController);
+      }
+    };
+    wait();
   }
+};
 
-  const initialController = gZenMediaController._currentMediaController;
-  const toolbarItem = document.querySelector(TOOLBAR_ITEM_SELECTOR);
-  if (initialController) {
-    // console.log("[ZenCoverArt] Initial controller found");
-    setBackgroundFromMetadata(initialController);
-
-    initialController.removeEventListener("metadatachange", setBackgroundFromMetadataWrapper);
-    initialController.addEventListener("metadatachange", setBackgroundFromMetadataWrapper);
-  } else {
-     if(toolbarItem) manageWrapperElement(toolbarItem, false);
-     updateCoverArtStyle(null);
-  }
-
-  console.log("[ZenCoverArt] Hooked setupMediaController successfully (Enhanced Version 1.7b - Hover Fix)");
-
-})();
-
+ZenCoverArtCSSProvider.init();
 
 // ========================================================================================================================================================================
 
