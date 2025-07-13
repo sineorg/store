@@ -2907,3 +2907,55 @@ ZenCoverArtCSSProvider.init();
   }
   console.log('[UserChromeScript] custom-input-to-dual-css-vars-persistent.uc.js finished initial execution.');
 })();
+
+
+
+
+// ========================================================================================================================================================================
+// ==UserScript==
+// @ignorecache
+// @name          Zen Top Position Globalizer
+// @namespace      globalizier
+// // @description   Finds --zen-urlbar-top and makes it global for userChrome.css. Based on a friend's script.
+// @version        1.7b
+// ==/UserScript==
+
+(function() {
+    console.log('[Zen Globalizer] Script has loaded. Waiting for window to be ready...');
+
+    function runZenTopGlobalizer() {
+        console.log('[Zen Globalizer] Window is ready. Script starting...');
+
+        const rootElement = document.documentElement;
+        const urlbarElement = document.getElementById('urlbar');
+
+        if (!urlbarElement) {
+            console.error('[Zen Globalizer] FATAL ERROR: Could not find #urlbar element.');
+            return;
+        }
+
+        function syncVariable() {
+            const value = window.getComputedStyle(urlbarElement).getPropertyValue('--zen-urlbar-top');
+            if (value) {
+                rootElement.style.setProperty('--my-global-zen-top', value.trim());
+            }
+        }
+
+        const observer = new MutationObserver(syncVariable);
+
+        observer.observe(urlbarElement, {
+            attributes: true,
+            attributeFilter: ['style']
+        });
+
+        syncVariable();
+        console.log('[Zen Globalizer] Observer is now active on #urlbar.');
+    }
+
+    // A simpler way to wait for the window to be ready
+    if (document.readyState === 'complete') {
+        runZenTopGlobalizer();
+    } else {
+        window.addEventListener('load', runZenTopGlobalizer, { once: true });
+    }
+})();
