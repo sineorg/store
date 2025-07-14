@@ -21,6 +21,17 @@
       "zen"
     ]
   },
+  "Arc-2.0": {
+    "homepage": "https://github.com/YashjitPal/Arc-2.0/",
+    "image": "https://github.com/user-attachments/assets/f9a25afb-2503-421a-bed0-6e94f2ab43db",
+    "name": "Arc 2.0",
+    "version": "3.2.5",
+    "description": "Arc-like Zen Browser theme.",
+    "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/main/README.md",
+    "fork": [
+      "zen"
+    ]
+  },
   "advanced-tab-groups": {
     "homepage": "Anoms12/Advanced-Tab-Groups",
     "image": "https://raw.githubusercontent.com/Anoms12/Advanced-Tab-Groups/main/image.png",
@@ -32,18 +43,21 @@
       "zen"
     ]
   },
-  "animations-plus": {
-    "homepage": "Anoms12/Animations-plus",
-    "image": "https://raw.githubusercontent.com/Anoms12/Animations-plus/main/image.png",
-    "name": "Animations Plus",
-    "version": "1.2.2",
-    "description": "A nice animation pack for Zen Browser.",
-    "readme": "https://raw.githubusercontent.com/Anoms12/Animations-plus/main/README.md",
+  "zaps-cool-photon-theme": {
+    "homepage": "zapSNH/zapsCoolPhotonTheme",
+    "image": "https://i.imgur.com/FyzTFKg.png",
+    "name": "zap's cool photon theme",
+    "version": "140r5-sine",
+    "description": "a cool photon theme for firefox (and others)",
+    "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
     "fork": [
-      "zen",
-      "floorp"
+      "firefox",
+      "waterfox",
+      "floorp",
+      "mullvad"
     ]
   },
+  "Neo-Zen": "JustVibingWhileCoding/Neo-Zen",
   "zen-tidy-downloads": {
     "homepage": "Anoms12/Zen-Tidy-Downloads",
     "image": "https://github.com/Anoms12/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
@@ -63,6 +77,18 @@
     "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
     "fork": [
       "zen"
+    ]
+  },
+  "animations-plus": {
+    "homepage": "Anoms12/Animations-plus",
+    "image": "https://raw.githubusercontent.com/Anoms12/Animations-plus/main/image.png",
+    "name": "Animations Plus",
+    "version": "1.2.2",
+    "description": "A nice animation pack for Zen Browser.",
+    "readme": "https://raw.githubusercontent.com/Anoms12/Animations-plus/main/README.md",
+    "fork": [
+      "zen",
+      "floorp"
     ]
   },
   "tab-rename-zen-browser": {
@@ -158,7 +184,7 @@
     "image": "https://github.com/allecsc/Altover/blob/main/image.png",
     "name": "Altover",
     "version": "1.2.2",
-    "description": "Altover is a refined fusion of Zen themes\u2014rooted in Nebula.",
+    "description": "Altover is a refined fusion of Zen themes-rooted in Nebula.",
     "readme": "https://raw.githubusercontent.com/allecsc/Altover/refs/heads/main/README.md"
   },
   "settings-shortcuts-search": {
@@ -190,31 +216,5 @@
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
     "version": "1.0.0",
     "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/image.png"
-  },
-  "zaps-cool-photon-theme": {
-    "homepage": "zapSNH/zapsCoolPhotonTheme",
-    "image": "https://i.imgur.com/FyzTFKg.png",
-    "name": "zap's cool photon theme",
-    "version": "140r5-sine",
-    "description": "a cool photon theme for firefox (and others)",
-    "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
-    "fork": [
-      "firefox",
-      "waterfox",
-      "floorp",
-      "mullvad"
-    ]
-  },
-  "Arc-2.0": {
-    "homepage": "https://github.com/YashjitPal/Arc-2.0/",
-    "image": "https://github.com/user-attachments/assets/f9a25afb-2503-421a-bed0-6e94f2ab43db",
-    "name": "Arc 2.0",
-    "version": "3.2.5",
-    "description": "Arc-like Zen Browser theme.",
-    "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/main/README.md",
-    "fork": [
-      "zen"
-    ]
-  },
-  "Neo-Zen": "JustVibingWhileCoding/Neo-Zen"
+  }
 }
