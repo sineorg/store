@@ -3,7 +3,7 @@
     "homepage": "JustADumbPrsn/Zen-Nebula",
     "image": "https://github.com/user-attachments/assets/e09859a4-ad66-483e-be67-b25d11d54298",
     "name": "Nebula",
-    "version": "3.0.3",
+    "version": "3.1.1",
     "description": "A beautiful theme made for Zen Browser :))",
     "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
     "fork": [
@@ -36,8 +36,8 @@
     "homepage": "Anoms12/Advanced-Tab-Groups",
     "image": "https://raw.githubusercontent.com/Anoms12/Advanced-Tab-Groups/main/image.png",
     "name": "Advanced Tab Groups",
-    "version": "2.6.0s",
-    "description": "Advanced Tab Group CSS for Zen Browser",
+    "version": "2.7.0s",
+    "description": "Folders for Zen Browser",
     "readme": "https://raw.githubusercontent.com/Anoms12/Advanced-Tab-Groups/main/README.md",
     "fork": [
       "zen"
@@ -57,7 +57,17 @@
       "mullvad"
     ]
   },
-  "Neo-Zen": "JustVibingWhileCoding/Neo-Zen",
+  "Neo-Zen": {
+    "homepage": "JustVibingWhileCoding/Neo-Zen",
+    "image": "https://github.com/user-attachments/assets/c37e9f4e-1ab1-43ec-945e-2be1592351a4",
+    "name": "Neo Zen",
+    "version": "2.0.0",
+    "description": "A sleek, futuristic theme for Zen Browser that blends modern design with mindful simplicity",
+    "readme": "https://raw.githubusercontent.com/JustVibingWhileCoding/Neo-Zen/main/README.md",
+    "fork": [
+      "zen"
+    ]
+  },
   "zen-tidy-downloads": {
     "homepage": "Anoms12/Zen-Tidy-Downloads",
     "image": "https://github.com/Anoms12/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
@@ -104,8 +114,8 @@
   "ai-tabgroups-zenbrowser": {
     "homepage": "Darsh-A/Ai-TabGroups-ZenBrowser",
     "image": "https://github.com/Darsh-A/Ai-TabGroups-ZenBrowser/blob/main/image.jpg?raw=true",
-    "name": "Tab Sort Clear AI",
-    "version": "1.0.0",
+    "name": "Tidy Tabs",
+    "version": "4.1.0",
     "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
     "fork": [
@@ -116,8 +126,8 @@
     "homepage": "1247343406/context-menu-icons-for-Zen",
     "image": "https://github.com/1247343406/context-menu-icons-for-Zen/blob/main/image.jpg?raw=true",
     "name": "Context Menu Icons",
-    "version": "1.3.3",
-    "description": "Bring the icon of the context menu back to Zen browser ",
+    "version": "1.6.1",
+    "description": "Bring the icon of the context menu back to Zen/Firefox browser ",
     "readme": "https://raw.githubusercontent.com/1247343406/context-menu-icons-for-Zen/refs/heads/main/README.md",
     "fork": [
       "zen",
@@ -162,7 +172,7 @@
     "homepage": "https://github.com/octaviusz/zen-drop-link",
     "image": "",
     "name": "Zen Drop Link to Split",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "This mod allows you to split tabs by drag and drop links",
     "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
     "fork": [
@@ -182,10 +192,13 @@
   "zzzAltover": {
     "homepage": "allecsc/Altover",
     "image": "https://github.com/allecsc/Altover/blob/main/image.png",
-    "name": "Altover",
-    "version": "1.2.2",
-    "description": "Altover is a refined fusion of Zen themes-rooted in Nebula.",
-    "readme": "https://raw.githubusercontent.com/allecsc/Altover/refs/heads/main/README.md"
+    "name": "Altover Addon",
+    "version": "1.3",
+    "description": "Altover Add-On for Nebula theme. Bundle install for Altover & Nebula themes.",
+    "readme": "https://raw.githubusercontent.com/allecsc/Altover/refs/heads/main/README.md",
+    "fork": [
+      "zen"
+    ]
   },
   "settings-shortcuts-search": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
@@ -201,20 +214,18 @@
   "search-engine-select": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
     "name": "Search Engine Select",
+    "version": "1.0.0",
     "description": "Adds a floating UI to switch search engines on a search results page.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
-    "version": "1.0.0",
     "fork": [
       "zen"
-    ],
-    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/image.png"
+    ]
   },
   "floating-sidebar": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/floating-sidebar",
     "name": "Floating Sidebar",
-    "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
     "version": "1.0.0",
-    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/image.png"
+    "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md"
   }
 }
