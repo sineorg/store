@@ -1,25 +1,7 @@
 /* ==== Tab groups ==== */
 /* https://github.com/Anoms12/Advanced-Tab-Groups */
-/* ====== V2.7.0 ====== */
+/* ====== V2.8.0s ====== */
 
-// --- Monkey-patch gBrowser.addTabGroup for nested group support ---
-(function patchAddTabGroupForNesting() {
-  if (!window.gBrowser || window.gBrowser._zenPatchedAddTabGroup) return;
-  const origAddTabGroup = gBrowser.addTabGroup.bind(gBrowser);
-  gBrowser.addTabGroup = function(tabs, options = {}) {
-    console.log('[ZenGroups] addTabGroup called with tabs:', tabs);
-    const groups = Array.from(new Set(tabs.map(tab => tab.group).filter(Boolean)));
-    console.log('[ZenGroups] Detected groups for tabs:', groups);
-    if (groups.length === 1 && groups[0]) {
-      console.log('[ZenGroups] All tabs share the same group, using createNestedGroup');
-      if (window.zenGroupsInstance && typeof window.zenGroupsInstance.createNestedGroup === 'function') {
-        return window.zenGroupsInstance.createNestedGroup(tabs, groups[0], options);
-      }
-    }
-    return origAddTabGroup(tabs, options);
-  };
-  gBrowser._zenPatchedAddTabGroup = true;
-})();
 
 class ZenGroups {
   #initialized = false;
@@ -27,8 +9,7 @@ class ZenGroups {
   #mouseTimer = null;
   #activeGroup = null;
   #iconsPrefName = "mod.zen-groups.icon.emoji";
-  // --- Nested group hierarchy: Map<groupId, parentGroupId> ---
-  groupHierarchy = new Map();
+
   tabsListPopup = window.MozXULElement.parseXULToFragment(`
         <panel id="tab-group-tabs-popup" type="arrow" orient="vertical">
         <hbox class="tabs-list-header">
@@ -184,8 +165,6 @@ class ZenGroups {
     window.addEventListener("TabUngrouped", this.#onTabUngrouped.bind(this));
     window.addEventListener("TabGroupRemoved", this.#onTabGroupRemoved.bind(this));
     window.addEventListener("TabGrouped", this.#onTabGrouped.bind(this));
-    window.addEventListener("TabPinned", this.#onTabPinned?.bind(this));
-    window.addEventListener("TabUnpinned", this.#onTabUnpinned?.bind(this));
     window.addEventListener("TabGroupExpand", this.#onTabGroupExpand.bind(this));
     window.addEventListener("TabGroupCollapse", this.#onTabGroupCollapse.bind(this));
     gBrowser.tabContainer.addEventListener("TabSelect", this.#handleGlobalTabSelect.bind(this));
@@ -399,6 +378,12 @@ class ZenGroups {
 
     group.addEventListener("mouseenter", groupHandlers.handleMouseEnter);
     group.addEventListener("mouseleave", groupHandlers.handleMouseLeave);
+
+    // Disable right-click context menu on tab-group
+    group.addEventListener("contextmenu", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    });
 
     const labelContainer = group.querySelector(".tab-group-label-container");
     if (labelContainer) {
@@ -1279,146 +1264,6 @@ class ZenGroups {
       console.error('[TabFolders] Error creating folder with invisible tab:', e);
     }
   }
-
-  #onTabPinned(event) {
-    // Placeholder: implement pinning logic if needed
-    // const tab = event.target;
-    // const group = tab.group;
-    // if (group) { group.pinned = true; }
-  }
-
-  #onTabUnpinned(event) {
-    // Placeholder: implement unpinning logic if needed
-    // const tab = event.target;
-    // const group = tab.group;
-    // if (group) { group.pinned = false; }
-  }
-
-  /**
-   * Create a new group as a child of another group (logical nesting only)
-   * @param {Array<Tab>} tabs - Tabs for the new group
-   * @param {Element} parentGroup - The parent group element
-   * @param {Object} options - Options for gBrowser.addTabGroup
-   * @returns {Element} The new group element
-   */
-  createNestedGroup(tabs, parentGroup, options = {}) {
-    // Create the group using the browser's logic
-    const group = gBrowser.addTabGroup(tabs, options);
-    if (group && parentGroup) {
-      this.groupHierarchy.set(group.id, parentGroup.id);
-      group.setAttribute('zen-parent-group-id', parentGroup.id);
-      group.setAttribute('zen-nested-group', 'true');
-      // Defensive: only remove if parentNode exists
-      if (group.parentNode && group.parentNode !== parentGroup) {
-        group.parentNode.removeChild(group);
-      }
-      // Use the patched appendChild (which targets .tab-group-container)
-      if (typeof parentGroup.appendChild === 'function') {
-        parentGroup.appendChild(group);
-      } else {
-        // fallback: append to .tab-group-container directly
-        const container = parentGroup.querySelector('.tab-group-container');
-        if (container) container.appendChild(group);
-      }
-      // Log for debugging
-      console.log('[ZenGroups] Nested group', group, 'inside parent', parentGroup);
-      console.log('[ZenGroups] Parent .tab-group-container children:', parentGroup.querySelector('.tab-group-container')?.children);
-    }
-    return group;
-  }
-
-  /**
-   * Move an existing group under another group (logical nesting only)
-   * @param {Element} childGroup - The group to nest
-   * @param {Element} parentGroup - The parent group
-   */
-  nestGroup(childGroup, parentGroup) {
-    if (childGroup && parentGroup) {
-      this.groupHierarchy.set(childGroup.id, parentGroup.id);
-      childGroup.setAttribute('zen-parent-group-id', parentGroup.id);
-    }
-  }
-
-  /**
-   * Get the parent group element of a group
-   * @param {string|Element} groupOrId - Group element or group id
-   * @returns {Element|null}
-   */
-  getParentGroup(groupOrId) {
-    const groupId = typeof groupOrId === 'string' ? groupOrId : groupOrId?.id;
-    const parentId = this.groupHierarchy.get(groupId);
-    return parentId ? document.getElementById(parentId) : null;
-  }
-
-  /**
-   * Get all direct child group elements of a parent group
-   * @param {string|Element} parentGroupOrId - Parent group element or id
-   * @returns {Element[]} Array of child group elements
-   */
-  getChildGroups(parentGroupOrId) {
-    const parentId = typeof parentGroupOrId === 'string' ? parentGroupOrId : parentGroupOrId?.id;
-    return Array.from(this.groupHierarchy.entries())
-      .filter(([childId, pid]) => pid === parentId)
-      .map(([childId]) => document.getElementById(childId))
-      .filter(Boolean);
-  }
-
-  /**
-   * Get all ancestor group elements (from closest parent up to root)
-   * @param {string|Element} groupOrId - Group element or id
-   * @returns {Element[]} Array of ancestor group elements (closest first)
-   */
-  getAncestorGroups(groupOrId) {
-    const ancestors = [];
-    let current = this.getParentGroup(groupOrId);
-    while (current) {
-      ancestors.push(current);
-      current = this.getParentGroup(current);
-    }
-    return ancestors;
-  }
-
-  /**
-   * Get all descendant group elements (recursive)
-   * @param {string|Element} groupOrId - Group element or id
-   * @returns {Element[]} Array of all descendant group elements
-   */
-  getDescendantGroups(groupOrId) {
-    const descendants = [];
-    const children = this.getChildGroups(groupOrId);
-    for (const child of children) {
-      descendants.push(child);
-      descendants.push(...this.getDescendantGroups(child));
-    }
-    return descendants;
-  }
-
-  /**
-   * Remove a group from the hierarchy (optionally recursively remove descendants)
-   * @param {string|Element} groupOrId - Group element or id
-   * @param {boolean} recursive - If true, remove all descendants too
-   */
-  removeGroupFromHierarchy(groupOrId, recursive = false) {
-    const groupId = typeof groupOrId === 'string' ? groupOrId : groupOrId?.id;
-    if (recursive) {
-      for (const desc of this.getDescendantGroups(groupId)) {
-        this.groupHierarchy.delete(desc.id);
-        desc.removeAttribute('zen-parent-group-id');
-      }
-    }
-    this.groupHierarchy.delete(groupId);
-    const group = typeof groupOrId === 'string' ? document.getElementById(groupOrId) : groupOrId;
-    group?.removeAttribute('zen-parent-group-id');
-  }
-
-  /**
-   * Get all root groups (groups with no parent)
-   * @returns {Element[]} Array of root group elements
-   */
-  getRootGroups() {
-    const allGroups = gBrowser.getAllTabGroups();
-    return allGroups.filter(g => !this.groupHierarchy.has(g.id));
-  }
 }
 
 // Inject CSS for hiding hidden tabs in tab groups
@@ -1459,43 +1304,3 @@ document.addEventListener('click', e => {
     console.log('[ZenGroups] Toolbarbutton clicked:', e.target);
   }
 }, true);
-
-// Intercept the 'New Group' context menu item to implement nested group logic
-(function interceptNewGroupMenu() {
-  function handler(e) {
-    e.stopImmediatePropagation();
-    e.preventDefault();
-    // Get selected tabs
-    const tabs = gBrowser.selectedTabs || [gBrowser.selectedTab];
-    // Find unique parent groups
-    const groups = Array.from(new Set(tabs.map(tab => tab.group).filter(Boolean)));
-    console.log('[ZenGroups] Intercepted New Group menu command! Selected tabs:', tabs, 'Groups:', groups);
-    if (groups.length === 1 && groups[0]) {
-      // All tabs share the same group, create a nested group
-      if (window.zenGroupsInstance && typeof window.zenGroupsInstance.createNestedGroup === 'function') {
-        window.zenGroupsInstance.createNestedGroup(tabs, groups[0], { label: 'Nested Group' });
-        return;
-      }
-    }
-    // Fallback: call the original behavior (simulate default command)
-    // Remove this handler and re-dispatch the event to allow default
-    const menu = document.getElementById('context_moveTabToGroupNewGroup');
-    if (menu) {
-      menu.removeEventListener('command', handler, true);
-      menu.dispatchEvent(new Event('command', { bubbles: true, cancelable: true }));
-      menu.addEventListener('command', handler, true);
-    }
-  }
-  function attachHandler() {
-    const menu = document.getElementById('context_moveTabToGroupNewGroup');
-    if (menu && !menu._zenIntercepted) {
-      menu.addEventListener('command', handler, true);
-      menu._zenIntercepted = true;
-      console.log('[ZenGroups] Attached nested group handler to New Group menu item');
-    }
-  }
-  // Try immediately, and also observe for dynamic menu creation
-  attachHandler();
-  const obs = new MutationObserver(attachHandler);
-  obs.observe(document, { childList: true, subtree: true });
-})();
