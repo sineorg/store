@@ -1,6 +1,6 @@
 /* ==== Tab groups ==== */
 /* https://github.com/Anoms12/Advanced-Tab-Groups */
-/* ====== V2.8.0s ====== */
+/* ====== V2.8.1s ====== */
 
 
 class ZenGroups {
@@ -381,8 +381,11 @@ class ZenGroups {
 
     // Disable right-click context menu on tab-group
     group.addEventListener("contextmenu", function(e) {
-      e.preventDefault();
-      e.stopPropagation();
+      // Only disable context menu if right-clicked directly on the group, not its children
+      if (e.target === group || e.target.classList.contains("tab-group-label-container")) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     });
 
     const labelContainer = group.querySelector(".tab-group-label-container");
