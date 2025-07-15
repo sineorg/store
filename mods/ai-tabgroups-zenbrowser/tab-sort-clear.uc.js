@@ -1,4 +1,4 @@
-// VERSION 4.11.0 (Added Mistral API support)
+// VERSION 4.11.1 (Added Mistral API support)
 (() => {
     // --- Configuration ---
 
@@ -191,7 +191,8 @@
             opacity: 0;
             transition: opacity 0.1s ease-in-out;
             position: absolute;
-            right: 55px; /* Positioned to the left of the clear button */
+            /* Simple, stable positioning. The parent container's right edge never moves. */
+            right: 55px; 
             font-size: 12px;
             width: 60px;
             pointer-events: auto;
@@ -200,6 +201,7 @@
             margin-top: -8px;
             padding: 1px;
             color: gray;
+            z-index: 1; /* Ensure buttons are on top of the visual bar */
             label { display: block; }
         }
         #sort-button:hover {
@@ -212,7 +214,7 @@
             opacity: 0;
             transition: opacity 0.1s ease-in-out;
             position: absolute;
-            right: 0;
+            right: 0; /* Simple and stable */
             font-size: 12px;
             width: 60px;
             pointer-events: auto;
@@ -221,6 +223,7 @@
             margin-top: -8px;
             padding: 1px;
             color: grey;
+            z-index: 1; /* Ensure buttons are on top of the visual bar */
             label { display: block; }
         }
         #clear-button:hover {
@@ -228,93 +231,79 @@
             color: white;
             border-radius: 4px;
         }
-        /* Separator Base Style (Ensures background is animatable) */
+        
         .vertical-pinned-tabs-container-separator {
              display: flex !important;
              flex-direction: column;
              margin-left: 0;
              min-height: 1px;
-             background-color: var(--lwt-toolbarbutton-border-color, rgba(200, 200, 200, 0.1)); /* Subtle base color */
-             transition: width 0.1s ease-in-out, margin-right 0.1s ease-in-out, background-color 0.3s ease-out; /* Add background transition */
+             padding-top: 0.4px;
+             padding-bottom: 0.4px;
+             position: relative; /* Acts as the anchor for children */
+             background-color: transparent !important; /* The container itself is invisible */
         }
-        /* Separator Hover Logic */
-        .vertical-pinned-tabs-container-separator:has(#sort-button):has(#clear-button):hover {
-            width: calc(100% - 115px); /* 60px (clear) + 55px (sort) */
-            margin-right: auto;
-            background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2)); /* Slightly lighter on hover */
+        
+        .vertical-pinned-tabs-container-separator::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%; /* Default state: full width */
+            background-color: var(--lwt-toolbarbutton-border-color, rgba(200, 200, 200, 0.1));
+            transition: width 0.1s ease-in-out, background-color 0.3s ease-out;
         }
-         /* Hover when ONLY SORT is present */
-        .vertical-pinned-tabs-container-separator:has(#sort-button):not(:has(#clear-button)):hover {
-            width: calc(100% - 65px); /* Only space for sort + margin */
-            margin-right: auto;
+        
+        .vertical-pinned-tabs-container-separator:has(#sort-button):has(#clear-button):hover::before {
+            width: calc(100% - 115px);
             background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
         }
-         /* Hover when ONLY CLEAR is present */
-        .vertical-pinned-tabs-container-separator:not(:has(#sort-button)):has(#clear-button):hover {
-            width: calc(100% - 60px); /* Only space for clear */
-            margin-right: auto;
+        .vertical-pinned-tabs-container-separator:has(#sort-button):not(:has(#clear-button)):hover::before {
+            width: calc(100% - 65px);
             background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
         }
-        /* Show BOTH buttons on separator hover */
+        .vertical-pinned-tabs-container-separator:not(:has(#sort-button)):has(#clear-button):hover::before {
+            width: calc(100% - 60px);
+            background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
+        }
+
         .vertical-pinned-tabs-container-separator:hover #sort-button,
         .vertical-pinned-tabs-container-separator:hover #clear-button {
             opacity: 1;
         }
 
-        /* When theres no Pinned Tabs */
         .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator {
-            display: flex !important;
-            flex-direction: column !important;
-            margin-left: 0 !important;
             margin-top: 5px !important;
             margin-bottom: 8px !important;
-            min-height: 1px !important;
-            background-color: var(--lwt-toolbarbutton-border-color, rgba(200, 200, 200, 0.1)); /* Subtle base color */
-            transition: width 0.1s ease-in-out, margin-right 0.1s ease-in-out, background-color 0.3s ease-out; /* Add background transition */
         }
-         /* Hover when BOTH buttons are potentially visible (No Pinned) */
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:has(#sort-button):has(#clear-button):hover {
-             width: calc(100% - 115px); /* 60px (clear) + 55px (sort) */
-             margin-right: auto;
+        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:hover::before {
              background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
         }
-         /* Hover when ONLY SORT is present (No Pinned) */
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:has(#sort-button):not(:has(#clear-button)):hover {
-                width: calc(100% - 65px); /* Only space for sort + margin */
-                margin-right: auto;
-                background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
-            }
-            /* Hover when ONLY CLEAR is present (No Pinned) */
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:not(:has(#sort-button)):has(#clear-button):hover {
-                width: calc(100% - 60px); /* Only space for clear */
-                margin-right: auto;
-                background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
-            }
-        /* Show BOTH buttons on separator hover (No Pinned) */
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:hover #sort-button,
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:hover #clear-button {
-            opacity: 1;
+        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:has(#sort-button):has(#clear-button):hover::before {
+             width: calc(100% - 115px);
         }
-
-        /* Separator Pulsing Animation */
+        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:has(#sort-button):not(:has(#clear-button)):hover::before {
+             width: calc(100% - 65px);
+        }
+        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:not(:has(#sort-button)):has(#clear-button):hover::before {
+             width: calc(100% - 60px);
+        }
+        
         @keyframes pulse-separator-bg {
             0% { background-color: var(--lwt-toolbarbutton-border-color, rgb(255, 141, 141)); }
-            50% { background-color: var(--lwt-toolbarbutton-hover-background, rgba(137, 178, 255, 0.91)); } /* Brighter pulse color */
+            50% { background-color: var(--lwt-toolbarbutton-hover-background, rgba(137, 178, 255, 0.91)); }
             100% { background-color: var(--lwt-toolbarbutton-border-color, rgb(142, 253, 238)); }
         }
-
-        .separator-is-sorting {
+        .separator-is-sorting::before {
             animation: pulse-separator-bg 1.5s ease-in-out infinite;
             will-change: background-color;
         }
-
-        /* Tab Animations */
         .tab-closing {
             animation: fadeUp 0.5s forwards;
         }
         @keyframes fadeUp {
             0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-20px); max-height: 0px; padding: 0; margin: 0; border: 0; } /* Add max-height */
+            100% { opacity: 0; transform: translateY(-20px); max-height: 0px; padding: 0; margin: 0; border: 0; }
         }
         @keyframes loading-pulse-tab {
             0%, 100% { opacity: 0.6; }
@@ -326,7 +315,7 @@
             will-change: opacity;
         }
         .tabbrowser-tab {
-            transition: transform 0.3s ease-out, opacity 0.3s ease-out, max-height 0.5s ease-out, margin 0.5s ease-out, padding 0.5s ease-out; /* Add transition for closing */
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out, max-height 0.5s ease-out, margin 0.5s ease-out, padding 0.5s ease-out;
         }
     `
     };
