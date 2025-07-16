@@ -217,5 +217,15 @@
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md"
   },
-  "natsumi-browser": "greeeen-dev/natsumi-browser"
+  "natsumi-browser": {
+    "homepage": "greeeen-dev/natsumi-browser",
+    "image": "https://github.com/greeeen-dev/natsumi-browser/raw/dev/images/main-backgroundless.png",
+    "name": "Natsumi Browser",
+    "version": "4.0.0",
+    "description": "A skin for Firefox and its forks that makes things flow. ",
+    "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
+    "fork": [
+      "floorp"
+    ]
+  }
 }
