@@ -216,5 +216,6 @@
     "version": "1.0.0",
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md"
-  }
+  },
+  "natsumi-browser": "greeeen-dev/natsumi-browser"
 }
