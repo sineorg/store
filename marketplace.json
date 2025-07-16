@@ -146,7 +146,8 @@
       "firefox"
     ]
   },
-  "Live Calendar": {
+  "zen-live-calendar": {
+    "id": "zen-live-calendar",
     "homepage": "Anoms12/Zen-Live-Calendar",
     "image": "https://github.com/Anoms12/Zen-Live-Calendar/blob/main/image.png?raw=true",
     "name": "Live Calendar",
