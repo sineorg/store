@@ -227,5 +227,16 @@
     "fork": [
       "floorp"
     ]
+  },
+  "quick-tabs": {
+    "homepage": "Darsh-A/Quick-Tabs",
+    "image": "https://github.com/Darsh-A/Quick-Tabs/blob/main/image.png?raw=true",
+    "name": "Quick Tabs",
+    "version": "1.0.0",
+    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tabs/refs/heads/main/README.md",
+    "fork": [
+      "zen"
+    ]
   }
 }
