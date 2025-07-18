@@ -10,6 +10,7 @@
     const QUICK_TABS_DEFAULT_HEIGHT_PREF = "extensions.quicktabs.defaultHeight";
     const QUICK_TABS_TASKBAR_MIN_WIDTH_PREF = "extensions.quicktabs.taskbar.minWidth";
     const QUICK_TABS_ANIMATIONS_ENABLED_PREF = "extensions.quicktabs.animations.enabled";
+    const QUICK_TABS_CLOSE_SOURCE_TAB_PREF = "extensions.quicktabs.closeSourceTab";
 
     // Configuration helper functions
     const getPref = (prefName, defaultValue = "") => {
@@ -48,13 +49,14 @@
 
     // Load configuration
     const THEME = getPref(QUICK_TABS_THEME_PREF, "dark");
-    const TASKBAR_TRIGGER = getPref(QUICK_TABS_TASKBAR_TRIGGER_PREF, "click");
+    const TASKBAR_TRIGGER = getPref(QUICK_TABS_TASKBAR_TRIGGER_PREF, "hover"); // "click" or "hover"
     const ACCESS_KEY = getPref(QUICK_TABS_ACCESS_KEY_PREF, "T");
     const MAX_CONTAINERS = getPref(QUICK_TABS_MAX_CONTAINERS_PREF, 5);
     const DEFAULT_WIDTH = getPref(QUICK_TABS_DEFAULT_WIDTH_PREF, 450);
     const DEFAULT_HEIGHT = getPref(QUICK_TABS_DEFAULT_HEIGHT_PREF, 500);
     const TASKBAR_MIN_WIDTH = getPref(QUICK_TABS_TASKBAR_MIN_WIDTH_PREF, 200);
     const ANIMATIONS_ENABLED = getPref(QUICK_TABS_ANIMATIONS_ENABLED_PREF, true);
+    const CLOSE_SOURCE_TAB = getPref(QUICK_TABS_CLOSE_SOURCE_TAB_PREF, false);
     
     // Global state
     let quickTabContainers = new Map(); // id -> container info
@@ -242,6 +244,7 @@
             .quicktab-header {
                 display: flex;
                 align-items: center;
+                justify-content: space-between;
                 padding: 8px 12px;
                 background-color: ${currentTheme.headerBg};
                 border-bottom: 1px solid ${currentTheme.containerBorder};
@@ -249,7 +252,7 @@
                 cursor: grab;
                 user-select: none;
                 border-radius: 8px 8px 0 0;
-                gap: 8px;
+                min-height: 40px;
             }
 
             .quicktab-header:active {
@@ -284,7 +287,10 @@
                 align-items: center;
                 justify-content: center;
                 font-size: 16px;
+                line-height: 1;
                 flex-shrink: 0;
+                text-align: center;
+                vertical-align: middle;
             }
 
             .quicktab-button:hover {
@@ -298,6 +304,21 @@
 
             .quicktab-button:disabled:hover {
                 background-color: ${currentTheme.buttonBg};
+            }
+
+            .quicktab-title-section {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                flex: 1;
+                min-width: 0;
+            }
+
+            .quicktab-button-group {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                flex-shrink: 0;
             }
 
             /* Browser content area */
@@ -566,13 +587,23 @@
         closeButton.innerHTML = '×';
         closeButton.title = 'Close';
 
-        header.appendChild(favicon);
-        header.appendChild(titleElement);
-        header.appendChild(backButton);
-        header.appendChild(forwardButton);
-        header.appendChild(openInTabButton);
-        header.appendChild(minimizeButton);
-        header.appendChild(closeButton);
+        // Create title section container
+        const titleSection = document.createElement('div');
+        titleSection.className = 'quicktab-title-section';
+        titleSection.appendChild(favicon);
+        titleSection.appendChild(titleElement);
+
+        // Create button group container
+        const buttonGroup = document.createElement('div');
+        buttonGroup.className = 'quicktab-button-group';
+        buttonGroup.appendChild(backButton);
+        buttonGroup.appendChild(forwardButton);
+        buttonGroup.appendChild(openInTabButton);
+        buttonGroup.appendChild(minimizeButton);
+        buttonGroup.appendChild(closeButton);
+
+        header.appendChild(titleSection);
+        header.appendChild(buttonGroup);
 
         // Create browser content
         console.log('QuickTabs: Creating browser element...');
@@ -594,13 +625,12 @@
         container.appendChild(browser);
         container.appendChild(resizeHandle);
 
-        // Set initial position (centered with cascade)
-        const offset = (containerId - 1) * 30;
+        // Set initial position (centered)
         const centerX = (window.innerWidth - DEFAULT_WIDTH) / 2;
         const centerY = (window.innerHeight - DEFAULT_HEIGHT) / 2;
-        container.style.left = `${centerX + offset}px`;
-        container.style.top = `${centerY + offset}px`;
-        console.log('QuickTabs: Positioning container at center with offset:', {centerX, centerY, offset});
+        container.style.left = `${centerX}px`;
+        container.style.top = `${centerY}px`;
+        console.log('QuickTabs: Positioning container at center:', {centerX, centerY});
 
         document.body.appendChild(container);
 
@@ -833,7 +863,7 @@
                 let canGoForward = false;
                 
                 // Try multiple methods to check navigation availability
-                                    if (browser.webNavigation) {
+                    if (browser.webNavigation) {
                         try {
                             canGoBack = browser.webNavigation.canGoBack;
                             canGoForward = browser.webNavigation.canGoForward;
@@ -1404,6 +1434,139 @@
         console.log('QuickTabs: Menu item visibility set to:', !hasLink ? 'hidden' : 'visible');
     }
 
+    // Tab context menu functionality
+    function addTabContextMenuItem() {
+        console.log('QuickTabs: Attempting to add tab context menu item...');
+        const tabContextMenu = document.getElementById("tabContextMenu");
+        if (!tabContextMenu) {
+            console.log('QuickTabs: Tab context menu not found, retrying in 500ms');
+            setTimeout(addTabContextMenuItem, 500);
+            return;
+        }
+
+        if (document.getElementById("quicktabs-tab-context-menuitem")) {
+            console.log('QuickTabs: Tab context menu item already exists');
+            return;
+        }
+
+        const menuItem = document.createXULElement("menuitem");
+        menuItem.id = "quicktabs-tab-context-menuitem";
+        menuItem.setAttribute("label", "Open in Quick Tab");
+        menuItem.setAttribute("accesskey", "Q");
+        
+        menuItem.addEventListener("command", handleTabContextMenuClick);
+        
+        // Try to find a good insertion point in the tab context menu
+        const separator = tabContextMenu.querySelector("menuseparator");
+        const reloadTabItem = tabContextMenu.querySelector("#context_reloadTab");
+        const duplicateTabItem = tabContextMenu.querySelector("#context_duplicateTab");
+        
+        let insertionPoint = null;
+        if (duplicateTabItem) {
+            insertionPoint = duplicateTabItem;
+            console.log('QuickTabs: Using duplicate tab item as insertion point');
+        } else if (reloadTabItem) {
+            insertionPoint = reloadTabItem;
+            console.log('QuickTabs: Using reload tab item as insertion point');
+        } else if (separator) {
+            insertionPoint = separator;
+            console.log('QuickTabs: Using separator as insertion point');
+        }
+        
+        if (insertionPoint) {
+            if (insertionPoint.nextSibling) {
+                tabContextMenu.insertBefore(menuItem, insertionPoint.nextSibling);
+            } else {
+                tabContextMenu.appendChild(menuItem);
+            }
+        } else {
+            // Fallback: add at the end
+            tabContextMenu.appendChild(menuItem);
+            console.log('QuickTabs: Added tab context menu item at the end');
+        }
+
+        tabContextMenu.addEventListener("popupshowing", updateTabContextMenuVisibility);
+        console.log('QuickTabs: Tab context menu item added successfully');
+    }
+
+    function handleTabContextMenuClick() {
+        console.log('QuickTabs: Tab context menu clicked');
+        
+        try {
+            // Get the currently right-clicked tab
+            let targetTab = null;
+            
+            // Try multiple methods to get the context tab
+            if (typeof TabContextMenu !== 'undefined' && TabContextMenu.contextTab) {
+                targetTab = TabContextMenu.contextTab;
+                console.log('QuickTabs: Found target tab via TabContextMenu.contextTab');
+            } else if (typeof gBrowser !== 'undefined' && gBrowser.selectedTab) {
+                targetTab = gBrowser.selectedTab;
+                console.log('QuickTabs: Using selected tab as fallback');
+            }
+            
+            if (!targetTab) {
+                console.warn('QuickTabs: No target tab found');
+                return;
+            }
+
+            const tabData = getTabData(targetTab);
+            
+            if (!tabData.url || tabData.url === 'about:blank') {
+                console.warn('QuickTabs: Tab has no valid URL');
+                return;
+            }
+
+            console.log('QuickTabs: Creating Quick Tab for tab:', tabData.url, 'with title:', tabData.title);
+            createQuickTabContainer(tabData.url, tabData.title);
+            
+            // Close the source tab if configured to do so
+            if (CLOSE_SOURCE_TAB) {
+                try {
+                    console.log('QuickTabs: Closing source tab as configured');
+                    gBrowser.removeTab(targetTab);
+                } catch (closeError) {
+                    console.error('QuickTabs: Error closing source tab:', closeError);
+                }
+            }
+        } catch (e) {
+            console.error('QuickTabs: Error handling tab context menu click:', e);
+        }
+    }
+
+    function updateTabContextMenuVisibility() {
+        console.log('QuickTabs: Updating tab context menu visibility');
+        const menuItem = document.getElementById("quicktabs-tab-context-menuitem");
+        if (!menuItem) {
+            console.log('QuickTabs: Tab context menu item not found for visibility update');
+            return;
+        }
+        
+        let hasValidTab = false;
+        
+        try {
+            // Check if we have a valid tab to work with
+            let targetTab = null;
+            
+            if (typeof TabContextMenu !== 'undefined' && TabContextMenu.contextTab) {
+                targetTab = TabContextMenu.contextTab;
+            } else if (typeof gBrowser !== 'undefined' && gBrowser.selectedTab) {
+                targetTab = gBrowser.selectedTab;
+            }
+            
+            if (targetTab) {
+                const tabData = getTabData(targetTab);
+                hasValidTab = tabData.url && !tabData.url.startsWith('about:');
+                console.log('QuickTabs: Tab has valid URL:', hasValidTab, 'URL:', tabData.url);
+            }
+        } catch (e) {
+            console.error('QuickTabs: Error checking tab status:', e);
+        }
+        
+        menuItem.hidden = !hasValidTab;
+        console.log('QuickTabs: Tab context menu item visibility set to:', !hasValidTab ? 'hidden' : 'visible');
+    }
+
     // Initialization
     function init() {
         console.log('QuickTabs: Starting initialization...');
@@ -1415,20 +1578,13 @@
         console.log('  Default Size:', `${DEFAULT_WIDTH}x${DEFAULT_HEIGHT}`);
         console.log('  Taskbar Min Width:', TASKBAR_MIN_WIDTH);
         console.log('  Animations Enabled:', ANIMATIONS_ENABLED);
+        console.log('  Close Source Tab:', CLOSE_SOURCE_TAB);
         
-        // Inject CSS
-        console.log('QuickTabs: Injecting CSS...');
         injectCSS();
-        
-        // Setup commands
-        console.log('QuickTabs: Setting up commands...');
         setupCommands();
-        
-        // Add context menu item
-        console.log('QuickTabs: Adding context menu item...');
         addContextMenuItem();
+        addTabContextMenuItem();
         
-        console.log('QuickTabs: Initialized successfully');
     }
 
     // Command setup and handling
@@ -1612,7 +1768,6 @@
         }
     };
 
-    // Initialize when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
