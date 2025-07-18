@@ -36,7 +36,7 @@
     "homepage": "Anoms12/Advanced-Tab-Groups",
     "image": "https://raw.githubusercontent.com/Anoms12/Advanced-Tab-Groups/main/image.png",
     "name": "Advanced Tab Groups",
-    "version": "2.8.0s",
+    "version": "2.8.1s",
     "description": "Folders for Zen Browser",
     "readme": "https://raw.githubusercontent.com/Anoms12/Advanced-Tab-Groups/main/README.md",
     "fork": [
@@ -47,8 +47,8 @@
     "homepage": "zapSNH/zapsCoolPhotonTheme",
     "image": "https://i.imgur.com/FyzTFKg.png",
     "name": "zap's cool photon theme",
-    "version": "140r5-sine",
-    "description": "a cool photon theme for firefox (and others)",
+    "version": "140r8-sine",
+    "description": "a cool photon theme for firefox (and other browsers too)",
     "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
     "fork": [
       "firefox",
@@ -72,7 +72,7 @@
     "homepage": "Anoms12/Zen-Tidy-Downloads",
     "image": "https://github.com/Anoms12/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
     "name": "Tidy Downloads",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Clean up your downloads with AI",
     "readme": "https://raw.githubusercontent.com/Anoms12/Zen-Tidy-Downloads/refs/heads/main/README.md",
     "fork": [
@@ -115,7 +115,7 @@
     "homepage": "Darsh-A/Ai-TabGroups-ZenBrowser",
     "image": "https://github.com/Darsh-A/Ai-TabGroups-ZenBrowser/blob/main/image.jpg?raw=true",
     "name": "Tidy Tabs",
-    "version": "4.1.0",
+    "version": "4.1.1",
     "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
     "fork": [
@@ -126,7 +126,7 @@
     "homepage": "1247343406/context-menu-icons-for-Zen",
     "image": "https://github.com/1247343406/context-menu-icons-for-Zen/blob/main/image.jpg?raw=true",
     "name": "Context Menu Icons",
-    "version": "1.6.1",
+    "version": "1.7.0",
     "description": "Bring the icon of the context menu back to Zen/Firefox browser ",
     "readme": "https://raw.githubusercontent.com/1247343406/context-menu-icons-for-Zen/refs/heads/main/README.md",
     "fork": [
@@ -146,18 +146,7 @@
       "firefox"
     ]
   },
-  "Zemini": {
-    "homepage": "Mohammed55Z/Zemini",
-    "image": "https://github.com/user-attachments/assets/0e597435-e617-4b8e-ae56-e6fd45df9c6b",
-    "name": "Zemini",
-    "version": "2.5.5",
-    "description": "It was based on Gemini.",
-    "readme": "https://raw.githubusercontent.com/Mohammed55Z/Zemini/refs/heads/main/README.md",
-    "fork": [
-      "zen"
-    ]
-  },
-  "Live Calendar": {
+  "zen-live-calendar": {
     "homepage": "Anoms12/Zen-Live-Calendar",
     "image": "https://github.com/Anoms12/Zen-Live-Calendar/blob/main/image.png?raw=true",
     "name": "Live Calendar",
@@ -228,15 +217,15 @@
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md"
   },
-  "quick-tabs": {
-    "homepage": "Darsh-A/Quick-Tabs",
-    "image": "https://github.com/Darsh-A/Quick-Tabs/blob/main/image.png?raw=true",
-    "name": "Quick Tabs",
-    "version": "1.0.0",
-    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tabs/refs/heads/main/README.md",
+  "natsumi-browser": {
+    "homepage": "greeeen-dev/natsumi-browser",
+    "image": "https://github.com/greeeen-dev/natsumi-browser/raw/dev/images/main-backgroundless.png",
+    "name": "Natsumi Browser",
+    "version": "4.0.0",
+    "description": "A skin for Firefox and its forks that makes things flow. ",
+    "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
     "fork": [
-      "zen"
+      "floorp"
     ]
   }
 }

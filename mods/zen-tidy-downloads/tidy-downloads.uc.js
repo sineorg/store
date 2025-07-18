@@ -15,785 +15,1022 @@
   // Wait for browser window to be ready
   if (location.href !== "chrome://browser/content/browser.xhtml") return;
 
-  // --- Configuration via Firefox Preferences ---
-  // Available preferences (set in about:config):
-  // extensions.downloads.mistral_api_key - Your Mistral API key (required for AI renaming)
-  // extensions.downloads.enable_debug - Enable debug logging (default: false)
-  // extensions.downloads.debug_ai_only - Only log AI-related messages (default: true)
-  // extensions.downloads.enable_ai_renaming - Enable AI-powered file renaming (default: true)
-  // extensions.downloads.disable_autohide - Disable automatic hiding of completed downloads (default: false)
-  // extensions.downloads.autohide_delay_ms - Delay before auto-hiding completed downloads (default: 20000)
-  // extensions.downloads.interaction_grace_period_ms - Grace period after user interaction (default: 5000)
-  // extensions.downloads.max_filename_length - Maximum length for AI-generated filenames (default: 70)
-  // extensions.downloads.skip_css_check - Skip CSS availability check (default: false) - USE ONLY FOR DEBUGGING
-  // extensions.downloads.max_file_size_for_ai - Maximum file size for AI processing in bytes (default: 52428800 = 50MB)
-  // extensions.downloads.mistral_api_url - Mistral API endpoint (default: "https://api.mistral.ai/v1/chat/completions")
-  // extensions.downloads.mistral_model - Mistral model to use (default: "pixtral-large-latest")
-  // extensions.downloads.stable_focus_mode - Prevent focus switching during multiple downloads (default: true)
-  // extensions.downloads.progress_update_throttle_ms - Throttle delay for in-progress download updates (default: 500)
-  // extensions.downloads.show_old_downloads_hours - How many hours back to show old completed downloads on startup (default: 2)
+  // === POPUP WINDOW EXCLUSION CHECKS ===
+  // Method 1: Check window type attribute
+  if (document.documentElement.getAttribute('windowtype') !== 'navigator:browser') {
+    console.log('Zen Tidy Downloads: Skipping - not a main browser window (windowtype check)');
+    return;
+  }
 
-  // Legacy constants for compatibility
-  const MISTRAL_API_KEY_PREF = "extensions.downloads.mistral_api_key";
-  const DISABLE_AUTOHIDE_PREF = "extensions.downloads.disable_autohide";
-  const IMAGE_LOAD_ERROR_ICON = "🚫";
-  const TEMP_LOADER_ICON = "⏳";
-  const RENAMED_SUCCESS_ICON = "✓";
-  const IMAGE_EXTENSIONS = new Set([
-    ".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".svg", ".avif",
-    ".ico", ".tif", ".tiff", ".jfif"
-  ]);
+  // Method 2: Check if this is a popup by examining window features
+  try {
+    // Check if window has minimal UI (characteristic of popups)
+    if (window.toolbar && !window.toolbar.visible) {
+      console.log('Zen Tidy Downloads: Skipping - appears to be a popup (toolbar check)');
+      return;
+    }
+    
+    // Check window opener (popups usually have an opener)
+    if (window.opener) {
+      console.log('Zen Tidy Downloads: Skipping - window has opener (popup check)');
+      return;
+    }
+  } catch (e) {
+    // If we can't check these properties, continue but log it
+    console.log('Zen Tidy Downloads: Could not check window properties:', e);
+  }
+
+  // Method 3: Check for essential browser UI elements that should exist in main window
+  // Wait a bit for DOM to be ready, then check for main browser elements
+  setTimeout(() => {
+    const mainBrowserElements = [
+      '#navigator-toolbox',  // Main toolbar container
+      '#browser',            // Browser element
+      '#sidebar-box'         // Sidebar container
+    ];
+    
+    const missingElements = mainBrowserElements.filter(selector => !document.querySelector(selector));
+    
+    if (missingElements.length > 0) {
+      console.log('Zen Tidy Downloads: Skipping - missing main browser elements:', missingElements);
+      return;
+    }
+    
+    // Method 4: Check window size (popups are usually smaller)
+    if (window.outerWidth < 400 || window.outerHeight < 300) {
+      console.log('Zen Tidy Downloads: Skipping - window too small (likely popup)');
+      return;
+    }
+    
+    // Method 5: Check for dialog-specific attributes
+    if (document.documentElement.hasAttribute('dlgtype')) {
+      console.log('Zen Tidy Downloads: Skipping - dialog window detected');
+      return;
+    }
+    
+    // If all checks pass, continue with initialization
+    console.log('Zen Tidy Downloads: All popup exclusion checks passed, proceeding with initialization');
+    
+    // === MAIN SCRIPT INITIALIZATION CONTINUES HERE ===
+    // The rest of the script now runs within this setTimeout
+    initializeMainScript();
+  }, 100); // Small delay to ensure DOM elements are loaded
+
+  // === MAIN SCRIPT FUNCTIONS ===
+  function initializeMainScript() {
+    // --- Configuration via Firefox Preferences ---
+    // Available preferences (set in about:config):
+    // extensions.downloads.mistral_api_key - Your Mistral API key (required for AI renaming)
+    // extensions.downloads.enable_debug - Enable debug logging (default: false)
+    // extensions.downloads.debug_ai_only - Only log AI-related messages (default: true)
+    // extensions.downloads.enable_ai_renaming - Enable AI-powered file renaming (default: true)
+    // extensions.downloads.disable_autohide - Disable automatic hiding of completed downloads (default: false)
+    // extensions.downloads.autohide_delay_ms - Delay before auto-hiding completed downloads (default: 20000)
+    // extensions.downloads.interaction_grace_period_ms - Grace period after user interaction (default: 5000)
+    // extensions.downloads.max_filename_length - Maximum length for AI-generated filenames (default: 70)
+    // extensions.downloads.skip_css_check - Skip CSS availability check (default: false) - USE ONLY FOR DEBUGGING
+    // extensions.downloads.max_file_size_for_ai - Maximum file size for AI processing in bytes (default: 52428800 = 50MB)
+    // extensions.downloads.mistral_api_url - Mistral API endpoint (default: "https://api.mistral.ai/v1/chat/completions")
+    // extensions.downloads.mistral_model - Mistral model to use (default: "pixtral-large-latest")
+    // extensions.downloads.stable_focus_mode - Prevent focus switching during multiple downloads (default: true)
+    // extensions.downloads.progress_update_throttle_ms - Throttle delay for in-progress download updates (default: 500)
+    // extensions.downloads.show_old_downloads_hours - How many hours back to show old completed downloads on startup (default: 2)
+
+    // Legacy constants for compatibility
+    const MISTRAL_API_KEY_PREF = "extensions.downloads.mistral_api_key";
+    const DISABLE_AUTOHIDE_PREF = "extensions.downloads.disable_autohide";
+    const IMAGE_LOAD_ERROR_ICON = "🚫";
+    const TEMP_LOADER_ICON = "⏳";
+    const RENAMED_SUCCESS_ICON = "✓";
+    const IMAGE_EXTENSIONS = new Set([
+      ".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".svg", ".avif",
+      ".ico", ".tif", ".tiff", ".jfif"
+    ]);
 
 
-  // Platform-agnostic path separator detection
-  const PATH_SEPARATOR = navigator.platform.includes("Win") ? "\\" : "/";
+    // Platform-agnostic path separator detection
+    const PATH_SEPARATOR = navigator.platform.includes("Win") ? "\\" : "/";
 
-  // Global state variables
-  let downloadCardsContainer;
-  const activeDownloadCards = new Map();
-  let renamedFiles = new Set();
-  let aiRenamingPossible = false;
-  let cardUpdateThrottle = new Map(); // Prevent rapid updates
-  let currentZenSidebarWidth = '';
-  let podsRowContainerElement = null; // Renamed back from podsStackContainerElement
-  let masterTooltipDOMElement = null;
-  let focusedDownloadKey = null;
-  let orderedPodKeys = []; // Newest will be at the end
-  let lastRotationDirection = null; // Track rotation direction: 'forward', 'backward', or null
-  const dismissedDownloads = new Set(); // Track downloads that have been manually dismissed or auto-hidden
-  
-  // AI Process Management
-  const activeAIProcesses = new Map(); // downloadKey -> { abortController, processState, startTime }
-  
-  // CSS availability flag
-  let cssStylesAvailable = false;
+    // Global state variables
+    let downloadCardsContainer;
+    const activeDownloadCards = new Map();
+    let renamedFiles = new Set();
+    let aiRenamingPossible = false;
+    let cardUpdateThrottle = new Map(); // Prevent rapid updates
+    let currentZenSidebarWidth = '';
+    let podsRowContainerElement = null; // Renamed back from podsStackContainerElement
+    let masterTooltipDOMElement = null;
+    let focusedDownloadKey = null;
+    let orderedPodKeys = []; // Newest will be at the end
+    let lastRotationDirection = null; // Track rotation direction: 'forward', 'backward', or null
+    const dismissedDownloads = new Set(); // Track downloads that have been manually dismissed or auto-hidden
+    
+    // AI Process Management
+    const activeAIProcesses = new Map(); // downloadKey -> { abortController, processState, startTime }
+    
+    // CSS availability flag
+    let cssStylesAvailable = false;
 
+    // Event listeners for external scripts
+    const actualDownloadRemovedEventListeners = new Set();
 
-  // Function to check if required CSS styles are loaded
-  function checkCSSAvailability() {
-    try {
-      console.log('[CSS Debug] Starting CSS availability check...');
+    // --- Dismissed Pods Management System ---
+    const dismissedPodsData = new Map(); // Store dismissed pod data for pile feature
+    const dismissEventListeners = new Set(); // Callbacks for pod dismiss events
+    
+    // Global API for dismissed pods pile feature
+    window.zenTidyDownloads = {
+      // Event system
+      onPodDismissed: (callback) => {
+        if (typeof callback === 'function') {
+          dismissEventListeners.add(callback);
+          debugLog('[API] Registered pod dismiss listener');
+        }
+      },
       
-      // First, let's check if any stylesheets are loaded
-      const stylesheets = Array.from(document.styleSheets);
-      console.log('[CSS Debug] Found stylesheets:', stylesheets.length);
+      offPodDismissed: (callback) => {
+        dismissEventListeners.delete(callback);
+        debugLog('[API] Unregistered pod dismiss listener');
+      },
       
-      // Try to find our CSS by looking for specific rules
-      let foundTidyDownloadsCSS = false;
-      for (let sheet of stylesheets) {
+      // Dismissed pods access
+      dismissedPods: {
+        getAll: () => new Map(dismissedPodsData), // Return copy to prevent external modification
+        get: (key) => dismissedPodsData.get(key),
+        count: () => dismissedPodsData.size,
+        clear: () => {
+          dismissedPodsData.clear();
+          debugLog('[API] Cleared all dismissed pods data');
+        }
+      },
+      
+      // Active downloads access (for pile script to check if hover should be disabled)
+      get activeDownloadCards() {
+        return activeDownloadCards;
+      },
+
+      // Event for when a download is actually removed from Firefox's list
+      onActualDownloadRemoved: (callback) => {
+        if (typeof callback === 'function') {
+          actualDownloadRemovedEventListeners.add(callback);
+          debugLog('[API] Registered actual download removed listener');
+        }
+      },
+
+      offActualDownloadRemoved: (callback) => {
+        actualDownloadRemovedEventListeners.delete(callback);
+        debugLog('[API] Unregistered actual download removed listener');
+      },
+      
+      // Pod restoration
+      restorePod: async (podKey) => {
+        debugLog(`[API] Restore pod requested: ${podKey}`);
+        const dismissedData = dismissedPodsData.get(podKey);
+        if (!dismissedData) {
+          debugLog(`[API] Cannot restore pod - no dismissed data found: ${podKey}`);
+          return false;
+        }
+        
         try {
-          if (sheet.href && sheet.href.includes('zen-tidy-downloads')) {
-            console.log('[CSS Debug] Found zen-tidy-downloads stylesheet:', sheet.href);
-            foundTidyDownloadsCSS = true;
-            break;
+          // Remove from dismissed sets
+          dismissedDownloads.delete(podKey);
+          dismissedPodsData.delete(podKey);
+          
+          // If the download still exists in Firefox, recreate the pod
+          const list = await window.Downloads.getList(window.Downloads.ALL);
+          const downloads = await list.getAll();
+          const download = downloads.find(dl => getDownloadKey(dl) === podKey);
+          
+          if (download) {
+            debugLog(`[API] Found download for restoration: ${podKey}`);
+            // Recreate the pod by calling our existing function
+            throttledCreateOrUpdateCard(download, true);
+            
+            // Fire restore event
+            fireCustomEvent('pod-restored-from-pile', { podKey, download });
+            return true;
+          } else {
+            debugLog(`[API] Download no longer exists in Firefox for restoration: ${podKey}`);
+            return false;
           }
-          // Check rules if accessible
-          if (sheet.cssRules) {
-            for (let rule of sheet.cssRules) {
-              if (rule.selectorText && 
-                  (rule.selectorText.includes('#userchrome-download-cards-container') ||
-                   rule.selectorText.includes('.details-tooltip'))) {
-                console.log('[CSS Debug] Found tidy downloads CSS rule:', rule.selectorText);
-                foundTidyDownloadsCSS = true;
+        } catch (error) {
+          debugLog(`[API] Error restoring pod ${podKey}:`, error);
+          return false;
+        }
+      },
+      
+      // Permanent deletion
+      permanentDelete: (podKey) => {
+        debugLog(`[API] Permanent delete requested: ${podKey}`);
+        const wasPresent = dismissedPodsData.delete(podKey);
+        dismissedDownloads.add(podKey); // Ensure it stays dismissed
+        
+        if (wasPresent) {
+          fireCustomEvent('pod-permanently-deleted', { podKey });
+        }
+        
+        return wasPresent;
+      }
+    };
+    
+    // Helper function to fire custom events
+    function fireCustomEvent(eventName, detail) {
+      try {
+        const event = new CustomEvent(eventName, { 
+          detail, 
+          bubbles: true, 
+          cancelable: true 
+        });
+        document.dispatchEvent(event);
+        debugLog(`[Events] Fired custom event: ${eventName}`, detail);
+      } catch (error) {
+        debugLog(`[Events] Error firing custom event ${eventName}:`, error);
+      }
+    }
+    
+    // Helper function to capture pod data for dismissal
+    function capturePodDataForDismissal(downloadKey) {
+      const cardData = activeDownloadCards.get(downloadKey);
+      if (!cardData || !cardData.download) {
+        debugLog(`[Dismiss] No card data found for capturing: ${downloadKey}`);
+        return null;
+      }
+      
+      const download = cardData.download;
+      const podElement = cardData.podElement;
+      
+      // Capture essential data for pile reconstruction
+      const dismissedData = {
+        key: downloadKey,
+        filename: download.aiName || cardData.originalFilename || getSafeFilename(download),
+        originalFilename: cardData.originalFilename,
+        fileSize: download.currentBytes || download.totalBytes || 0,
+        contentType: download.contentType,
+        targetPath: download.target?.path,
+        sourceUrl: download.source?.url,
+        startTime: download.startTime,
+        endTime: download.endTime,
+        dismissTime: Date.now(),
+        wasRenamed: !!download.aiName,
+        // Capture preview data
+        previewData: null,
+        dominantColor: podElement?.dataset?.dominantColor || null
+      };
+      
+      // Try to capture preview image data
+      if (podElement) {
+        const previewContainer = podElement.querySelector('.card-preview-container');
+        if (previewContainer) {
+          const img = previewContainer.querySelector('img');
+          if (img && img.src) {
+            dismissedData.previewData = {
+              type: 'image',
+              src: img.src
+            };
+          } else {
+            // Capture icon/text preview
+            dismissedData.previewData = {
+              type: 'icon',
+              html: previewContainer.innerHTML
+            };
+          }
+        }
+      }
+      
+      debugLog(`[Dismiss] Captured pod data for pile:`, dismissedData);
+      return dismissedData;
+    }
+
+    // Function to check if required CSS styles are loaded
+    function checkCSSAvailability() {
+      try {
+        console.log('[CSS Debug] Starting CSS availability check...');
+        
+        // First, let's check if any stylesheets are loaded
+        const stylesheets = Array.from(document.styleSheets);
+        console.log('[CSS Debug] Found stylesheets:', stylesheets.length);
+        
+        // Try to find our CSS by looking for specific rules
+        let foundTidyDownloadsCSS = false;
+        for (let sheet of stylesheets) {
+          try {
+            if (sheet.href && sheet.href.includes('zen-tidy-downloads')) {
+              console.log('[CSS Debug] Found zen-tidy-downloads stylesheet:', sheet.href);
+              foundTidyDownloadsCSS = true;
+              break;
+            }
+            // Check rules if accessible
+            if (sheet.cssRules) {
+              for (let rule of sheet.cssRules) {
+                if (rule.selectorText && 
+                    (rule.selectorText.includes('#userchrome-download-cards-container') ||
+                     rule.selectorText.includes('.details-tooltip'))) {
+                  console.log('[CSS Debug] Found tidy downloads CSS rule:', rule.selectorText);
+                  foundTidyDownloadsCSS = true;
+                  break;
+                }
+              }
+            }
+          } catch (e) {
+            // Some stylesheets might not be accessible due to CORS
+            console.log('[CSS Debug] Could not access stylesheet rules (normal for external CSS)');
+          }
+          if (foundTidyDownloadsCSS) break;
+        }
+        
+        // Create test elements for different classes that should be styled by our CSS
+        const testTooltip = document.createElement('div');
+        testTooltip.className = 'details-tooltip master-tooltip';
+        testTooltip.style.position = 'absolute';
+        testTooltip.style.left = '-9999px';
+        testTooltip.style.top = '-9999px';
+        testTooltip.style.visibility = 'hidden';
+        document.body.appendChild(testTooltip);
+        
+        const testContainer = document.createElement('div');
+        testContainer.id = 'userchrome-download-cards-container';
+        testContainer.style.position = 'absolute';
+        testContainer.style.left = '-9999px';
+        testContainer.style.top = '-9999px';
+        testContainer.style.visibility = 'hidden';
+        document.body.appendChild(testContainer);
+        
+        // Force a reflow to ensure styles are computed
+        testTooltip.offsetHeight;
+        testContainer.offsetHeight;
+        
+        // Check if the CSS is applied by testing specific properties
+        const tooltipStyle = window.getComputedStyle(testTooltip);
+        const containerStyle = window.getComputedStyle(testContainer);
+        
+        console.log('[CSS Debug] Tooltip computed styles:', {
+          position: tooltipStyle.position,
+          backgroundColor: tooltipStyle.backgroundColor,
+          borderRadius: tooltipStyle.borderRadius,
+          zIndex: tooltipStyle.zIndex,
+          backdropFilter: tooltipStyle.backdropFilter,
+          webkitBackdropFilter: tooltipStyle.webkitBackdropFilter,
+          display: tooltipStyle.display
+        });
+        
+        console.log('[CSS Debug] Container computed styles:', {
+          position: containerStyle.position,
+          zIndex: containerStyle.zIndex,
+          pointerEvents: containerStyle.pointerEvents,
+          display: containerStyle.display,
+          flexDirection: containerStyle.flexDirection
+        });
+        
+        // Test for specific CSS properties that should be set by our stylesheet
+        // Updated to match the actual CSS properties in zen-tidy-downloads/chrome.css
+        // We need ALL the conditions to be more strict since we were getting false positives
+        const tooltipHasStyling = tooltipStyle.position === 'relative' && 
+                                 tooltipStyle.backgroundColor.includes('rgba(0, 0, 0, 0.9)') &&
+                                 tooltipStyle.borderRadius === '10px' &&
+                                 tooltipStyle.zIndex === '51';
+        
+        const containerHasStyling = containerStyle.position === 'fixed' &&
+                                   containerStyle.zIndex === '50' &&
+                                   containerStyle.pointerEvents === 'none' &&
+                                   containerStyle.display === 'flex' && 
+                                   containerStyle.flexDirection === 'column';
+        
+        // Clean up test elements
+        document.body.removeChild(testTooltip);
+        document.body.removeChild(testContainer);
+        
+        const hasExpectedStyling = tooltipHasStyling || containerHasStyling;
+        
+        console.log('[CSS Debug] Styling detection results:', {
+          tooltipHasStyling,
+          containerHasStyling,
+          hasExpectedStyling,
+          foundTidyDownloadsCSS
+        });
+        
+        // If we found the CSS file but styling isn't detected, it might be a timing issue
+        // Let's be more lenient if we found the CSS file
+        if (foundTidyDownloadsCSS || hasExpectedStyling) {
+          console.log('[CSS Check] ✅ CSS detected successfully!');
+          debugLog('[CSS Check] Required CSS styles detected and loaded successfully', {
+            foundCSSFile: foundTidyDownloadsCSS,
+            tooltipStyling: tooltipHasStyling,
+            containerStyling: containerHasStyling,
+            tooltipPosition: tooltipStyle.position,
+            tooltipBgColor: tooltipStyle.backgroundColor,
+            containerPosition: containerStyle.position
+          });
+          return true;
+        } else {
+          console.warn('Download Preview Script: Required CSS file not found or not loaded properly.');
+          console.warn('Expected styling properties were not detected on test elements.');
+          console.warn('The script will be disabled to prevent unstyled UI elements.');
+          console.warn('Please ensure the CSS file is in the correct location and properly linked.');
+          console.warn('CSS file should be at: C:\\Users\\One\\AppData\\Roaming\\zen\\Profiles\\bxthesda\\chrome\\zen-themes\\zen-tidy-downloads\\chrome.css');
+          debugLog('[CSS Check] CSS detection failed', {
+            foundCSSFile: foundTidyDownloadsCSS,
+            tooltipPosition: tooltipStyle.position,
+            tooltipBgColor: tooltipStyle.backgroundColor,
+            tooltipBorderRadius: tooltipStyle.borderRadius,
+            tooltipZIndex: tooltipStyle.zIndex,
+            containerPosition: containerStyle.position,
+            containerZIndex: containerStyle.zIndex,
+            containerPointerEvents: containerStyle.pointerEvents,
+            containerDisplay: containerStyle.display
+          });
+          return false;
+        }
+      } catch (error) {
+        console.error('Download Preview Script: Error checking CSS availability:', error);
+        console.warn('The script will be disabled as a safety measure.');
+        return false;
+      }
+    }
+
+    // Add debug logging function with Firefox preferences support
+    function debugLog(message, data = null, category = 'general') {
+      try {
+        const debugEnabled = getPref("extensions.downloads.enable_debug", false);
+        const debugAiOnly = getPref("extensions.downloads.debug_ai_only", true);
+        
+        if (!debugEnabled) return;
+        if (debugAiOnly && category !== 'aiRename' && category !== 'general') return;
+        
+        const timestamp = new Date().toISOString();
+        const prefix = `[${timestamp}] Download Preview [${category.toUpperCase()}]:`;
+        
+        if (data) {
+          console.log(`${prefix} ${message}`, data);
+        } else {
+          console.log(`${prefix} ${message}`);
+        }
+      } catch (e) {
+        // Fallback if preferences fail
+        console.log(`[Download Preview] ${message}`, data || '');
+      }
+    }
+
+    // Improved key generation for downloads
+    function getDownloadKey(download) {
+      // Use target path as primary key since id is often undefined
+      if (download?.target?.path) {
+        return download.target.path;
+      }
+      if (download?.id) {
+        return download.id;
+      }
+      // For failed downloads, generate a more stable key based on URL and start time
+      const url = download?.source?.url || download?.url || "unknown";
+      const startTime = download?.startTime || Date.now();
+      const key = `temp_${url}_${startTime}`;
+      
+      debugLog(`[KeyGen] Generated temporary key for download without path/id`, { 
+        key, 
+        hasPath: !!download?.target?.path, 
+        hasId: !!download?.id, 
+        url, 
+        error: !!download?.error,
+        startTime 
+      });
+      
+      return key;
+    }
+
+    // Get safe filename from download object
+    function getSafeFilename(download) {
+      // Try multiple sources for filename
+      if (download.filename) return download.filename;
+      if (download.target?.path) {
+        return download.target.path.split(/[\\/]/).pop();
+      }
+      if (download.source?.url) {
+        const url = download.source.url;
+        const match = url.match(/\/([^\/\?]+)$/);
+        if (match) return match[1];
+      }
+      return "Untitled";
+    }
+
+    // Robust initialization with CSS timing fix
+    async function init() {
+      console.log("=== DOWNLOAD PREVIEW SCRIPT STARTING ===");
+      
+      // Check if CSS check should be skipped (for debugging)
+      const skipCSSCheck = getPref("extensions.downloads.skip_css_check", false);
+      
+      if (skipCSSCheck) {
+        console.log("⚠️ CSS check skipped via preference - script will run without CSS validation");
+        cssStylesAvailable = true;
+      } else {
+        // Wait for CSS to be fully loaded with retries
+        cssStylesAvailable = await waitForCSSWithRetries();
+        if (!cssStylesAvailable) {
+          console.log("=== DOWNLOAD PREVIEW SCRIPT DISABLED (CSS NOT FOUND) ===");
+          console.log("💡 To bypass this check temporarily, set extensions.downloads.skip_css_check = true in about:config");
+          return; // Exit early if CSS is not available
+        }
+      }
+      
+      debugLog("Starting initialization");
+      if (!window.Downloads?.getList) {
+        console.error("Download Preview Mistral AI: Downloads API not available");
+        aiRenamingPossible = false;
+        return;
+      }
+      try {
+        window.Downloads.getList(window.Downloads.ALL)
+          .then(async (list) => {
+            if (list) {
+              debugLog("Downloads API verified");
+              await verifyMistralConnection();
+              console.log("=== MISTRAL VERIFICATION COMPLETE, aiRenamingPossible:", aiRenamingPossible, "===");
+              if (aiRenamingPossible) {
+                debugLog("AI renaming enabled - all systems verified");
+              } else {
+                debugLog("AI renaming disabled - Mistral connection failed");
+              }
+              await initDownloadManager();
+              initSidebarWidthSync(); // <-- ADDED: Call to initialize sidebar width syncing
+              debugLog("Initialization complete");
+            }
+          })
+          .catch((e) => {
+            console.error("Downloads API verification failed:", e);
+            aiRenamingPossible = false;
+          });
+      } catch (e) {
+        console.error("Download Preview Mistral AI: Init failed", e);
+        aiRenamingPossible = false;
+      }
+    }
+
+    // Wait for ZenThemesImporter to finish loading themes
+    async function waitForZenThemes(maxWaitMs = 5000) {
+      console.log('[CSS Timing] Waiting for ZenThemesImporter to load themes...');
+      
+      const startTime = Date.now();
+      
+      return new Promise((resolve) => {
+        const checkInterval = setInterval(() => {
+          // Check if ZenThemesImporter has loaded by looking for a console message or DOM changes
+          const stylesheets = Array.from(document.styleSheets);
+          const hasZenThemeCSS = stylesheets.some(sheet => 
+            sheet.href && sheet.href.includes('zen-tidy-downloads')
+          );
+          
+          if (hasZenThemeCSS) {
+            console.log('[CSS Timing] ✅ ZenThemesImporter has loaded Tidy Downloads theme');
+            clearInterval(checkInterval);
+            resolve(true);
+            return;
+          }
+          
+          // Timeout check
+          if (Date.now() - startTime > maxWaitMs) {
+            console.log('[CSS Timing] ⏰ Timeout waiting for ZenThemesImporter');
+            clearInterval(checkInterval);
+            resolve(false);
+          }
+        }, 100);
+      });
+    }
+
+    // Wait for CSS to be properly loaded with retries
+    async function waitForCSSWithRetries(maxRetries = 10, delayMs = 300) {
+      console.log('[CSS Timing] Waiting for CSS to be fully loaded...');
+      
+      // First, wait for ZenThemesImporter to finish
+      await waitForZenThemes();
+      
+      // Then wait a bit more for styles to be applied
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        console.log(`[CSS Timing] Attempt ${attempt}/${maxRetries}`);
+        
+        const cssAvailable = checkCSSAvailability();
+        if (cssAvailable) {
+          console.log(`[CSS Timing] ✅ CSS detected on attempt ${attempt}`);
+          return true;
+        }
+        
+        if (attempt < maxRetries) {
+          console.log(`[CSS Timing] CSS not ready, waiting ${delayMs}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delayMs));
+          // Increase delay slightly for each retry
+          delayMs += 100;
+        }
+      }
+      
+      console.log('[CSS Timing] ❌ CSS detection failed after all retries');
+      return false;
+    }
+
+
+
+    // Wait for window load
+    if (document.readyState === "complete") {
+      init();
+    } else {
+      window.addEventListener("load", init, { once: true });
+    }
+
+    // Download manager UI and listeners
+    async function initDownloadManager() {
+      // Safety check - don't initialize if CSS is not available
+      if (!cssStylesAvailable) {
+        debugLog("Skipping download manager initialization - CSS not available");
+        return;
+      }
+      
+      // Add a delay to ensure CSS is fully applied before creating UI elements
+      await new Promise(resolve => setTimeout(resolve, 300));
+      debugLog("Creating download manager UI elements...");
+      
+      try {
+        // Create container if it doesn't exist
+        downloadCardsContainer = document.getElementById("userchrome-download-cards-container");
+        if (!downloadCardsContainer) {
+          downloadCardsContainer = document.createElement("div");
+          downloadCardsContainer.id = "userchrome-download-cards-container";
+          // Basic styles are now in CSS file, only dynamic overrides here if needed
+          
+          // IMPORTANT: Start completely hidden to prevent flashing
+          downloadCardsContainer.style.display = "none";
+          downloadCardsContainer.style.opacity = "0";
+          downloadCardsContainer.style.visibility = "hidden";
+          
+          document.body.appendChild(downloadCardsContainer);
+
+          // Create the single master tooltip element (fixed position at the top of the container)
+          masterTooltipDOMElement = document.createElement("div");
+          masterTooltipDOMElement.className = "details-tooltip master-tooltip";
+          // Most styles are now in CSS file, only dynamic styles remain inline
+
+          masterTooltipDOMElement.innerHTML = `
+            <div class="card-status">Tooltip Status</div>
+            <div class="card-title">Tooltip Title</div>
+            <div class="card-original-filename">Original Filename</div>
+            <div class="card-progress">Tooltip Progress</div>
+            <div class="card-filesize">File Size</div>
+            <div class="tooltip-buttons-container">
+              <span class="card-undo-button" title="Undo Rename" tabindex="0" role="button">
+                ↩
+              </span>
+              <span class="card-close-button" title="Close" tabindex="0" role="button">✕</span>
+            </div>
+            <div class="tooltip-tail"></div>
+          `;
+          downloadCardsContainer.appendChild(masterTooltipDOMElement);
+
+          // Create the container for HORIZONTAL pods row
+          podsRowContainerElement = document.createElement("div"); 
+          podsRowContainerElement.id = "userchrome-pods-row-container"; 
+          // Basic styles are now in CSS file, only dynamic height will be set by layout manager
+          downloadCardsContainer.appendChild(podsRowContainerElement);
+
+          // Add mouse wheel scroll listener to the pods container for changing focus
+          podsRowContainerElement.addEventListener('wheel', handlePodScrollFocus, { passive: false });
+          
+          // Add close handler for the master tooltip's close button AFTER creating podsRowContainerElement
+          const masterCloseBtn = masterTooltipDOMElement.querySelector(".card-close-button");
+          if (masterCloseBtn) {
+            const masterCloseHandler = (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              debugLog(`[MasterClose] Master close button clicked. FocusedDownloadKey: ${focusedDownloadKey}`);
+              
+              if (focusedDownloadKey) {
+                const keyToRemove = focusedDownloadKey; // Capture the key
+                const cardData = activeDownloadCards.get(keyToRemove);
+
+                // Start tooltip hide animation immediately
+                if (masterTooltipDOMElement) {
+                  masterTooltipDOMElement.style.opacity = "0";
+                  masterTooltipDOMElement.style.transform = "scaleY(0.8) translateY(10px)";
+                  masterTooltipDOMElement.style.pointerEvents = "none"; // Disable interactions when hidden
+                  debugLog(`[MasterClose] Tooltip hide animation initiated for ${keyToRemove}`);
+                }
+
+                // Delay pod removal to allow tooltip to animate out
+                setTimeout(async () => {
+                  debugLog(`[MasterClose] Delayed action: proceeding to handle/remove card for ${keyToRemove}`);
+                  if (cardData && cardData.download) {
+                    try {
+                      const download = cardData.download;
+                      
+                      // Check if download is in progress
+                      if (!download.succeeded && !download.error && !download.canceled) {
+                        // First click: Cancel the download but keep in UI
+                        debugLog(`[MasterClose] First click: Cancelling in-progress download ${keyToRemove}`);
+                        
+                        // Cancel any active AI process first
+                        await cancelAIProcessForDownload(keyToRemove);
+                        
+                        download.cancel();
+                        
+                        // Mark as user-canceled for UI state
+                        cardData.userCanceled = true;
+                        
+                        // Update UI to show canceled state with resume option
+                        updateUIForFocusedDownload(keyToRemove, true);
+                        
+                        // Don't remove from UI yet - let user see canceled state
+                        return;
+                      }
+                      
+                      // Check if this is a user-canceled download that can be resumed
+                      if (download.canceled && cardData.userCanceled && !cardData.permanentlyDeleted) {
+                        // Second click on canceled download: Permanently delete
+                        debugLog(`[MasterClose] Second click: Permanently deleting canceled download ${keyToRemove}`);
+                        await eraseDownloadFromHistory(download);
+                        cardData.permanentlyDeleted = true;
+                        debugLog(`[MasterClose] Successfully erased download from history: ${keyToRemove}`);
+                        removeCard(keyToRemove, true);
+                        return;
+                      }
+                      
+                      // For completed downloads: just remove from UI, keep in browser history
+                      if (download.succeeded) {
+                        debugLog(`[MasterClose] Removing completed download from UI only (keeping in browser history): ${keyToRemove}`);
+                        
+                        // Cancel any active AI process before removal
+                        await cancelAIProcessForDownload(keyToRemove);
+                        
+                        removeCard(keyToRemove, true);
+                        return;
+                      }
+                      
+                      // For errored downloads or already permanently deleted: delete from history
+                      if (download.error || cardData.permanentlyDeleted) {
+                        debugLog(`[MasterClose] Deleting errored download from history: ${keyToRemove}`);
+                        await eraseDownloadFromHistory(download);
+                        debugLog(`[MasterClose] Successfully erased download from history: ${keyToRemove}`);
+                        removeCard(keyToRemove, true);
+                        return;
+                      }
+                      
+                    } catch (error) {
+                      debugLog(`[MasterClose] Error handling download ${keyToRemove}:`, error);
+                      // On error, still remove from UI
+                      removeCard(keyToRemove, true);
+                    }
+                  } else {
+                    debugLog(`[MasterClose] No cardData found for ${keyToRemove} during delayed action. Cannot remove.`);
+                  }
+                }, 300); // Corresponds to tooltip animation duration
+              }
+            };
+            masterCloseBtn.addEventListener("click", masterCloseHandler);
+            masterCloseBtn.addEventListener("keydown", (e) => {
+              if ((e.key === "Enter" || e.key === " ") && focusedDownloadKey) {
+                e.preventDefault();
+                masterCloseHandler(e);
+              }
+            });
+          }
+
+          // Add undo/resume handler for the master tooltip's undo button
+          const masterUndoBtn = masterTooltipDOMElement.querySelector(".card-undo-button");
+          if (masterUndoBtn) {
+              const masterUndoHandler = async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  debugLog(`[MasterUndo] Master undo/resume button clicked. FocusedDownloadKey: ${focusedDownloadKey}`);
+                  
+                  if (focusedDownloadKey) {
+                      const cardData = activeDownloadCards.get(focusedDownloadKey);
+                      const download = cardData?.download;
+                      
+                      // Check if this is a user-canceled download (resume mode)
+                      if (download?.canceled && cardData?.userCanceled && !cardData?.permanentlyDeleted) {
+                          debugLog(`[MasterUndo] Resuming canceled download: ${focusedDownloadKey}`);
+                          try {
+                              // Resume the download
+                              download.start();
+                              
+                              // Clear the user-canceled flag
+                              cardData.userCanceled = false;
+                              
+                              // Update UI to show downloading state
+                              updateUIForFocusedDownload(focusedDownloadKey, true);
+                              
+                          } catch (resumeError) {
+                              debugLog(`[MasterUndo] Error resuming download ${focusedDownloadKey}:`, resumeError);
+                              
+                              // If resume fails, try to restart the download
+                              try {
+                                  const sourceUrl = download.source?.url;
+                                  if (sourceUrl) {
+                                      debugLog(`[MasterUndo] Resume failed, attempting to restart download from: ${sourceUrl}`);
+                                      
+                                      // Remove the failed download first
+                                      await eraseDownloadFromHistory(download);
+                                      removeCard(focusedDownloadKey, true);
+                                      
+                                      // Start a new download
+                                      const newDownload = await window.Downloads.createDownload({
+                                          source: sourceUrl,
+                                          target: download.target.path
+                                      });
+                                      newDownload.start();
+                                      
+                                  } else {
+                                      debugLog(`[MasterUndo] Cannot restart - no source URL available`);
+                                  }
+                              } catch (restartError) {
+                                  debugLog(`[MasterUndo] Error restarting download:`, restartError);
+                              }
+                          }
+                      } else {
+                          // Regular undo rename functionality
+                          await undoRename(focusedDownloadKey);
+                          // UI update is handled within undoRename via updateUIForFocusedDownload
+                      }
+                  }
+              };
+              masterUndoBtn.addEventListener("click", masterUndoHandler);
+              masterUndoBtn.addEventListener("keydown", async (e) => {
+                  if ((e.key === "Enter" || e.key === " ") && focusedDownloadKey) {
+                      e.preventDefault();
+                      await masterUndoHandler(e); // Make sure to await if handler is async
+                  }
+              });
+          }
+
+        }
+
+        // Attach listeners
+        let downloadListener = {
+          onDownloadAdded: (dl) => throttledCreateOrUpdateCard(dl),
+          onDownloadChanged: (dl) => throttledCreateOrUpdateCard(dl),
+          onDownloadRemoved: async (dl) => {
+            const key = getDownloadKey(dl);
+            await cancelAIProcessForDownload(key); // Cancel any AI process first
+            await removeCard(key, false);
+            
+            // Notify listeners that a download was actually removed from Firefox's list
+            actualDownloadRemovedEventListeners.forEach(callback => {
+              try {
+                callback(key);
+              } catch (error) {
+                debugLog('[API Event] Error in actualDownloadRemoved callback:', error);
+              }
+            });
+            fireCustomEvent('actual-download-removed', { podKey: key });
+            debugLog(`[API Event] Fired actual-download-removed for key: ${key}`);
+          },
+        };
+
+        window.Downloads.getList(window.Downloads.ALL)
+          .then((list) => {
+            list.addView(downloadListener);
+            list.getAll().then((all) => {
+              // Filter out old completed downloads to prevent them from reappearing
+              const recentDownloads = all.filter(dl => {
+                const key = getDownloadKey(dl);
+                
+                // Skip dismissed downloads only if they're completed AND not currently in our active cards
+                // This prevents old completed downloads from reappearing, but allows active downloads to be processed
+                // even if they were previously dismissed
+                if (dismissedDownloads.has(key) && !activeDownloadCards.has(key)) {
+                  // Only skip if the download is in a completed state (succeeded, error, or canceled)
+                  const isCompleted = dl.succeeded || dl.error || dl.canceled;
+                  if (isCompleted) {
+                    debugLog(`[CreatePod] Skipping dismissed completed download: ${key} (succeeded: ${dl.succeeded}, error: ${!!dl.error}, canceled: ${dl.canceled})`);
+                    return null;
+                  } else {
+                    // This is an active download that was previously dismissed - allow it to show
+                    debugLog(`[CreatePod] Allowing dismissed but active download to show: ${key} (still downloading)`);
+                  }
+                }
+                
+                // Only show recent downloads or currently active ones
+                if (dl.succeeded || dl.error || dl.canceled) {
+                  const downloadTime = new Date(dl.startTime || 0);
+                  const hoursSinceDownload = (Date.now() - downloadTime.getTime()) / (1000 * 60 * 60);
+                  
+                  // Only show completed downloads from the configured time window
+                  const showOldDownloadsHours = getPref("extensions.downloads.show_old_downloads_hours", 2);
+                  if (hoursSinceDownload > showOldDownloadsHours) {
+                    debugLog(`[Init] Skipping old completed download: ${key} (${hoursSinceDownload.toFixed(1)}h old)`);
+                    dismissedDownloads.add(key); // Mark as dismissed to prevent future reappearance
+                    return false;
+                  }
+                }
+                
+                return true;
+              });
+              
+              debugLog(`[Init] Processing ${recentDownloads.length} recent downloads out of ${all.length} total`);
+              recentDownloads.forEach((dl) => {
+                throttledCreateOrUpdateCard(dl, true);
+              });
+            });
+          })
+          .catch((e) => console.error("DL Preview Mistral AI: List error:", e));
+      } catch (e) {
+        console.error("DL Preview Mistral AI: Init error", e);
+      }
+    }
+
+    // Throttled update to prevent rapid calls
+    function throttledCreateOrUpdateCard(download, isNewCardOnInit = false) {
+      // Safety check - don't process downloads if CSS is not available
+      if (!cssStylesAvailable) {
+        return;
+      }
+      
+      const key = getDownloadKey(download);
+      const now = Date.now();
+      const lastUpdate = cardUpdateThrottle.get(key) || 0;
+      
+      // More aggressive throttling for in-progress downloads to reduce UI churn
+      const progressThrottleMs = getPref("extensions.downloads.progress_update_throttle_ms", 500);
+      const throttleDelay = (!download.succeeded && !download.error && !download.canceled) ? progressThrottleMs : 100;
+      if (now - lastUpdate < throttleDelay && !isNewCardOnInit) {
+        debugLog(`[Throttle] Skipping throttled update for download: ${key} (delay: ${throttleDelay}ms)`);
+        return;
+      }
+      
+      cardUpdateThrottle.set(key, now);
+      debugLog(`[Throttle] Calling createOrUpdatePodElement for key: ${key}, isNewOnInit: ${isNewCardOnInit}, error: ${!!download.error}, succeeded: ${!!download.succeeded}, canceled: ${!!download.canceled}`);
+      const podElement = createOrUpdatePodElement(download, isNewCardOnInit);
+      if (podElement) {
+        debugLog(`[Throttle] Pod element created/updated for ${key}.`);
+        // Only trigger UI update if this is the focused download or if it's a significant state change
+        if (key === focusedDownloadKey || download.succeeded || download.error || download.canceled || isNewCardOnInit) {
+          updateUIForFocusedDownload(focusedDownloadKey || key, true);
+        }
+      } else {
+        debugLog(`[Throttle] No pod element returned for ${key}. Download state:`, { 
+          succeeded: download.succeeded, 
+          error: !!download.error, 
+          canceled: download.canceled,
+          hasKey: !!key 
+        });
+      }
+    }
+
+    // Function to create or update a download POD element
+    function createOrUpdatePodElement(download, isNewCardOnInit = false) {
+      // Safety check - don't create UI elements if CSS is not available
+      if (!cssStylesAvailable) {
+        return null;
+      }
+      
+      const key = getDownloadKey(download);
+      if (!key) {
+        debugLog("Skipping download object without usable key", download);
+        return null;
+      }
+
+      // Skip dismissed downloads only if they're not currently in our active cards
+      // This prevents old downloads from reappearing, but allows current downloads to be processed
+      if (dismissedDownloads.has(key) && !activeDownloadCards.has(key)) {
+        debugLog(`[CreatePod] Skipping dismissed download that's not currently active: ${key}`);
+        return null;
+      }
+
+          // Smart Replace: Handle new download replacing canceled one
+      // First check for exact key match
+      let existingCardData = activeDownloadCards.get(key);
+      let existingKey = key;
+      
+      // If no exact match, check for similar files (same base name with different numbering)
+      if (!existingCardData && download.target?.path) {
+        const newPath = download.target.path;
+        const newBaseName = newPath.replace(/\(\d+\)(\.[^.]+)?$/, '$1'); // Remove (1), (2), etc.
+        
+        debugLog(`[SmartReplace] Checking for similar downloads. New path: ${newPath}, base: ${newBaseName}`);
+        
+        for (const [cardKey, cardData] of activeDownloadCards) {
+          if (cardData.download?.target?.path) {
+            const existingPath = cardData.download.target.path;
+            const existingBaseName = existingPath.replace(/\(\d+\)(\.[^.]+)?$/, '$1');
+            
+            debugLog(`[SmartReplace] Comparing with existing: ${existingPath}, base: ${existingBaseName}, canceled: ${cardData.download.canceled}, userCanceled: ${cardData.userCanceled}`);
+            
+            // Check if base names match (same file, different numbering)
+            if (newBaseName === existingBaseName && cardKey !== key) {
+              const isExistingCanceled = cardData.download.canceled && cardData.userCanceled;
+              if (isExistingCanceled) {
+                existingCardData = cardData;
+                existingKey = cardKey;
+                debugLog(`[SmartReplace] Found similar canceled download: ${existingKey} -> ${key}`);
                 break;
               }
             }
           }
-        } catch (e) {
-          // Some stylesheets might not be accessible due to CORS
-          console.log('[CSS Debug] Could not access stylesheet rules (normal for external CSS)');
         }
-        if (foundTidyDownloadsCSS) break;
       }
       
-      // Create test elements for different classes that should be styled by our CSS
-      const testTooltip = document.createElement('div');
-      testTooltip.className = 'details-tooltip master-tooltip';
-      testTooltip.style.position = 'absolute';
-      testTooltip.style.left = '-9999px';
-      testTooltip.style.top = '-9999px';
-      testTooltip.style.visibility = 'hidden';
-      document.body.appendChild(testTooltip);
-      
-      const testContainer = document.createElement('div');
-      testContainer.id = 'userchrome-download-cards-container';
-      testContainer.style.position = 'absolute';
-      testContainer.style.left = '-9999px';
-      testContainer.style.top = '-9999px';
-      testContainer.style.visibility = 'hidden';
-      document.body.appendChild(testContainer);
-      
-      // Force a reflow to ensure styles are computed
-      testTooltip.offsetHeight;
-      testContainer.offsetHeight;
-      
-      // Check if the CSS is applied by testing specific properties
-      const tooltipStyle = window.getComputedStyle(testTooltip);
-      const containerStyle = window.getComputedStyle(testContainer);
-      
-      console.log('[CSS Debug] Tooltip computed styles:', {
-        position: tooltipStyle.position,
-        backgroundColor: tooltipStyle.backgroundColor,
-        borderRadius: tooltipStyle.borderRadius,
-        zIndex: tooltipStyle.zIndex,
-        backdropFilter: tooltipStyle.backdropFilter,
-        webkitBackdropFilter: tooltipStyle.webkitBackdropFilter,
-        display: tooltipStyle.display
-      });
-      
-      console.log('[CSS Debug] Container computed styles:', {
-        position: containerStyle.position,
-        zIndex: containerStyle.zIndex,
-        pointerEvents: containerStyle.pointerEvents,
-        display: containerStyle.display,
-        flexDirection: containerStyle.flexDirection
-      });
-      
-      // Test for specific CSS properties that should be set by our stylesheet
-      // Updated to match the actual CSS properties in zen-tidy-downloads/chrome.css
-      // We need ALL the conditions to be more strict since we were getting false positives
-      const tooltipHasStyling = tooltipStyle.position === 'relative' && 
-                               tooltipStyle.backgroundColor.includes('rgba(0, 0, 0, 0.9)') &&
-                               tooltipStyle.borderRadius === '10px' &&
-                               tooltipStyle.zIndex === '51';
-      
-      const containerHasStyling = containerStyle.position === 'fixed' &&
-                                 containerStyle.zIndex === '50' &&
-                                 containerStyle.pointerEvents === 'none' &&
-                                 containerStyle.display === 'flex' && 
-                                 containerStyle.flexDirection === 'column';
-      
-      // Clean up test elements
-      document.body.removeChild(testTooltip);
-      document.body.removeChild(testContainer);
-      
-      const hasExpectedStyling = tooltipHasStyling || containerHasStyling;
-      
-      console.log('[CSS Debug] Styling detection results:', {
-        tooltipHasStyling,
-        containerHasStyling,
-        hasExpectedStyling,
-        foundTidyDownloadsCSS
-      });
-      
-      // If we found the CSS file but styling isn't detected, it might be a timing issue
-      // Let's be more lenient if we found the CSS file
-      if (foundTidyDownloadsCSS || hasExpectedStyling) {
-        console.log('[CSS Check] ✅ CSS detected successfully!');
-        debugLog('[CSS Check] Required CSS styles detected and loaded successfully', {
-          foundCSSFile: foundTidyDownloadsCSS,
-          tooltipStyling: tooltipHasStyling,
-          containerStyling: containerHasStyling,
-          tooltipPosition: tooltipStyle.position,
-          tooltipBgColor: tooltipStyle.backgroundColor,
-          containerPosition: containerStyle.position
-        });
-        return true;
-      } else {
-        console.warn('Download Preview Script: Required CSS file not found or not loaded properly.');
-        console.warn('Expected styling properties were not detected on test elements.');
-        console.warn('The script will be disabled to prevent unstyled UI elements.');
-        console.warn('Please ensure the CSS file is in the correct location and properly linked.');
-        console.warn('CSS file should be at: C:\\Users\\One\\AppData\\Roaming\\zen\\Profiles\\bxthesda\\chrome\\zen-themes\\zen-tidy-downloads\\chrome.css');
-        debugLog('[CSS Check] CSS detection failed', {
-          foundCSSFile: foundTidyDownloadsCSS,
-          tooltipPosition: tooltipStyle.position,
-          tooltipBgColor: tooltipStyle.backgroundColor,
-          tooltipBorderRadius: tooltipStyle.borderRadius,
-          tooltipZIndex: tooltipStyle.zIndex,
-          containerPosition: containerStyle.position,
-          containerZIndex: containerStyle.zIndex,
-          containerPointerEvents: containerStyle.pointerEvents,
-          containerDisplay: containerStyle.display
-        });
-        return false;
-      }
-    } catch (error) {
-      console.error('Download Preview Script: Error checking CSS availability:', error);
-      console.warn('The script will be disabled as a safety measure.');
-      return false;
-    }
-  }
-
-  // Add debug logging function with Firefox preferences support
-  function debugLog(message, data = null, category = 'general') {
-    try {
-      const debugEnabled = getPref("extensions.downloads.enable_debug", false);
-      const debugAiOnly = getPref("extensions.downloads.debug_ai_only", true);
-      
-      if (!debugEnabled) return;
-      if (debugAiOnly && category !== 'aiRename' && category !== 'general') return;
-      
-      const timestamp = new Date().toISOString();
-      const prefix = `[${timestamp}] Download Preview [${category.toUpperCase()}]:`;
-      
-      if (data) {
-        console.log(`${prefix} ${message}`, data);
-      } else {
-        console.log(`${prefix} ${message}`);
-      }
-    } catch (e) {
-      // Fallback if preferences fail
-      console.log(`[Download Preview] ${message}`, data || '');
-    }
-  }
-
-  // Improved key generation for downloads
-  function getDownloadKey(download) {
-    // Use target path as primary key since id is often undefined
-    if (download?.target?.path) {
-      return download.target.path;
-    }
-    if (download?.id) {
-      return download.id;
-    }
-    // For failed downloads, generate a more stable key based on URL and start time
-    const url = download?.source?.url || download?.url || "unknown";
-    const startTime = download?.startTime || Date.now();
-    const key = `temp_${url}_${startTime}`;
-    
-    debugLog(`[KeyGen] Generated temporary key for download without path/id`, { 
-      key, 
-      hasPath: !!download?.target?.path, 
-      hasId: !!download?.id, 
-      url, 
-      error: !!download?.error,
-      startTime 
-    });
-    
-    return key;
-  }
-
-  // Get safe filename from download object
-  function getSafeFilename(download) {
-    // Try multiple sources for filename
-    if (download.filename) return download.filename;
-    if (download.target?.path) {
-      return download.target.path.split(/[\\/]/).pop();
-    }
-    if (download.source?.url) {
-      const url = download.source.url;
-      const match = url.match(/\/([^\/\?]+)$/);
-      if (match) return match[1];
-    }
-    return "Untitled";
-  }
-
-  // Robust initialization with CSS timing fix
-  async function init() {
-    console.log("=== DOWNLOAD PREVIEW SCRIPT STARTING ===");
-    
-    // Check if CSS check should be skipped (for debugging)
-    const skipCSSCheck = getPref("extensions.downloads.skip_css_check", false);
-    
-    if (skipCSSCheck) {
-      console.log("⚠️ CSS check skipped via preference - script will run without CSS validation");
-      cssStylesAvailable = true;
-    } else {
-      // Wait for CSS to be fully loaded with retries
-      cssStylesAvailable = await waitForCSSWithRetries();
-      if (!cssStylesAvailable) {
-        console.log("=== DOWNLOAD PREVIEW SCRIPT DISABLED (CSS NOT FOUND) ===");
-        console.log("💡 To bypass this check temporarily, set extensions.downloads.skip_css_check = true in about:config");
-        return; // Exit early if CSS is not available
-      }
-    }
-    
-    debugLog("Starting initialization");
-    if (!window.Downloads?.getList) {
-      console.error("Download Preview Mistral AI: Downloads API not available");
-      aiRenamingPossible = false;
-      return;
-    }
-    try {
-      window.Downloads.getList(window.Downloads.ALL)
-        .then(async (list) => {
-          if (list) {
-            debugLog("Downloads API verified");
-            await verifyMistralConnection();
-            console.log("=== MISTRAL VERIFICATION COMPLETE, aiRenamingPossible:", aiRenamingPossible, "===");
-            if (aiRenamingPossible) {
-              debugLog("AI renaming enabled - all systems verified");
-            } else {
-              debugLog("AI renaming disabled - Mistral connection failed");
-            }
-            await initDownloadManager();
-            initSidebarWidthSync(); // <-- ADDED: Call to initialize sidebar width syncing
-            debugLog("Initialization complete");
-          }
-        })
-        .catch((e) => {
-          console.error("Downloads API verification failed:", e);
-          aiRenamingPossible = false;
-        });
-    } catch (e) {
-      console.error("Download Preview Mistral AI: Init failed", e);
-      aiRenamingPossible = false;
-    }
-  }
-
-  // Wait for ZenThemesImporter to finish loading themes
-  async function waitForZenThemes(maxWaitMs = 5000) {
-    console.log('[CSS Timing] Waiting for ZenThemesImporter to load themes...');
-    
-    const startTime = Date.now();
-    
-    return new Promise((resolve) => {
-      const checkInterval = setInterval(() => {
-        // Check if ZenThemesImporter has loaded by looking for a console message or DOM changes
-        const stylesheets = Array.from(document.styleSheets);
-        const hasZenThemeCSS = stylesheets.some(sheet => 
-          sheet.href && sheet.href.includes('zen-tidy-downloads')
-        );
+      if (existingCardData && existingCardData.download) {
+        const existingDownload = existingCardData.download;
+        const isExistingCanceled = existingDownload.canceled && existingCardData.userCanceled;
+        const isNewDownloadFresh = !download.canceled && !download.succeeded && !download.error;
         
-        if (hasZenThemeCSS) {
-          console.log('[CSS Timing] ✅ ZenThemesImporter has loaded Tidy Downloads theme');
-          clearInterval(checkInterval);
-          resolve(true);
-          return;
-        }
-        
-        // Timeout check
-        if (Date.now() - startTime > maxWaitMs) {
-          console.log('[CSS Timing] ⏰ Timeout waiting for ZenThemesImporter');
-          clearInterval(checkInterval);
-          resolve(false);
-        }
-      }, 100);
-    });
-  }
-
-  // Wait for CSS to be properly loaded with retries
-  async function waitForCSSWithRetries(maxRetries = 10, delayMs = 300) {
-    console.log('[CSS Timing] Waiting for CSS to be fully loaded...');
-    
-    // First, wait for ZenThemesImporter to finish
-    await waitForZenThemes();
-    
-    // Then wait a bit more for styles to be applied
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      console.log(`[CSS Timing] Attempt ${attempt}/${maxRetries}`);
-      
-      const cssAvailable = checkCSSAvailability();
-      if (cssAvailable) {
-        console.log(`[CSS Timing] ✅ CSS detected on attempt ${attempt}`);
-        return true;
-      }
-      
-      if (attempt < maxRetries) {
-        console.log(`[CSS Timing] CSS not ready, waiting ${delayMs}ms...`);
-        await new Promise(resolve => setTimeout(resolve, delayMs));
-        // Increase delay slightly for each retry
-        delayMs += 100;
-      }
-    }
-    
-    console.log('[CSS Timing] ❌ CSS detection failed after all retries');
-    return false;
-  }
-
-
-
-  // Wait for window load
-  if (document.readyState === "complete") {
-    init();
-  } else {
-    window.addEventListener("load", init, { once: true });
-  }
-
-  // Download manager UI and listeners
-  async function initDownloadManager() {
-    // Safety check - don't initialize if CSS is not available
-    if (!cssStylesAvailable) {
-      debugLog("Skipping download manager initialization - CSS not available");
-      return;
-    }
-    
-    // Add a delay to ensure CSS is fully applied before creating UI elements
-    await new Promise(resolve => setTimeout(resolve, 300));
-    debugLog("Creating download manager UI elements...");
-    
-    try {
-      // Create container if it doesn't exist
-      downloadCardsContainer = document.getElementById("userchrome-download-cards-container");
-      if (!downloadCardsContainer) {
-        downloadCardsContainer = document.createElement("div");
-        downloadCardsContainer.id = "userchrome-download-cards-container";
-        // Basic styles are now in CSS file, only dynamic overrides here if needed
-        document.body.appendChild(downloadCardsContainer);
-
-        // Create the single master tooltip element (fixed position at the top of the container)
-        masterTooltipDOMElement = document.createElement("div");
-        masterTooltipDOMElement.className = "details-tooltip master-tooltip";
-        // Most styles are now in CSS file, only dynamic styles remain inline
-
-        masterTooltipDOMElement.innerHTML = `
-          <div class="card-status">Tooltip Status</div>
-          <div class="card-title">Tooltip Title</div>
-          <div class="card-original-filename">Original Filename</div>
-          <div class="card-progress">Tooltip Progress</div>
-          <div class="card-filesize">File Size</div>
-          <div class="tooltip-buttons-container">
-            <span class="card-undo-button" title="Undo Rename" tabindex="0" role="button">
-              <!-- SVG will be injected here by script -->
-            </span>
-            <span class="card-close-button" title="Close" tabindex="0" role="button">✕</span>
-          </div>
-          <div class="tooltip-tail"></div>
-        `;
-        downloadCardsContainer.appendChild(masterTooltipDOMElement);
-
-        // --- Inject SVG for Undo Button Programmatically ---
-        const undoButtonSpan = masterTooltipDOMElement.querySelector(".card-undo-button");
-        if (undoButtonSpan) {
-            const svgNS = "http://www.w3.org/2000/svg";
-            const svgIcon = document.createElementNS(svgNS, "svg");
-            svgIcon.setAttribute("viewBox", "0 0 52 52");
-            svgIcon.style.width = "100%";
-            svgIcon.style.height = "100%";
-
-            const pathIcon = document.createElementNS(svgNS, "path");
-            pathIcon.setAttribute("d", "M30.3,12.6c10.4,0,18.9,8.4,18.9,18.9s-8.5,18.9-18.9,18.9h-8.2c-0.8,0-1.3-0.6-1.3-1.4v-3.2c0-0.8,0.6-1.5,1.4-1.5h8.1c7.1,0,12.8-5.7,12.8-12.8s-5.7-12.8-12.8-12.8H16.4c0,0-0.8,0-1.1,0.1c-0.8,0.4-0.6,1,0.1,1.7l4.9,4.9c0.6,0.6,0.5,1.5-0.1,2.1L18,29.7c-0.6,0.6-1.3,0.6-1.9,0.1l-13-13c-0.5-0.5-0.5-1.3,0-1.8L16,2.1c0.6-0.6,1.6-0.6,2.1,0l2.1,2.1c0.6,0.6,0.6,1.6,0,2.1l-4.9,4.9c-0.6,0.6-0.6,1.3,0.4,1.3c0.3,0,0.7,0,0.7,0L30.3,12.6z");
-            pathIcon.setAttribute("fill", "#aaa");
-
-            svgIcon.appendChild(pathIcon);
-            undoButtonSpan.appendChild(svgIcon);
-            debugLog("[SVG Inject] Programmatically created and appended SVG to undo button span.");
-        } else {
-            debugLog("[SVG Inject] Undo button span not found for SVG injection.");
-        }
-        // --- End SVG Injection ---
-
-        // Create the container for HORIZONTAL pods row
-        podsRowContainerElement = document.createElement("div"); 
-        podsRowContainerElement.id = "userchrome-pods-row-container"; 
-        // Basic styles are now in CSS file, only dynamic height will be set by layout manager
-        downloadCardsContainer.appendChild(podsRowContainerElement);
-
-        // Add mouse wheel scroll listener to the pods container for changing focus
-        podsRowContainerElement.addEventListener('wheel', handlePodScrollFocus, { passive: false });
-        
-        // Add close handler for the master tooltip's close button AFTER creating podsRowContainerElement
-        const masterCloseBtn = masterTooltipDOMElement.querySelector(".card-close-button");
-        if (masterCloseBtn) {
-          const masterCloseHandler = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            debugLog(`[MasterClose] Master close button clicked. FocusedDownloadKey: ${focusedDownloadKey}`);
-            
-            if (focusedDownloadKey) {
-              const keyToRemove = focusedDownloadKey; // Capture the key
-              const cardData = activeDownloadCards.get(keyToRemove);
-
-              // Start tooltip hide animation immediately
-              if (masterTooltipDOMElement) {
-                masterTooltipDOMElement.style.opacity = "0";
-                masterTooltipDOMElement.style.transform = "scaleY(0.8) translateY(10px)";
-                masterTooltipDOMElement.style.pointerEvents = "none"; // Disable interactions when hidden
-                debugLog(`[MasterClose] Tooltip hide animation initiated for ${keyToRemove}`);
-              }
-
-              // Delay pod removal to allow tooltip to animate out
-              setTimeout(async () => {
-                debugLog(`[MasterClose] Delayed action: proceeding to handle/remove card for ${keyToRemove}`);
-                if (cardData && cardData.download) {
-                  try {
-                    const download = cardData.download;
-                    
-                    // Check if download is in progress
-                    if (!download.succeeded && !download.error && !download.canceled) {
-                      // First click: Cancel the download but keep in UI
-                      debugLog(`[MasterClose] First click: Cancelling in-progress download ${keyToRemove}`);
-                      
-                      // Cancel any active AI process first
-                      await cancelAIProcessForDownload(keyToRemove);
-                      
-                      download.cancel();
-                      
-                      // Mark as user-canceled for UI state
-                      cardData.userCanceled = true;
-                      
-                      // Update UI to show canceled state with resume option
-                      updateUIForFocusedDownload(keyToRemove, true);
-                      
-                      // Don't remove from UI yet - let user see canceled state
-                      return;
-                    }
-                    
-                    // Check if this is a user-canceled download that can be resumed
-                    if (download.canceled && cardData.userCanceled && !cardData.permanentlyDeleted) {
-                      // Second click on canceled download: Permanently delete
-                      debugLog(`[MasterClose] Second click: Permanently deleting canceled download ${keyToRemove}`);
-                      await eraseDownloadFromHistory(download);
-                      cardData.permanentlyDeleted = true;
-                      debugLog(`[MasterClose] Successfully erased download from history: ${keyToRemove}`);
-                      removeCard(keyToRemove, true);
-                      return;
-                    }
-                    
-                    // For completed downloads: just remove from UI, keep in browser history
-                    if (download.succeeded) {
-                      debugLog(`[MasterClose] Removing completed download from UI only (keeping in browser history): ${keyToRemove}`);
-                      
-                      // Cancel any active AI process before removal
-                      await cancelAIProcessForDownload(keyToRemove);
-                      
-                      removeCard(keyToRemove, true);
-                      return;
-                    }
-                    
-                    // For errored downloads or already permanently deleted: delete from history
-                    if (download.error || cardData.permanentlyDeleted) {
-                      debugLog(`[MasterClose] Deleting errored download from history: ${keyToRemove}`);
-                      await eraseDownloadFromHistory(download);
-                      debugLog(`[MasterClose] Successfully erased download from history: ${keyToRemove}`);
-                      removeCard(keyToRemove, true);
-                      return;
-                    }
-                    
-                  } catch (error) {
-                    debugLog(`[MasterClose] Error handling download ${keyToRemove}:`, error);
-                    // On error, still remove from UI
-                    removeCard(keyToRemove, true);
-                  }
-                } else {
-                  debugLog(`[MasterClose] No cardData found for ${keyToRemove} during delayed action. Cannot remove.`);
-                }
-              }, 300); // Corresponds to tooltip animation duration
-            }
-          };
-          masterCloseBtn.addEventListener("click", masterCloseHandler);
-          masterCloseBtn.addEventListener("keydown", (e) => {
-            if ((e.key === "Enter" || e.key === " ") && focusedDownloadKey) {
-              e.preventDefault();
-              masterCloseHandler(e);
-            }
-          });
-        }
-
-        // Add undo/resume handler for the master tooltip's undo button
-        const masterUndoBtn = masterTooltipDOMElement.querySelector(".card-undo-button");
-        if (masterUndoBtn) {
-            const masterUndoHandler = async (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                debugLog(`[MasterUndo] Master undo/resume button clicked. FocusedDownloadKey: ${focusedDownloadKey}`);
-                
-                if (focusedDownloadKey) {
-                    const cardData = activeDownloadCards.get(focusedDownloadKey);
-                    const download = cardData?.download;
-                    
-                    // Check if this is a user-canceled download (resume mode)
-                    if (download?.canceled && cardData?.userCanceled && !cardData?.permanentlyDeleted) {
-                        debugLog(`[MasterUndo] Resuming canceled download: ${focusedDownloadKey}`);
-                        try {
-                            // Resume the download
-                            download.start();
-                            
-                            // Clear the user-canceled flag
-                            cardData.userCanceled = false;
-                            
-                            // Update UI to show downloading state
-                            updateUIForFocusedDownload(focusedDownloadKey, true);
-                            
-                        } catch (resumeError) {
-                            debugLog(`[MasterUndo] Error resuming download ${focusedDownloadKey}:`, resumeError);
-                            
-                            // If resume fails, try to restart the download
-                            try {
-                                const sourceUrl = download.source?.url;
-                                if (sourceUrl) {
-                                    debugLog(`[MasterUndo] Resume failed, attempting to restart download from: ${sourceUrl}`);
-                                    
-                                    // Remove the failed download first
-                                    await eraseDownloadFromHistory(download);
-                                    removeCard(focusedDownloadKey, true);
-                                    
-                                    // Start a new download
-                                    const newDownload = await window.Downloads.createDownload({
-                                        source: sourceUrl,
-                                        target: download.target.path
-                                    });
-                                    newDownload.start();
-                                    
-                                } else {
-                                    debugLog(`[MasterUndo] Cannot restart - no source URL available`);
-                                }
-                            } catch (restartError) {
-                                debugLog(`[MasterUndo] Error restarting download:`, restartError);
-                            }
-                        }
-                    } else {
-                        // Regular undo rename functionality
-                        await undoRename(focusedDownloadKey);
-                        // UI update is handled within undoRename via updateUIForFocusedDownload
-                    }
-                }
-            };
-            masterUndoBtn.addEventListener("click", masterUndoHandler);
-            masterUndoBtn.addEventListener("keydown", async (e) => {
-                if ((e.key === "Enter" || e.key === " ") && focusedDownloadKey) {
-                    e.preventDefault();
-                    await masterUndoHandler(e); // Make sure to await if handler is async
-                }
-            });
-        }
-
-      }
-
-      // Attach listeners
-      let downloadListener = {
-        onDownloadAdded: (dl) => throttledCreateOrUpdateCard(dl),
-        onDownloadChanged: (dl) => throttledCreateOrUpdateCard(dl),
-        onDownloadRemoved: async (dl) => {
-          const key = getDownloadKey(dl);
-          await cancelAIProcessForDownload(key); // Cancel any AI process first
-          await removeCard(key, false);
-        },
-      };
-
-      window.Downloads.getList(window.Downloads.ALL)
-        .then((list) => {
-          list.addView(downloadListener);
-          list.getAll().then((all) => {
-            // Filter out old completed downloads to prevent them from reappearing
-            const recentDownloads = all.filter(dl => {
-              const key = getDownloadKey(dl);
-              
-              // Skip if already dismissed
-              if (dismissedDownloads.has(key)) {
-                debugLog(`[Init] Skipping dismissed download: ${key}`);
-                return false;
-              }
-              
-              // Only show recent downloads or currently active ones
-              if (dl.succeeded || dl.error || dl.canceled) {
-                const downloadTime = new Date(dl.startTime || 0);
-                const hoursSinceDownload = (Date.now() - downloadTime.getTime()) / (1000 * 60 * 60);
-                
-                // Only show completed downloads from the configured time window
-                const showOldDownloadsHours = getPref("extensions.downloads.show_old_downloads_hours", 2);
-                if (hoursSinceDownload > showOldDownloadsHours) {
-                  debugLog(`[Init] Skipping old completed download: ${key} (${hoursSinceDownload.toFixed(1)}h old)`);
-                  dismissedDownloads.add(key); // Mark as dismissed to prevent future reappearance
-                  return false;
-                }
-              }
-              
-              return true;
-            });
-            
-            debugLog(`[Init] Processing ${recentDownloads.length} recent downloads out of ${all.length} total`);
-            recentDownloads.forEach((dl) => {
-              throttledCreateOrUpdateCard(dl, true);
-            });
-          });
-        })
-        .catch((e) => console.error("DL Preview Mistral AI: List error:", e));
-    } catch (e) {
-      console.error("DL Preview Mistral AI: Init error", e);
-    }
-  }
-
-  // Throttled update to prevent rapid calls
-  function throttledCreateOrUpdateCard(download, isNewCardOnInit = false) {
-    // Safety check - don't process downloads if CSS is not available
-    if (!cssStylesAvailable) {
-      return;
-    }
-    
-    const key = getDownloadKey(download);
-    const now = Date.now();
-    const lastUpdate = cardUpdateThrottle.get(key) || 0;
-    
-    // More aggressive throttling for in-progress downloads to reduce UI churn
-    const progressThrottleMs = getPref("extensions.downloads.progress_update_throttle_ms", 500);
-    const throttleDelay = (!download.succeeded && !download.error && !download.canceled) ? progressThrottleMs : 100;
-    if (now - lastUpdate < throttleDelay && !isNewCardOnInit) {
-      debugLog(`[Throttle] Skipping throttled update for download: ${key} (delay: ${throttleDelay}ms)`);
-      return;
-    }
-    
-    cardUpdateThrottle.set(key, now);
-    debugLog(`[Throttle] Calling createOrUpdatePodElement for key: ${key}, isNewOnInit: ${isNewCardOnInit}, error: ${!!download.error}, succeeded: ${!!download.succeeded}, canceled: ${!!download.canceled}`);
-    const podElement = createOrUpdatePodElement(download, isNewCardOnInit);
-    if (podElement) {
-      debugLog(`[Throttle] Pod element created/updated for ${key}.`);
-      // Only trigger UI update if this is the focused download or if it's a significant state change
-      if (key === focusedDownloadKey || download.succeeded || download.error || download.canceled || isNewCardOnInit) {
-        updateUIForFocusedDownload(focusedDownloadKey || key, true);
-      }
-    } else {
-      debugLog(`[Throttle] No pod element returned for ${key}. Download state:`, { 
-        succeeded: download.succeeded, 
-        error: !!download.error, 
-        canceled: download.canceled,
-        hasKey: !!key 
-      });
-    }
-  }
-
-  // Function to create or update a download POD element
-  function createOrUpdatePodElement(download, isNewCardOnInit = false) {
-    // Safety check - don't create UI elements if CSS is not available
-    if (!cssStylesAvailable) {
-      return null;
-    }
-    
-    const key = getDownloadKey(download);
-    if (!key) {
-      debugLog("Skipping download object without usable key", download);
-      return null;
-    }
-
-    // Skip dismissed downloads only if they're not currently in our active cards
-    // This prevents old downloads from reappearing, but allows current downloads to be processed
-    if (dismissedDownloads.has(key) && !activeDownloadCards.has(key)) {
-      debugLog(`[CreatePod] Skipping dismissed download that's not currently active: ${key}`);
-      return null;
-    }
-
-        // Smart Replace: Handle new download replacing canceled one
-    // First check for exact key match
-    let existingCardData = activeDownloadCards.get(key);
-    let existingKey = key;
-    
-    // If no exact match, check for similar files (same base name with different numbering)
-    if (!existingCardData && download.target?.path) {
-      const newPath = download.target.path;
-      const newBaseName = newPath.replace(/\(\d+\)(\.[^.]+)?$/, '$1'); // Remove (1), (2), etc.
-      
-      debugLog(`[SmartReplace] Checking for similar downloads. New path: ${newPath}, base: ${newBaseName}`);
-      
-      for (const [cardKey, cardData] of activeDownloadCards) {
-        if (cardData.download?.target?.path) {
-          const existingPath = cardData.download.target.path;
-          const existingBaseName = existingPath.replace(/\(\d+\)(\.[^.]+)?$/, '$1');
-          
-          debugLog(`[SmartReplace] Comparing with existing: ${existingPath}, base: ${existingBaseName}, canceled: ${cardData.download.canceled}, userCanceled: ${cardData.userCanceled}`);
-          
-          // Check if base names match (same file, different numbering)
-          if (newBaseName === existingBaseName && cardKey !== key) {
-            const isExistingCanceled = cardData.download.canceled && cardData.userCanceled;
-            if (isExistingCanceled) {
-              existingCardData = cardData;
-              existingKey = cardKey;
-              debugLog(`[SmartReplace] Found similar canceled download: ${existingKey} -> ${key}`);
-              break;
-            }
-          }
-        }
-      }
-    }
-    
-    if (existingCardData && existingCardData.download) {
-      const existingDownload = existingCardData.download;
-      const isExistingCanceled = existingDownload.canceled && existingCardData.userCanceled;
-      const isNewDownloadFresh = !download.canceled && !download.succeeded && !download.error;
-      
-            if (isExistingCanceled && isNewDownloadFresh) {
+              if (isExistingCanceled && isNewDownloadFresh) {
         debugLog(`[SmartReplace] Replacing canceled download with new attempt: ${existingKey} -> ${key}`);
         
         // If we're replacing a different key, we need to handle the transition
@@ -977,6 +1214,14 @@
       // Add to ordered list (newest at the end)
       if (!orderedPodKeys.includes(key)) {
         orderedPodKeys.push(key);
+        
+        // Show the container when we add the first pod
+        if (orderedPodKeys.length === 1 && downloadCardsContainer) {
+          downloadCardsContainer.style.display = "flex";
+          downloadCardsContainer.style.opacity = "1";
+          downloadCardsContainer.style.visibility = "visible";
+        }
+        
         // Focus behavior based on stable_focus_mode preference
         const stableFocusMode = getPref("extensions.downloads.stable_focus_mode", true);
         const currentFocusedData = focusedDownloadKey ? activeDownloadCards.get(focusedDownloadKey) : null;
@@ -1392,6 +1637,13 @@
     const maxVisiblePodsInPile = Math.floor((tooltipWidth - podNominalWidth) / (podNominalWidth - podOverlapAmount)) + 1; 
 
     if (orderedPodKeys.length === 0) {
+        // Hide the entire container when no pods exist
+        if (downloadCardsContainer) {
+            downloadCardsContainer.style.display = "none";
+            downloadCardsContainer.style.opacity = "0";
+            downloadCardsContainer.style.visibility = "hidden";
+        }
+        
         if (masterTooltipDOMElement.style.opacity !== "0") {
             debugLog("[LayoutManager] No pods, ensuring master tooltip is hidden.");
             masterTooltipDOMElement.style.opacity = "0";
@@ -1404,6 +1656,13 @@
         debugLog(`[LayoutManager] Exiting: No OrderedPodKeys.`);
         podsRowContainerElement.style.gap = '0px'; // Reset gap just in case
         return;
+    }
+
+    // Show the container when we have pods
+    if (downloadCardsContainer) {
+        downloadCardsContainer.style.display = "flex";
+        downloadCardsContainer.style.opacity = "1";
+        downloadCardsContainer.style.visibility = "visible";
     }
 
     if (tooltipWidth === 0 && orderedPodKeys.length > 0) {
@@ -1744,6 +2003,31 @@
         return false;
       }
 
+      // === CAPTURE POD DATA FOR DISMISSAL PILE ===
+      const dismissedData = capturePodDataForDismissal(downloadKey);
+      if (dismissedData) {
+        // Store the dismissed pod data
+        dismissedPodsData.set(downloadKey, dismissedData);
+        
+        // Fire dismiss event for pile system
+        dismissEventListeners.forEach(callback => {
+          try {
+            callback(dismissedData);
+          } catch (error) {
+            debugLog(`[Dismiss] Error in dismiss event callback:`, error);
+          }
+        });
+        
+        // Fire custom DOM event
+        fireCustomEvent('pod-dismissed', { 
+          podKey: downloadKey, 
+          podData: dismissedData,
+          wasManual: force 
+        });
+        
+        debugLog(`[Dismiss] Pod dismissed and captured for pile: ${downloadKey}`);
+      }
+
       cardData.isBeingRemoved = true; // Mark for exclusion from layout management
       debugLog(`[RemoveCard] Marked card ${downloadKey} as isBeingRemoved.`);
 
@@ -1822,6 +2106,13 @@
         // Update UI based on new focus (or lack thereof)
         // This will also hide the master tooltip if no pods are left or re-evaluate layout
         updateUIForFocusedDownload(focusedDownloadKey, false); 
+        
+        // Additional check: if no cards remain, ensure container is hidden
+        if (orderedPodKeys.length === 0 && downloadCardsContainer) {
+          downloadCardsContainer.style.display = "none";
+          downloadCardsContainer.style.opacity = "0";
+          downloadCardsContainer.style.visibility = "hidden";
+        }
 
       }, 300); // Corresponds to pod animation duration
 
@@ -2205,22 +2496,19 @@
 
   // Update pod glow color based on dominant color
   function updatePodGlowColor(podElement, color) {
-    if (!podElement || !color) return;
-    
+    if (!podElement) return;
     try {
-      // Create a more vibrant glow effect with the dominant color
-      const glowShadow = `0 0 15px ${color}, 0 3px 10px rgba(0,0,0,0.3)`;
-      podElement.style.boxShadow = glowShadow;
-      
-      debugLog("[GlowUpdate] Updated pod glow color", { 
-        podKey: podElement.dataset.downloadKey, 
-        color: color,
-        shadow: glowShadow 
+      // Always use a subtle grey shadow, ignore color extraction
+      const subtleGreyShadow = '0 2px 8px rgba(60,60,60,0.18), 0 3px 10px rgba(0,0,0,0.10)';
+      podElement.style.boxShadow = subtleGreyShadow;
+      debugLog('[GlowUpdate] Applied subtle grey shadow under pod', {
+        podKey: podElement.dataset.downloadKey,
+        shadow: subtleGreyShadow
       });
     } catch (e) {
-      debugLog("[GlowUpdate] Error updating glow color:", e);
-      // Fallback to default blue glow
-      podElement.style.boxShadow = '0 0 15px rgba(84, 160, 255, 0.7), 0 3px 10px rgba(0,0,0,0.3)';
+      debugLog('[GlowUpdate] Error updating pod shadow:', e);
+      // Fallback to a basic grey shadow
+      podElement.style.boxShadow = '0 2px 8px rgba(60,60,60,0.18)';
     }
   }
 
@@ -3332,4 +3620,6 @@ async function undoRename(keyOfAIRenamedFile) {
   }
 }
 
-})(); 
+  } // Close initializeMainScript function
+
+})(); //Test Comment again again x3
