@@ -47,7 +47,7 @@
     "homepage": "zapSNH/zapsCoolPhotonTheme",
     "image": "https://i.imgur.com/FyzTFKg.png",
     "name": "zap's cool photon theme",
-    "version": "140r8-sine",
+    "version": "140.10",
     "description": "a cool photon theme for firefox (and other browsers too)",
     "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
     "fork": [
@@ -230,11 +230,11 @@
   },
   "quick-tabs": {
     "homepage": "Darsh-A/Quick-Tabs",
-    "image": "https://github.com/Darsh-A/Quick-Tabs/blob/main/image.png?raw=true",
+    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
     "name": "Quick Tabs",
     "version": "1.1.0",
     "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tabs/refs/heads/main/README.md",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
     "fork": [
       "zen"
     ]
