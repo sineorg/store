@@ -1,3 +1,9 @@
+// ==UserScript==
+// @name            BrowseBot
+// @description     Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface.
+// @author          BibekBhusal
+// ==/UserScript==
+
 (function (factory) {
   typeof define === 'function' && define.amd ? define(factory) :
   factory();
