@@ -244,7 +244,7 @@
     "name": "Browse Bot",
     "version": "1.0.0",
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/readme.md",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/README.md",
     "fork": [
       "zen"
     ]
