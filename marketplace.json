@@ -238,5 +238,6 @@
     "fork": [
       "zen"
     ]
-  }
+  },
+  "vizen-floaty-ui": "moktavizen/floaty-ui"
 }
