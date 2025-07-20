@@ -2482,7 +2482,7 @@ Here is the initial info about the current page:
               this.findbar.history = [];
             }
           } else llm.history = [];
-          if (this?.findbar?.expanded) {
+          if (this?.findbar?.expanded && !this?.findbar?.hidden) {
             setTimeout(() => (this.expanded = true), 200);
           } else {
             this.hide();
@@ -3157,6 +3157,13 @@ Here is the initial info about the current page:
         y: this._initialContainerCoor.y + (e.clientY - this._initialMouseCoor.y),
       };
 
+      if (
+        gZenCompactModeManager &&
+        !gZenCompactModeManager?.preference &&
+        !gZenCompactModeManager.sidebarIsOnRight
+      ) {
+        newCoors.x -= gZenCompactModeManager.getAndApplySidebarWidth(); // deduct sidebar width if not sidebar is visible on right
+      }
       newCoors.x = Math.max(minCoors.x, Math.min(newCoors.x, maxCoors.x));
       newCoors.y = Math.max(minCoors.y, Math.min(newCoors.y, maxCoors.y));
 
