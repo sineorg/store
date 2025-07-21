@@ -251,11 +251,13 @@
   },
   "vizen-floaty-ui": {
     "homepage": "moktavizen/floaty-ui",
-     "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
-     "name": "Floaty UI",
-     "version": "1.0.0",
-     "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
-     "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
-    "fork": ["zen"]
+    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
+    "name": "Floaty UI",
+    "version": "1.0.0",
+    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
+    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
+    "fork": [
+      "zen"
+    ]
   }
 }
