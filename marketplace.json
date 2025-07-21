@@ -260,5 +260,7 @@
       "zen"
     ]
   },
-  "paneru": "TheBigWazz/Paneru"
+  "paneru": {
+    "homepage": "TheBigWazz/Paneru"
+  }
 }
