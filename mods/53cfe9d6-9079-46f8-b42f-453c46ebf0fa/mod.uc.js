@@ -1,3 +1,11 @@
+
+// This file combines all the provided userChrome.js scripts into a single file for easier management.
+// The logic of each script has been preserved without modification as requested.
+// MODIFICATION: Replaced all instances of '.vertical-pinned-tabs-container-separator' with '.pinned-tabs-container-separator'.
+
+// ====================================================================================================
+// SCRIPT 1: Dynamic URLBar Background Height
+// ====================================================================================================
 // ==UserScript==
 // @ignorecache
 // @name          Dynamic URLBar Background Height
@@ -212,9 +220,9 @@
 })();
 
 
-
-
-
+// ====================================================================================================
+// SCRIPT 2: AI Tab Sorter and UI (FINAL VERSION 4.7.2)
+// ====================================================================================================
 // FINAL VERSION 4.7.2 (API Key from Prefs + Title>Host + No Clear Button Space)
 (() => {
     // --- Configuration ---
@@ -342,19 +350,19 @@
                 color: white;
                 border-radius: 4px;
             }
-            .vertical-pinned-tabs-container-separator {
+            .pinned-tabs-container-separator {
                  display: flex;
                  flex-direction: row;
                  margin-left: 0;
                  justify-content: flex-end;
                  align-items: center;
             }
-            .vertical-pinned-tabs-container-separator.has-no-sortable-tabs #sort-button,
-            .vertical-pinned-tabs-container-separator.has-no-sortable-tabs #clear-button {
+            .pinned-tabs-container-separator.has-no-sortable-tabs #sort-button,
+            .pinned-tabs-container-separator.has-no-sortable-tabs #clear-button {
                  display: none !important;
                  pointer-events: none;
             }
-            .vertical-pinned-tabs-container-separator svg.separator-line-svg {
+            .pinned-tabs-container-separator svg.separator-line-svg {
                 flex-grow: 1;
             }
             @keyframes loading-pulse-tab {
@@ -798,7 +806,7 @@
 
         let separatorsToSort = []; // Keep track of separators to remove class later
         try {
-             separatorsToSort = document.querySelectorAll('.vertical-pinned-tabs-container-separator');
+             separatorsToSort = document.querySelectorAll('.pinned-tabs-container-separator');
              // Apply visual indicator - Pulsing BG from tab_sort_clear.uc.js styles
              if(separatorsToSort.length > 0) {
                  console.log("Applying sorting indicator (pulse) to separator(s)...");
@@ -1210,7 +1218,7 @@
                 cancelAnimationFrame(sortAnimationId);
                 sortAnimationId = null;
                 try {
-                    const activeSeparator = document.querySelector('.vertical-pinned-tabs-container-separator:not(.has-no-sortable-tabs)');
+                    const activeSeparator = document.querySelector('.pinned-tabs-container-separator:not(.has-no-sortable-tabs)');
                     const pathElement = activeSeparator?.querySelector('#separator-path');
                     if (pathElement) {
                         pathElement.setAttribute('d', 'M 0 1 L 100 1');
@@ -1407,7 +1415,7 @@
     }
 
     function addSortButtonToAllSeparators() {
-        const separators = document.querySelectorAll(".vertical-pinned-tabs-container-separator");
+        const separators = document.querySelectorAll(".pinned-tabs-container-separator");
         if (separators.length > 0) {
             separators.forEach(ensureSortButtonExists);
             updateButtonsVisibilityState();
@@ -1476,7 +1484,7 @@
                         }
 
                         // Try finding the active separator directly
-                        let separator = document.querySelector('.vertical-pinned-tabs-container-separator:not(.has-no-sortable-tabs)');
+                        let separator = document.querySelector('.pinned-tabs-container-separator:not(.has-no-sortable-tabs)');
                         if (!separator) {
                             console.error("SORT BTN ANIM: Failed to find the target separator for animation start.");
                             sortTabsByTopic(); // Still run sort even if animation fails
@@ -1660,7 +1668,7 @@
     const updateButtonsVisibilityState = () => {
         console.log("BTN VIS: updateButtonsVisibilityState called.");
         const { ungroupedTotal, ungroupedNonSelected, hasGroupedTabs } = countTabsForButtonVisibility();
-        const separators = document.querySelectorAll(".vertical-pinned-tabs-container-separator");
+        const separators = document.querySelectorAll(".pinned-tabs-container-separator");
         
         console.log(`BTN VIS: Updating visibility - ${separators.length} separators, ${ungroupedTotal} ungrouped tabs, ${ungroupedNonSelected} non-selected, hasGroupedTabs: ${hasGroupedTabs}`);
         
@@ -1745,7 +1753,7 @@
         const initCheckInterval = setInterval(() => {
             checkCount++;
 
-            const separatorExists = !!document.querySelector(".vertical-pinned-tabs-container-separator");
+            const separatorExists = !!document.querySelector(".pinned-tabs-container-separator");
             const commandSetExists = !!document.querySelector("commandset#zenCommandSet");
             const gBrowserReady = typeof gBrowser !== 'undefined' && gBrowser.tabContainer;
             const gZenWorkspacesReady = typeof window.gZenWorkspaces !== 'undefined';
@@ -1788,8 +1796,10 @@
 
 })(); // End script
 
-// ========================================================================================================================================================================
 
+// ====================================================================================================
+// SCRIPT 3: Tab Explode Animation
+// ====================================================================================================
 // ==UserScript==
 // @ignorecache
 // @name           Tab Explode Animation
@@ -2013,11 +2023,9 @@
 })(); 
 
 
-
-
-// ========================================================================================================================================================================
-
-// ========================================================================================================================================================================
+// ====================================================================================================
+// SCRIPT 4: Permission Box Position Fix
+// ====================================================================================================
 // ==UserScript==
 // @ignorecache
 // @name           permission-box-possition-fix
@@ -2129,7 +2137,9 @@
 })();
 
 
-// ========================================================================================================================================================================
+// ====================================================================================================
+// SCRIPT 5: Zen Media Cover Art Provider
+// ====================================================================================================
 // ==UserScript==
 // @ignorecache
 // @name           zen-media-coverart-enhanced-bg-wrapper-hoverfix
@@ -2143,7 +2153,6 @@
 // @description    Provides track artwork URL as a CSS variable for theme styling.
 // @version        8.0 - The Final Solution
 // ==/UserScript==
-
 // ==UserScript==
 // @name           zen-media-coverart-css-provider
 // @namespace      zenMediaCoverArt
@@ -2235,10 +2244,10 @@ const ZenCoverArtCSSProvider = {
 
 ZenCoverArtCSSProvider.init();
 
-// ========================================================================================================================================================================
 
-
-// ========================================================================================================================================================================
+// ====================================================================================================
+// SCRIPT 6: Zen Workspace Button Wave Animation
+// ====================================================================================================
 // ==UserScript==
 // @ignorecache
 // @name          zen-workspace-button-wave-animation
@@ -2246,7 +2255,6 @@ ZenCoverArtCSSProvider.init();
 // @description    helps in adding mac os dock like aniamtion to zen worspace buttons
 // @version        1.7b
 // ==/UserScript==
-
 
 (function() {
   if (window.ZenBrowserCustomizableDockEffect) {
@@ -2667,7 +2675,10 @@ ZenCoverArtCSSProvider.init();
   }
 })();
 
-// ========================================================================================================================================================================
+
+// ====================================================================================================
+// SCRIPT 7: Compact Mode Sidebar Width Fix
+// ====================================================================================================
 // ==UserScript==
 // @ignorecache
 // @name           CompactmodeSidebarWidthFix
@@ -2675,8 +2686,6 @@ ZenCoverArtCSSProvider.init();
 // @description    it help in adjust dynamic width of psuedo background
 // @version        1.7b
 // ==/UserScript==
-
-
 
 (function () {
   const mainWindow = document.getElementById('main-window');
@@ -2716,8 +2725,9 @@ ZenCoverArtCSSProvider.init();
 })();
 
 
-
-// ========================================================================================================================================================================
+// ====================================================================================================
+// SCRIPT 8: Gradient Opacity Adjuster
+// ====================================================================================================
 // ==UserScript==
 // @ignorecache
 // @name           GradientOpacitydjuster
@@ -2725,9 +2735,6 @@ ZenCoverArtCSSProvider.init();
 // @description    it help in adjust dynamically opacity and contrast of icons and other elements
 // @version        1.7b
 // ==/UserScript==
-
-
-
 
 (function () {
   console.log('[UserChromeScript] custom-input-to-dual-css-vars-persistent.uc.js starting...');
@@ -2909,9 +2916,9 @@ ZenCoverArtCSSProvider.init();
 })();
 
 
-
-
-// ========================================================================================================================================================================
+// ====================================================================================================
+// SCRIPT 9: Zen Top Position Globalizer
+// ====================================================================================================
 // ==UserScript==
 // @ignorecache
 // @name          Zen Top Position Globalizer
