@@ -232,7 +232,7 @@
             border-radius: 4px;
         }
         
-        .vertical-pinned-tabs-container-separator {
+        .pinned-tabs-container-separator {
              display: flex !important;
              flex-direction: column;
              margin-left: 0;
@@ -243,7 +243,7 @@
              background-color: transparent !important; /* The container itself is invisible */
         }
         
-        .vertical-pinned-tabs-container-separator::before {
+        .pinned-tabs-container-separator::before {
             content: '';
             position: absolute;
             left: 0;
@@ -254,38 +254,38 @@
             transition: width 0.1s ease-in-out, background-color 0.3s ease-out;
         }
         
-        .vertical-pinned-tabs-container-separator:has(#sort-button):has(#clear-button):hover::before {
+        .pinned-tabs-container-separator:has(#sort-button):has(#clear-button):hover::before {
             width: calc(100% - 115px);
             background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
         }
-        .vertical-pinned-tabs-container-separator:has(#sort-button):not(:has(#clear-button)):hover::before {
+        .pinned-tabs-container-separator:has(#sort-button):not(:has(#clear-button)):hover::before {
             width: calc(100% - 65px);
             background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
         }
-        .vertical-pinned-tabs-container-separator:not(:has(#sort-button)):has(#clear-button):hover::before {
+        .pinned-tabs-container-separator:not(:has(#sort-button)):has(#clear-button):hover::before {
             width: calc(100% - 60px);
             background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
         }
 
-        .vertical-pinned-tabs-container-separator:hover #sort-button,
-        .vertical-pinned-tabs-container-separator:hover #clear-button {
+        .pinned-tabs-container-separator:hover #sort-button,
+        .pinned-tabs-container-separator:hover #clear-button {
             opacity: 1;
         }
 
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator {
+        .zen-workspace-tabs-section[hide-separator] .pinned-tabs-container-separator {
             margin-top: 5px !important;
             margin-bottom: 8px !important;
         }
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:hover::before {
+        .zen-workspace-tabs-section[hide-separator] .pinned-tabs-container-separator:hover::before {
              background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
         }
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:has(#sort-button):has(#clear-button):hover::before {
+        .zen-workspace-tabs-section[hide-separator] .pinned-tabs-container-separator:has(#sort-button):has(#clear-button):hover::before {
              width: calc(100% - 115px);
         }
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:has(#sort-button):not(:has(#clear-button)):hover::before {
+        .zen-workspace-tabs-section[hide-separator] .pinned-tabs-container-separator:has(#sort-button):not(:has(#clear-button)):hover::before {
              width: calc(100% - 65px);
         }
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:not(:has(#sort-button)):has(#clear-button):hover::before {
+        .zen-workspace-tabs-section[hide-separator] .pinned-tabs-container-separator:not(:has(#sort-button)):has(#clear-button):hover::before {
              width: calc(100% - 60px);
         }
         
@@ -814,7 +814,7 @@
 
         let separatorsToSort = []; // Keep track of separators to remove class later
         try {
-             separatorsToSort = document.querySelectorAll('.vertical-pinned-tabs-container-separator');
+             separatorsToSort = document.querySelectorAll('.pinned-tabs-container-separator');
              if(separatorsToSort.length > 0) {
                  console.log("Applying sorting indicator to separator(s)...");
                  separatorsToSort.forEach(sep => sep.classList.add('separator-is-sorting'));
@@ -1334,7 +1334,7 @@
     }
 
     function addButtonsToAllSeparators() {
-        const separators = document.querySelectorAll(".vertical-pinned-tabs-container-separator");
+        const separators = document.querySelectorAll(".pinned-tabs-container-separator");
         if (separators.length > 0) {
             separators.forEach(ensureButtonsExist);
         } else {
@@ -1460,7 +1460,7 @@
             checkCount++;
 
             // Check for necessary conditions
-            const separatorExists = !!document.querySelector(".vertical-pinned-tabs-container-separator");
+            const separatorExists = !!document.querySelector(".pinned-tabs-container-separator");
             const peripheryExists = !!document.querySelector('#tabbrowser-arrowscrollbox-periphery');
             const commandSetExists = !!document.querySelector("commandset#zenCommandSet");
             const gBrowserReady = typeof gBrowser !== 'undefined' && gBrowser.tabContainer;
@@ -1504,7 +1504,7 @@
                 });
                 // Provide specific feedback
                  if (!gZenWorkspacesReady) console.error(" -> gZenWorkspaces might not be fully initialized yet (activeWorkspace missing?). Ensure Zen Tab Organizer extension is loaded and enabled BEFORE this script runs.");
-                 if (!separatorExists && !peripheryExists) console.error(" -> Neither separator element '.vertical-pinned-tabs-container-separator' nor fallback periphery '#tabbrowser-arrowscrollbox-periphery' found in the DOM.");
+                 if (!separatorExists && !peripheryExists) console.error(" -> Neither separator element '.pinned-tabs-container-separator' nor fallback periphery '#tabbrowser-arrowscrollbox-periphery' found in the DOM.");
                  if (!commandSetExists) console.error(" -> Command set '#zenCommandSet' not found. Ensure Zen Tab Organizer extension is loaded and enabled.");
                  if (!gBrowserReady) console.error(" -> Global 'gBrowser' object not ready.");
             }
