@@ -1,0 +1,70 @@
+[
+    {
+      "property": "mod-autoexpand-performance-mode",
+      "label": "Performance Setting",
+      "type": "dropdown",
+      "defaultValue": "balanced",
+      "options": [
+        {
+          "label": "Fancy",
+          "value": "fancy"
+        },
+        {
+          "label": "Balanced",
+          "value": "balanced"
+        },
+        {
+          "label": "Potato",
+          "value": "potato"
+        }
+      ]
+    },
+    {
+        "property": "mod.autoexpand.collapsed_width",
+        "label": "Width of the minimized sidebar",
+        "type": "string",
+        "defaultValue": "45px"
+    },
+    {
+        "property": "mod.autoexpand.expanded_width",
+        "label": "Width of the expanded sidebar",
+        "type": "string",
+        "defaultValue": "250px"
+    },
+    {
+        "property": "mod.autoexpand.animation_duration",
+        "label": "Expanding animation duration, in ms (default: 250ms)",
+        "type": "string",
+        "defaultValue": "250ms"
+    },
+    {
+        "property": "mod.autoexpand.animation_delay",
+        "label": "Delay before expanding after hover (default: 50ms)",
+        "type": "string",
+        "defaultValue": "50ms"
+    },
+    {
+        "property": "mod.autoexpand.collapse_delay",
+        "label": "Delay before collapsing (default: 100ms)",
+        "type": "string",
+        "defaultValue": "100ms"
+    },
+    {
+        "property": "mod.autoexpand.hide_workspace_indicator",
+        "label": "Hide top workspace indicator",
+        "type": "checkbox",
+        "defaultValue": true
+    },
+    {
+        "property": "mod.autoexpand.visible_scroll",
+        "label": "Make the tabs scroll bar visible in the collapsed state, when you have many tabs open - not compatible with superpins",
+        "type": "checkbox",
+        "defaultValue": false
+    },
+    {
+        "property": "mod.autoexpand.essential_align",
+        "label": "Make the selected essential tab be placed in the first position, visible when collapsed",
+        "type": "checkbox",
+        "defaultValue": false
+    }
+]
