@@ -261,14 +261,6 @@
     ]
   },
   "paneru": {
-    "homepage": "TheBigWazz/Paneru",
-    "image": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/image.png",
-    "name": "Paneru",
-    "version": "1.0.1",
-    "description": "A comprehensive theme that separates various elements onto their own panel, respects Firefox theme colors, and supports transparency.",
-    "readme": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/README.md",
-    "fork": [
-      "floorp"
-    ]
+    "homepage": "TheBigWazz/Paneru"
   }
 }
