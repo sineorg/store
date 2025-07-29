@@ -386,13 +386,13 @@ class ZenGroups {
         e.preventDefault();
         e.stopPropagation();
       }
-    });
+    }); */ // To-Do: figure out what I'ma do here...
 
     const labelContainer = group.querySelector(".tab-group-label-container");
     if (labelContainer) {
       labelContainer.addEventListener("click", groupHandlers.handleClick);
     }
-      */ // To-Do: figure out what I'ma do here...
+      
   }
 
   #removeGroupHandlers(group) {
