@@ -1,6 +1,6 @@
 /* ==== Tab groups ==== */
 /* https://github.com/Anoms12/Advanced-Tab-Groups */
-/* ====== V2.8.1s ====== */
+/* ====== V2.9.0s ====== */
 
 
 class ZenGroups {
@@ -379,7 +379,7 @@ class ZenGroups {
     group.addEventListener("mouseenter", groupHandlers.handleMouseEnter);
     group.addEventListener("mouseleave", groupHandlers.handleMouseLeave);
 
-    // Disable right-click context menu on tab-group
+    /* Disable right-click context menu on tab-group
     group.addEventListener("contextmenu", function(e) {
       // Only disable context menu if right-clicked directly on the group, not its children
       if (e.target === group || e.target.classList.contains("tab-group-label-container")) {
@@ -392,6 +392,7 @@ class ZenGroups {
     if (labelContainer) {
       labelContainer.addEventListener("click", groupHandlers.handleClick);
     }
+      */ // To-Do: figure out what I'ma do here...
   }
 
   #removeGroupHandlers(group) {
