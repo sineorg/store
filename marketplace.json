@@ -270,5 +270,15 @@
     "fork": [
       "floorp"
     ]
+  },
+  "ZenMotion-Pro": {
+    "homepage": "Mohammed55Z/ZenMotion-Pro",
+    "name": "Zen",
+    "version": "1.2.1",
+    "description": "A premium, performance-optimized animation framework that transforms Zen Browser into a Modern Material Interface.",
+    "readme": "https://raw.githubusercontent.com/Mohammed55Z/ZenMotion-Pro/refs/heads/main/README.md",
+    "fork": [
+      "Zen"
+    ]
   }
 }
