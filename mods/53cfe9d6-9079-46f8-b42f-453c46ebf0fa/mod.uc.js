@@ -2966,3 +2966,100 @@ ZenCoverArtCSSProvider.init();
         window.addEventListener('load', runZenTopGlobalizer, { once: true });
     }
 })();
+
+
+// ====================================================================================================
+// SCRIPT 10: Zen Mdia Player Peak height
+// ====================================================================================================
+// ==UserScript==
+// @ignorecache
+// @name          Zen Media Player Peak height
+// @namespace      height
+// // @description   calculate zen media playe height on hover and store it in a variable
+// @version        1.7b
+// ==/UserScript==
+
+
+
+const MediaPlayerPeakHeight = {
+  _mediaPlayer: null,
+  _isHovering: false,
+
+  /**
+   * Finds and caches the media player element.
+   */
+  _getMediaPlayer() {
+    if (!this._mediaPlayer) {
+      this._mediaPlayer = document.querySelector("#zen-media-controls-toolbar > toolbaritem");
+    }
+    return this._mediaPlayer;
+  },
+
+  /**
+   * This function calculates and sets the peak height.
+   */
+  _setPeakHeight() {
+    const player = this._getMediaPlayer();
+    if (!player) return;
+
+    // Temporarily apply a class that forces the player into its expanded state.
+    // This allows us to measure its final height instantly, without waiting for the animation.
+    player.classList.add("measure-peak-height");
+    
+    // Measure the height now that it's fully expanded.
+    const peakHeight = player.getBoundingClientRect().height;
+
+    // Set the CSS variable with this peak height.
+    document.documentElement.style.setProperty('--zen-media-player-peak-height', `${peakHeight}px`);
+    
+    // Immediately remove the measurement class so the CSS transition can play normally.
+    player.classList.remove("measure-peak-height");
+  },
+
+  /**
+   * Sets up the event listeners on the media player.
+   */
+  init() {
+    const player = this._getMediaPlayer();
+    if (!player) {
+      setTimeout(() => this.init(), 500);
+      return;
+    }
+    
+    console.log("[MediaPlayerPeakHeight] Initializing hover listeners.");
+
+    // ---- Event Listener for Mouse Entering ----
+    player.addEventListener("mouseenter", () => {
+      // We only need to calculate the height once per hover session.
+      if (!this._isHovering) {
+        this._isHovering = true;
+        this._setPeakHeight();
+      }
+    });
+
+    // ---- Event Listener for Mouse Leaving ----
+    player.addEventListener("mouseleave", () => {
+      this._isHovering = false;
+      // We don't need to do anything on mouseleave, the variable will just stay
+      // at the last known peak height, ready for the next hover.
+    });
+
+    // We also need to calculate the height if the player's content changes
+    // which might happen when a new song starts.
+    const observer = new MutationObserver(() => {
+        // If the content changes while we are hovering, re-calculate.
+        if (this._isHovering) {
+            this._setPeakHeight();
+        }
+    });
+    observer.observe(player, { childList: true, subtree: true, characterData: true });
+    
+    // Initial calculation on startup.
+    this._setPeakHeight();
+  }
+};
+
+// Wait for the window to be fully loaded before starting
+window.addEventListener("load", () => {
+  MediaPlayerPeakHeight.init();
+}, { once: true });
