@@ -19,7 +19,7 @@ const displayAll = () => {
 const params = new URLSearchParams(window.location.search);
 const query = params.get("theme");
 if (query) {
-    console.log(themes, Object.keys(themes), Object.keys(themes).find(themeId => themeId === query), themes[Object.keys(themes).find(themeId => themeId === query)]);
+    console.log(query, themes, Object.keys(themes), Object.keys(themes).find(themeId => themeId === query), themes[Object.keys(themes).find(themeId => themeId === query)]);
     const theme = themes[Object.keys(themes).find(themeId => themeId === query)];
     if (theme) {
         displayTheme(theme);
