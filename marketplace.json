@@ -283,5 +283,15 @@
       "firefox"
     ]
   },
-  "c9ee0d97-d2d6-40fd-8f85-549fe000b868": "rasyidrafi/zen-deta-loading-bar"
+  "c9ee0d97-d2d6-40fd-8f85-549fe000b868": {
+    "homepage": "rasyidrafi/zen-deta-loading-bar",
+    "image": "https://github.com/rasyidrafi/zen-deta-loading-bar/blob/main/image.png?raw=true",
+    "name": "Deta Loading Bar",
+    "version": "1.3.1",
+    "description": "A simple loading bar on top of the page similar to the one used in Deta Surf browser. Currently only works on Zen Browser.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-deta-loading-bar/refs/heads/main/README.md",
+    "fork": [
+      "zen"
+    ]
+  }
 }
