@@ -2,13 +2,11 @@ const themeData = await fetch("https://sineorg.github.io/store/marketplace.json"
 const themes = await themeData.json();
 
 const displayTheme = (theme) => {
-    document.querySelector(".warning").style.color = "white";
     document.querySelector(".warning").innerHTML = `
-        You have attempted to query the theme: ${theme.name}.
+        You have attempted to query the theme: ${theme.name}, ${theme.description}.
+        </br>
         Due to this site's construction, themes cannot be displayed and
         this query is only for demonstration of query functionality.
-        <br/>
-        Theme ID: ${theme.id}
     `;
 }
 
