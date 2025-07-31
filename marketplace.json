@@ -310,13 +310,22 @@
     "homepage": "rasyidrafi/zen-tidy-popup",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "name": "Zen Tidy Popup",
-    "version": "2.7.8",
-    "description": "Modifies popup panels, changing divider lines with empty spacer, and makes the button more compact with customizable hover colors for light and dark themes.",
+    "version": "2.8.2",
+    "description": "Cleans up popup panels with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
     "fork": [
       "zen",
       "firefox"
     ]
   },
-  "ZenMotion-Pro": "Mohammed55Z/ZenMotion-Pro"
+  "ZenMotion-Pro": {
+    "homepage": "Mohammed55Z/ZenMotion-Pro",
+    "name": "ZenMotion Pro",
+    "version": "1.3.1",
+    "description": "A premium, performance-optimized animation framework that transforms Zen Browser into a Modern Material Interface. :))",
+    "readme": "https://raw.githubusercontent.com/Mohammed55Z/ZenMotion-Pro/refs/heads/main/README.md",
+    "fork": [
+      "zen"
+    ]
+  }
 }
