@@ -33,7 +33,15 @@
     ]
   },
   "advanced-tab-groups": {
-    "homepage": "Anoms12/Advanced-Tab-Groups"
+    "homepage": "Anoms12/Advanced-Tab-Groups",
+    "image": "https://raw.githubusercontent.com/Anoms12/Advanced-Tab-Groups/main/image.png",
+    "name": "Advanced Tab Groups",
+    "version": "2.9.1s",
+    "description": "Folders for Zen Browser",
+    "readme": "https://raw.githubusercontent.com/Anoms12/Advanced-Tab-Groups/main/README.md",
+    "fork": [
+      "zen"
+    ]
   },
   "zaps-cool-photon-theme": {
     "homepage": "zapSNH/zapsCoolPhotonTheme",
@@ -61,7 +69,15 @@
     ]
   },
   "zen-tidy-downloads": {
-    "homepage": "Anoms12/Zen-Tidy-Downloads"
+    "homepage": "Anoms12/Zen-Tidy-Downloads",
+    "image": "https://github.com/Anoms12/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
+    "name": "Tidy Downloads",
+    "version": "2.0.0",
+    "description": "Clean up your downloads with AI",
+    "readme": "https://raw.githubusercontent.com/Anoms12/Zen-Tidy-Downloads/refs/heads/main/README.md",
+    "fork": [
+      "zen"
+    ]
   },
   "quick-search-zen-browser": {
     "homepage": "Darsh-A/Quick-Search-Zen-Browser",
@@ -74,7 +90,16 @@
     ]
   },
   "animations-plus": {
-    "homepage": "Anoms12/Animations-plus"
+    "homepage": "Anoms12/Animations-plus",
+    "image": "https://raw.githubusercontent.com/Anoms12/Animations-plus/main/image.png",
+    "name": "Animations Plus",
+    "version": "1.2.2",
+    "description": "A nice animation pack for Zen Browser.",
+    "readme": "https://raw.githubusercontent.com/Anoms12/Animations-plus/main/README.md",
+    "fork": [
+      "zen",
+      "floorp"
+    ]
   },
   "tab-rename-zen-browser": {
     "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
@@ -122,7 +147,15 @@
     ]
   },
   "zen-live-calendar": {
-    "homepage": "Anoms12/Zen-Live-Calendar"
+    "homepage": "Anoms12/Zen-Live-Calendar",
+    "image": "https://github.com/Anoms12/Zen-Live-Calendar/blob/main/image.png?raw=true",
+    "name": "Live Calendar",
+    "version": "1.0.0",
+    "description": "Brings the live calendar functionality from Arc to Zen, making it feel as native as possible.",
+    "readme": "https://raw.githubusercontent.com/Anoms12/Zen-Live-Calendar/refs/heads/main/README.md",
+    "fork": [
+      "zen"
+    ]
   },
   "zen-drop-link": {
     "homepage": "https://github.com/octaviusz/zen-drop-link",
