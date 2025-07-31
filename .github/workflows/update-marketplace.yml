@@ -96,7 +96,7 @@ jobs:
             else
               echo "theme.json not found at $theme_path, trying API" >&2
               # Fall back to API for current repo
-              local api_url="https://api.github.com/repos/$repo/contents/$theme_path?ref=$branch"
+              local api_url="https://raw.githubusercontent.com/$repo/$branch/$theme_path"
               local response=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
                                    -H "Accept: application/vnd.github.v3+json" \
                                    "$api_url")
@@ -113,7 +113,7 @@ jobs:
           else
             echo "Fetching from external repository via API" >&2
             # Try to fetch theme.json from external repository
-            local api_url="https://api.github.com/repos/$repo/contents/$theme_path?ref=$branch"
+            local api_url="https://raw.githubusercontent.com/$repo/$branch/$theme_path"
             
             echo "Fetching theme data from: $api_url" >&2
             
