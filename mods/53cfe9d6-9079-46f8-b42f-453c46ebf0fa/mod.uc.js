@@ -2980,86 +2980,107 @@ ZenCoverArtCSSProvider.init();
 // ==/UserScript==
 
 
-
 const MediaPlayerPeakHeight = {
   _mediaPlayer: null,
+  _parentToolbar: null,
+  _currentPeakHeight: 0,
   _isHovering: false,
 
+  _getElements() {
+    if (!this._mediaPlayer) this._mediaPlayer = document.querySelector("#zen-media-controls-toolbar > toolbaritem");
+    if (!this._parentToolbar) this._parentToolbar = document.querySelector("#zen-media-controls-toolbar");
+  },
+
   /**
-   * Finds and caches the media player element.
+   * The core measurement function.
    */
-  _getMediaPlayer() {
-    if (!this._mediaPlayer) {
-      this._mediaPlayer = document.querySelector("#zen-media-controls-toolbar > toolbaritem");
+  _measureAndSetPeakHeight() {
+    this._getElements();
+    if (!this._mediaPlayer || !this._parentToolbar) return;
+
+    // 1. Create a clone of the player element.
+    const clone = this._mediaPlayer.cloneNode(true);
+
+    // 2. Style the clone to be completely invisible and not affect page layout.
+    clone.style.position = 'fixed';
+    clone.style.visibility = 'hidden';
+    clone.style.zIndex = '-1000';
+    clone.style.left = '-9999px'; // Move it far off-screen to be safe
+    clone.style.transition = 'none !important';
+
+    // 3. Find the '.show-on-hover' element WITHIN the clone.
+    const showOnHoverClone = clone.querySelector('.show-on-hover');
+    if (showOnHoverClone) {
+      // 4. Manually apply the EXACT styles from the browser's default :hover rule.
+      //    This forces the clone into its fully expanded state for measurement.
+      showOnHoverClone.style.transition = 'none !important';
+      showOnHoverClone.style.maxHeight = '50px';
+      showOnHoverClone.style.padding = '5px';
+      showOnHoverClone.style.marginBottom = '0';
+      showOnHoverClone.style.opacity = '0';
+      showOnHoverClone.style.transform = 'translateY(0)';
     }
-    return this._mediaPlayer;
+
+    // 5. Append the clone to the original parent to ensure it inherits all contextual styles.
+    this._parentToolbar.appendChild(clone);
+
+    // 6. Get the height. This is the definitive peak height.
+    const peakHeight = clone.getBoundingClientRect().height;
+
+    // 7. Destroy the clone immediately.
+    this._parentToolbar.removeChild(clone);
+
+    // 8. Update the CSS variable only if the height is valid and has actually changed.
+    if (peakHeight > 0 && peakHeight !== this._currentPeakHeight) {
+      this._currentPeakHeight = peakHeight;
+      document.documentElement.style.setProperty('--zen-media-player-peak-height', `${peakHeight}px`);
+    }
   },
 
-  /**
-   * This function calculates and sets the peak height.
-   */
-  _setPeakHeight() {
-    const player = this._getMediaPlayer();
-    if (!player) return;
-
-    // Temporarily apply a class that forces the player into its expanded state.
-    // This allows us to measure its final height instantly, without waiting for the animation.
-    player.classList.add("measure-peak-height");
-    
-    // Measure the height now that it's fully expanded.
-    const peakHeight = player.getBoundingClientRect().height;
-
-    // Set the CSS variable with this peak height.
-    document.documentElement.style.setProperty('--zen-media-player-peak-height', `${peakHeight}px`);
-    
-    // Immediately remove the measurement class so the CSS transition can play normally.
-    player.classList.remove("measure-peak-height");
-  },
-
-  /**
-   * Sets up the event listeners on the media player.
-   */
   init() {
-    const player = this._getMediaPlayer();
-    if (!player) {
+    this._getElements();
+    if (!this._mediaPlayer) {
       setTimeout(() => this.init(), 500);
       return;
     }
-    
-    console.log("[MediaPlayerPeakHeight] Initializing hover listeners.");
 
-    // ---- Event Listener for Mouse Entering ----
-    player.addEventListener("mouseenter", () => {
-      // We only need to calculate the height once per hover session.
+    console.log("[MediaPlayerPeakHeight] Initializing.");
+
+    // ---- Listener 1: Mouse Enter ----
+    // This is our primary trigger to calculate the height.
+    this._mediaPlayer.addEventListener("mouseenter", () => {
+      // The _isHovering flag prevents this from running multiple times if the mouse jitters.
       if (!this._isHovering) {
         this._isHovering = true;
-        this._setPeakHeight();
+        this._measureAndSetPeakHeight();
       }
     });
 
-    // ---- Event Listener for Mouse Leaving ----
-    player.addEventListener("mouseleave", () => {
+    // ---- Listener 2: Mouse Leave ----
+    this._mediaPlayer.addEventListener("mouseleave", () => {
       this._isHovering = false;
-      // We don't need to do anything on mouseleave, the variable will just stay
-      // at the last known peak height, ready for the next hover.
     });
 
-    // We also need to calculate the height if the player's content changes
-    // which might happen when a new song starts.
+    // ---- Listener 3: Mutation Observer ----
+    // This handles the case where the song changes, which might alter the peak height.
     const observer = new MutationObserver(() => {
-        // If the content changes while we are hovering, re-calculate.
-        if (this._isHovering) {
-            this._setPeakHeight();
-        }
+      // If the content changes while we are hovering, we need to re-calculate.
+      // Otherwise, the next mouseenter will handle it.
+      if (this._isHovering) {
+        this._measureAndSetPeakHeight();
+      }
     });
-    observer.observe(player, { childList: true, subtree: true, characterData: true });
-    
-    // Initial calculation on startup.
-    this._setPeakHeight();
+    observer.observe(this._mediaPlayer, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+
+    // Run one initial measurement on startup to set a default value.
+    this._measureAndSetPeakHeight();
   }
 };
 
-// Wait for the window to be fully loaded before starting
 window.addEventListener("load", () => {
   MediaPlayerPeakHeight.init();
 }, { once: true });
