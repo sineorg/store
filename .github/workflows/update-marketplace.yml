@@ -3,7 +3,10 @@ name: Update marketplace.json to contain latest data
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/17 * * * *" # every 17 minutes (GitHub may throttle more frequent runs)
+    - cron: "*/7 * * * *" # every 7 minutes (GitHub may throttle more frequent runs)
+  push:
+    branches:
+      - 'main'
 
 permissions:
   contents: write
@@ -30,7 +33,7 @@ jobs:
         # Install jq for JSON processing
         sudo apt-get update && sudo apt-get install -y jq curl
         
-        # Function to normalize GitHub URLs
+        # Function to normalize GitHub URLs and convert to raw URLs
         normalize_github_url() {
           local url="$1"
           local branch=""
@@ -66,7 +69,7 @@ jobs:
           echo "$repo|$branch|$folder"
         }
         
-        # Function to fetch theme.json from GitHub repository
+        # Function to fetch theme.json using raw GitHub URLs
         fetch_theme_data() {
           local repo="$1"
           local branch="$2"
@@ -86,52 +89,42 @@ jobs:
           if [[ "$repo" == "$current_repo" ]]; then
             echo "Fetching from current repository using local file system" >&2
             
-            # For current repo, try to read theme.json directly from filesystem first
+            # For current repo, read theme.json directly from filesystem
             if [[ -f "$theme_path" ]]; then
               echo "Found theme.json at: $theme_path" >&2
               theme_content=$(cat "$theme_path")
             else
-              echo "theme.json not found at $theme_path, trying API" >&2
-              # Fall back to API for current repo
-              local api_url="https://api.github.com/repos/$repo/contents/$theme_path?ref=$branch"
-              local response=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                                   -H "Accept: application/vnd.github.v3+json" \
-                                   "$api_url")
-              
-              if echo "$response" | jq -e '.message' > /dev/null 2>&1; then
-                echo "API request failed: $(echo "$response" | jq -r '.message')" >&2
-                # Return a minimal object with just the homepage
-                jq -n --arg homepage "$homepage" '{homepage: $homepage}'
-                return
-              fi
-              
-              theme_content=$(echo "$response" | jq -r '.content' | base64 -d)
+              echo "theme.json not found at $theme_path in current repository" >&2
+              # Return a minimal object with just the homepage
+              jq -n --arg homepage "$homepage" '{homepage: $homepage}'
+              return
             fi
           else
-            echo "Fetching from external repository via API" >&2
-            # Try to fetch theme.json from external repository
-            local api_url="https://api.github.com/repos/$repo/contents/$theme_path?ref=$branch"
+            echo "Fetching from external repository via raw URL" >&2
             
-            echo "Fetching theme data from: $api_url" >&2
+            # Construct raw GitHub URL
+            # Format: https://raw.githubusercontent.com/user/repo/branch/path/to/file
+            local raw_url="https://raw.githubusercontent.com/$repo/$branch/$theme_path"
             
-            # Try with authentication first
-            local response=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                                 -H "Accept: application/vnd.github.v3+json" \
-                                 "$api_url")
+            echo "Fetching theme data from raw URL: $raw_url" >&2
             
-            # Check if the request failed due to permissions
-            if echo "$response" | jq -e '.message' > /dev/null 2>&1; then
-              local error_message=$(echo "$response" | jq -r '.message')
-              echo "Error with authenticated request: $error_message" >&2
+            # Fetch the raw file content
+            local response=$(curl -s --fail "$raw_url" 2>/dev/null)
+            local curl_exit_code=$?
+            
+            # Check if curl succeeded
+            if [[ $curl_exit_code -ne 0 ]]; then
+              echo "Failed to fetch theme.json from raw URL (exit code: $curl_exit_code)" >&2
               
-              # If it's a permission error, try without authentication for public repos
-              if [[ "$error_message" == *"403"* ]] || [[ "$error_message" == *"denied"* ]] || [[ "$error_message" == *"permission"* ]]; then
-                echo "Trying unauthenticated request for public repository..." >&2
-                response=$(curl -s -H "Accept: application/vnd.github.v3+json" "$api_url")
+              # Try with 'master' branch as fallback
+              if [[ "$branch" == "main" ]]; then
+                echo "Trying with 'master' branch as fallback..." >&2
+                raw_url="https://raw.githubusercontent.com/$repo/master/$theme_path"
+                response=$(curl -s --fail "$raw_url" 2>/dev/null)
+                curl_exit_code=$?
                 
-                # Check if unauthenticated request also failed
-                if echo "$response" | jq -e '.message' > /dev/null 2>&1; then
-                  echo "Unauthenticated request also failed: $(echo "$response" | jq -r '.message')" >&2
+                if [[ $curl_exit_code -ne 0 ]]; then
+                  echo "Also failed with 'master' branch" >&2
                   # Return a minimal object with just the homepage
                   jq -n --arg homepage "$homepage" '{homepage: $homepage}'
                   return
@@ -143,8 +136,7 @@ jobs:
               fi
             fi
             
-            # Decode base64 content
-            theme_content=$(echo "$response" | jq -r '.content' | base64 -d)
+            theme_content="$response"
           fi
           
           # Validate JSON
