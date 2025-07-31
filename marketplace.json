@@ -32,7 +32,9 @@
       "zen"
     ]
   },
-  "advanced-tab-groups": "Anoms12/Advanced-Tab-Groups",
+  "advanced-tab-groups": {
+    "homepage": "Anoms12/Advanced-Tab-Groups"
+  },
   "zaps-cool-photon-theme": {
     "homepage": "zapSNH/zapsCoolPhotonTheme",
     "image": "https://i.imgur.com/FyzTFKg.png",
@@ -71,7 +73,9 @@
       "zen"
     ]
   },
-  "animations-plus": "Anoms12/Animations-plus",
+  "animations-plus": {
+    "homepage": "Anoms12/Animations-plus"
+  },
   "tab-rename-zen-browser": {
     "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
     "name": "Better Tab Rename",
@@ -117,7 +121,9 @@
       "firefox"
     ]
   },
-  "zen-live-calendar": "Anoms12/Zen-Live-Calendar",
+  "zen-live-calendar": {
+    "homepage": "Anoms12/Zen-Live-Calendar"
+  },
   "zen-drop-link": {
     "homepage": "https://github.com/octaviusz/zen-drop-link",
     "image": "",
