@@ -306,5 +306,16 @@
       "firefox"
     ]
   },
-  "f966100a-4fed-4df5-a082-f001c5bd654e": "rasyidrafi/zen-tidy-popup"
+  "f966100a-4fed-4df5-a082-f001c5bd654e": {
+    "homepage": "rasyidrafi/zen-tidy-popup",
+    "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
+    "name": "Zen Tidy Popup",
+    "version": "2.7.8",
+    "description": "Modifies popup panels, changing divider lines with empty spacer, and makes the button more compact with customizable hover colors for light and dark themes.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
+    "fork": [
+      "zen",
+      "firefox"
+    ]
+  }
 }
