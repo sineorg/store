@@ -297,9 +297,9 @@
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
     "homepage": "rasyidrafi/zen-single-trackpad-animation",
     "image": "https://github.com/rasyidrafi/zen-single-trackpad-animation/blob/main/image.png?raw=true",
-    "name": "Single Trackpad Animation",
-    "version": "1.0.0",
-    "description": "Adds smooth trackpad swipe animations with scaling and translation effects when navigating between pages in your browser.",
+    "name": "Custom Trackpad Swipe Animation & Color",
+    "version": "2.0.1",
+    "description": "Customizable trackpad swipe transitions and the colors for the swipe UI.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/README.md",
     "fork": [
       "zen",
