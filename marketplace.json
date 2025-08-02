@@ -297,8 +297,8 @@
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
     "homepage": "rasyidrafi/zen-single-trackpad-animation",
     "image": "https://github.com/rasyidrafi/zen-single-trackpad-animation/blob/main/image.png?raw=true",
-    "name": "Custom Trackpad Swipe Animation & Color",
-    "version": "2.0.2",
+    "name": "Custom Swipe Animation & Color",
+    "version": "2.0.3",
     "description": "Customizable trackpad swipe transitions and the colors for the swipe UI.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/README.md",
     "fork": [
