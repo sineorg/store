@@ -271,18 +271,6 @@
       "floorp"
     ]
   },
-  "ccaa4c1d-063e-4f50-9da4-f15cc731a43d": {
-    "homepage": "rasyidrafi/zen-no-status-bar",
-    "image": "https://github.com/rasyidrafi/zen-no-status-bar/blob/main/icon.png?raw=true",
-    "name": "No Status Bar",
-    "version": "3.0.2",
-    "description": "Hide the status bar for a cleaner Zen/Firefox UI.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-no-status-bar/refs/heads/main/README.md",
-    "fork": [
-      "zen",
-      "firefox"
-    ]
-  },
   "c9ee0d97-d2d6-40fd-8f85-549fe000b868": {
     "homepage": "rasyidrafi/zen-deta-loading-bar",
     "image": "https://github.com/rasyidrafi/zen-deta-loading-bar/blob/main/image.png?raw=true",
