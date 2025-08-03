@@ -311,7 +311,7 @@
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "name": "Tidy Popup & Extension",
     "version": "2.8.7",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
     "fork": [
       "zen",
@@ -327,5 +327,6 @@
     "fork": [
       "zen"
     ]
-  }
+  },
+  "42b8c4ac-76d5-4521-9917-2e478931ee53": "rasyidrafi/zen-compact-transparent-mode"
 }
