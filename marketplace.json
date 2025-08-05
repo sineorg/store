@@ -268,7 +268,8 @@
     "description": "A comprehensive theme that separates various elements onto their own panel, respects Firefox theme colors, and supports transparency.",
     "readme": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/README.md",
     "fork": [
-      "floorp"
+      "floorp",
+      "firefox"
     ]
   },
   "c9ee0d97-d2d6-40fd-8f85-549fe000b868": {
