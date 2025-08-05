@@ -32,17 +32,6 @@
       "zen"
     ]
   },
-  "advanced-tab-groups": {
-    "homepage": "Anoms12/Advanced-Tab-Groups",
-    "image": "https://raw.githubusercontent.com/Anoms12/Advanced-Tab-Groups/main/image.png",
-    "name": "Advanced Tab Groups",
-    "version": "2.9.1s",
-    "description": "Folders for Zen Browser",
-    "readme": "https://raw.githubusercontent.com/Anoms12/Advanced-Tab-Groups/main/README.md",
-    "fork": [
-      "zen"
-    ]
-  },
   "zaps-cool-photon-theme": {
     "homepage": "zapSNH/zapsCoolPhotonTheme",
     "image": "https://i.imgur.com/FyzTFKg.png",
