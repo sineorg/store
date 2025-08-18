@@ -25,20 +25,9 @@
     "homepage": "https://github.com/YashjitPal/Arc-2.0/",
     "image": "https://github.com/user-attachments/assets/f9a25afb-2503-421a-bed0-6e94f2ab43db",
     "name": "Arc 2.0",
-    "version": "3.2.5",
+    "version": "3.2.6",
     "description": "Arc-like Zen Browser theme.",
     "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/main/README.md",
-    "fork": [
-      "zen"
-    ]
-  },
-  "advanced-tab-groups": {
-    "homepage": "Anoms12/Advanced-Tab-Groups",
-    "image": "https://raw.githubusercontent.com/Anoms12/Advanced-Tab-Groups/main/image.png",
-    "name": "Advanced Tab Groups",
-    "version": "2.9.1s",
-    "description": "Folders for Zen Browser",
-    "readme": "https://raw.githubusercontent.com/Anoms12/Advanced-Tab-Groups/main/README.md",
     "fork": [
       "zen"
     ]
@@ -47,9 +36,9 @@
     "homepage": "zapSNH/zapsCoolPhotonTheme",
     "image": "https://i.imgur.com/FyzTFKg.png",
     "name": "zap's cool photon theme",
-    "version": "141.4",
+    "version": "141.5",
     "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
-    "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/nightly/README.md",
+    "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
     "fork": [
       "firefox",
       "waterfox",
@@ -126,7 +115,7 @@
     "homepage": "1247343406/context-menu-icons-for-Zen",
     "image": "https://github.com/1247343406/context-menu-icons-for-Zen/blob/main/.asset/Demo%20Image.jpg",
     "name": "Context Menu Icons",
-    "version": "1.9.1",
+    "version": "1.9.1.2",
     "description": "Bring the icon of the context menu back to Zen/Firefox browser ",
     "readme": "https://raw.githubusercontent.com/1247343406/context-menu-icons-for-Zen/refs/heads/main/README.md",
     "fork": [
@@ -171,7 +160,7 @@
   "customize-collapsed-sidebar": {
     "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
     "name": "Customize Collapsed Sidebar",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
     "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
     "fork": [
@@ -221,7 +210,7 @@
     "homepage": "greeeen-dev/natsumi-browser",
     "image": "https://github.com/greeeen-dev/natsumi-browser/raw/dev/images/main-backgroundless.png",
     "name": "Natsumi Browser",
-    "version": "4.0.2",
+    "version": "5.0.3",
     "description": "A skin for Firefox and its forks that makes things flow. ",
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
     "fork": [
@@ -268,7 +257,8 @@
     "description": "A comprehensive theme that separates various elements onto their own panel, respects Firefox theme colors, and supports transparency.",
     "readme": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/README.md",
     "fork": [
-      "floorp"
+      "floorp",
+      "firefox"
     ]
   },
   "c9ee0d97-d2d6-40fd-8f85-549fe000b868": {
@@ -298,8 +288,8 @@
     "homepage": "rasyidrafi/zen-tidy-popup",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "name": "Tidy Popup & Extension",
-    "version": "2.8.7",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
+    "version": "2.8.9",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
     "fork": [
       "zen",
@@ -320,7 +310,7 @@
     "homepage": "rasyidrafi/zen-compact-transparent-mode",
     "image": "https://github.com/rasyidrafi/zen-compact-transparent-mode/blob/main/image.png?raw=true",
     "name": "Zen Compact Transparent Mode",
-    "version": "1.0.3",
+    "version": "1.0.8",
     "description": "Make popups UI menu transparent with custom settings.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-compact-transparent-mode/refs/heads/main/README.md",
     "fork": [
@@ -332,12 +322,29 @@
     "homepage": "rasyidrafi/zen-custom-urlbar",
     "image": "https://github.com/rasyidrafi/zen-custom-urlbar/blob/main/image.png?raw=true",
     "name": "Zen Custom URL Bar",
-    "version": "1.0.2",
+    "version": "1.0.5",
     "description": "Customizable URL bar with animations.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-custom-urlbar/refs/heads/main/README.md",
     "fork": [
       "zen",
       "firefox"
+    ]
+  },
+  "bada16c1-3b14-483b": {
+    "homepage": "themaster5209/zen-better-new-tab-button",
+    "name": "Better New Tab button",
+    "version": "1.0.2",
+    "description": "A mod for Zen Browser that enhances the appearance of the New Tab button and makes some changes to spacing around it"
+  },
+  "cfafe94c-5a29-4dae-8489-6be514185474": {
+    "homepage": "rasyidrafi/zen-better-sidebar",
+    "image": "https://github.com/rasyidrafi/zen-better-sidebar/blob/main/image.png?raw=true",
+    "name": "Better Sidebar",
+    "version": "1.1.5",
+    "description": "Enhance default firefox sidebar with a modern look and feel matching Zen UI.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-better-sidebar/refs/heads/main/README.md",
+    "fork": [
+      "zen"
     ]
   },
   "3c8ebf69-1042-49b1-8f08-9178f9490659": "rasyidrafi/zen-always-show-music-bar"
