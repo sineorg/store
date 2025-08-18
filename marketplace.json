@@ -336,5 +336,15 @@
     "version": "1.0.2",
     "description": "A mod for Zen Browser that enhances the appearance of the New Tab button and makes some changes to spacing around it"
   },
-  "cfafe94c-5a29-4dae-8489-6be514185474": "rasyidrafi/zen-better-sidebar"
+  "cfafe94c-5a29-4dae-8489-6be514185474": {
+    "homepage": "rasyidrafi/zen-better-sidebar",
+    "image": "https://github.com/rasyidrafi/zen-better-sidebar/blob/main/image.png?raw=true",
+    "name": "Better Sidebar",
+    "version": "1.1.5",
+    "description": "Enhance default firefox sidebar with a modern look and feel matching Zen UI.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-better-sidebar/refs/heads/main/README.md",
+    "fork": [
+      "zen"
+    ]
+  }
 }
