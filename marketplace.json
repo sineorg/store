@@ -335,5 +335,6 @@
     "name": "Better New Tab button",
     "version": "1.0.2",
     "description": "A mod for Zen Browser that enhances the appearance of the New Tab button and makes some changes to spacing around it"
-  }
+  },
+  "cfafe94c-5a29-4dae-8489-6be514185474": "rasyidrafi/zen-better-sidebar"
 }
