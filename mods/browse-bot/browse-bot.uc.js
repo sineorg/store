@@ -16,6 +16,7 @@
     DND_ENABLED: "extension.browse-bot.dnd-enabled",
     POSITION: "extension.browse-bot.position",
     DEBUG_MODE: "extension.browse-bot.debug-mode",
+    SOLID_BG: "extension.browse-bot.solid-bg",
 
     GOD_MODE: "extension.browse-bot.god-mode",
     CITATIONS_ENABLED: "extension.browse-bot.citations-enabled",
@@ -2159,6 +2160,7 @@ Here is the initial info about the current page:
         { label: "Persist Chat (don't persist when browser closes)", pref: PREFS.PERSIST },
         { label: "Debug Mode (logs in console)", pref: PREFS.DEBUG_MODE },
         { label: "Enable Drag and Drop", pref: PREFS.DND_ENABLED },
+        { label: "Solid Background", pref: PREFS.SOLID_BG },
       ];
       const positionSelectorPlaceholderHtml = `
       <div class="setting-item">
