@@ -3084,3 +3084,418 @@ const MediaPlayerPeakHeight = {
 window.addEventListener("load", () => {
   MediaPlayerPeakHeight.init();
 }, { once: true });
+
+
+// ====================================================================================================
+// SCRIPT 11: Tab close Slide Up
+// ====================================================================================================
+// ==UserScript==
+// @ignorecache
+// @name          Tab Closing slide up animation
+// @namespace      height
+// // @description   calculate tab height creates a fake placeholder then slides up and execute animation
+// @version        1.7b
+// ==/UserScript==
+
+(() => {
+    console.log("Tab Slide Up Animation: Script execution started.");
+
+    const TAB_SLIDE_ANIMATION_ID = 'tab-slide-animation-styles';
+    const ANIMATION_DURATION = 100; // Milliseconds
+    
+    // Add a flag to prevent animations during startup
+    let browserFullyLoaded = false;
+    
+    function injectStyles() {
+        if (document.getElementById(TAB_SLIDE_ANIMATION_ID)) {
+            return;
+        }
+
+        const css = `
+            .tab-slide-up {
+                transition: transform ${ANIMATION_DURATION}ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                will-change: transform;
+            }
+            
+            .tab-closing {
+                opacity: 0;
+                transition: opacity 0.1s linear;
+            }
+        `;
+
+        const styleElement = document.createElement('style');
+        styleElement.id = TAB_SLIDE_ANIMATION_ID;
+        styleElement.textContent = css;
+        document.head.appendChild(styleElement);
+        console.log("Tab Slide Up Animation: Styles injected.");
+    }
+
+    function animateTabSlideUp(closingTab) {
+        // Check if browser is still starting up
+        if (!browserFullyLoaded) {
+            console.log("Tab Slide Up Animation: Animation prevented during browser startup.");
+            return;
+        }
+        
+        console.log("Tab Slide Up Animation: Starting slide up animation for tab:", closingTab);
+        
+        if (!closingTab || !closingTab.isConnected) {
+            console.warn("Tab Slide Up Animation: animateTabSlideUp: Element is null or not connected to the DOM. Aborting animation for:", closingTab);
+            return;
+        }
+        
+        const tabContainer = closingTab.parentElement;
+        if (!tabContainer) {
+            console.warn("Tab Slide Up Animation: Could not find tab container");
+            return;
+        }
+        
+        // Get all visible tabs
+        const allTabs = Array.from(tabContainer.querySelectorAll('tab:not([hidden])'));
+        const closingTabIndex = allTabs.indexOf(closingTab);
+        
+        if (closingTabIndex === -1) {
+            console.warn("Tab Slide Up Animation: Could not find closing tab in tab list");
+            return;
+        }
+        
+        // Get tabs that will slide up (tabs below the closing tab)
+        const tabsToSlide = allTabs.slice(closingTabIndex + 1);
+        
+        if (tabsToSlide.length === 0) {
+            console.log("Tab Slide Up Animation: No tabs below the closing tab, no slide animation needed");
+            return;
+        }
+        
+        console.log(`Tab Slide Up Animation: Found ${tabsToSlide.length} tabs to slide up`);
+        
+        // Capture the closing tab's dimensions and position
+        const closingTabRect = closingTab.getBoundingClientRect();
+        const tabHeight = closingTabRect.height;
+        
+        // Create a visual placeholder for the closing tab
+        const placeholder = closingTab.cloneNode(true);
+        placeholder.style.position = 'absolute';
+        placeholder.style.top = `${closingTabRect.top}px`;
+        placeholder.style.left = `${closingTabRect.left}px`;
+        placeholder.style.width = `${closingTabRect.width}px`;
+        placeholder.style.height = `${closingTabRect.height}px`;
+        placeholder.style.zIndex = '1000';
+        placeholder.style.pointerEvents = 'none';
+        placeholder.style.transition = 'opacity 5ms ease-out';
+        placeholder.id = 'tab-close-placeholder';
+        
+        // Insert placeholder into the document
+        document.body.appendChild(placeholder);
+        
+        // Store initial positions of tabs that will slide
+        const initialPositions = tabsToSlide.map(tab => {
+            const rect = tab.getBoundingClientRect();
+            return {
+                tab: tab,
+                initialTop: rect.top
+            };
+        });
+        
+        // Immediately hide the original tab completely (this allows browser to reorganize)
+        closingTab.style.display = 'none';
+        
+        // Start placeholder fade out quickly
+        requestAnimationFrame(() => {
+            placeholder.style.opacity = '0';
+        });
+        
+        // Wait a frame for the browser to reorganize tabs, then start slide animation
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                // Now animate the tabs sliding up
+                tabsToSlide.forEach((tab, index) => {
+                    const currentRect = tab.getBoundingClientRect();
+                    const initialTop = initialPositions[index].initialTop;
+                    const displacement = initialTop - currentRect.top;
+                    
+                    // Set initial transform to maintain visual position
+                    tab.style.transform = `translateY(${displacement}px)`;
+                    tab.style.transition = 'none';
+                    
+                    // Force reflow
+                    tab.offsetHeight;
+                    
+                    // Apply smooth transition and animate to final position
+                    tab.style.transition = `transform ${ANIMATION_DURATION}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+                    tab.style.transform = 'translateY(0)';
+                });
+                
+                // Clean up after animation
+                setTimeout(() => {
+                    // Remove placeholder
+                    if (placeholder.parentNode) {
+                        placeholder.parentNode.removeChild(placeholder);
+                    }
+                    
+                    // Clean up tab styles
+                    tabsToSlide.forEach(tab => {
+                        tab.style.transform = '';
+                        tab.style.transition = '';
+                    });
+                    
+                    console.log("Tab Slide Up Animation: Animation completed and styles cleaned up");
+                }, ANIMATION_DURATION + 50);
+            });
+        });
+    }
+
+    function onTabClose(event) {
+        const tab = event.target;
+
+        // Log every TabClose event during startup
+        console.log(`Tab Slide Up Animation: TabClose event received at ${new Date().toISOString()}, browserFullyLoaded=${browserFullyLoaded}`);
+        
+        console.log("Tab Slide Up Animation: onTabClose event triggered. Event target:", tab);
+        
+        // Ensure it's a normal tab and not something else
+        // and also not a Glance tab (checking for 'glance-id' or 'zen-glance-tab')
+        if (tab && tab.localName === 'tab' && 
+            !tab.pinned && 
+            tab.isConnected && 
+            (!tab.hasAttribute || (!tab.hasAttribute('glance-id') && tab.getAttribute('zen-glance-tab') !== 'true'))) { 
+            
+            console.log("Tab Slide Up Animation: TabClose event triggered for tab (ANIMATING based on conditions):", tab);
+            
+            // Start animation (tab will close naturally)
+            animateTabSlideUp(tab);
+            
+        } else if (tab && tab.hasAttribute && (tab.hasAttribute('glance-id') || tab.getAttribute('zen-glance-tab') === 'true')) {
+            console.log("Tab Slide Up Animation: TabClose event for a Glance-related tab (SKIPPING animation):", tab);
+        } else {
+            console.log("Tab Slide Up Animation: TabClose event, conditions for animation NOT MET or it's an unidentified Glance tab. Target:", tab);
+        }
+    }
+
+    function onTabGroupRemove(event) {
+        const group = event.target;
+
+        // Log every TabGroupRemove event during startup
+        console.log(`Tab Slide Up Animation: TabGroupRemove event received at ${new Date().toISOString()}, browserFullyLoaded=${browserFullyLoaded}`);
+        
+        // --- BEGIN GENERAL DEBUG LOG for onTabGroupRemove ---
+        console.log("Tab Slide Up Animation: onTabGroupRemove event received. Event:", event);
+        console.log("Tab Slide Up Animation: onTabGroupRemove event target:", group);
+        if (group) {
+            console.log(`Tab Slide Up Animation: onTabGroupRemove DEBUG: target.localName: ${group.localName}, id: ${group.id}, class: ${group.className}, connected: ${group.isConnected}`);
+        } else {
+            console.log("Tab Slide Up Animation: onTabGroupRemove DEBUG: event.target is null or undefined.");
+        }
+        // --- END GENERAL DEBUG LOG for onTabGroupRemove ---
+
+        console.log("Tab Slide Up Animation: TabGroupRemove event received (original log):", event); // Keeping original log for now
+        if (group && group.localName === 'tab-group' && group.isConnected) {
+            console.log("Tab Slide Up Animation: TabGroupRemove event triggered for group (ANIMATING):", group);
+            // Start animation (group will close naturally)
+            animateTabSlideUp(group);
+        } else {
+            console.log("Tab Slide Up Animation: TabGroupRemove event, conditions for animation NOT MET. Target:", group);
+        }
+    }
+
+    function init() {
+        console.log("Tab Slide Up Animation: init() function called.");
+        injectStyles();
+        if (typeof gBrowser !== 'undefined' && gBrowser.tabContainer) {
+            console.log("Tab Slide Up Animation: gBrowser and gBrowser.tabContainer are available.");
+            gBrowser.tabContainer.addEventListener('TabClose', onTabClose, false);
+            
+            // Add multiple event listeners to catch tab group removal
+            gBrowser.tabContainer.addEventListener('TabGroupRemove', onTabGroupRemove, false);
+            gBrowser.tabContainer.addEventListener('TabGroupClosed', onTabGroupRemove, false);
+            gBrowser.tabContainer.addEventListener('TabGroupRemoved', onTabGroupRemove, false);
+            
+            // Also listen for the custom event that might be used
+            document.addEventListener('TabGroupRemoved', onTabGroupRemove, false);
+            
+            console.log("Tab Slide Up Animation: Listeners attached to TabClose and TabGroup events.");
+            
+            // Set a delay before allowing animations to run
+            setTimeout(() => {
+                browserFullyLoaded = true;
+                console.log("Tab Slide Up Animation: Browser startup complete, animations enabled.");
+            }, 5000); // 5 second delay to ensure browser is fully loaded
+        } else {
+            // Retry if gBrowser is not ready
+            console.log("Tab Slide Up Animation: gBrowser not ready, scheduling retry.");
+            setTimeout(init, 1000);
+        }
+    }
+
+    // Wait for the browser to be fully loaded
+    console.log("Tab Slide Up Animation: Setting up load event listener or calling init directly.");
+    if (document.readyState === "complete") {
+        console.log("Tab Slide Up Animation: Document already complete, calling init().");
+        init();
+    } else {
+        console.log("Tab Slide Up Animation: Document not complete, adding load event listener for init().");
+        window.addEventListener("load", init, { once: true });
+    }
+
+})();
+
+
+// ====================================================================================================
+// SCRIPT 12: Tab Open Slide Down
+// ====================================================================================================
+// ==UserScript==
+// @ignorecache
+// @name          Tab opening slide down animation
+// @namespace      height
+// // @description   calculate tab height creates a fake placeholder then slides down and execute animation
+// @version        1.7b
+// ==/UserScript==
+
+(() => {
+    console.log("Tab Slide Down Animation: Script execution started.");
+
+    const TAB_SLIDE_DOWN_ANIMATION_ID = 'tab-slide-down-animation-styles';
+    const ANIMATION_DURATION = 100; // Milliseconds
+    
+    // Add a flag to prevent animations during startup, same as the other script
+    let browserFullyLoaded = false;
+    
+    function injectStyles() {
+        if (document.getElementById(TAB_SLIDE_DOWN_ANIMATION_ID)) {
+            return;
+        }
+
+        const css = `
+            .tab-slide-down {
+                transition: transform ${ANIMATION_DURATION}ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                will-change: transform;
+            }
+        `;
+
+        const styleElement = document.createElement('style');
+        styleElement.id = TAB_SLIDE_DOWN_ANIMATION_ID;
+        styleElement.textContent = css;
+        document.head.appendChild(styleElement);
+        console.log("Tab Slide Down Animation: Styles injected.");
+    }
+
+    function animateTabSlideDown(newTab) {
+        // Check if browser is still starting up
+        if (!browserFullyLoaded) {
+            console.log("Tab Slide Down Animation: Animation prevented during browser startup.");
+            return;
+        }
+
+        if (!newTab || !newTab.isConnected) {
+            console.warn("Tab Slide Down Animation: animateTabSlideDown: New tab is null or not connected to the DOM.");
+            return;
+        }
+
+        const tabContainer = newTab.parentElement;
+        if (!tabContainer) {
+            console.warn("Tab Slide Down Animation: Could not find tab container");
+            return;
+        }
+
+        // Get all visible tabs
+        const allTabs = Array.from(tabContainer.querySelectorAll('tab:not([hidden])'));
+        const newTabIndex = allTabs.indexOf(newTab);
+
+        if (newTabIndex === -1) {
+            console.warn("Tab Slide Down Animation: Could not find new tab in tab list");
+            return;
+        }
+
+        // Get tabs that will slide down (tabs below the new tab)
+        const tabsToSlide = allTabs.slice(newTabIndex + 1);
+
+        if (tabsToSlide.length === 0) {
+            console.log("Tab Slide Down Animation: No tabs below the new tab, no slide animation needed");
+            return;
+        }
+        
+        console.log(`Tab Slide Down Animation: Found ${tabsToSlide.length} tabs to slide down`);
+
+        // Get the height of the new tab, which is how far the other tabs need to move
+        const newTabHeight = newTab.getBoundingClientRect().height;
+        if (newTabHeight <= 0) {
+            console.warn("Tab Slide Down Animation: New tab has no height, aborting animation.");
+            return; // Don't animate if tab has no height yet
+        }
+
+        // --- Start Animation (Reverse FLIP method) ---
+        
+        // 1. INVERT: Instantly move the tabs below UP by the height of the new tab.
+        // This makes them appear to be in their original position before the new tab was added.
+        tabsToSlide.forEach(tab => {
+            tab.style.transition = 'none';
+            tab.style.transform = `translateY(-${newTabHeight}px)`;
+        });
+
+        // 2. PLAY: In the next browser frame, apply the transition and animate them to their final position.
+        requestAnimationFrame(() => {
+            tabsToSlide.forEach(tab => {
+                tab.classList.add('tab-slide-down'); // Apply transition from CSS
+                tab.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Clean up styles after the animation is complete
+        setTimeout(() => {
+            tabsToSlide.forEach(tab => {
+                tab.classList.remove('tab-slide-down');
+                tab.style.transform = '';
+                tab.style.transition = '';
+            });
+            console.log("Tab Slide Down Animation: Animation completed and styles cleaned up.");
+        }, ANIMATION_DURATION + 50);
+    }
+
+    function onTabOpen(event) {
+        const tab = event.target;
+        
+        console.log(`Tab Slide Down Animation: TabOpen event received at ${new Date().toISOString()}, browserFullyLoaded=${browserFullyLoaded}`);
+        
+        if (tab && tab.localName === 'tab' && !tab.pinned && tab.isConnected ) {
+            // The TabOpen event can fire before the tab is fully rendered.
+            // Waiting for the next animation frame ensures its dimensions are calculated and available.
+            requestAnimationFrame(() => {
+                 console.log("Tab Slide Down Animation: TabOpen event triggered for tab (ANIMATING):", tab);
+                animateTabSlideDown(tab);
+            });
+        } else {
+             console.log("Tab Slide Down Animation: TabOpen event, conditions for animation NOT MET. Target:", tab);
+        }
+    }
+
+    function init() {
+        console.log("Tab Slide Down Animation: init() function called.");
+        injectStyles();
+        if (typeof gBrowser !== 'undefined' && gBrowser.tabContainer) {
+            console.log("Tab Slide Down Animation: gBrowser and gBrowser.tabContainer are available.");
+            gBrowser.tabContainer.addEventListener('TabOpen', onTabOpen, false);
+            console.log("Tab Slide Down Animation: Listener attached to TabOpen event.");
+            
+            // Set a delay before allowing animations to run
+            setTimeout(() => {
+                browserFullyLoaded = true;
+                console.log("Tab Slide Down Animation: Browser startup complete, animations enabled.");
+            }, 5000); // 5 second delay to ensure browser is fully loaded
+        } else {
+            // Retry if gBrowser is not ready
+            console.log("Tab Slide Down Animation: gBrowser not ready, scheduling retry.");
+            setTimeout(init, 1000);
+        }
+    }
+
+    // Wait for the browser to be fully loaded
+    console.log("Tab Slide Down Animation: Setting up load event listener or calling init directly.");
+    if (document.readyState === "complete") {
+        console.log("Tab Slide Down Animation: Document already complete, calling init().");
+        init();
+    } else {
+        console.log("Tab Slide Down Animation: Document not complete, adding load event listener for init().");
+        window.addEventListener("load", init, { once: true });
+    }
+
+})();
