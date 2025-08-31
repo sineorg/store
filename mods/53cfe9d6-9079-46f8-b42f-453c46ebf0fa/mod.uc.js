@@ -3096,15 +3096,38 @@ window.addEventListener("load", () => {
 // // @description   calculate tab height creates a fake placeholder then slides up and execute animation
 // @version        1.7b
 // ==/UserScript==
-
 (() => {
-    console.log("Tab Slide Up Animation: Script execution started.");
-
     const TAB_SLIDE_ANIMATION_ID = 'tab-slide-animation-styles';
-    const ANIMATION_DURATION = 100; // Milliseconds
+    const ANIMATION_DURATION = 100; // Milliseconds - optimized for performance
     
     // Add a flag to prevent animations during startup
     let browserFullyLoaded = false;
+    
+    // Cache frequently accessed elements
+    let cachedTabContainer = null;
+    
+    // Performance monitoring
+    const animationQueue = new Set();
+    
+    // Cleanup function for script unload
+    function cleanup() {
+        if (cachedTabContainer) {
+            cachedTabContainer.removeEventListener('TabClose', onTabClose);
+            cachedTabContainer.removeEventListener('TabGroupRemove', onTabGroupRemove);
+            cachedTabContainer.removeEventListener('TabGroupClosed', onTabGroupRemove);
+            cachedTabContainer.removeEventListener('TabGroupRemoved', onTabGroupRemove);
+        }
+        document.removeEventListener('TabGroupRemoved', onTabGroupRemove);
+        
+        // Clear any remaining animations
+        animationQueue.clear();
+        
+        // Remove injected styles
+        const styleElement = document.getElementById(TAB_SLIDE_ANIMATION_ID);
+        if (styleElement) {
+            styleElement.remove();
+        }
+    }
     
     function injectStyles() {
         if (document.getElementById(TAB_SLIDE_ANIMATION_ID)) {
@@ -3115,11 +3138,13 @@ window.addEventListener("load", () => {
             .tab-slide-up {
                 transition: transform ${ANIMATION_DURATION}ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
                 will-change: transform;
+                transform: translateZ(0); /* Force hardware acceleration */
             }
             
             .tab-closing {
                 opacity: 0;
                 transition: opacity 0.1s linear;
+                transform: translateZ(0); /* Force hardware acceleration */
             }
         `;
 
@@ -3127,47 +3152,67 @@ window.addEventListener("load", () => {
         styleElement.id = TAB_SLIDE_ANIMATION_ID;
         styleElement.textContent = css;
         document.head.appendChild(styleElement);
-        console.log("Tab Slide Up Animation: Styles injected.");
     }
 
     function animateTabSlideUp(closingTab) {
         // Check if browser is still starting up
         if (!browserFullyLoaded) {
-            console.log("Tab Slide Up Animation: Animation prevented during browser startup.");
             return;
         }
-        
-        console.log("Tab Slide Up Animation: Starting slide up animation for tab:", closingTab);
         
         if (!closingTab || !closingTab.isConnected) {
-            console.warn("Tab Slide Up Animation: animateTabSlideUp: Element is null or not connected to the DOM. Aborting animation for:", closingTab);
             return;
         }
         
-        const tabContainer = closingTab.parentElement;
+        // Prevent duplicate animations for the same tab
+        const tabId = closingTab.getAttribute('linkedpanel') || closingTab.id || Math.random().toString(36);
+        if (animationQueue.has(tabId)) {
+            return;
+        }
+        animationQueue.add(tabId);
+        
+        // Use cached tab container or get from parent
+        const tabContainer = cachedTabContainer || closingTab.parentElement;
         if (!tabContainer) {
-            console.warn("Tab Slide Up Animation: Could not find tab container");
             return;
         }
         
-        // Get all visible tabs
-        const allTabs = Array.from(tabContainer.querySelectorAll('tab:not([hidden])'));
-        const closingTabIndex = allTabs.indexOf(closingTab);
-        
-        if (closingTabIndex === -1) {
-            console.warn("Tab Slide Up Animation: Could not find closing tab in tab list");
-            return;
+        // Cache the tab container for future use
+        if (!cachedTabContainer) {
+            cachedTabContainer = tabContainer;
         }
         
-        // Get tabs that will slide up (tabs below the closing tab)
-        const tabsToSlide = allTabs.slice(closingTabIndex + 1);
+        // Handle both pinned and regular tabs
+        const isPinnedTab = closingTab.pinned;
+        let allTabs, tabsToSlide;
+        
+        if (isPinnedTab) {
+            // For pinned tabs, only consider other pinned tabs
+            allTabs = Array.from(tabContainer.querySelectorAll('tab[pinned][fadein]:not([hidden])'));
+            const closingTabIndex = allTabs.indexOf(closingTab);
+            
+            if (closingTabIndex === -1) {
+                return;
+            }
+            
+            // Get pinned tabs that will slide up (pinned tabs after the closing tab)
+            tabsToSlide = allTabs.slice(closingTabIndex + 1);
+        } else {
+            // For regular tabs, only consider non-pinned tabs
+            allTabs = Array.from(tabContainer.querySelectorAll('tab:not([pinned])[fadein]:not([hidden])'));
+            const closingTabIndex = allTabs.indexOf(closingTab);
+            
+            if (closingTabIndex === -1) {
+                return;
+            }
+            
+            // Get regular tabs that will slide up (tabs below the closing tab)
+            tabsToSlide = allTabs.slice(closingTabIndex + 1);
+        }
         
         if (tabsToSlide.length === 0) {
-            console.log("Tab Slide Up Animation: No tabs below the closing tab, no slide animation needed");
             return;
         }
-        
-        console.log(`Tab Slide Up Animation: Found ${tabsToSlide.length} tabs to slide up`);
         
         // Capture the closing tab's dimensions and position
         const closingTabRect = closingTab.getBoundingClientRect();
@@ -3182,7 +3227,8 @@ window.addEventListener("load", () => {
         placeholder.style.height = `${closingTabRect.height}px`;
         placeholder.style.zIndex = '1000';
         placeholder.style.pointerEvents = 'none';
-        placeholder.style.transition = 'opacity 5ms ease-out';
+        placeholder.style.transition = 'opacity 50ms ease-out';
+        placeholder.style.transform = 'translateZ(0)'; // Hardware acceleration
         placeholder.id = 'tab-close-placeholder';
         
         // Insert placeholder into the document
@@ -3214,8 +3260,8 @@ window.addEventListener("load", () => {
                     const initialTop = initialPositions[index].initialTop;
                     const displacement = initialTop - currentRect.top;
                     
-                    // Set initial transform to maintain visual position
-                    tab.style.transform = `translateY(${displacement}px)`;
+                    // Set initial transform to maintain visual position with hardware acceleration
+                    tab.style.transform = `translate3d(0, ${displacement}px, 0)`;
                     tab.style.transition = 'none';
                     
                     // Force reflow
@@ -3223,23 +3269,31 @@ window.addEventListener("load", () => {
                     
                     // Apply smooth transition and animate to final position
                     tab.style.transition = `transform ${ANIMATION_DURATION}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
-                    tab.style.transform = 'translateY(0)';
+                    tab.style.transform = 'translate3d(0, 0, 0)';
                 });
                 
                 // Clean up after animation
                 setTimeout(() => {
-                    // Remove placeholder
-                    if (placeholder.parentNode) {
-                        placeholder.parentNode.removeChild(placeholder);
+                    try {
+                        // Remove placeholder
+                        if (placeholder && placeholder.parentNode) {
+                            placeholder.parentNode.removeChild(placeholder);
+                        }
+                        
+                        // Clean up tab styles
+                        tabsToSlide.forEach(tab => {
+                            if (tab && tab.style) {
+                                tab.style.transform = '';
+                                tab.style.transition = '';
+                            }
+                        });
+                        
+                        // Remove from animation queue
+                        animationQueue.delete(tabId);
+                    } catch (error) {
+                        // Silent error handling to prevent script crashes
+                        animationQueue.delete(tabId);
                     }
-                    
-                    // Clean up tab styles
-                    tabsToSlide.forEach(tab => {
-                        tab.style.transform = '';
-                        tab.style.transition = '';
-                    });
-                    
-                    console.log("Tab Slide Up Animation: Animation completed and styles cleaned up");
                 }, ANIMATION_DURATION + 50);
             });
         });
@@ -3247,95 +3301,64 @@ window.addEventListener("load", () => {
 
     function onTabClose(event) {
         const tab = event.target;
-
-        // Log every TabClose event during startup
-        console.log(`Tab Slide Up Animation: TabClose event received at ${new Date().toISOString()}, browserFullyLoaded=${browserFullyLoaded}`);
-        
-        console.log("Tab Slide Up Animation: onTabClose event triggered. Event target:", tab);
         
         // Ensure it's a normal tab and not something else
         // and also not a Glance tab (checking for 'glance-id' or 'zen-glance-tab')
+        // Now includes pinned tabs
         if (tab && tab.localName === 'tab' && 
-            !tab.pinned && 
             tab.isConnected && 
             (!tab.hasAttribute || (!tab.hasAttribute('glance-id') && tab.getAttribute('zen-glance-tab') !== 'true'))) { 
             
-            console.log("Tab Slide Up Animation: TabClose event triggered for tab (ANIMATING based on conditions):", tab);
-            
             // Start animation (tab will close naturally)
             animateTabSlideUp(tab);
-            
-        } else if (tab && tab.hasAttribute && (tab.hasAttribute('glance-id') || tab.getAttribute('zen-glance-tab') === 'true')) {
-            console.log("Tab Slide Up Animation: TabClose event for a Glance-related tab (SKIPPING animation):", tab);
-        } else {
-            console.log("Tab Slide Up Animation: TabClose event, conditions for animation NOT MET or it's an unidentified Glance tab. Target:", tab);
         }
     }
 
     function onTabGroupRemove(event) {
         const group = event.target;
-
-        // Log every TabGroupRemove event during startup
-        console.log(`Tab Slide Up Animation: TabGroupRemove event received at ${new Date().toISOString()}, browserFullyLoaded=${browserFullyLoaded}`);
         
-        // --- BEGIN GENERAL DEBUG LOG for onTabGroupRemove ---
-        console.log("Tab Slide Up Animation: onTabGroupRemove event received. Event:", event);
-        console.log("Tab Slide Up Animation: onTabGroupRemove event target:", group);
-        if (group) {
-            console.log(`Tab Slide Up Animation: onTabGroupRemove DEBUG: target.localName: ${group.localName}, id: ${group.id}, class: ${group.className}, connected: ${group.isConnected}`);
-        } else {
-            console.log("Tab Slide Up Animation: onTabGroupRemove DEBUG: event.target is null or undefined.");
-        }
-        // --- END GENERAL DEBUG LOG for onTabGroupRemove ---
-
-        console.log("Tab Slide Up Animation: TabGroupRemove event received (original log):", event); // Keeping original log for now
         if (group && group.localName === 'tab-group' && group.isConnected) {
-            console.log("Tab Slide Up Animation: TabGroupRemove event triggered for group (ANIMATING):", group);
             // Start animation (group will close naturally)
             animateTabSlideUp(group);
-        } else {
-            console.log("Tab Slide Up Animation: TabGroupRemove event, conditions for animation NOT MET. Target:", group);
         }
     }
 
     function init() {
-        console.log("Tab Slide Up Animation: init() function called.");
         injectStyles();
         if (typeof gBrowser !== 'undefined' && gBrowser.tabContainer) {
-            console.log("Tab Slide Up Animation: gBrowser and gBrowser.tabContainer are available.");
-            gBrowser.tabContainer.addEventListener('TabClose', onTabClose, false);
+            // Cache the tab container
+            cachedTabContainer = gBrowser.tabContainer;
+            
+            // Use passive listeners where possible for better performance
+            gBrowser.tabContainer.addEventListener('TabClose', onTabClose, { passive: true });
             
             // Add multiple event listeners to catch tab group removal
-            gBrowser.tabContainer.addEventListener('TabGroupRemove', onTabGroupRemove, false);
-            gBrowser.tabContainer.addEventListener('TabGroupClosed', onTabGroupRemove, false);
-            gBrowser.tabContainer.addEventListener('TabGroupRemoved', onTabGroupRemove, false);
+            gBrowser.tabContainer.addEventListener('TabGroupRemove', onTabGroupRemove, { passive: true });
+            gBrowser.tabContainer.addEventListener('TabGroupClosed', onTabGroupRemove, { passive: true });
+            gBrowser.tabContainer.addEventListener('TabGroupRemoved', onTabGroupRemove, { passive: true });
             
             // Also listen for the custom event that might be used
-            document.addEventListener('TabGroupRemoved', onTabGroupRemove, false);
+            document.addEventListener('TabGroupRemoved', onTabGroupRemove, { passive: true });
             
-            console.log("Tab Slide Up Animation: Listeners attached to TabClose and TabGroup events.");
-            
-            // Set a delay before allowing animations to run
+            // Reduced delay for faster startup
             setTimeout(() => {
                 browserFullyLoaded = true;
-                console.log("Tab Slide Up Animation: Browser startup complete, animations enabled.");
-            }, 5000); // 5 second delay to ensure browser is fully loaded
+            }, 2000); // 2 second delay - optimized from 5 seconds
         } else {
             // Retry if gBrowser is not ready
-            console.log("Tab Slide Up Animation: gBrowser not ready, scheduling retry.");
-            setTimeout(init, 1000);
+            setTimeout(init, 500); // Reduced retry delay
         }
     }
 
     // Wait for the browser to be fully loaded
-    console.log("Tab Slide Up Animation: Setting up load event listener or calling init directly.");
     if (document.readyState === "complete") {
-        console.log("Tab Slide Up Animation: Document already complete, calling init().");
         init();
     } else {
-        console.log("Tab Slide Up Animation: Document not complete, adding load event listener for init().");
         window.addEventListener("load", init, { once: true });
     }
+    
+    // Add cleanup on window unload
+    window.addEventListener("beforeunload", cleanup, { once: true });
 
 })();
 
