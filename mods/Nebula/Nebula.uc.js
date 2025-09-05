@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           nebula-core.uc.js
-// @description    Central engine for Nebula with modules (Polyfill + GradientSlider + TitlebarNavBarURLBarBackgrounds + MediaCoverArt + MainMenu + CtrlTabDualBackground)
+// @description    Central engine for Nebula with all modules
 // @author         JustAdumbPrsn
 // @version        v3.2
 // @include        main
@@ -11,7 +11,7 @@
   'use strict';
 
   if (window.Nebula) {
-    window.Nebula.destroy();
+    try { window.Nebula.destroy(); } catch {}
   }
 
   window.Nebula = {
@@ -30,14 +30,28 @@
       else document.addEventListener('DOMContentLoaded', callback, { once: true });
     },
 
-    register(name, ModuleClass) {
+    register(ModuleClass) {
+      const name = ModuleClass?.name || 'UnnamedModule';
+      if (!ModuleClass) {
+        this.logger.warn(`Module "${name}" is not defined, skipping registration.`);
+        return;
+      }
       if (this._modules.find(m => m._name === name)) {
         this.logger.warn(`Module "${name}" already registered.`);
         return;
       }
-      const instance = new ModuleClass();
+
+      let instance;
+      try {
+        instance = new ModuleClass();
+      } catch (err) {
+        this.logger.error(`Module "${name}" failed to construct:\n${err}`);
+        return; // skip this module, keep others running
+      }
+
       instance._name = name;
       this._modules.push(instance);
+
       if (this._initialized && typeof instance.init === 'function') {
         try {
           instance.init();
@@ -1004,16 +1018,17 @@
     }
   }
 
-  // Register modules
-  Nebula.register("NebulaPolyfillModule", NebulaPolyfillModule);
-  Nebula.register("NebulaGradientSliderModule", NebulaGradientSliderModule);
-  Nebula.register("NebulaTitlebarBackgroundModule", NebulaTitlebarBackgroundModule);
-  Nebula.register("NebulaNavbarBackgroundModule", NebulaNavbarBackgroundModule);
-  Nebula.register("NebulaURLBarBackgroundModule", NebulaURLBarBackgroundModule);
-  Nebula.register("NebulaMediaCoverArtModule", NebulaMediaCoverArtModule);
-  Nebula.register("NebulaMenuModule", NebulaMenuModule);
-  Nebula.register("NebulaCtrlTabDualBackgroundModule", NebulaCtrlTabDualBackgroundModule);
+  // Register Nebula Modules
+  Nebula.register(NebulaPolyfillModule);
+  Nebula.register(NebulaGradientSliderModule);
+  Nebula.register(NebulaTitlebarBackgroundModule);
+  Nebula.register(NebulaNavbarBackgroundModule);
+  Nebula.register(NebulaURLBarBackgroundModule);
+  Nebula.register(NebulaMediaCoverArtModule);
+  Nebula.register(NebulaMenuModule);
+  Nebula.register(NebulaCtrlTabDualBackgroundModule);
 
   // Start the core
   Nebula.init();
+
 })();
