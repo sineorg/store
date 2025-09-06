@@ -347,5 +347,16 @@
       "zen"
     ]
   },
-  "3c8ebf69-1042-49b1-8f08-9178f9490659": "rasyidrafi/zen-always-show-music-bar"
+  "3c8ebf69-1042-49b1-8f08-9178f9490659": {
+    "homepage": "rasyidrafi/zen-always-show-music-bar",
+    "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
+    "name": "Better Music Bar",
+    "version": "1.0.4",
+    "description": "Make your zen music bar better.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
+    "fork": [
+      "zen",
+      "firefox"
+    ]
+  }
 }
