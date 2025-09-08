@@ -2156,18 +2156,7 @@ if (Services.prefs.getBoolPref("arcline.script3")) {
 // @description    Set Zen media coverart via wrapper (v1.7b - Adjusts opacity on hover for consistent brightness). Affects background ONLY.
 // @version        1.7b
 // ==/UserScript==
-// ==UserScript==
-// @name           zen-media-coverart-css-provider
-// @namespace      zenMediaCoverArt
-// @description    Provides track artwork URL as a CSS variable for theme styling.
-// @version        8.0 - The Final Solution
-// ==/UserScript==
-// ==UserScript==
-// @name           zen-media-coverart-css-provider
-// @namespace      zenMediaCoverArt
-// @description    Provides track artwork URL as a CSS variable for theme styling.
-// @version        9.0 - The Clip-Path Solution
-// ==/UserScript==
+
 if (Services.prefs.getBoolPref("arcline.script5")) {
   
 const ZenCoverArtCSSProvider = {
