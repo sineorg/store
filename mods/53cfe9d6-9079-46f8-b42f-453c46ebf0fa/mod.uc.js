@@ -10,8 +10,6 @@
 // @ignorecache
 // @name          Dynamic URLBar Background Height
 // @description   Adjusts the height of #browser::before to match .urlbarView height.
-// @include       chrome://browser/content/browser.xhtml
-// @run-at        document-idle
 // ==/UserScript==
 // (Note: The above header is for userscript managers, may not be needed for autoconfig)
 
@@ -224,6 +222,15 @@
 // SCRIPT 2: AI Tab Sorter and UI (FINAL VERSION 4.7.2)
 // ====================================================================================================
 // FINAL VERSION 4.7.2 (API Key from Prefs + Title>Host + No Clear Button Space)
+// ==UserScript==
+// @ignorecache
+// @name          Ai tab sort and tab clearer
+// @description    sorts tab and arrange them into tab groups 
+// ==/UserScript==
+
+if (Services.prefs.getBoolPref("arcline.script2")) {
+  
+
 (() => {
     // --- Configuration ---
     // --- IMPORTANT SETUP ---
@@ -1795,7 +1802,7 @@
     }
 
 })(); // End script
-
+}
 
 // ====================================================================================================
 // SCRIPT 3: Tab Explode Animation
@@ -1808,6 +1815,8 @@
 // @description    Adds a bubble explosion animation when a tab or tab group is closed.
 // @compatibility  Firefox 100+
 // ==/UserScript==
+if (Services.prefs.getBoolPref("arcline.script3")) {
+  // Run script
 
 (() => {
     console.log("Tab Explode Animation: Script execution started.");
@@ -2021,7 +2030,7 @@
     }
 
 })(); 
-
+}
 
 // ====================================================================================================
 // SCRIPT 4: Permission Box Position Fix
@@ -2147,19 +2156,9 @@
 // @description    Set Zen media coverart via wrapper (v1.7b - Adjusts opacity on hover for consistent brightness). Affects background ONLY.
 // @version        1.7b
 // ==/UserScript==
-// ==UserScript==
-// @name           zen-media-coverart-css-provider
-// @namespace      zenMediaCoverArt
-// @description    Provides track artwork URL as a CSS variable for theme styling.
-// @version        8.0 - The Final Solution
-// ==/UserScript==
-// ==UserScript==
-// @name           zen-media-coverart-css-provider
-// @namespace      zenMediaCoverArt
-// @description    Provides track artwork URL as a CSS variable for theme styling.
-// @version        9.0 - The Clip-Path Solution
-// ==/UserScript==
 
+if (Services.prefs.getBoolPref("arcline.script5")) {
+  
 const ZenCoverArtCSSProvider = {
   lastArtworkUrl: null,
   _toolbarItem: null,
@@ -2244,7 +2243,7 @@ const ZenCoverArtCSSProvider = {
 
 ZenCoverArtCSSProvider.init();
 
-
+}
 // ====================================================================================================
 // SCRIPT 6: Zen Workspace Button Wave Animation
 // ====================================================================================================
@@ -2255,7 +2254,7 @@ ZenCoverArtCSSProvider.init();
 // @description    helps in adding mac os dock like aniamtion to zen worspace buttons
 // @version        1.7b
 // ==/UserScript==
-
+if (Services.prefs.getBoolPref("arcline.script6")) {
 (function() {
   if (window.ZenBrowserCustomizableDockEffect) {
     return;
@@ -2675,6 +2674,7 @@ ZenCoverArtCSSProvider.init();
   }
 })();
 
+}
 
 // ====================================================================================================
 // SCRIPT 7: Compact Mode Sidebar Width Fix
