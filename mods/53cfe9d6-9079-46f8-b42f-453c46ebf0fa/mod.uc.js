@@ -2926,7 +2926,7 @@ if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
 // // @description   Finds --zen-urlbar-top and makes it global for userChrome.css. Based on a friend's script.
 // @version        1.7b
 // ==/UserScript==
-if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser") {
+if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
 (function() {
     console.log('[Zen Globalizer] Script has loaded. Waiting for window to be ready...');
 
