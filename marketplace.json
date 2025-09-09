@@ -210,7 +210,7 @@
     "homepage": "greeeen-dev/natsumi-browser",
     "image": "https://github.com/greeeen-dev/natsumi-browser/raw/dev/images/main-backgroundless.png",
     "name": "Natsumi Browser",
-    "version": "5.2.0",
+    "version": "5.2.1",
     "description": "A skin for Firefox and its forks that makes things flow.",
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
     "fork": [
