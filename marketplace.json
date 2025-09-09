@@ -364,7 +364,7 @@
     "name": "Zen Command Palette",
     "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
     "version": "1.0.0",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/readme.md",
     "fork": [
       "zen"
     ]
