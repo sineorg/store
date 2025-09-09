@@ -12,7 +12,7 @@
 // @description   Adjusts the height of #browser::before to match .urlbarView height.
 // ==/UserScript==
 // (Note: The above header is for userscript managers, may not be needed for autoconfig)
-
+if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
 (function() {
   // Only run in the main browser window
   if (window.location.href !== 'chrome://browser/content/browser.xhtml') {
@@ -216,7 +216,7 @@
   }
 
 })();
-
+}
 
 // ====================================================================================================
 // SCRIPT 2: AI Tab Sorter and UI (FINAL VERSION 4.7.2)
@@ -2686,7 +2686,7 @@ if (Services.prefs.getBoolPref("arcline.script6")) {
 // @description    it help in adjust dynamic width of psuedo background
 // @version        1.7b
 // ==/UserScript==
-
+if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
 (function () {
   const mainWindow = document.getElementById('main-window');
   const toolbox = document.getElementById('navigator-toolbox');
@@ -2723,7 +2723,7 @@ if (Services.prefs.getBoolPref("arcline.script6")) {
   // Optional: run it once in case the attribute is already set at load
   updateSidebarWidthIfCompact();
 })();
-
+}
 
 // ====================================================================================================
 // SCRIPT 8: Gradient Opacity Adjuster
@@ -2926,7 +2926,7 @@ if (Services.prefs.getBoolPref("arcline.script6")) {
 // // @description   Finds --zen-urlbar-top and makes it global for userChrome.css. Based on a friend's script.
 // @version        1.7b
 // ==/UserScript==
-
+if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser") {
 (function() {
     console.log('[Zen Globalizer] Script has loaded. Waiting for window to be ready...');
 
@@ -2966,7 +2966,7 @@ if (Services.prefs.getBoolPref("arcline.script6")) {
         window.addEventListener('load', runZenTopGlobalizer, { once: true });
     }
 })();
-
+}
 
 // ====================================================================================================
 // SCRIPT 10: Zen Mdia Player Peak height
