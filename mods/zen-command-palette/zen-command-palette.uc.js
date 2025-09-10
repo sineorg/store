@@ -1633,7 +1633,13 @@
           }
         }
       });
-
+      
+      observer.observe(results, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["selected"],
+      });
       observer.observe(urlbar, { attributes: true, attributeFilter: ["open"] });
       debugLog("Scroll handling and MutationObserver successfully initialized.");
     },
