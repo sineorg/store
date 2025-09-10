@@ -293,7 +293,7 @@ jobs:
         # Sort the marketplace entries by stars (descending order)
         echo "Sorting marketplace entries by star count (descending)..."
         temp_sorted_file=$(mktemp)
-        cat "$temp_file" | jq 'to_entries | sort_by(-.value.stars // 0) | from_entries' > "$temp_sorted_file"
+        cat "$temp_file" | jq 'to_entries | map(.value.stars = (.value.stars // 0)) | sort_by(-.value.stars) | from_entries' > "$temp_sorted_file"
         
         # Write the sorted content back to marketplace.json
         cat "$temp_sorted_file" > marketplace.json
