@@ -1633,7 +1633,13 @@
           }
         }
       });
-
+      
+      observer.observe(results, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["selected"],
+      });
       observer.observe(urlbar, { attributes: true, attributeFilter: ["open"] });
       debugLog("Scroll handling and MutationObserver successfully initialized.");
     },
@@ -1906,13 +1912,15 @@
   };
 
   // --- Initialization ---
-  Prefs.setInitialPrefs();
-  window.ZenCommandPalette = ZenCommandPalette;
-  window.ZenCommandPalette.init();
+  UC_API.Runtime.startupFinished().then(() => {
+    Prefs.setInitialPrefs();
+    window.ZenCommandPalette = ZenCommandPalette;
+    window.ZenCommandPalette.init();
 
-  debugLog(
-    "Zen Command Palette initialized. Static commands count:",
-    window.ZenCommandPalette.staticCommands.length
-  );
+    debugLog(
+      "Zen Command Palette initialized. Static commands count:",
+      window.ZenCommandPalette.staticCommands.length
+    );
+  });
 
 }));
