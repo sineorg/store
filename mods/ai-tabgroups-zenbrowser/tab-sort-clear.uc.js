@@ -2,6 +2,9 @@
 (() => {
     // --- Configuration ---
 
+    // Feature toggle preference keys
+    const ENABLE_SORT_PREF = "extensions.tabgroups.enable_sort";
+    const ENABLE_CLEAR_PREF = "extensions.tabgroups.enable_clear";
     // Preference Key for AI Model Selection
     const AI_MODEL_PREF = "extensions.tabgroups.ai_model"; // '1' for Gemini, '2' for Ollama, '3' for Mistral
     // Preference Keys for AI Config
@@ -33,6 +36,8 @@
     };
 
     // Read preference values
+    const ENABLE_SORT_VALUE = getPref(ENABLE_SORT_PREF, true);
+    const ENABLE_CLEAR_VALUE = getPref(ENABLE_CLEAR_PREF, true);
     const AI_MODEL_VALUE = getPref(AI_MODEL_PREF, "1"); // Default to Gemini
     const OLLAMA_ENDPOINT_VALUE = getPref(OLLAMA_ENDPOINT_PREF, "http://localhost:11434/api/generate");
     const OLLAMA_MODEL_VALUE = getPref(OLLAMA_MODEL_PREF, "llama3.2");
@@ -42,6 +47,10 @@
     const MISTRAL_MODEL_VALUE = getPref(MISTRAL_MODEL_PREF, "mistral-large-latest");
 
     const CONFIG = {
+        featureConfig: {
+            sort: ENABLE_SORT_VALUE,
+            clear: ENABLE_CLEAR_VALUE
+        },
         apiConfig: {
             ollama: {
                 endpoint: OLLAMA_ENDPOINT_VALUE,
@@ -191,17 +200,29 @@
             opacity: 0;
             transition: opacity 0.1s ease-in-out;
             position: absolute;
-            right: 55px; /* Positioned to the left of the clear button */
+            /* Simple, stable positioning. The parent container's right edge never moves. */
+            right: 0px; 
+            top: 50%;
+            transform: translateY(-50%);
             font-size: 12px;
             width: 60px;
+            height: auto;
             pointer-events: auto;
-            align-self: end;
             appearance: none;
-            margin-top: -8px;
-            padding: 1px;
+            padding: 2px 4px;
             color: gray;
+            z-index: 10; /* Higher z-index to ensure buttons are on top */
             label { display: block; }
         }
+
+        @media (-moz-bool-pref: "${ENABLE_CLEAR_PREF}") {
+        
+            #sort-button {
+            right: 55px;
+            }
+        }
+
+
         #sort-button:hover {
             opacity: 1;
             color: white;
@@ -212,15 +233,17 @@
             opacity: 0;
             transition: opacity 0.1s ease-in-out;
             position: absolute;
-            right: 0;
+            right: 0; /* Simple and stable */
+            top: 50%;
+            transform: translateY(-50%);
             font-size: 12px;
             width: 60px;
+            height: auto;
             pointer-events: auto;
-            align-self: end;
             appearance: none;
-            margin-top: -8px;
-            padding: 1px;
+            padding: 2px 4px;
             color: grey;
+            z-index: 10; /* Higher z-index to ensure buttons are on top */
             label { display: block; }
         }
         #clear-button:hover {
@@ -228,93 +251,211 @@
             color: white;
             border-radius: 4px;
         }
-        /* Separator Base Style (Ensures background is animatable) */
-        .vertical-pinned-tabs-container-separator {
-             display: flex !important;
-             flex-direction: column;
-             margin-left: 0;
-             min-height: 1px;
-             background-color: var(--lwt-toolbarbutton-border-color, rgba(200, 200, 200, 0.1)); /* Subtle base color */
-             transition: width 0.1s ease-in-out, margin-right 0.1s ease-in-out, background-color 0.3s ease-out; /* Add background transition */
+        
+        /* disable the buttons according to preferences */
+        @media not (-moz-bool-pref: "${ENABLE_SORT_PREF}") {
+        
+            #sort-button {
+            display: none;
+            }
         }
-        /* Separator Hover Logic */
-        .vertical-pinned-tabs-container-separator:has(#sort-button):has(#clear-button):hover {
-            width: calc(100% - 115px); /* 60px (clear) + 55px (sort) */
-            margin-right: auto;
-            background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2)); /* Slightly lighter on hover */
+        @media not (-moz-bool-pref: "${ENABLE_CLEAR_PREF}") {
+        
+            #clear-button {
+            display: none;
+            }
         }
-         /* Hover when ONLY SORT is present */
-        .vertical-pinned-tabs-container-separator:has(#sort-button):not(:has(#clear-button)):hover {
-            width: calc(100% - 65px); /* Only space for sort + margin */
-            margin-right: auto;
-            background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
+
+        /*======== sort-button , clear-button ============*/
+        .pinned-tabs-container-separator{
+            height: 100% !important;
+            transition: all .2s ease-in-out !important;
+            display: flex !important;
+            flex-direction: column;
+            margin-left: 0;
+            min-height: 1px;
+            padding-top: 0.4px;
+            padding-bottom: 0.4px;
+            position: relative; /* Acts as the anchor for children */
+            background-color: transparent !important; /* The container itself is invisible */
+            overflow: visible !important; /* Ensure buttons don't get clipped */
         }
-         /* Hover when ONLY CLEAR is present */
-        .vertical-pinned-tabs-container-separator:not(:has(#sort-button)):has(#clear-button):hover {
-            width: calc(100% - 60px); /* Only space for clear */
-            margin-right: auto;
-            background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
+        
+        .pinned-tabs-container-separator::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%; /* Default state: full width */
+            background-color: var(--lwt-toolbarbutton-border-color, rgba(200, 200, 200, 0.1));
+            transition: width 0.1s ease-in-out, background-color 0.3s ease-out;
         }
-        /* Show BOTH buttons on separator hover */
-        .vertical-pinned-tabs-container-separator:hover #sort-button,
-        .vertical-pinned-tabs-container-separator:hover #clear-button {
+        
+        /* Disable hover width tweak when actively sorting to avoid overriding animation */
+        .pinned-tabs-container-separator.separator-is-sorting:hover::before {
+            width: 100% !important;
+        }
+
+        /* widths for when we have both enabled */
+        @media (-moz-bool-pref: "${ENABLE_CLEAR_PREF}") and (-moz-bool-pref: "${ENABLE_SORT_PREF}") {
+
+            .pinned-tabs-container-separator:hover::before {
+                width: calc(100% - 115px);
+                background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
+            }
+            .zen-workspace-tabs-section[hide-separator] .pinned-tabs-container-separator:hover::before {
+                width: calc(100% - 115px);
+            }
+
+            /* Make sure the separator background adjusts for buttons during sorting ONLY when hovered */
+            .separator-is-sorting:hover::before {
+                width: calc(100% - 115px) !important;
+            }
+
+            /* Make the animated overlay shrink when hovering over buttons */
+            .pinned-tabs-container-separator.separator-is-sorting:hover::after {
+                width: calc(100% - 115px);
+            }
+
+            /* For zen-workspace-tabs-section with hide-separator */
+           .zen-workspace-tabs-section[hide-separator] .pinned-tabs-container-separator.separator-is-sorting:hover::after {
+                width: calc(100% - 115px);
+            }
+        }
+        /* when we only have clear */
+        @media (-moz-bool-pref: "${ENABLE_CLEAR_PREF}") and (not (-moz-bool-pref: "${ENABLE_SORT_PREF}")) {
+            .pinned-tabs-container-separator:hover::before {
+                width: calc(100% - 60px);
+                background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
+            }
+            .zen-workspace-tabs-section[hide-separator] .pinned-tabs-container-separator:hover::before {
+                width: calc(100% - 60px);
+            }
+
+            /* Make sure the separator background adjusts for buttons during sorting ONLY when hovered */
+            .separator-is-sorting:hover::before {
+                width: calc(100% - 60px) !important;
+            }
+
+            /* Make the animated overlay shrink when hovering over buttons */
+            .pinned-tabs-container-separator.separator-is-sorting:hover::after {
+                width: calc(100% - 60px);
+            }
+
+            /* For zen-workspace-tabs-section with hide-separator */
+            .zen-workspace-tabs-section[hide-separator] .pinned-tabs-container-separator.separator-is-sorting:hover::after {
+                width: calc(100% - 60px);
+            }
+
+        }
+        /* when we only have sort */
+        @media (not (-moz-bool-pref: "${ENABLE_CLEAR_PREF}")) and (-moz-bool-pref: "${ENABLE_SORT_PREF}") {
+            .pinned-tabs-container-separator:hover::before {
+                width: calc(100% - 65px);
+                background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
+            }
+            .zen-workspace-tabs-section[hide-separator] .pinned-tabs-container-separator:hover::before {
+                width: calc(100% - 65px);
+            }
+            /* Make sure the separator background adjusts for buttons during sorting ONLY when hovered */
+            .separator-is-sorting:hover::before {
+                width: calc(100% - 65px) !important;
+            }
+
+            /* Make the animated overlay shrink when hovering over buttons */
+            .pinned-tabs-container-separator.separator-is-sorting:hover::after {
+                width: calc(100% - 65px);
+            }
+
+            /* For zen-workspace-tabs-section with hide-separator */
+            .zen-workspace-tabs-section[hide-separator] .pinned-tabs-container-separator.separator-is-sorting:hover::after {
+                width: calc(100% - 65px);
+            }
+        }
+
+
+        .pinned-tabs-container-separator:hover #sort-button,
+        .pinned-tabs-container-separator:hover #clear-button {
             opacity: 1;
         }
 
-        /* When theres no Pinned Tabs */
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator {
-            display: flex !important;
-            flex-direction: column !important;
-            margin-left: 0 !important;
+        .zen-workspace-tabs-section[hide-separator] .pinned-tabs-container-separator {
             margin-top: 5px !important;
             margin-bottom: 8px !important;
-            min-height: 1px !important;
-            background-color: var(--lwt-toolbarbutton-border-color, rgba(200, 200, 200, 0.1)); /* Subtle base color */
-            transition: width 0.1s ease-in-out, margin-right 0.1s ease-in-out, background-color 0.3s ease-out; /* Add background transition */
         }
-         /* Hover when BOTH buttons are potentially visible (No Pinned) */
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:has(#sort-button):has(#clear-button):hover {
-             width: calc(100% - 115px); /* 60px (clear) + 55px (sort) */
-             margin-right: auto;
+        .zen-workspace-tabs-section[hide-separator] .pinned-tabs-container-separator.separator-is-sorting:hover::before {
+             background-color: transparent !important;
+        }
+        .zen-workspace-tabs-section[hide-separator] .pinned-tabs-container-separator:hover::before {
              background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
         }
-         /* Hover when ONLY SORT is present (No Pinned) */
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:has(#sort-button):not(:has(#clear-button)):hover {
-                width: calc(100% - 65px); /* Only space for sort + margin */
-                margin-right: auto;
-                background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
-            }
-            /* Hover when ONLY CLEAR is present (No Pinned) */
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:not(:has(#sort-button)):has(#clear-button):hover {
-                width: calc(100% - 60px); /* Only space for clear */
-                margin-right: auto;
-                background-color: var(--lwt-toolbarbutton-hover-background, rgba(200, 200, 200, 0.2));
-            }
-        /* Show BOTH buttons on separator hover (No Pinned) */
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:hover #sort-button,
-        .zen-workspace-tabs-section[hide-separator] .vertical-pinned-tabs-container-separator:hover #clear-button {
-            opacity: 1;
+        .zen-workspace-tabs-section[hide-separator] .pinned-tabs-container-separator.separator-is-sorting:hover::before {
+             width: 100% !important;
         }
 
-        /* Separator Pulsing Animation */
-        @keyframes pulse-separator-bg {
-            0% { background-color: var(--lwt-toolbarbutton-border-color, rgb(255, 141, 141)); }
-            50% { background-color: var(--lwt-toolbarbutton-hover-background, rgba(137, 178, 255, 0.91)); } /* Brighter pulse color */
-            100% { background-color: var(--lwt-toolbarbutton-border-color, rgb(142, 253, 238)); }
-        }
-
+        /* Additional style to ensure separator is visible during sorting */
         .separator-is-sorting {
-            animation: pulse-separator-bg 1.5s ease-in-out infinite;
-            will-change: background-color;
+            position: relative;
+            overflow: visible !important;
+            /* Remove background from the main element to avoid overlap */
+        }
+        /* Fallback: use the same CSS variable on the element itself */
+        .pinned-tabs-container-separator.separator-is-sorting {
+            background-image: none !important;
+            background-color: var(--sorting-color, #ebbcba);
+        }
+        
+        /* Ensure buttons work properly during sorting - don't force visibility */
+        .separator-is-sorting #sort-button,
+        .separator-is-sorting #clear-button {
+            z-index: 200 !important;
+            pointer-events: auto !important;
+            /* Let normal hover behavior control opacity and styling */
+        }
+        
+
+        
+
+
+        
+        /* While sorting, neutralize the original ::before so hover/theme styles can't override */
+        .pinned-tabs-container-separator.separator-is-sorting::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background: transparent !important;
         }
 
-        /* Tab Animations */
+        /* Dedicated overlay for sorting animation */
+        .pinned-tabs-container-separator.separator-is-sorting::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            pointer-events: none;
+            z-index: 2;
+            background-image: none !important;
+            background-color: var(--sorting-color, #ebbcba);
+            border-radius: 1px;
+            opacity: 0.9 !important;
+            transition: width 0.1s ease-in-out;
+        }
+
+        /* Remove hover interference: animated color stays visible while sorting */
+        .pinned-tabs-container-separator.separator-is-sorting:hover::before { background-image: none !important; }
+        
         .tab-closing {
             animation: fadeUp 0.5s forwards;
         }
         @keyframes fadeUp {
             0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-20px); max-height: 0px; padding: 0; margin: 0; border: 0; } /* Add max-height */
+            100% { opacity: 0; transform: translateY(-20px); max-height: 0px; padding: 0; margin: 0; border: 0; }
         }
         @keyframes loading-pulse-tab {
             0%, 100% { opacity: 0.6; }
@@ -326,7 +467,7 @@
             will-change: opacity;
         }
         .tabbrowser-tab {
-            transition: transform 0.3s ease-out, opacity 0.3s ease-out, max-height 0.5s ease-out, margin 0.5s ease-out, padding 0.5s ease-out; /* Add transition for closing */
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out, max-height 0.5s ease-out, margin 0.5s ease-out, padding 0.5s ease-out;
         }
     `
     };
@@ -825,10 +966,44 @@
 
         let separatorsToSort = []; // Keep track of separators to remove class later
         try {
-             separatorsToSort = document.querySelectorAll('.vertical-pinned-tabs-container-separator');
+             separatorsToSort = document.querySelectorAll('.pinned-tabs-container-separator');
              if(separatorsToSort.length > 0) {
                  console.log("Applying sorting indicator to separator(s)...");
-                 separatorsToSort.forEach(sep => sep.classList.add('separator-is-sorting'));
+                 separatorsToSort.forEach(sep => {
+                     sep.classList.add('separator-is-sorting');
+                     // Force a reflow to ensure the animation starts immediately
+                     sep.offsetHeight;
+                     console.log("Animation class added to separator:", sep, "Classes:", sep.className);
+                     try {
+                         const elemStyles = getComputedStyle(sep);
+                         const beforeStyles = getComputedStyle(sep, '::before');
+                         const afterStyles = getComputedStyle(sep, '::after');
+                         console.log("Separator computed styles:", {
+                             elementAnimationName: elemStyles?.animationName,
+                             elementBackgroundColor: elemStyles?.backgroundColor,
+                             beforeAnimationName: beforeStyles?.animationName,
+                             beforeBackgroundColor: beforeStyles?.backgroundColor,
+                             beforeBackgroundImage: beforeStyles?.backgroundImage,
+                             afterAnimationName: afterStyles?.animationName,
+                             afterBackgroundColor: afterStyles?.backgroundColor,
+                             afterBackgroundImage: afterStyles?.backgroundImage
+                         });
+                                                 // Start JS-driven color cycle using a CSS variable
+                        const colors = ['#ebbcba', '#c4a7e7', '#9ccfd8'];
+                        let colorIndex = 0;
+                        if (sep._sortingColorInterval) {
+                            clearInterval(sep._sortingColorInterval);
+                        }
+                        // Set initial color immediately
+                        sep.style.setProperty('--sorting-color', colors[0]);
+                        sep._sortingColorInterval = setInterval(() => {
+                            colorIndex = (colorIndex + 1) % colors.length;
+                            sep.style.setProperty('--sorting-color', colors[colorIndex]);
+                        }, 500);
+                     } catch (e) {
+                         console.warn("Could not read computed styles for separator:", e);
+                     }
+                 });
              } else {
                   console.warn("Could not find separator element to apply sorting indicator.");
              }
@@ -1223,15 +1398,22 @@
         } finally {
             isSorting = false; // Ensure sorting flag is reset
 
-            // Remove loading indicator class
+            // Remove loading indicator class with a minimum display time
             if (separatorsToSort.length > 0) {
-                console.log("Removing sorting indicator from separator(s)...");
-                separatorsToSort.forEach(sep => {
-                    // Check if element still exists before removing class
-                    if (sep && sep.isConnected) {
-                         sep.classList.remove('separator-is-sorting');
-                    }
-                });
+                console.log("Removing sorting indicator from separator(s) after minimum display time...");
+                setTimeout(() => {
+                    separatorsToSort.forEach(sep => {
+                        // Check if element still exists before removing class
+                        if (sep && sep.isConnected) {
+                             sep.classList.remove('separator-is-sorting');
+                             if (sep._sortingColorInterval) {
+                                 clearInterval(sep._sortingColorInterval);
+                                 sep._sortingColorInterval = null;
+                                 sep.style.removeProperty('--sorting-color');
+                             }
+                        }
+                    });
+                }, 3000); // Minimum 3 seconds to ensure animation is visible
             }
 
             // Remove tab loading indicators after a delay
@@ -1323,6 +1505,7 @@
                 const buttonFragment = window.MozXULElement.parseXULToFragment(
                     `<toolbarbutton id="sort-button" command="cmd_zenSortTabs" label="⇅ Sort" tooltiptext="Sort Tabs into Groups by Topic (AI)"/>`
                 );
+
                 container.appendChild(buttonFragment.firstChild.cloneNode(true));
                 console.log("BUTTONS: Sort button added to container:", container.id || container.className);
             } catch (e) {
@@ -1345,7 +1528,7 @@
     }
 
     function addButtonsToAllSeparators() {
-        const separators = document.querySelectorAll(".vertical-pinned-tabs-container-separator");
+        const separators = document.querySelectorAll(".pinned-tabs-container-separator");
         if (separators.length > 0) {
             separators.forEach(ensureButtonsExist);
         } else {
@@ -1368,7 +1551,7 @@
         }
 
         // Add Sort Command if missing
-        if (!zenCommands.querySelector("#cmd_zenSortTabs")) {
+        if (!zenCommands.querySelector("#cmd_zenSortTabs") && CONFIG.featureConfig.sort) {
             try {
                 const cmd = window.MozXULElement.parseXULToFragment(`<command id="cmd_zenSortTabs"/>`).firstChild;
                 zenCommands.appendChild(cmd);
@@ -1379,7 +1562,7 @@
         }
 
         // Add Clear Command if missing
-        if (!zenCommands.querySelector("#cmd_zenClearTabs")) {
+        if (!zenCommands.querySelector("#cmd_zenClearTabs") && CONFIG.featureConfig.clear) {
             try {
                 const cmd = window.MozXULElement.parseXULToFragment(`<command id="cmd_zenClearTabs"/>`).firstChild;
                 zenCommands.appendChild(cmd);
@@ -1471,7 +1654,7 @@
             checkCount++;
 
             // Check for necessary conditions
-            const separatorExists = !!document.querySelector(".vertical-pinned-tabs-container-separator");
+            const separatorExists = !!document.querySelector(".pinned-tabs-container-separator");
             const peripheryExists = !!document.querySelector('#tabbrowser-arrowscrollbox-periphery');
             const commandSetExists = !!document.querySelector("commandset#zenCommandSet");
             const gBrowserReady = typeof gBrowser !== 'undefined' && gBrowser.tabContainer;
@@ -1515,7 +1698,7 @@
                 });
                 // Provide specific feedback
                  if (!gZenWorkspacesReady) console.error(" -> gZenWorkspaces might not be fully initialized yet (activeWorkspace missing?). Ensure Zen Tab Organizer extension is loaded and enabled BEFORE this script runs.");
-                 if (!separatorExists && !peripheryExists) console.error(" -> Neither separator element '.vertical-pinned-tabs-container-separator' nor fallback periphery '#tabbrowser-arrowscrollbox-periphery' found in the DOM.");
+                 if (!separatorExists && !peripheryExists) console.error(" -> Neither separator element '.pinned-tabs-container-separator' nor fallback periphery '#tabbrowser-arrowscrollbox-periphery' found in the DOM.");
                  if (!commandSetExists) console.error(" -> Command set '#zenCommandSet' not found. Ensure Zen Tab Organizer extension is loaded and enabled.");
                  if (!gBrowserReady) console.error(" -> Global 'gBrowser' object not ready.");
             }

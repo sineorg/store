@@ -3,7 +3,10 @@ name: Update marketplace.json to contain latest data
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/17 * * * *" # every 17 minutes (GitHub may throttle more frequent runs)
+    - cron: "*/7 * * * *" # every 7 minutes (GitHub may throttle more frequent runs)
+  push:
+    branches:
+      - 'main'
 
 permissions:
   contents: write
@@ -30,7 +33,7 @@ jobs:
         # Install jq for JSON processing
         sudo apt-get update && sudo apt-get install -y jq curl
         
-        # Function to normalize GitHub URLs
+        # Function to normalize GitHub URLs and convert to raw URLs
         normalize_github_url() {
           local url="$1"
           local branch=""
@@ -66,7 +69,37 @@ jobs:
           echo "$repo|$branch|$folder"
         }
         
-        # Function to fetch theme.json from GitHub repository
+        # Function to fetch GitHub stars for a repository
+        fetch_github_stars() {
+          local repo="$1"
+          
+          echo "Fetching stars for repo: $repo" >&2
+          
+          # Use GitHub API to get repository information
+          local api_url="https://api.github.com/repos/$repo"
+          local response=$(curl -s --fail "$api_url" 2>/dev/null)
+          local curl_exit_code=$?
+          
+          if [[ $curl_exit_code -ne 0 ]]; then
+            echo "Failed to fetch stars for $repo (exit code: $curl_exit_code)" >&2
+            echo "0"
+            return
+          fi
+          
+          # Extract stars count from API response
+          local stars=$(echo "$response" | jq -r '.stargazers_count // 0' 2>/dev/null)
+          
+          if [[ "$stars" == "null" || -z "$stars" ]]; then
+            echo "0"
+          else
+            echo "$stars"
+          fi
+          
+          # Small delay to avoid rate limiting
+          sleep 0.5
+        }
+        
+        # Function to fetch theme.json using raw GitHub URLs
         fetch_theme_data() {
           local repo="$1"
           local branch="$2"
@@ -86,79 +119,80 @@ jobs:
           if [[ "$repo" == "$current_repo" ]]; then
             echo "Fetching from current repository using local file system" >&2
             
-            # For current repo, try to read theme.json directly from filesystem first
+            # For current repo, read theme.json directly from filesystem
             if [[ -f "$theme_path" ]]; then
               echo "Found theme.json at: $theme_path" >&2
               theme_content=$(cat "$theme_path")
             else
-              echo "theme.json not found at $theme_path, trying API" >&2
-              # Fall back to API for current repo
-              local api_url="https://api.github.com/repos/$repo/contents/$theme_path?ref=$branch"
-              local response=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                                   -H "Accept: application/vnd.github.v3+json" \
-                                   "$api_url")
-              
-              if echo "$response" | jq -e '.message' > /dev/null 2>&1; then
-                echo "API request failed: $(echo "$response" | jq -r '.message')" >&2
-                # Return a minimal object with just the homepage
-                jq -n --arg homepage "$homepage" '{homepage: $homepage}'
-                return
-              fi
-              
-              theme_content=$(echo "$response" | jq -r '.content' | base64 -d)
+              echo "theme.json not found at $theme_path in current repository" >&2
+              # Fetch GitHub stars for this repository
+              local stars=$(fetch_github_stars "$repo")
+              # Return a minimal object with just the homepage and stars
+              jq -n --arg homepage "$homepage" --argjson stars "$stars" '{homepage: $homepage, stars: $stars}'
+              return
             fi
           else
-            echo "Fetching from external repository via API" >&2
-            # Try to fetch theme.json from external repository
-            local api_url="https://api.github.com/repos/$repo/contents/$theme_path?ref=$branch"
+            echo "Fetching from external repository via raw URL" >&2
             
-            echo "Fetching theme data from: $api_url" >&2
+            # Construct raw GitHub URL
+            # Format: https://raw.githubusercontent.com/user/repo/branch/path/to/file
+            local raw_url="https://raw.githubusercontent.com/$repo/$branch/$theme_path"
             
-            # Try with authentication first
-            local response=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                                 -H "Accept: application/vnd.github.v3+json" \
-                                 "$api_url")
+            echo "Fetching theme data from raw URL: $raw_url" >&2
             
-            # Check if the request failed due to permissions
-            if echo "$response" | jq -e '.message' > /dev/null 2>&1; then
-              local error_message=$(echo "$response" | jq -r '.message')
-              echo "Error with authenticated request: $error_message" >&2
+            # Fetch the raw file content
+            local response=$(curl -s --fail "$raw_url" 2>/dev/null)
+            local curl_exit_code=$?
+            
+            # Check if curl succeeded
+            if [[ $curl_exit_code -ne 0 ]]; then
+              echo "Failed to fetch theme.json from raw URL (exit code: $curl_exit_code)" >&2
               
-              # If it's a permission error, try without authentication for public repos
-              if [[ "$error_message" == *"403"* ]] || [[ "$error_message" == *"denied"* ]] || [[ "$error_message" == *"permission"* ]]; then
-                echo "Trying unauthenticated request for public repository..." >&2
-                response=$(curl -s -H "Accept: application/vnd.github.v3+json" "$api_url")
+              # Try with 'master' branch as fallback
+              if [[ "$branch" == "main" ]]; then
+                echo "Trying with 'master' branch as fallback..." >&2
+                raw_url="https://raw.githubusercontent.com/$repo/master/$theme_path"
+                response=$(curl -s --fail "$raw_url" 2>/dev/null)
+                curl_exit_code=$?
                 
-                # Check if unauthenticated request also failed
-                if echo "$response" | jq -e '.message' > /dev/null 2>&1; then
-                  echo "Unauthenticated request also failed: $(echo "$response" | jq -r '.message')" >&2
-                  # Return a minimal object with just the homepage
-                  jq -n --arg homepage "$homepage" '{homepage: $homepage}'
+                if [[ $curl_exit_code -ne 0 ]]; then
+                  echo "Also failed with 'master' branch" >&2
+                  # Fetch GitHub stars for this repository
+                  local stars=$(fetch_github_stars "$repo")
+                  # Return a minimal object with just the homepage and stars
+                  jq -n --arg homepage "$homepage" --argjson stars "$stars" '{homepage: $homepage, stars: $stars}'
                   return
                 fi
               else
-                # Return a minimal object with just the homepage
-                jq -n --arg homepage "$homepage" '{homepage: $homepage}'
+                # Fetch GitHub stars for this repository
+                local stars=$(fetch_github_stars "$repo")
+                # Return a minimal object with just the homepage and stars
+                jq -n --arg homepage "$homepage" --argjson stars "$stars" '{homepage: $homepage, stars: $stars}'
                 return
               fi
             fi
             
-            # Decode base64 content
-            theme_content=$(echo "$response" | jq -r '.content' | base64 -d)
+            theme_content="$response"
           fi
           
           # Validate JSON
           if ! echo "$theme_content" | jq empty 2>/dev/null; then
             echo "Invalid JSON in theme.json" >&2
-            # Return a minimal object with just the homepage
-            jq -n --arg homepage "$homepage" '{homepage: $homepage}'
+            # Fetch GitHub stars for this repository
+            local stars=$(fetch_github_stars "$repo")
+            # Return a minimal object with just the homepage and stars
+            jq -n --arg homepage "$homepage" --argjson stars "$stars" '{homepage: $homepage, stars: $stars}'
             return
           fi
           
-          # Extract only existing fields and add homepage
-          echo "$theme_content" | jq --arg homepage "$homepage" '
+          # Fetch GitHub stars for this repository
+          local stars=$(fetch_github_stars "$repo")
+          echo "Repository $repo has $stars stars" >&2
+          
+          # Extract only existing fields and add homepage and stars
+          echo "$theme_content" | jq --arg homepage "$homepage" --argjson stars "$stars" '
             . as $original |
-            {homepage: $homepage} |
+            {homepage: $homepage, stars: $stars} |
             if $original | has("image") then . + {image: ($original.image // "")} else . end |
             if $original | has("name") then . + {name: ($original.name // "")} else . end |
             if $original | has("version") then . + {version: ($original.version // "")} else . end |
@@ -174,17 +208,17 @@ jobs:
         mkdir -p data
         
         # Check if marketplace.json exists in data folder
-        if [[ ! -f "data/marketplace.json" ]]; then
-          echo "data/marketplace.json not found, creating default structure"
-          echo '{}' > data/marketplace.json
+        if [[ ! -f "marketplace.json" ]]; then
+          echo "marketplace.json not found, creating default structure"
+          echo '{}' > marketplace.json
         fi
         
         # Read current marketplace.json
-        marketplace_content=$(cat data/marketplace.json)
+        marketplace_content=$(cat marketplace.json)
         
         # Ensure we have a valid JSON object
         if ! echo "$marketplace_content" | jq empty 2>/dev/null; then
-          echo "Invalid JSON in data/marketplace.json, creating empty object"
+          echo "Invalid JSON in marketplace.json, creating empty object"
           marketplace_content='{}'
         fi
         
@@ -247,7 +281,7 @@ jobs:
               # Update the marketplace entry
               temp_content=$(cat "$temp_file")
               echo "$temp_content" | jq --arg key "$key" --argjson data "$theme_data" \
-                '.[$key] = $data' > "$temp_file"
+                '.[$key] = $data' > "$temp_file"1
               
               echo "Updated $key with fetched data"
             else
@@ -256,11 +290,16 @@ jobs:
           fi
         done <<< "$marketplace_keys"
         
-        # Write the updated content back to data/marketplace.json
-        cat "$temp_file" > data/marketplace.json
-        rm "$temp_file"
+        # Sort the marketplace entries by stars (descending order)
+        echo "Sorting marketplace entries by star count (descending)..."
+        temp_sorted_file=$(mktemp)
+        cat "$temp_file" | jq 'to_entries | sort_by(-.value.stars // 0) | from_entries' > "$temp_sorted_file"
         
-        echo "Updated data/marketplace.json successfully"
+        # Write the sorted content back to marketplace.json
+        cat "$temp_sorted_file" > marketplace.json
+        rm "$temp_file" "$temp_sorted_file"
+        
+        echo "Updated and sorted marketplace.json successfully"
 
     - name: Commit and push changes
       run: |
@@ -268,13 +307,13 @@ jobs:
         git config --local user.name "GitHub Action"
         
         # Check if there are any changes
-        if git diff --quiet data/marketplace.json; then
-          echo "No changes to data/marketplace.json"
+        if git diff --quiet marketplace.json; then
+          echo "No changes to marketplace.json"
           exit 0
         fi
         
-        git add data/marketplace.json
-        git commit -m "Update data/marketplace.json with latest marketplace data [skip ci]"
+        git add marketplace.json
+        git commit -m "Update marketplace.json with latest marketplace data [skip ci]"
         git push
 
     - name: Handle errors

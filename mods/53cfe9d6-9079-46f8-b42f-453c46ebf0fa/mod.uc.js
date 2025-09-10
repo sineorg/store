@@ -1,12 +1,18 @@
+
+// This file combines all the provided userChrome.js scripts into a single file for easier management.
+// The logic of each script has been preserved without modification as requested.
+// MODIFICATION: Replaced all instances of '.vertical-pinned-tabs-container-separator' with '.pinned-tabs-container-separator'.
+
+// ====================================================================================================
+// SCRIPT 1: Dynamic URLBar Background Height
+// ====================================================================================================
 // ==UserScript==
 // @ignorecache
 // @name          Dynamic URLBar Background Height
 // @description   Adjusts the height of #browser::before to match .urlbarView height.
-// @include       chrome://browser/content/browser.xhtml
-// @run-at        document-idle
 // ==/UserScript==
 // (Note: The above header is for userscript managers, may not be needed for autoconfig)
-
+if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
 (function() {
   // Only run in the main browser window
   if (window.location.href !== 'chrome://browser/content/browser.xhtml') {
@@ -210,1586 +216,112 @@
   }
 
 })();
+}
 
+// ====================================================================================================
+// SCRIPT 2: Global URL Bar Scroller (FINAL VERSION 1.0.0)
+// ====================================================================================================
+// ==UserScript==
+// @ignorecache
+// @name          Zen Global URL Bar Scroller
+// @description   Makes normal URL bar results scrollable.
+// ==/UserScript==
+// zen_urlbar_global_scroll_final.js (Standalone, Polite Version)
 
+(function() {
+  if (location.href !== 'chrome://browser/content/browser.xhtml') {
+    return;
+  }
 
+  // --- Configuration ---
+  const prefs = {
+    VISIBLE_RESULTS_LIMIT: 5,
+    SCROLLABLE_CLASS: 'zen-global-scrollable'
+  };
 
-
-// FINAL VERSION 4.7.2 (API Key from Prefs + Title>Host + No Clear Button Space)
-(() => {
-    // --- Configuration ---
-    // --- IMPORTANT SETUP ---
-    // You MUST set your Mistral API key in about:config for this script to work.
-    // 1. Go to about:config in Firefox.
-    // 2. Search for extensions.tab_sort.mistral_api_key
-    // 3. If it doesn't exist, select 'String' and click the '+' button.
-    // 4. Paste your Mistral API Key into the value field and save.
-    // --- END SETUP ---
-    const CONFIG = {
-        apiConfig: {
-            customApi: {
-                enabled: true, // Enabled Custom API (Mistral)
-                endpoint: 'https://api.mistral.ai/v1/chat/completions', // Mistral API endpoint
-                // apiKey: 'YOUR_MISTRAL_API_KEY_HERE', // <<<--- REMOVED: Set in about:config (extensions.tab_sort.mistral_api_key)
-                model: 'mistral-small-latest', // Example Mistral model, change if needed
-                promptTemplateBatch: `Analyze the following numbered list of tab data (Title, URL, Description) and assign a concise category (1-2 words, Title Case) for EACH tab.
-                    Some tabs might logically belong to groups already present based on common domains or topics identified by keywords.
-                    
-                    Tab Categorization Strategy:
-                    1. For well-known platforms (GitHub, YouTube, Reddit, etc.), use the platform name as the category.
-                    2. For content sites, news sites, or blogs, PRIORITIZE THE SEMANTIC MEANING OF THE TITLE over the domain.
-                    3. Look for meaningful patterns and topics across titles to create logical content groups.
-                    4. Use the domain name only when it's more relevant than the title content or when the title is generic.
-                    
-                    BE CONSISTENT: Use the EXACT SAME category name for tabs belonging to the same logical group.
-
-                    Input Tab Data:
-                    {TAB_DATA_LIST}
-
-                    ---
-                    Instructions for Output:
-                    1. Output ONLY the category names.
-                    2. Provide EXACTLY ONE category name per line.
-                    3. The number of lines in your output MUST EXACTLY MATCH the number of tabs in the Input Tab Data list above.
-                    4. DO NOT include numbering, explanations, apologies, markdown formatting, or any surrounding text like "Output:" or backticks.
-                    5. Just the list of categories, separated by newlines.
-                    ---
-
-                    Output:` // Updated prompt with title-focused hybrid approach
-            }
-        },
-        groupColors: [
-            "var(--tab-group-color-blue)", "var(--tab-group-color-red)", "var(--tab-group-color-yellow)",
-            "var(--tab-group-color-green)", "var(--tab-group-color-pink)", "var(--tab-group-color-purple)",
-            "var(--tab-group-color-orange)", "var(--tab-group-color-cyan)", "var(--tab-group-color-gray)"
-        ],
-        groupColorNames: [
-            "blue", "red", "yellow", "green", "pink", "purple", "orange", "cyan", "gray"
-        ],
-        preGroupingThreshold: 2, // Min tabs for keyword/hostname pre-grouping
-        consolidationDistanceThreshold: 2, // ADDED: Max Levenshtein distance to merge similar group names
-        normalizationMap: {
-            'github.com': 'GitHub', 'github': 'GitHub', 'stackoverflow.com': 'Stack Overflow',
-            'stack overflow': 'Stack Overflow', 'stackoverflow': 'Stack Overflow',
-            'google docs': 'Google Docs', 'docs.google.com': 'Google Docs',
-            'google drive': 'Google Drive', 'drive.google.com': 'Google Drive',
-            'youtube.com': 'YouTube', 'youtube': 'YouTube', 'reddit.com': 'Reddit', 'reddit': 'Reddit',
-            'chatgpt': 'ChatGPT', 'openai.com': 'OpenAI', 'gmail': 'Gmail', 'mail.google.com': 'Gmail',
-            'aws': 'AWS', 'amazon web services': 'AWS', 'pinterest.com': 'Pinterest', 'pinterest': 'Pinterest',
-            'lesnumeriques.com': 'Les Numeriques', 'actuia.com': 'Actu AI', 'twitch.tv': 'Twitch', 'twitch': 'Twitch',
-            'tiktok.com': 'TikTok', 'tiktok': 'TikTok', 'instagram.com': 'Instagram', 'instagram': 'Instagram',
-            'facebook.com': 'Facebook', 'facebook': 'Facebook', 'twitter.com': 'Twitter', 'twitter': 'Twitter',
-            'linkedin.com': 'LinkedIn', 'linkedin': 'LinkedIn', 'x.com': 'X', 'x': 'X',
-            'discord.com': 'Discord', 'discord': 'Discord', 'steamcommunity.com': 'Steam', 'steam': 'Steam',
-            'epicgames.com': 'Epic Games', 'epicgames': 'Epic Games', 'twitch.tv': 'Twitch', 'twitch': 'Twitch',
-            'theverge.com': 'The Verge', 'the verge': 'The Verge', 'theguardian.com': 'The Guardian', 'the guardian': 'The Guardian',
-            'google.com': 'Google', 'google': 'Google', 'reddit.com': 'Reddit', 'old.reddit.com': 'Reddit', 'presse-citron.net': 'Presse Citron',
-            'mistral.ai': 'Mistral', 'mistral': 'Mistral', 'openai.com': 'OpenAI', 'openai': 'OpenAI',
-            
-            // Add more hostnames and common phrases you want normalized
-        },
-        titleKeywordStopWords: new Set([
-            'a', 'an', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'with', 'by', 'of',
-            'is', 'am', 'are', 'was', 'were', 'be', 'being', 'been', 'has', 'have', 'had', 'do', 'does', 'did',
-            'how', 'what', 'when', 'where', 'why', 'which', 'who', 'whom', 'whose',
-            'new', 'tab', 'untitled', 'page', 'home', 'com', 'org', 'net', 'io', 'dev', 'app',
-            'get', 'set', 'list', 'view', 'edit', 'create', 'update', 'delete',
-            'my', 'your', 'his', 'her', 'its', 'our', 'their', 'me', 'you', 'him', 'her', 'it', 'us', 'them',
-            'about', 'search', 'results', 'posts', 'index', 'dashboard', 'profile', 'settings',
-            'official', 'documentation', 'docs', 'wiki', 'help', 'support', 'faq', 'guide',
-            'error', 'login', 'signin', 'sign', 'up', 'out', 'welcome', 'loading', 
-            // French stop words
-            'que', 'le', 'la', 'un', 'une', 'des', 'du', 'de', 'les', 'l\'', 'pour', 'qui', 'ce', 'cette', 'ces', 
-            'mon', 'ma', 'mes', 'ton', 'ta', 'tes', 'son', 'sa', 'ses', 'notre', 'nos', 'votre', 'vos', 'leur', 'leurs', 
-            'et', 'ou', 'mais', 'donc', 'car', 'ni', 'dans', 'sur', 'sous', 'avec', 'sans', 'chez', 'par', 'vers', 'depuis',
-            'pendant', 'avant', 'après', 'devant', 'derrière', 'entre', 'parmi', 'selon', 'je', 'tu', 'il', 'elle',
-            'nous', 'vous', 'ils', 'elles', 'moi', 'toi', 'lui', 'eux', 'celui', 'celle', 'ceux', 'celles', 'dont',
-            'où', 'quand', 'comment', 'pourquoi', 'quel', 'quelle', 'quels', 'quelles', 'lequel', 'laquelle', 'lesquels',
-            'lesquelles', 'auquel', 'auxquels', 'auxquelles', 'duquel', 'desquels', 'desquelles',
-            // Additional French stop words
-            'peut', 'peuvent', 'pourrait', 'pourraient', 'doit', 'doivent', 'devrait', 'devraient',
-            'est', 'sont', 'sera', 'seront', 'être', 'était', 'étaient', 'été',
-            'fait', 'font', 'fera', 'feront', 'faire', 'faisait', 'faisaient', 'fait',
-            'comme', 'ainsi', 'alors', 'aussi', 'autre', 'autres', 'aux', 'avoir',
-            'bon', 'bien', 'beaucoup', 'cela', 'ces', 'chaque', 'deux', 'dire',
-            'encore', 'enfin', 'fois', 'grand', 'ici', 'juste', 'même', 'moins',
-            'nouveau', 'nouvelle', 'maintenant', 'peu', 'plus', 'presque', 'quelque', 'quelques',
-            'sans', 'seulement', 'si', 'soit', 'toujours', 'tous', 'tout', 'toute', 'toutes', 'très',
-            'trop', 'tellement', 'voici', 'voilà', 'voir', 'veut', 'vouloir', 'voulait', 'vont',
-            // Add more common/noisy words specific to your browsing habits if needed
-        ]),
-        minKeywordLength: 3, // Minimum length for a word to be considered a keyword
-        // --- Styles (v4.7.1 - Removed space for clear button) ---
-        styles: `
-            #sort-button, #clear-button {
-                font-size: 11px;
-                width: 45px;
-                appearance: none;
-                padding: 1px;
-                color: rgba(255, 255, 255, 0.6); /* Slightly more visible default */
-                flex-shrink: 0;
-                margin-left: 2px;
-            }
-            #sort-button.hidden-button, #clear-button.hidden-button {
-                display: none !important;
-                pointer-events: none !important;
-            }
-            #sort-button label, #clear-button label {
-                display: block;
-                font-weight: 600;
-            }
-            #sort-button:hover, #clear-button:hover {
-                color: white;
-                border-radius: 4px;
-            }
-            .vertical-pinned-tabs-container-separator {
-                 display: flex;
-                 flex-direction: row;
-                 margin-left: 0;
-                 justify-content: flex-end;
-                 align-items: center;
-            }
-            .vertical-pinned-tabs-container-separator.has-no-sortable-tabs #sort-button,
-            .vertical-pinned-tabs-container-separator.has-no-sortable-tabs #clear-button {
-                 display: none !important;
-                 pointer-events: none;
-            }
-            .vertical-pinned-tabs-container-separator svg.separator-line-svg {
-                flex-grow: 1;
-            }
-            @keyframes loading-pulse-tab {
-                0%, 100% { opacity: 0.6; }
-                50% { opacity: 1; }
-            }
-            .tab-is-sorting .tab-icon-image,
-            .tab-is-sorting .tab-label {
-                animation: loading-pulse-tab 1.5s ease-in-out infinite;
-                will-change: opacity;
-            }
-            
-            tab-group {
-                transition: background-color 0.3s ease;
-            }
-            /* Broom brushing animation */
-            @keyframes brush-sweep {
-              0% { transform: rotate(0deg); }
-              20% { transform: rotate(-15deg); }
-              40% { transform: rotate(15deg); }
-              60% { transform: rotate(-15deg); }
-              80% { transform: rotate(15deg); }  
-              100% { transform: rotate(0deg); }
-            }
-            
-            #sort-button.brushing .broom-icon {
-              animation: brush-sweep 0.8s ease-in-out;
-              transform-origin: 50% 50%; /* Center of broom */
-            }
-            
-            /* Arrow animation for clear button */
-            @keyframes arrow-pulse {
-              0% { transform: scale(1); }
-              50% { transform: scale(1.2); }
-              100% { transform: scale(1); }
-            }
-            
-            #clear-button.clearing .arrow-icon {
-              animation: arrow-pulse 0.6s ease-in-out;
-            }
-
-            /* Default styles (Dark theme assumed) */
-            #sort-button, #clear-button {
-                color: rgba(255, 255, 255, 0.6); /* Slightly more visible default */
-            }
-            #sort-button:hover, #clear-button:hover {
-                color: white;
-            }
-            .separator-path-segment {
-                stroke: rgba(255, 255, 255, 0.3); /* Default stroke for dark theme */
-            }
-
-            /* Light Theme Overrides */
-            [lwt-toolbar="light"] #sort-button,
-            [lwt-toolbar="light"] #clear-button {
-                color: rgba(0, 0, 0, 0.6);
-            }
-            [lwt-toolbar="light"] #sort-button:hover,
-            [lwt-toolbar="light"] #clear-button:hover {
-                color: black;
-            }
-            [lwt-toolbar="light"] .separator-path-segment {
-                 stroke: rgba(0, 0, 0, 0.2); /* Stroke for light theme */
-            }
-        `
+  /**
+   * Waits for all necessary elements to exist before initializing the feature.
+   */
+  function waitForElementsAndInit() {
+    // We only need urlbar and results for this script's core logic.
+    const elements = {
+      urlbar: document.getElementById('urlbar'),
+      results: document.getElementById('urlbar-results')
     };
 
-    // --- Globals & State ---
-    let groupColorIndex = 0;
-    let isSorting = false;
-    let isClearing = false;
-    let sortButtonListenerAdded = false;
-    let clearButtonListenerAdded = false;
-    let sortAnimationId = null; // Added for animation control
-
-    // --- Helper Functions ---
-
-    const injectStyles = () => {
-        if (document.getElementById('tab-sort-styles')) {
-            // If styles exist, update them in case the config changed
-            const styleElement = document.getElementById('tab-sort-styles');
-            if (styleElement.textContent !== CONFIG.styles) {
-                 styleElement.textContent = CONFIG.styles;
-                 console.log("SORT BTN: Styles updated.");
-            }
-            return;
-        }
-        // If styles don't exist, create and append
-        const style = Object.assign(document.createElement('style'), {
-            id: 'tab-sort-styles',
-            textContent: CONFIG.styles
-        });
-        document.head.appendChild(style);
-        console.log("SORT BTN: Styles injected.");
-    };
-
-    const getTabData = (tab) => {
-        if (!tab || !tab.isConnected) {
-            return { title: 'Invalid Tab', url: '', hostname: '', description: '' };
-        }
-        let title = 'Untitled Page';
-        let fullUrl = '';
-        let hostname = '';
-        let description = '';
-        try {
-            const originalTitle = tab.getAttribute('label') || tab.querySelector('.tab-label, .tab-text')?.textContent || '';
-            const browser = tab.linkedBrowser || tab._linkedBrowser || gBrowser?.getBrowserForTab?.(tab);
-            if (browser?.currentURI?.spec && !browser.currentURI.spec.startsWith('about:')) {
-                try {
-                    const currentURL = new URL(browser.currentURI.spec);
-                    fullUrl = currentURL.href;
-                    hostname = currentURL.hostname.replace(/^www\./, '');
-                } catch (e) {
-                    hostname = 'Invalid URL';
-                    fullUrl = browser?.currentURI?.spec || 'Invalid URL';
-                }
-            } else if (browser?.currentURI?.spec) {
-                fullUrl = browser.currentURI.spec;
-                hostname = 'Internal Page';
-            }
-            if (!originalTitle || originalTitle === 'New Tab' || originalTitle === 'about:blank' || originalTitle === 'Loading...' || originalTitle.startsWith('http:') || originalTitle.startsWith('https:')) {
-                if (hostname && hostname !== 'Invalid URL' && hostname !== 'localhost' && hostname !== '127.0.0.1' && hostname !== 'Internal Page') {
-                    title = hostname;
-                } else {
-                    try {
-                        const pathSegment = new URL(fullUrl).pathname.split('/')[1];
-                        if (pathSegment) title = pathSegment;
-                    } catch { /* ignore */ }
-                }
-            } else { title = originalTitle.trim(); }
-            title = title || 'Untitled Page';
-            try {
-                if (browser && browser.contentDocument) {
-                    const metaDescElement = browser.contentDocument.querySelector('meta[name="description"]');
-                    if (metaDescElement) {
-                        description = metaDescElement.getAttribute('content')?.trim() || '';
-                        description = description.substring(0, 200);
-                    }
-                }
-            } catch (contentError) { /* ignore permission errors */ }
-        } catch (e) {
-            console.error('Error getting tab data for tab:', tab, e);
-            title = 'Error Processing Tab';
-        }
-        return { title: title, url: fullUrl, hostname: hostname || 'N/A', description: description || 'N/A' };
-    };
-
-    const toTitleCase = (str) => {
-        if (!str) return ""; // Added guard for null/undefined input
-        return str.toLowerCase()
-            .split(' ')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-    };
-
-    // Regex for common TLDs (Top-Level Domains)
-    const tldRegex = /\.(com|org|net|gouv|fr|io|dev|ai|tv|app|uk|de|jp|info|biz|me|eu|net|org|io|ai|co|tech|site|online|space|store|blog|news|agency|zone|xyz|pdf|html|php|aspx|jsp|xml|json|css|js|ca|au|in|cn|ru|br|it|es|nl|se|no|fi|dk|pl|ch|at|be|pt|gr|cz|hu|ro|sk|si|lt|lv|ee|ua|tr|il|za|mx|ar|cl|co|pe|ve|kr|my|sg|th|vn|id|ph|hk|tw|sa|ae|eg|ng|jp|pdf|to)$/i;
-
-    const processTopic = (text) => {
-        if (!text) return "Uncategorized";
-
-        const originalTextTrimmedLower = text.trim().toLowerCase();
-        // Use the map defined in CONFIG
-        const normalizationMap = CONFIG.normalizationMap || {};
-
-        if (normalizationMap[originalTextTrimmedLower]) {
-            return normalizationMap[originalTextTrimmedLower];
-        }
-
-        let processedText = text.replace(/^(Category is|The category is|Topic:)\\s*"?/i, '');
-        processedText = processedText.replace(/^\\s*[\\d.*-]+\\s*/, '');
-        // Keep TLD removal logic from original tab_sort.uc.js
-        processedText = processedText.trim().replace(tldRegex, '');
-        let words = processedText.trim().split(/\\s+/);
-        let category = words.slice(0, 2).join(' ');
-        category = category.replace(/["'*().:;,]/g, '');
-
-        return toTitleCase(category).substring(0, 40) || "Uncategorized";
-    };
-
-    const extractTitleKeywords = (title) => {
-        if (!title || typeof title !== 'string') {
-            return new Set();
-        }
-        
-        // Improved title keyword extraction:
-        // 1. Clean the title more thoroughly
-        // 2. Handle common title patterns (questions, lists)
-        // 3. Preserve multi-word concepts when possible
-        
-        const cleanedTitle = title.toLowerCase()
-            .replace(/[-_]/g, ' ') // Treat dash/underscore as space
-            .replace(/[^\w\s']/g, '') // Remove punctuation EXCEPT apostrophes
-            .replace(/\s+/g, ' ').trim(); // Normalize spaces
-            
-        // Detect if title is a question - these are often important
-        const isQuestion = /^(how|what|why|when|where|who|which|is|are|can|could|should|will|would|did|do)\b/i.test(title);
-        
-        // Split into words, but keep track of bigrams (2-word phrases) that might be meaningful
-        const words = cleanedTitle.split(' ');
-        const keywords = new Set();
-        const bigrams = [];
-        
-        // First collect possible bigrams (2-word phrases)
-        for (let i = 0; i < words.length - 1; i++) {
-            if (words[i].length >= CONFIG.minKeywordLength && 
-                words[i+1].length >= CONFIG.minKeywordLength && 
-                !CONFIG.titleKeywordStopWords.has(words[i]) && 
-                !CONFIG.titleKeywordStopWords.has(words[i+1])) {
-                bigrams.push(`${words[i]} ${words[i+1]}`);
-            }
-        }
-        
-        // Add individual words as keywords
-        for (const word of words) {
-            // Give questions higher priority by adding question words if it's a question
-            if (isQuestion && /^(how|what|why|when|where|who|which)\b/i.test(word)) {
-                keywords.add(word); // Always include question words for questions
-            }
-            
-            if (word.length >= CONFIG.minKeywordLength && 
-                !CONFIG.titleKeywordStopWords.has(word) && 
-                !/^\d+$/.test(word)) {
-                keywords.add(word);
-            }
-        }
-        
-        // Add relevant bigrams
-        for (const bigram of bigrams) {
-            keywords.add(bigram);
-        }
-        
-        return keywords;
-    };
-
-    const levenshteinDistance = (a, b) => {
-        if (!a || !b) return Math.max(a?.length ?? 0, b?.length ?? 0);
-        a = a.toLowerCase();
-        b = b.toLowerCase();
-        if (a.length === 0) return b.length;
-        if (b.length === 0) return a.length;
-
-        const matrix = [];
-        for (let i = 0; i <= b.length; i++) {
-            matrix[i] = [i];
-        }
-        for (let j = 0; j <= a.length; j++) {
-            matrix[0][j] = j;
-        }
-
-        for (let i = 1; i <= b.length; i++) {
-            for (let j = 1; j <= a.length; j++) {
-                const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-                matrix[i][j] = Math.min(
-                    matrix[i - 1][j] + 1,     // Deletion
-                    matrix[i][j - 1] + 1,     // Insertion
-                    matrix[i - 1][j - 1] + cost // Substitution
-                );
-            }
-        }
-        return matrix[b.length][a.length];
-    };
-
-    const getNextGroupColorName = () => {
-        const colorName = CONFIG.groupColorNames[groupColorIndex % CONFIG.groupColorNames.length];
-        groupColorIndex++;
-        return colorName;
-    };
-
-    const findGroupElement = (topicName, workspaceId) => {
-        const sanitizedTopicName = topicName.trim();
-        if (!sanitizedTopicName) return null;
-        const safeSelectorTopicName = sanitizedTopicName.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-        try {
-            return document.querySelector(`tab-group[label="${safeSelectorTopicName}"][zen-workspace-id="${workspaceId}"]`);
-        } catch (e) {
-            console.error(`Error finding group selector: tab-group[label="${safeSelectorTopicName}"]...`, e);
-            return null;
-        }
-    };
-
-    // --- AI Interaction ---
-    const askAIForMultipleTopics = async (tabs, existingCategoryNames = []) => {
-        const validTabs = tabs.filter(tab => tab && tab.isConnected);
-        if (!validTabs || validTabs.length === 0) {
-            return [];
-        }
-
-        console.log(`Batch AI (Mistral): Requesting categories for ${validTabs.length} tabs, considering ${existingCategoryNames.length} existing categories...`);
-        validTabs.forEach(tab => tab.classList.add('tab-is-sorting'));
-
-        const { customApi } = CONFIG.apiConfig;
-        let result = [];
-        let apiKey = null; // Variable to hold the API key
-
-        try {
-            if (!customApi.enabled) {
-                console.warn("Mistral API is disabled in config. Skipping AI categorization.");
-                return validTabs.map(tab => ({ tab, topic: "Uncategorized" }));
-            }
-
-            // --- Get API Key from Firefox Preferences --- 
-            try {
-                const prefService = Components.classes["@mozilla.org/preferences-service;1"]
-                                         .getService(Components.interfaces.nsIPrefService)
-                                         .getBranch("extensions.tab_sort."); 
-                apiKey = prefService.getStringPref("mistral_api_key", ""); 
-
-                if (!apiKey) {
-                     console.warn("API key preference 'extensions.tab_sort.mistral_api_key' is empty or not found.");
-                }
-            } catch (prefError) {
-                console.error("Failed to read API key preference 'extensions.tab_sort.mistral_api_key' using Cc/Ci. Ensure Components object is available.", prefError);
-                apiKey = ""; 
-            }
-
-            if (!apiKey) {
-                 throw new Error("Mistral API Key is not configured in about:config (extensions.tab_sort.mistral_api_key). Please set it.");
-            }
-            // --- End API Key Retrieval --- 
-
-            const tabDataArray = validTabs.map(getTabData);
-            
-            // Enhanced tab data formatting that emphasizes titles and extracts key concepts
-            const formattedTabDataList = tabDataArray.map((data, index) => {
-                // Extract keywords from title for additional context
-                const titleKeywords = data.title ? Array.from(extractTitleKeywords(data.title)) : [];
-                const keywordPhrase = titleKeywords.length > 0 ? 
-                    `\nKey Concepts: ${titleKeywords.join(', ')}` : '';
-                
-                // Format the tab data with title prominently displayed
-                return `${index + 1}.\n📝 TITLE: "${data.title}"${keywordPhrase}\n🔗 URL: "${data.url}"\n🌐 Domain: "${data.hostname}"\n📄 Description: "${data.description}"`;
-            }).join('\n\n');
-
-            // --- Format existing categories for the prompt --- 
-            const formattedExistingCategories = existingCategoryNames.length > 0
-                ? `\nExisting Categories:\n${existingCategoryNames.map(name => `- ${name}`).join('\n')}`
-                : "\nNo existing categories.";
-            // --- End Format --- 
-
-            let apiUrl, headers, requestBody, prompt;
-
-            console.log(`Using Mistral API: ${customApi.endpoint}`);
-            apiUrl = customApi.endpoint;
-            headers = {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}` 
-            };
-            
-            // --- Inject existing categories into the prompt --- 
-            prompt = customApi.promptTemplateBatch
-                .replace("{EXISTING_CATEGORIES_LIST}", formattedExistingCategories)
-                .replace("{TAB_DATA_LIST}", formattedTabDataList);
-            // --- End Injection --- 
-            
-            requestBody = {
-                model: customApi.model,
-                messages: [
-                    { role: "user", content: prompt }
-                ],
-                temperature: 0.2,
-                max_tokens: validTabs.length * 15, 
-                stream: false
-            };
-
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: headers,
-                body: JSON.stringify(requestBody)
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text().catch(() => 'Unknown API error reason');
-                throw new Error(`Mistral API Error ${response.status}: ${errorText}`);
-            }
-
-            const data = await response.json();
-            const aiText = data.choices?.[0]?.message?.content?.trim();
-
-            if (!aiText) {
-                throw new Error("Empty API response from Mistral");
-            }
-            console.log("Mistral Raw Response Text:\n---\n", aiText, "\n---"); // Log raw response
-
-            const lines = aiText.split('\n').map(line => line.trim()).filter(Boolean);
-
-            if (lines.length !== validTabs.length) {
-                console.warn(`Batch AI (Mistral): Mismatch! Expected ${validTabs.length} topics, received ${lines.length}.`);
-                 if (validTabs.length === 1 && lines.length > 0) {
-                    const firstLineTopic = processTopic(lines[0]);
-                    console.warn(` -> Mismatch Correction (Single Tab): Using first line "${lines[0]}" -> Topic: "${firstLineTopic}"`);
-                    result = [{ tab: validTabs[0], topic: firstLineTopic }];
-                 } else if (lines.length > validTabs.length) {
-                     console.warn(` -> Mismatch Correction (Too Many Lines): Truncating response to ${validTabs.length} lines.`);
-                     const processedTopics = lines.slice(0, validTabs.length).map(processTopic);
-                     result = validTabs.map((tab, index) => ({ tab: tab, topic: processedTopics[index] }));
-                 } else {
-                     console.warn(` -> Fallback (Too Few Lines): Assigning remaining tabs "Uncategorized".`);
-                     const processedTopics = lines.map(processTopic);
-                     result = validTabs.map((tab, index) => ({
-                         tab: tab,
-                         topic: index < processedTopics.length ? processedTopics[index] : "Uncategorized"
-                     }));
-                 }
-            } else {
-                const processedTopics = lines.map(processTopic);
-                console.log("Batch AI (Mistral): Processed Topics:", processedTopics);
-                result = validTabs.map((tab, index) => ({
-                    tab: tab,
-                    topic: processedTopics[index]
-                }));
-            }
-
-            return result;
-
-        } catch (error) {
-            console.error("Batch AI (Mistral): Error getting topics:", error);
-             if (error.message.includes("Mistral API Key is not configured")) {
-                alert("Mistral API Key is missing or incorrect. Please configure it in about:config (key: extensions.tab_sort.mistral_api_key). Tab sorting via AI is disabled.");
-             } 
-            return validTabs.map(tab => ({ tab, topic: "Uncategorized" }));
-        } finally {
-            setTimeout(() => {
-                 validTabs.forEach(tab => {
-                     if (tab && tab.isConnected) {
-                         tab.classList.remove('tab-is-sorting');
-                     }
-                 });
-             }, 200);
-        }
-    };
-
-    // --- Main Sorting Function ---
-    const sortTabsByTopic = async () => {
-        if (isSorting) {
-            console.log("Sorting already in progress.");
-            return;
-        }
-        isSorting = true;
-        console.log("Starting tab sort (v4.9.2 logic + Animation)..."); // Indicate logic source
-
-        let separatorsToSort = []; // Keep track of separators to remove class later
-        try {
-             separatorsToSort = document.querySelectorAll('.vertical-pinned-tabs-container-separator');
-             // Apply visual indicator - Pulsing BG from tab_sort_clear.uc.js styles
-             if(separatorsToSort.length > 0) {
-                 console.log("Applying sorting indicator (pulse) to separator(s)...");
-                 separatorsToSort.forEach(sep => sep.classList.add('separator-is-sorting')); // Use the pulse class
-             } else {
-                  console.warn("Could not find separator element to apply sorting indicator.");
-             }
-
-            const currentWorkspaceId = window.gZenWorkspaces?.activeWorkspace;
-            if (!currentWorkspaceId) {
-                console.error("Cannot get current workspace ID.");
-                return; // Exit early
-            }
-
-            // --- Step 1: Get ALL Existing Group Names for Context ---
-            const allExistingGroupNames = new Set();
-            const groupSelector = `tab-group:has(tab[zen-workspace-id="${currentWorkspaceId}"])`;
-            console.log("Querying for groups using selector:", groupSelector);
-
-            document.querySelectorAll(groupSelector).forEach(groupEl => {
-                const label = groupEl.getAttribute('label');
-                if (label) {
-                    allExistingGroupNames.add(label);
-                } else {
-                    console.log("Group element found, but missing label attribute:", groupEl);
-                }
-            });
-            console.log(`Found ${allExistingGroupNames.size} existing group names for context:`, Array.from(allExistingGroupNames));
-
-            // --- Filter initial tabs --- 
-            const initialTabsToSort = Array.from(gBrowser.tabs).filter(tab => {
-                const isInCorrectWorkspace = tab.getAttribute('zen-workspace-id') === currentWorkspaceId;
-                const groupParent = tab.closest('tab-group');
-                const isInGroupInCorrectWorkspace = groupParent ? groupParent.matches(groupSelector) : false;
-
-                return isInCorrectWorkspace &&
-                       !tab.pinned &&
-                       !tab.hasAttribute('zen-empty-tab') &&
-                       !tab.hasAttribute('zen-glance-tab') && // ADDED: Exclude glance tabs
-                       !isInGroupInCorrectWorkspace &&
-                       tab.isConnected;
-            });
-
-            if (initialTabsToSort.length === 0) {
-                console.log("No ungrouped, connected tabs to sort in this workspace.");
-                return; // Exit early
-            }
-            console.log(`Found ${initialTabsToSort.length} potentially sortable tabs.`);
-
-            // --- Pre-Grouping Logic --- 
-            const preGroups = {};
-            const handledTabs = new Set();
-            const tabDataCache = new Map();
-            const tabKeywordsCache = new Map();
-
-            initialTabsToSort.forEach(tab => {
-                const data = getTabData(tab);
-                tabDataCache.set(tab, data);
-                tabKeywordsCache.set(tab, data.title ? extractTitleKeywords(data.title) : new Set());
-            });
-
-            // First identify well-known domains that should always be grouped together
-            const wellKnownDomains = new Set(
-                Object.keys(CONFIG.normalizationMap)
-                .filter(key => key.includes('.com') || key.includes('.org') || key.includes('.net'))
-            );
-            
-            // Domain pre-grouping for well-known domains - always prioritize these
-            const domainsToProcess = new Set();
-            initialTabsToSort.forEach(tab => {
-                if (!handledTabs.has(tab)) {
-                    const data = tabDataCache.get(tab);
-                    const hostname = data?.hostname || '';
-                    if (hostname && hostname !== 'N/A' && hostname !== 'Invalid URL' && hostname !== 'Internal Page') {
-                        if (wellKnownDomains.has(hostname)) {
-                            domainsToProcess.add(hostname);
-                        }
-                    }
-                }
-            });
-            
-            // Process well-known domains first
-            domainsToProcess.forEach(hostname => {
-                const categoryName = processTopic(hostname);
-                const matchingTabs = [];
-                
-                initialTabsToSort.forEach(tab => {
-                    if (!handledTabs.has(tab)) {
-                        const data = tabDataCache.get(tab);
-                        if (data?.hostname === hostname) {
-                            matchingTabs.push(tab);
-                        }
-                    }
-                });
-                
-                if (matchingTabs.length > 0) {
-                    console.log(`   - Pre-Grouping by Well-Known Domain: "${hostname}" (Count: ${matchingTabs.length}) -> Category: "${categoryName}"`);
-                    preGroups[categoryName] = matchingTabs;
-                    matchingTabs.forEach(tab => handledTabs.add(tab));
-                }
-            });
-
-            // Keyword pre-grouping for content tabs
-            const keywordToTabsMap = new Map();
-            initialTabsToSort.forEach(tab => {
-                if (!handledTabs.has(tab)) {
-                    const keywords = tabKeywordsCache.get(tab);
-                    if (keywords) {
-                        keywords.forEach(keyword => {
-                            // Prioritize longer keywords and phrases (likely more meaningful)
-                            if (keyword.includes(' ') || keyword.length > 5) {
-                                if (!keywordToTabsMap.has(keyword)) {
-                                    keywordToTabsMap.set(keyword, new Set());
-                                }
-                                keywordToTabsMap.get(keyword).add(tab);
-                            }
-                        });
-                    }
-                }
-            });
-
-            const potentialKeywordGroups = [];
-            keywordToTabsMap.forEach((tabsSet, keyword) => {
-                if (tabsSet.size >= CONFIG.preGroupingThreshold) {
-                    potentialKeywordGroups.push({ keyword, tabs: tabsSet, size: tabsSet.size });
-                }
-            });
-            
-            // Sort by most meaningful keywords first (longer or multi-word)
-            potentialKeywordGroups.sort((a, b) => {
-                // First prioritize by number of tabs
-                if (b.size !== a.size) return b.size - a.size;
-                
-                // Then by whether it's a multi-word phrase
-                const aIsPhrase = a.keyword.includes(' ');
-                const bIsPhrase = b.keyword.includes(' ');
-                if (aIsPhrase !== bIsPhrase) return aIsPhrase ? -1 : 1;
-                
-                // Then by length of keyword
-                return b.keyword.length - a.keyword.length;
-            });
-
-            potentialKeywordGroups.forEach(({ keyword, tabs }) => {
-                const finalTabsForGroup = new Set();
-                tabs.forEach(tab => {
-                    if (!handledTabs.has(tab)) {
-                        finalTabsForGroup.add(tab);
-                    }
-                });
-                if (finalTabsForGroup.size >= CONFIG.preGroupingThreshold) {
-                    const categoryName = processTopic(keyword);
-                    console.log(`   - Pre-Grouping by Title Keyword: "${keyword}" (Count: ${finalTabsForGroup.size}) -> Category: "${categoryName}"`);
-                    preGroups[categoryName] = Array.from(finalTabsForGroup);
-                    finalTabsForGroup.forEach(tab => handledTabs.add(tab));
-                }
-            });
-
-            // Regular hostname pre-grouping for remaining tabs
-            const hostnameCounts = {};
-            initialTabsToSort.forEach(tab => {
-                if (!handledTabs.has(tab)) {
-                    const data = tabDataCache.get(tab);
-                    if (data?.hostname && data.hostname !== 'N/A' && data.hostname !== 'Invalid URL' && data.hostname !== 'Internal Page') {
-                        hostnameCounts[data.hostname] = (hostnameCounts[data.hostname] || 0) + 1;
-                    }
-                }
-            });
-
-            const sortedHostnames = Object.keys(hostnameCounts).sort((a, b) => hostnameCounts[b] - hostnameCounts[a]);
-
-            for (const hostname of sortedHostnames) {
-                if (hostnameCounts[hostname] >= CONFIG.preGroupingThreshold) {
-                    const categoryName = processTopic(hostname);
-                    if (preGroups[categoryName]) {
-                        console.log(`   - Skipping Hostname Group for "${hostname}" -> Category "${categoryName}" (already exists from keywords).`);
-                        continue;
-                    }
-                    const tabsForHostnameGroup = [];
-                    initialTabsToSort.forEach(tab => {
-                        if (!handledTabs.has(tab)) {
-                            const data = tabDataCache.get(tab);
-                            if (data?.hostname === hostname) {
-                                tabsForHostnameGroup.push(tab);
-                            }
-                        }
-                    });
-                    if (tabsForHostnameGroup.length >= CONFIG.preGroupingThreshold) {
-                        console.log(`   - Pre-Grouping by Hostname: "${hostname}" (Count: ${tabsForHostnameGroup.length}) -> Category: "${categoryName}"`);
-                        preGroups[categoryName] = tabsForHostnameGroup;
-                        tabsForHostnameGroup.forEach(tab => handledTabs.add(tab));
-                    }
-                }
-            }
-            // --- End Pre-Grouping --- 
-
-            // --- AI Grouping --- 
-            const tabsForAI = initialTabsToSort.filter(tab => !handledTabs.has(tab) && tab.isConnected);
-            let aiTabTopics = [];
-            const comprehensiveExistingNames = new Set([...allExistingGroupNames, ...Object.keys(preGroups)]);
-            const existingNamesForAIContext = Array.from(comprehensiveExistingNames);
-
-            if (tabsForAI.length > 0) {
-                console.log(` -> ${tabsForAI.length} tabs remaining for AI analysis. Providing ${existingNamesForAIContext.length} existing categories as context.`);
-                // Call our existing askAIForMultipleTopics, passing context
-                aiTabTopics = await askAIForMultipleTopics(tabsForAI, existingNamesForAIContext); 
-            } else {
-                console.log(" -> No tabs remaining for AI analysis.");
-            }
-            // --- End AI Grouping --- 
-
-            // --- Combine Groups --- 
-            const finalGroups = { ...preGroups };
-            aiTabTopics.forEach(({ tab, topic }) => {
-                if (!topic || topic === "Uncategorized" || !tab || !tab.isConnected) {
-                    if (topic && topic !== "Uncategorized") {
-                         console.warn(` -> AI suggested category "${topic}" but associated tab is invalid/disconnected.`);
-                    }
-                    return; 
-                }
-                if (!finalGroups[topic]) {
-                    finalGroups[topic] = [];
-                }
-                if (!handledTabs.has(tab)) {
-                    finalGroups[topic].push(tab);
-                    handledTabs.add(tab); 
-                } else {
-                    const originalGroup = Object.keys(preGroups).find(key => preGroups[key].includes(tab));
-                    console.warn(` -> AI suggested category "${topic}" for tab "${getTabData(tab).title}", but it was already pre-grouped under "${originalGroup || 'Unknown Pre-Group'}". Keeping pre-grouped assignment.`);
-                }
-            });
-            // --- End Combine Groups --- 
-
-            // --- Consolidate Similar Category Names --- 
-            console.log(" -> Consolidating potential duplicate categories...");
-            const originalKeys = Object.keys(finalGroups);
-            const mergedKeys = new Set();
-            const consolidationMap = {}; 
-
-            for (let i = 0; i < originalKeys.length; i++) {
-                let keyA = originalKeys[i];
-                if (mergedKeys.has(keyA)) continue; 
-                while (consolidationMap[keyA]) {
-                    keyA = consolidationMap[keyA];
-                }
-                 if (mergedKeys.has(keyA)) continue; 
-
-                for (let j = i + 1; j < originalKeys.length; j++) {
-                    let keyB = originalKeys[j];
-                    if (mergedKeys.has(keyB)) continue;
-                    while (consolidationMap[keyB]) {
-                        keyB = consolidationMap[keyB];
-                    }
-                     if (mergedKeys.has(keyB) || keyA === keyB) continue; 
-
-                    const distance = levenshteinDistance(keyA, keyB);
-                    const threshold = CONFIG.consolidationDistanceThreshold;
-
-                    if (distance <= threshold && distance > 0) {
-                        let canonicalKey = keyA;
-                        let mergedKey = keyB;
-                        const keyAIsActuallyExisting = allExistingGroupNames.has(keyA);
-                        const keyBIsActuallyExisting = allExistingGroupNames.has(keyB);
-                        const keyAIsPreGroup = keyA in preGroups;
-                        const keyBIsPreGroup = keyB in preGroups;
-
-                        if (keyBIsActuallyExisting && !keyAIsActuallyExisting) {
-                            [canonicalKey, mergedKey] = [keyB, keyA];
-                        } else if (keyAIsActuallyExisting && keyBIsActuallyExisting) {
-                             if (keyBIsPreGroup && !keyAIsPreGroup) [canonicalKey, mergedKey] = [keyB, keyA];
-                             else if (keyA.length > keyB.length) [canonicalKey, mergedKey] = [keyB, keyA];
-                        } else if (!keyAIsActuallyExisting && !keyBIsActuallyExisting) {
-                             if (keyBIsPreGroup && !keyAIsPreGroup) [canonicalKey, mergedKey] = [keyB, keyA];
-                             else if (keyA.length > keyB.length) [canonicalKey, mergedKey] = [keyB, keyA];
-                        }
-
-                        console.log(`    - Consolidating: Merging "${mergedKey}" into "${canonicalKey}" (Distance: ${distance})`);
-                        if (finalGroups[mergedKey]) {
-                            if (!finalGroups[canonicalKey]) finalGroups[canonicalKey] = [];
-                            const uniqueTabsToAdd = finalGroups[mergedKey].filter(tab =>
-                                tab && tab.isConnected && !finalGroups[canonicalKey].some(existingTab => existingTab === tab)
-                            );
-                            finalGroups[canonicalKey].push(...uniqueTabsToAdd);
-                        }
-                        mergedKeys.add(mergedKey); 
-                        consolidationMap[mergedKey] = canonicalKey; 
-                        delete finalGroups[mergedKey]; 
-                        if (mergedKey === keyA) {
-                            keyA = canonicalKey;
-                            break; 
-                        }
-                    }
-                }
-            }
-            console.log(" -> Consolidation complete.");
-            // --- End Consolidation --- 
-
-            console.log(" -> Final Consolidated groups:", Object.keys(finalGroups).map(k => `${k} (${finalGroups[k]?.length ?? 0})`).join(', '));
-            if (Object.keys(finalGroups).length === 0) {
-                console.log("No valid groups identified after consolidation. Sorting finished.");
-                return; 
-            }
-
-            // --- Get existing group ELEMENTS --- 
-            const existingGroupElementsMap = new Map();
-            document.querySelectorAll(groupSelector).forEach(groupEl => { 
-                const label = groupEl.getAttribute('label');
-                if (label) {
-                    existingGroupElementsMap.set(label, groupEl);
-                }
-            });
-
-            groupColorIndex = 0;
-
-            // --- Process each final, consolidated group --- 
-            for (const topic in finalGroups) {
-                const tabsForThisTopic = finalGroups[topic].filter(t => {
-                    const groupParent = t.closest('tab-group');
-                    const isInGroupInCorrectWorkspace = groupParent ? groupParent.matches(groupSelector) : false;
-                    return t && t.isConnected && !isInGroupInCorrectWorkspace;
-                 });
-
-                if (tabsForThisTopic.length === 0) {
-                    console.log(` -> Skipping group "${topic}" as no valid, *ungrouped* tabs remain in this workspace.`);
-                    continue; 
-                }
-
-                const existingGroupElement = existingGroupElementsMap.get(topic);
-
-                if (existingGroupElement && existingGroupElement.isConnected) { 
-                    console.log(` -> Moving ${tabsForThisTopic.length} tabs to existing group "${topic}".`);
-                    try {
-                        if (existingGroupElement.getAttribute("collapsed") === "true") {
-                            existingGroupElement.setAttribute("collapsed", "false");
-                            const groupLabelElement = existingGroupElement.querySelector('.tab-group-label');
-                            if (groupLabelElement) {
-                                groupLabelElement.setAttribute('aria-expanded', 'true'); 
-                            }
-                        }
-                        for (const tab of tabsForThisTopic) {
-                            const groupParent = tab.closest('tab-group');
-                            const isInGroupInCorrectWorkspace = groupParent ? groupParent.matches(groupSelector) : false;
-                            if (tab && tab.isConnected && !isInGroupInCorrectWorkspace) {
-                                gBrowser.moveTabToGroup(tab, existingGroupElement);
-                            } else {
-                                console.warn(` -> Tab "${getTabData(tab)?.title || 'Unknown'}" skipped moving to "${topic}" (already grouped or invalid).`);
-                            }
-                        }
-                    } catch (e) {
-                        console.error(`Error moving tabs to existing group "${topic}":`, e, existingGroupElement);
-                    }
-                } else {
-                    if (existingGroupElement && !existingGroupElement.isConnected) {
-                        console.warn(` -> Existing group element for "${topic}" was found in map but is no longer connected to DOM. Will create a new group.`);
-                    }
-
-                    const wasOriginallyPreGroup = topic in preGroups;
-                    const wasDirectlyFromAI = aiTabTopics.some(ait => ait.topic === topic && tabsForThisTopic.includes(ait.tab));
-
-                    if (tabsForThisTopic.length >= CONFIG.preGroupingThreshold || wasDirectlyFromAI || wasOriginallyPreGroup) {
-                        console.log(` -> Creating new group "${topic}" with ${tabsForThisTopic.length} tabs.`);
-                        const firstValidTabForGroup = tabsForThisTopic[0]; 
-                        const groupOptions = {
-                            label: topic,
-                            color: getNextGroupColorName(),
-                            insertBefore: firstValidTabForGroup 
-                        };
-                        try {
-                            const newGroup = gBrowser.addTabGroup(tabsForThisTopic, groupOptions);
-                            if (newGroup && newGroup.isConnected) { 
-                                console.log(` -> Successfully created group element for "${topic}".`);
-                                existingGroupElementsMap.set(topic, newGroup); 
-                            } else {
-                                console.warn(` -> addTabGroup didn't return a connected element for "${topic}". Attempting fallback find.`);
-                                // Use the CORRECT findGroupElement helper from clear script (needs to be added/updated)
-                                const newGroupElFallback = findGroupElement(topic, currentWorkspaceId);
-                                if (newGroupElFallback && newGroupElFallback.isConnected) {
-                                    console.log(` -> Found new group element for "${topic}" via fallback.`);
-                                    existingGroupElementsMap.set(topic, newGroupElFallback);
-                                } else {
-                                    console.error(` -> Failed to find the newly created group element for "${topic}" even with fallback.`);
-                                }
-                            }
-                        } catch (e) {
-                            console.error(`Error calling gBrowser.addTabGroup for topic "${topic}":`, e);
-                            const groupAfterError = findGroupElement(topic, currentWorkspaceId);
-                            if (groupAfterError && groupAfterError.isConnected) {
-                                console.warn(` -> Group "${topic}" might exist despite error. Found via findGroupElement.`);
-                                existingGroupElementsMap.set(topic, groupAfterError); 
-                            } else {
-                                console.error(` -> Failed to find group "${topic}" after creation error.`);
-                            }
-                        }
-                    } else {
-                        console.log(` -> Skipping creation of small group "${topic}" (${tabsForThisTopic.length} tabs) - didn't meet threshold and wasn't a pre-group or directly from AI.`);
-                    }
-                }
-            } // End loop through final groups
-
-            console.log("--- Tab sorting process complete (New Logic) ---");
-
-        } catch (error) {
-            console.error("Error during overall sorting process:", error);
-        } finally {
-            isSorting = false; 
-            
-            // --- INTEGRATED Animation Stop Logic ---
-            if (sortAnimationId !== null) {
-                console.log("SORT BTN ANIM: Stopping animation.");
-                cancelAnimationFrame(sortAnimationId);
-                sortAnimationId = null;
-                try {
-                    const activeSeparator = document.querySelector('.vertical-pinned-tabs-container-separator:not(.has-no-sortable-tabs)');
-                    const pathElement = activeSeparator?.querySelector('#separator-path');
-                    if (pathElement) {
-                        pathElement.setAttribute('d', 'M 0 1 L 100 1');
-                        console.log("SORT BTN ANIM: Path reset to straight line.");
-                    } else {
-                         console.warn("SORT BTN ANIM: Could not find path element to reset in finally block.");
-                    }
-                } catch (resetError) {
-                    console.error("SORT BTN ANIM: Error resetting path in finally block:", resetError);
-                }
-            }
-            // --- End INTEGRATED Animation Stop Logic ---
-            
-            // Remove separator pulse indicator
-            if (separatorsToSort.length > 0) {
-                console.log("Removing sorting indicator (pulse) from separator(s)...");
-                separatorsToSort.forEach(sep => {
-                    if (sep && sep.isConnected) {
-                         sep.classList.remove('separator-is-sorting'); // Use pulse class
-                    }
-                });
-            }
-
-            // Remove tab loading indicators 
-            setTimeout(() => {
-                Array.from(gBrowser.tabs).forEach(tab => {
-                    if (tab && tab.isConnected) {
-                        tab.classList.remove('tab-is-sorting');
-                    }
-                });
-                
-                // Update button visibility immediately after sorting is complete
-                updateButtonsVisibilityState();
-            }, 500); 
-        }
-    };
-
-    // --- New function to clear ungrouped tabs ---
-    const clearUngroupedTabs = () => {
-        if (isClearing) {
-            console.log("Clearing already in progress.");
-            return;
-        }
-        isClearing = true;
-        console.log("Starting tab clear process...");
-
-        try {
-            const currentWorkspaceId = window.gZenWorkspaces?.activeWorkspace;
-            if (!currentWorkspaceId) {
-                console.error("Cannot get current workspace ID.");
-                return; // Exit early
-            }
-
-            // Get tabs that are ungrouped and not selected
-            const tabsToClose = Array.from(gBrowser.tabs).filter(tab => {
-                const isInCorrectWorkspace = tab.getAttribute('zen-workspace-id') === currentWorkspaceId;
-                const groupParent = tab.closest('tab-group');
-                const isInGroup = !!groupParent;
-                const isSelected = tab.selected;
-                const isPinned = tab.pinned;
-                const isEmpty = tab.hasAttribute('zen-empty-tab');
-                const isGlance = tab.hasAttribute('zen-glance-tab'); // ADDED: Check for glance tabs
-                const isConnected = tab.isConnected;
-
-                return isInCorrectWorkspace && !isInGroup && !isSelected && !isPinned && !isEmpty && !isGlance && isConnected; // MODIFIED: Added !isGlance
-            });
-
-            if (tabsToClose.length === 0) {
-                console.log("No ungrouped, non-selected tabs to close.");
-                return; // Exit early
-            }
-            console.log(`Found ${tabsToClose.length} tabs to close.`);
-
-            // Close the tabs in reverse order to avoid index shifting issues
-            tabsToClose.reverse().forEach(tab => {
-                try {
-                    gBrowser.removeTab(tab);
-                } catch (e) {
-                    console.error("Error closing tab:", e);
-                }
-            });
-
-            console.log(`Successfully closed ${tabsToClose.length} ungrouped tabs.`);
-        } catch (error) {
-            console.error("Error during tab clearing process:", error);
-        } finally {
-            isClearing = false;
-            
-            // Update button visibility immediately after clearing is complete
-            setTimeout(() => {
-                updateButtonsVisibilityState();
-            }, 50);
-        }
-    };
-
-    // --- Button Initialization & Workspace Handling ---
-    function ensureSortButtonExists(separator) {
-        console.log("SORT BTN DBG: ensureSortButtonExists called for separator:", separator);
-        if (!separator) {
-            console.log("SORT BTN DBG: Separator invalid, returning.");
-            return;
-        }
-        try {
-            console.log("SORT BTN DBG: Attempting to add SVG/Buttons...");
-            // --- Create and Insert SVG with SINGLE Path --- 
-            if (!separator.querySelector('svg.separator-line-svg')) { 
-                 console.log("SORT BTN DBG: SVG does not exist, creating...");
-                const svgNS = "http://www.w3.org/2000/svg";
-                const svg = document.createElementNS(svgNS, "svg");
-                svg.setAttribute("class", "separator-line-svg"); 
-                svg.setAttribute("viewBox", "0 0 100 2"); 
-                svg.setAttribute("preserveAspectRatio", "none"); 
-                console.log("SORT BTN DBG: SVG element created:", svg);
-
-                // Create ONE path
-                const path = document.createElementNS(svgNS, "path");
-                path.setAttribute("id", `separator-path`); // Single ID
-                path.setAttribute("class", "separator-path-segment"); // Keep common class
-                path.setAttribute("d", 'M 0 1 L 100 1'); // Initial straight line
-                path.style.fill = "none";
-                path.style.opacity = '1'; // Ensure it's visible
-                path.setAttribute("stroke-width", "1"); // Added: Set initial stroke width
-                path.setAttribute("stroke-linecap", "round"); // Added: Make path ends round
-                svg.appendChild(path);
-                console.log(`SORT BTN DBG: Single path element created and appended: #separator-path`);
-                
-                separator.insertBefore(svg, separator.firstChild); 
-                console.log("SORT BTN DBG: SVG with single path inserted into separator.");
-            } else {
-                 console.log("SORT BTN DBG: SVG already exists.");
-            }
-            // --- End SVG --- 
-
-            // --- Create and Append Sort Button ---
-            if (!separator.querySelector('#sort-button')) {
-                 console.log("SORT BTN DBG: Tidy button does not exist, creating...");
-                const buttonFragment = window.MozXULElement.parseXULToFragment(`
-                    <toolbarbutton
-                        id="sort-button"
-                        class="sort-button-with-icon"
-                        command="cmd_zenSortTabs"
-                        tooltiptext="Sort Tabs into Groups by Topic (AI)">
-                        <hbox class="toolbarbutton-box" align="center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 28 28" class="broom-icon">
-                                <g>
-                                    <path d="M19.9132 21.3765C19.8875 21.0162 19.6455 20.7069 19.3007 20.5993L7.21755 16.8291C6.87269 16.7215 6.49768 16.8384 6.27165 17.1202C5.73893 17.7845 4.72031 19.025 3.78544 19.9965C2.4425 21.392 3.01177 22.4772 4.66526 22.9931C4.82548 23.0431 5.78822 21.7398 6.20045 21.7398C6.51906 21.8392 6.8758 23.6828 7.26122 23.8031C7.87402 23.9943 8.55929 24.2081 9.27891 24.4326C9.59033 24.5298 10.2101 23.0557 10.5313 23.1559C10.7774 23.2327 10.7236 24.8834 10.9723 24.961C11.8322 25.2293 12.699 25.4997 13.5152 25.7544C13.868 25.8645 14.8344 24.3299 15.1637 24.4326C15.496 24.5363 15.191 26.2773 15.4898 26.3705C16.7587 26.7664 17.6824 27.0546 17.895 27.1209C19.5487 27.6369 20.6333 27.068 20.3226 25.1563C20.1063 23.8255 19.9737 22.2258 19.9132 21.3765Z" fill="currentColor" stroke="none"/>
-                                    <path d="M16.719 1.7134C17.4929-0.767192 20.7999 0.264626 20.026 2.74523C19.2521 5.22583 18.1514 8.75696 17.9629 9.36C17.7045 10.1867 16.1569 15.1482 15.899 15.9749L19.2063 17.0068C20.8597 17.5227 20.205 19.974 18.4514 19.4268L8.52918 16.331C6.87208 15.8139 7.62682 13.3938 9.28426 13.911L12.5916 14.9429C12.8495 14.1163 14.3976 9.15491 14.6555 8.32807C14.9135 7.50122 15.9451 4.19399 16.719 1.7134Z" fill="currentColor" stroke="none"/>
-                                </g>
-                            </svg>
-                            <label class="toolbarbutton-text" value="Tidy" crop="right"/>
-                        </hbox>
-                    </toolbarbutton>
-                `);
-                const buttonNode = buttonFragment.firstChild.cloneNode(true);
-                console.log("SORT BTN DBG: Tidy button node created:", buttonNode);
-                separator.appendChild(buttonNode);
-                console.log("SORT BTN DBG: Tidy button appended to separator.");
-            } else {
-                console.log("SORT BTN DBG: Tidy button already exists.");
-            }
-            // --- End Sort Button ---
-
-            // --- Create and Append Clear Button ---
-            if (!separator.querySelector('#clear-button')) {
-                console.log("SORT BTN DBG: Clear button does not exist, creating...");
-                const clearButtonFragment = window.MozXULElement.parseXULToFragment(`
-                    <toolbarbutton
-                        id="clear-button"
-                        class="clear-button-with-icon"
-                        command="cmd_zenClearTabs"
-                        tooltiptext="Close All Ungrouped Tabs (Except Selected)">
-                        <hbox class="toolbarbutton-box" align="center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" class="arrow-icon">
-                                <path d="M12 2v18m-7-6l7 8 7-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            <label class="toolbarbutton-text" value="Clear" crop="right"/>
-                        </hbox>
-                    </toolbarbutton>
-                `);
-                const clearButtonNode = clearButtonFragment.firstChild.cloneNode(true);
-                console.log("SORT BTN DBG: Clear button node created:", clearButtonNode);
-                separator.appendChild(clearButtonNode);
-                console.log("SORT BTN DBG: Clear button appended to separator.");
-            } else {
-                console.log("SORT BTN DBG: Clear button already exists.");
-            }
-            // --- End Clear Button ---
-            
-            console.log("SORT BTN DBG: Finished adding SVG/Buttons successfully.");
-
-        } catch (e) {
-            console.error("SORT BTN DBG: Error inside ensureSortButtonExists:", e);
-        }
-    }
-
-    function addSortButtonToAllSeparators() {
-        const separators = document.querySelectorAll(".vertical-pinned-tabs-container-separator");
-        if (separators.length > 0) {
-            separators.forEach(ensureSortButtonExists);
-            updateButtonsVisibilityState();
-        } else {
-            const periphery = document.querySelector('#tabbrowser-arrowscrollbox-periphery');
-            if (periphery && !periphery.querySelector('#sort-button')) {
-                console.warn("SORT BTN: No separators found, attempting fallback append to periphery.");
-                ensureSortButtonExists(periphery);
-            } else if (!periphery) {
-                console.error("SORT BTN: No separators or fallback periphery container found.");
-            }
-        }
-        updateButtonsVisibilityState();
-    }
-
-    function setupSortCommandAndListener() {
-        const zenCommands = document.querySelector("commandset#zenCommandSet");
-        if (!zenCommands) {
-            console.error("SORT BTN INIT: Could not find 'commandset#zenCommandSet'.");
-            return;
-        }
-
-        // Add Sort command
-        if (!zenCommands.querySelector("#cmd_zenSortTabs")) {
-            try {
-                const command = window.MozXULElement.parseXULToFragment(`<command id="cmd_zenSortTabs"/>`).firstChild;
-                zenCommands.appendChild(command);
-                console.log("SORT BTN INIT: Command 'cmd_zenSortTabs' added.");
-            } catch (e) {
-                console.error("SORT BTN INIT: Error adding command 'cmd_zenSortTabs':", e);
-            }
-        }
-
-        // Add Clear command
-        if (!zenCommands.querySelector("#cmd_zenClearTabs")) {
-            try {
-                const clearCommand = window.MozXULElement.parseXULToFragment(`<command id="cmd_zenClearTabs"/>`).firstChild;
-                zenCommands.appendChild(clearCommand);
-                console.log("SORT BTN INIT: Command 'cmd_zenClearTabs' added.");
-            } catch (e) {
-                console.error("SORT BTN INIT: Error adding command 'cmd_zenClearTabs':", e);
-            }
-        }
-
-        // Add Sort button listener
-        if (!sortButtonListenerAdded) {
-            try {
-                zenCommands.addEventListener('command', (event) => {
-                    if (event.target.id === "cmd_zenSortTabs") {
-                        console.log("SORT BTN ANIM: cmd_zenSortTabs command received.");
-                        
-                        // Add brushing animation class
-                        const sortButton = document.querySelector('#sort-button');
-                        if (sortButton) {
-                            sortButton.classList.add('brushing');
-                            // Remove class after animation completes
-                            setTimeout(() => {
-                                sortButton.classList.remove('brushing');
-                            }, 800); // Match animation duration
-                        }
-
-                        // Prevent starting animation if already running
-                        if (sortAnimationId !== null) {
-                            console.log("SORT BTN ANIM: Animation already running, ignoring request.");
-                            return; 
-                        }
-
-                        // Try finding the active separator directly
-                        let separator = document.querySelector('.vertical-pinned-tabs-container-separator:not(.has-no-sortable-tabs)');
-                        if (!separator) {
-                            console.error("SORT BTN ANIM: Failed to find the target separator for animation start.");
-                            sortTabsByTopic(); // Still run sort even if animation fails
-                            return;
-                        }
-                        console.log("SORT BTN ANIM: Found separator directly:", separator);
-
-                        // --- Start Animation logic --- 
-                        const pathElement = separator.querySelector('#separator-path');
-                        if (pathElement) {
-                            console.log("SORT BTN ANIM: Found path element, starting continuous rAF animation with growth.");
-                            
-                            const maxAmplitude = 3; // Max wave height
-                            const frequency = 8;   
-                            const segments = 50;  
-                            const growthDuration = 500; // Time (ms) for amplitude to reach max
-                            let t = 0; // Phase variable
-                            let startTime = performance.now(); 
-
-                            function animateWaveLoop(timestamp) {
-                                const elapsedTime = timestamp - startTime;
-                                
-                                // Calculate amplitude growth progress (0 to 1 over growthDuration)
-                                const growthProgress = Math.min(elapsedTime / growthDuration, 1);
-                                const currentAmplitude = maxAmplitude * growthProgress;
-
-                                t += 0.5; // Simple increment for phase shift
-
-                                let points = [];
-                                for (let i = 0; i <= segments; i++) {
-                                    const x = (i / segments) * 100; 
-                                    // Use currentAmplitude which grows initially then stays maxed
-                                    const y = 1 + currentAmplitude * Math.sin((x / (100 / frequency) * 2 * Math.PI) + (t * 0.1)); 
-                                    points.push(`${x.toFixed(2)},${y.toFixed(2)}`);
-                                }
-                                const pathData = "M" + points.join(" L");
-                                pathElement.setAttribute('d', pathData);
-
-                                // Continue the loop indefinitely until cancelled
-                                sortAnimationId = requestAnimationFrame(animateWaveLoop);
-                            }
-
-                            // Start the loop
-                            animateWaveLoop(startTime); // Pass initial timestamp
-                            console.log("SORT BTN ANIM: Continuous animation loop started.");
-
-                        } else {
-                            console.warn("SORT BTN ANIM: Could not find #separator-path in the separator to start animation.");
-                        }
-                        // --- End Animation Logic ---
-                        
-                        // Call the actual sorting logic AFTER starting animation
-                        sortTabsByTopic();
-                    }
-                });
-                sortButtonListenerAdded = true;
-                console.log("SORT BTN INIT: Sort command listener added.");
-            } catch (e) {
-                console.error("SORT BTN INIT: Error adding sort command listener:", e);
-            }
-        }
-
-        // Add Clear button listener
-        if (!clearButtonListenerAdded) {
-            try {
-                zenCommands.addEventListener('command', (event) => {
-                    if (event.target.id === "cmd_zenClearTabs") {
-                        console.log("CLEAR BTN: cmd_zenClearTabs command received.");
-                        
-                        // Add animation class to clear button
-                        const clearButton = document.querySelector('#clear-button');
-                        if (clearButton) {
-                            clearButton.classList.add('clearing');
-                            // Remove class after animation completes
-                            setTimeout(() => {
-                                clearButton.classList.remove('clearing');
-                            }, 600); // Match animation duration
-                        }
-                        
-                        // Call the actual clearing function
-                        clearUngroupedTabs();
-                    }
-                });
-                clearButtonListenerAdded = true;
-                console.log("SORT BTN INIT: Clear command listener added.");
-            } catch (e) {
-                console.error("SORT BTN INIT: Error adding clear command listener:", e);
-            }
-        }
-    }
-
-    // --- gZenWorkspaces Hooks ---
-    function setupgZenWorkspacesHooks() {
-        if (typeof window.gZenWorkspaces === 'undefined') {
-             console.warn("SORT BTN: gZenWorkspaces object not found. Hooks not applied.");
-             return;
-        }
-
-        const originalOnTabBrowserInserted = window.gZenWorkspaces.onTabBrowserInserted;
-        const originalUpdateTabsContainers = window.gZenWorkspaces.updateTabsContainers;
-
-        window.gZenWorkspaces.onTabBrowserInserted = function(event) {
-            if (typeof originalOnTabBrowserInserted === 'function') {
-                try {
-                    originalOnTabBrowserInserted.call(window.gZenWorkspaces, event);
-                } catch (e) {
-                     console.error("SORT BTN HOOK: Error in original onTabBrowserInserted:", e);
-                }
-            }
-            addSortButtonToAllSeparators();
-            updateButtonsVisibilityState();
+    if (Object.values(elements).some(el => el === null)) {
+      const observer = new MutationObserver((mutations, obs) => {
+        const updatedElements = {
+          urlbar: document.getElementById('urlbar'),
+          results: document.getElementById('urlbar-results')
         };
-
-        window.gZenWorkspaces.updateTabsContainers = function(...args) {
-            if (typeof originalUpdateTabsContainers === 'function') {
-                 try {
-                    originalUpdateTabsContainers.apply(window.gZenWorkspaces, args);
-                 } catch (e) {
-                      console.error("SORT BTN HOOK: Error in original updateTabsContainers:", e);
-                 }
-            }
-            addSortButtonToAllSeparators();
-            updateButtonsVisibilityState();
-        };
-        console.log("SORT BTN: gZenWorkspaces hooks applied.");
-    }
-
-    // --- New Helper: Count Tabs for Button Visibility ---
-    const countTabsForButtonVisibility = () => {
-        const currentWorkspaceId = window.gZenWorkspaces?.activeWorkspace;
-        console.log(`BTN VIS: Current Workspace ID: ${currentWorkspaceId}`);
-        if (!currentWorkspaceId || typeof gBrowser === 'undefined' || !gBrowser.tabs) {
-            console.log(`BTN VIS: Cannot determine or no tabs available. Returning zeros.`);
-            return { 
-                ungroupedTotal: 0,
-                ungroupedNonSelected: 0,
-                hasGroupedTabs: false
-            };
+        if (!Object.values(updatedElements).some(el => el === null)) {
+          obs.disconnect();
+          initialize(updatedElements);
         }
-        
-        let ungroupedTotal = 0;
-        let ungroupedNonSelected = 0;
-        let hasGroupedTabs = false;
-        
-        for (const tab of gBrowser.tabs) {
-            const workspaceId = tab.getAttribute('zen-workspace-id');
-            const isPinned = tab.pinned;
-            const isEmpty = tab.hasAttribute('zen-empty-tab');
-            const isConnected = tab.isConnected;
-            const groupParent = tab.closest('tab-group');
-            const isInGroup = !!groupParent;
-            const isSelected = tab.selected;
-            const isGlance = tab.hasAttribute('zen-glance-tab'); // ADDED: Check for glance tabs
-            
-            // Only count tabs in current workspace
-            if (workspaceId === currentWorkspaceId && !isPinned && !isEmpty && !isGlance && isConnected) { // MODIFIED: Added !isGlance
-                if (isInGroup) {
-                    // This is a grouped tab
-                    hasGroupedTabs = true;
-                } else {
-                    // If not in a group, increment total ungrouped count
-                    ungroupedTotal++;
-                    
-                    // If also not selected, increment that count too
-                    if (!isSelected) {
-                        ungroupedNonSelected++;
-                    }
-                }
-            }
-        }
-        
-        console.log(`BTN VIS: Found ${ungroupedTotal} ungrouped tabs (${ungroupedNonSelected} non-selected), hasGroupedTabs: ${hasGroupedTabs}`);
-        return {
-            ungroupedTotal,
-            ungroupedNonSelected,
-            hasGroupedTabs
-        };
-    };
-
-    // --- Updated Helper: Update Button Visibility State ---
-    const updateButtonsVisibilityState = () => {
-        console.log("BTN VIS: updateButtonsVisibilityState called.");
-        const { ungroupedTotal, ungroupedNonSelected, hasGroupedTabs } = countTabsForButtonVisibility();
-        const separators = document.querySelectorAll(".vertical-pinned-tabs-container-separator");
-        
-        console.log(`BTN VIS: Updating visibility - ${separators.length} separators, ${ungroupedTotal} ungrouped tabs, ${ungroupedNonSelected} non-selected, hasGroupedTabs: ${hasGroupedTabs}`);
-        
-        separators.forEach((separator) => {
-            // Handle Tidy button visibility with new condition:
-            // - If there are grouped tabs already, show when any ungrouped tabs exist
-            // - If no grouped tabs yet, only show when 6+ ungrouped tabs
-            const tidyButton = separator.querySelector('#sort-button');
-            if (tidyButton) {
-                const shouldShowTidyButton = hasGroupedTabs ? ungroupedTotal > 0 : ungroupedTotal >= 6;
-                if (shouldShowTidyButton) {
-                    tidyButton.classList.remove('hidden-button');
-                } else {
-                    tidyButton.classList.add('hidden-button');
-                }
-            }
-            
-            // Handle Clear button visibility (needs any ungrouped non-selected tabs)
-            const clearButton = separator.querySelector('#clear-button');
-            if (clearButton) {
-                if (ungroupedNonSelected > 0) {
-                    clearButton.classList.remove('hidden-button');
-                } else {
-                    clearButton.classList.add('hidden-button');
-                }
-            }
-            
-            // Always keep the separator visible - remove this class
-            separator.classList.remove('has-no-sortable-tabs');
-        });
-    };
-
-    // --- Add Tab Event Listeners for Visibility Updates ---
-    function addTabEventListeners() {
-        if (typeof gBrowser !== 'undefined' && gBrowser.tabContainer) {
-            const updateVisibilityDebounced = debounce(updateButtonsVisibilityState, 250); // Debounce slightly
-
-            gBrowser.tabContainer.addEventListener('TabOpen', updateVisibilityDebounced);
-            gBrowser.tabContainer.addEventListener('TabClose', updateVisibilityDebounced);
-            gBrowser.tabContainer.addEventListener('TabSelect', updateVisibilityDebounced); // Added to handle selection changes
-            // Also consider listening to pin/unpin events if pinned tabs affect visibility logic significantly
-            gBrowser.tabContainer.addEventListener('TabPinned', updateVisibilityDebounced);
-            gBrowser.tabContainer.addEventListener('TabUnpinned', updateVisibilityDebounced);
-            // Listen to grouping-related events as well
-            gBrowser.tabContainer.addEventListener('TabGroupAdd', updateVisibilityDebounced);
-            gBrowser.tabContainer.addEventListener('TabGroupRemove', updateVisibilityDebounced);
-            gBrowser.tabContainer.addEventListener('TabGrouped', updateVisibilityDebounced); // ADDED: Listen for tabs added to a group
-            gBrowser.tabContainer.addEventListener('TabUngrouped', updateVisibilityDebounced); // ADDED: Listen for tabs removed from a group
-            gBrowser.tabContainer.addEventListener('TabAttrModified', updateVisibilityDebounced);
-            
-            // Potentially listen to workspace changes if that affects visibility criteria
-            if (typeof window.gZenWorkspaces !== 'undefined') {
-                window.addEventListener('zen-workspace-switched', updateVisibilityDebounced);
-            }
-
-            console.log("BTN VIS: Added all tab event listeners for visibility updates.");
-        } else {
-            console.error("BTN VIS: Could not add tab event listeners - gBrowser.tabContainer not found.");
-        }
-    }
-
-    // --- Debounce Utility (to prevent rapid firing) ---
-    function debounce(func, wait) {
-      let timeout;
-      return function executedFunction(...args) {
-        const later = () => {
-          clearTimeout(timeout);
-          func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-      };
-    }
-
-    // --- Initial Setup Trigger ---
-    function initializeScript() {
-        console.log("INIT: Sort Tabs Script (v4.7.2) loading..."); // Updated version
-        let checkCount = 0;
-        const maxChecks = 30;
-        const checkInterval = 1000;
-
-        const initCheckInterval = setInterval(() => {
-            checkCount++;
-
-            const separatorExists = !!document.querySelector(".vertical-pinned-tabs-container-separator");
-            const commandSetExists = !!document.querySelector("commandset#zenCommandSet");
-            const gBrowserReady = typeof gBrowser !== 'undefined' && gBrowser.tabContainer;
-            const gZenWorkspacesReady = typeof window.gZenWorkspaces !== 'undefined';
-
-            const ready = gBrowserReady && commandSetExists && separatorExists && gZenWorkspacesReady;
-
-            if (ready) {
-                console.log(`INIT: Required elements found after ${checkCount} checks. Initializing...`);
-                clearInterval(initCheckInterval);
-
-                setTimeout(() => {
-                    try {
-                        injectStyles(); // Make sure styles are injected/updated
-                        setupSortCommandAndListener();
-                        addSortButtonToAllSeparators();
-                        setupgZenWorkspacesHooks();
-                        updateButtonsVisibilityState(); // Initial visibility check (updated function name)
-                        addTabEventListeners(); // <-- Add this call
-                        console.log("INIT: Sort Button setup and hooks complete.");
-                    } catch (e) {
-                        console.error("INIT: Error during deferred initial setup:", e);
-                    }
-                }, 500);
-
-            } else if (checkCount > maxChecks) {
-                clearInterval(initCheckInterval);
-                console.error(`INIT: Failed to find required elements after ${maxChecks} checks. Status:`, {
-                    gBrowserReady, commandSetExists, separatorExists, gZenWorkspacesReady
-                });
-            }
-        }, checkInterval);
-    }
-
-    // --- Start Initialization ---
-    if (document.readyState === "complete") {
-        initializeScript();
+      });
+      observer.observe(document.documentElement, { childList: true, subtree: true });
     } else {
-        window.addEventListener("load", initializeScript, { once: true });
+      initialize(elements);
     }
+  }
 
-})(); // End script
+  /**
+   * The main function that contains all the logic.
+   */
+  function initialize(elements) {
+    const { urlbar, results } = elements;
 
-// ========================================================================================================================================================================
+    const observer = new MutationObserver((mutations) => {
+      // This check is the most important part of the script.
+      const isCommandModeActive = window.ZenCommandPalette?.provider?._isInPrefixMode ?? false;
 
+      // --- Main Logic ---
+      if (urlbar.hasAttribute('open')) {
+
+        // If the command palette is active, our script MUST do nothing and clean up.
+        if (isCommandModeActive) {
+          results.classList.remove(prefs.SCROLLABLE_CLASS); // Yield control
+        } else {
+          // If the command palette is NOT active, our script can do its work.
+          const resultCount = results.querySelectorAll('.urlbarView-row').length;
+          results.classList.toggle(prefs.SCROLLABLE_CLASS, resultCount > prefs.VISIBLE_RESULTS_LIMIT);
+        }
+
+      } else {
+        // --- Reset on Close Logic ---
+        // When the URL bar is closed, always clean up and reset the scroll position.
+        results.classList.remove(prefs.SCROLLABLE_CLASS);
+        results.scrollTop = 0;
+      }
+
+      // This universal auto-scroll logic is safe. It will work with whatever
+      // scroll container is currently active (ours or the command palette's).
+      for (const mutation of mutations) {
+        if (mutation.attributeName === 'selected' && mutation.target.hasAttribute('selected')) {
+          mutation.target.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+      }
+    });
+
+    observer.observe(results, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['selected']
+    });
+    observer.observe(urlbar, { attributes: true, attributeFilter: ['open'] });
+
+    console.log("Zen Global URL Bar Scroll (Standalone, Polite) script Initialized.");
+  }
+
+  waitForElementsAndInit();
+
+})();
+
+
+// ====================================================================================================
+// SCRIPT 3: Tab Explode Animation
+// ====================================================================================================
 // ==UserScript==
 // @ignorecache
 // @name           Tab Explode Animation
@@ -1798,6 +330,8 @@
 // @description    Adds a bubble explosion animation when a tab or tab group is closed.
 // @compatibility  Firefox 100+
 // ==/UserScript==
+if (Services.prefs.getBoolPref("arcline.script3")) {
+  // Run script
 
 (() => {
     console.log("Tab Explode Animation: Script execution started.");
@@ -2011,13 +545,11 @@
     }
 
 })(); 
+}
 
-
-
-
-// ========================================================================================================================================================================
-
-// ========================================================================================================================================================================
+// ====================================================================================================
+// SCRIPT 4: Permission Box Position Fix
+// ====================================================================================================
 // ==UserScript==
 // @ignorecache
 // @name           permission-box-possition-fix
@@ -2129,7 +661,9 @@
 })();
 
 
-// ========================================================================================================================================================================
+// ====================================================================================================
+// SCRIPT 5: Zen Media Cover Art Provider
+// ====================================================================================================
 // ==UserScript==
 // @ignorecache
 // @name           zen-media-coverart-enhanced-bg-wrapper-hoverfix
@@ -2138,208 +672,96 @@
 // @version        1.7b
 // ==/UserScript==
 
-(function waitForZenMediaController() {
-  // --- Configuration ---
-  const BACKGROUND_BLUR = '55px';       // Base blur
-  const BACKGROUND_CONTRAST = '95%';    // Base contrast
-  const BACKGROUND_SATURATION = '90%';  // Base saturation
-  const BACKGROUND_BRIGHTNESS = '75%';   // Base brightness
-  const BACKGROUND_BLEND_MODE = 'darken';// Base blend mode
-  const BACKGROUND_OPACITY = '0.8';     // Base opacity (Adjust for base visibility through default backdrop)
+if (Services.prefs.getBoolPref("arcline.script5")) {
+  
+const ZenCoverArtCSSProvider = {
+  lastArtworkUrl: null,
+  _toolbarItem: null,
+  _currentController: null,
+  _boundMetadataListener: null,
 
-  // --- Hover Adjustment ---
-  // Slightly adjust opacity/brightness when player is expanded (hovered)
-  // to match the perceived brightness of the collapsed state.
-  // If collapsed looks too dark, INCREASE hover opacity/brightness slightly.
-  // If expanded looks too dark, DECREASE hover opacity/brightness slightly.
-  // Set to the same as BACKGROUND_OPACITY to disable adjustment.
-  const HOVER_BACKGROUND_OPACITY = '0.9'; // Opacity when toolbaritem is hovered
-
-  // --- Constants ---
-  const STYLE_ELEMENT_ID = 'zen-coverart-dynamic-style-v4-wrapper-hoverfix'; // Unique ID
-  const TOOLBAR_ITEM_SELECTOR = '#zen-media-controls-toolbar > toolbaritem';
-  const WRAPPER_ELEMENT_ID = 'zen-coverart-background-wrapper'; // ID for our injected div
-  // --- End Configuration ---
-
-
-  if (typeof window.gZenMediaController?.setupMediaController !== 'function') {
-    setTimeout(waitForZenMediaController, 300);
-    return;
-  }
-
-  let lastArtworkUrl = null;
-  let styleEl = null; // Keep reference to the style element
-
-  // Combine filter strings (using BASE values)
-  const filterValue = [
-      BACKGROUND_BLUR && BACKGROUND_BLUR !== '0px' ? `blur(${BACKGROUND_BLUR})` : '',
-      BACKGROUND_CONTRAST && BACKGROUND_CONTRAST !== '100%' && BACKGROUND_CONTRAST !== '1' ? `contrast(${BACKGROUND_CONTRAST})` : '',
-      BACKGROUND_SATURATION && BACKGROUND_SATURATION !== '100%' && BACKGROUND_SATURATION !== '1' ? `saturate(${BACKGROUND_SATURATION})` : '',
-      BACKGROUND_BRIGHTNESS && BACKGROUND_BRIGHTNESS !== '100%' && BACKGROUND_BRIGHTNESS !== '1' ? `brightness(${BACKGROUND_BRIGHTNESS})` : '',
-  ].filter(Boolean).join(' ') || 'none';
-
-  // Function to setup/update the injected CSS style tag
-  function updateCoverArtStyle(coverUrl) {
-    if (!styleEl) {
-      styleEl = document.getElementById(STYLE_ELEMENT_ID);
-      if (!styleEl) {
-        styleEl = document.createElement('style');
-        styleEl.id = STYLE_ELEMENT_ID;
-        document.head.appendChild(styleEl);
-      }
+  _getToolbarItem() {
+    if (!this._toolbarItem) {
+      this._toolbarItem = document.querySelector("#zen-media-controls-toolbar > toolbaritem");
+      if (!this._toolbarItem) console.error("[ZenCoverArt] Toolbar item not found.");
     }
+    return this._toolbarItem;
+  },
+  
+  _selectLargestArtwork(artworkList) {
+    if (!Array.isArray(artworkList) || artworkList.length === 0) return null;
+    return artworkList.reduce((max, cur) => {
+      const [mw, mh] = max.sizes?.split("x").map(Number) || [0, 0];
+      const [cw, ch] = cur.sizes?.split("x").map(Number) || [0, 0];
+      return cw * ch > mw * mh ? cur : max;
+    });
+  },
 
-    // Determine base opacity
-    const baseTargetOpacity = coverUrl ? BACKGROUND_OPACITY : '0';
-    // Determine hover opacity (use base if hover value is same or invalid)
-    const hoverTargetOpacity = coverUrl
-        ? (HOVER_BACKGROUND_OPACITY && HOVER_BACKGROUND_OPACITY !== BACKGROUND_OPACITY ? HOVER_BACKGROUND_OPACITY : baseTargetOpacity)
-        : '0';
+  _setCoverArtVariable(coverUrl) {
+    const toolbarItem = this._getToolbarItem();
+    if (!toolbarItem) return;
+    this.lastArtworkUrl = coverUrl;
+    toolbarItem.style.setProperty('--zen-cover-art-url', `url("${CSS.escape(coverUrl)}")`);
+  },
 
-
-    // CSS for the WRAPPER element. Includes a rule for the hover state of the PARENT.
-    let cssText = `
-      /* Default state for the wrapper */
-      #${WRAPPER_ELEMENT_ID} {
-        content: "" !important;
-        position: absolute !important;
-        inset: 0 !important;
-        z-index: -1 !important;
-        overflow: hidden !important;
-        border-radius: inherit !important;
-
-        background-image: ${coverUrl ? `url("${coverUrl}")` : 'none'} !important;
-        background-size: cover !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important;
-        background-blend-mode: ${BACKGROUND_BLEND_MODE} !important;
-        filter: ${coverUrl ? filterValue : 'none'} !important;
-        opacity: ${baseTargetOpacity} !important; /* Use base opacity */
-
-        /* Transition applies to both states */
-        transition: background-image 0.4s ease-in-out, filter 0.4s ease-in-out, opacity 0.4s ease-in-out !important;
-        pointer-events: none !important;
-      }
-
-      /* Rule for the wrapper WHEN THE PARENT toolbaritem is hovered */
-      ${TOOLBAR_ITEM_SELECTOR}:hover #${WRAPPER_ELEMENT_ID} {
-        opacity: ${hoverTargetOpacity} !important; /* Use hover opacity */
-        /* You could also add a brightness adjustment here if needed: */
-        /* filter: ${coverUrl ? filterValue.replace(/brightness\([^)]+\)/, '').trim() + ' brightness(HOVER_BRIGHTNESS_VALUE)' : 'none'} !important; */
-      }
-    `;
-
-    // Only update if the CSS text has actually changed
-    if (styleEl.textContent !== cssText) {
-      styleEl.textContent = cssText;
-      // console.log("[ZenCoverArt] Updated dynamic style element (v1.7b - hover fix).");
+  _removeCoverArtVariable() {
+    const toolbarItem = this._getToolbarItem();
+    if (toolbarItem && this.lastArtworkUrl !== null) {
+      this.lastArtworkUrl = null;
+      toolbarItem.style.removeProperty('--zen-cover-art-url');
     }
-  }
+  },
 
-  // --- manageWrapperElement, setBackgroundFromMetadata, Patching, Initialization ---
-  // --- These remain IDENTICAL to the original v1.7 script you provided ---
-
-    // Function to ensure the wrapper div exists or is removed
-    function manageWrapperElement(toolbarItem, shouldExist) {
-      if (!toolbarItem) return;
-      let wrapper = toolbarItem.querySelector(`#${WRAPPER_ELEMENT_ID}`);
-      if (shouldExist && !wrapper) {
-          wrapper = document.createElement('div');
-          wrapper.id = WRAPPER_ELEMENT_ID;
-          toolbarItem.prepend(wrapper);
-           console.log("[ZenCoverArt] Injected background wrapper.");
-      } else if (!shouldExist && wrapper) {
-          wrapper.remove();
-           console.log("[ZenCoverArt] Removed background wrapper.");
-      }
-      return !!toolbarItem.querySelector(`#${WRAPPER_ELEMENT_ID}`);
-  }
-
-
-  function setBackgroundFromMetadata(controller) {
+  _update(controller) {
     const metadata = controller?.getMetadata?.();
-    const artwork = metadata?.artwork;
-    let coverUrl = null;
-
-    const toolbarItem = document.querySelector(TOOLBAR_ITEM_SELECTOR);
-    if (!toolbarItem) {
-        return;
-    }
-
-    if (Array.isArray(artwork) && artwork.length > 0) {
-      const sorted = [...artwork].sort((a, b) => {
-        const [aw, ah] = a.sizes?.split("x").map(Number) || [0, 0];
-        const [bw, bh] = b.sizes?.split("x").map(Number) || [0, 0];
-        return (bw * bh) - (aw * ah);
-      });
-      const bestArtwork = sorted[0];
-      if (bestArtwork?.src) {
-          coverUrl = bestArtwork.src;
-      }
-    }
-
-    const wrapperExists = manageWrapperElement(toolbarItem, !!coverUrl);
-
-    if (wrapperExists || lastArtworkUrl) {
-         updateCoverArtStyle(coverUrl);
-    }
-
-    if(coverUrl !== lastArtworkUrl){
-        // console.log("[ZenCoverArt]", coverUrl ? `Setting new background URL: ${coverUrl}` : "Clearing background URL.");
-    }
-    lastArtworkUrl = coverUrl;
-  }
-
-  const originalSetupMediaController = gZenMediaController.setupMediaController.bind(gZenMediaController);
-  gZenMediaController.setupMediaController = function (controller, browser) {
-    // console.log("[ZenCoverArt] setupMediaController fired for:", controller.id);
-    setBackgroundFromMetadata(controller);
-
-    controller.removeEventListener("metadatachange", setBackgroundFromMetadataWrapper);
-    controller.addEventListener("metadatachange", setBackgroundFromMetadataWrapper);
-
-    return originalSetupMediaController(controller, browser);
-  };
-
-  function setBackgroundFromMetadataWrapper() {
-    if (this && typeof this.getMetadata === 'function') {
-      setBackgroundFromMetadata(this);
+    const bestArtwork = this._selectLargestArtwork(metadata?.artwork);
+    const coverUrl = bestArtwork?.src;
+    if (coverUrl) {
+      if (coverUrl !== this.lastArtworkUrl) this._setCoverArtVariable(coverUrl);
     } else {
-      const currentController = gZenMediaController?._currentMediaController;
-      if (currentController) {
-        setBackgroundFromMetadata(currentController);
-      } else {
-        console.warn("[ZenCoverArt] Controller lost. Attempting cleanup.");
-        const toolbarItem = document.querySelector(TOOLBAR_ITEM_SELECTOR);
-        if(toolbarItem) manageWrapperElement(toolbarItem, false);
-        updateCoverArtStyle(null);
-        lastArtworkUrl = null;
-      }
+      this._removeCoverArtVariable();
     }
+  },
+
+  _attachToController(controller) {
+    if (this._currentController && this._boundMetadataListener) {
+      this._currentController.removeEventListener("metadatachange", this._boundMetadataListener);
+    }
+    this._currentController = controller;
+    if (!controller) {
+      this._removeCoverArtVariable();
+      return;
+    }
+    this._boundMetadataListener = this._update.bind(this, controller);
+    controller.addEventListener("metadatachange", this._boundMetadataListener);
+    this._update(controller);
+  },
+
+  init() {
+    const wait = () => {
+      if (typeof window.gZenMediaController?.setupMediaController !== "function") {
+        setTimeout(wait, 300);
+        return;
+      }
+      const originalSetup = window.gZenMediaController.setupMediaController.bind(window.gZenMediaController);
+      window.gZenMediaController.setupMediaController = (controller, browser) => {
+        this._attachToController(controller);
+        return originalSetup(controller, browser);
+      };
+      if (window.gZenMediaController._currentMediaController) {
+        this._attachToController(window.gZenMediaController._currentMediaController);
+      }
+    };
+    wait();
   }
+};
 
-  const initialController = gZenMediaController._currentMediaController;
-  const toolbarItem = document.querySelector(TOOLBAR_ITEM_SELECTOR);
-  if (initialController) {
-    // console.log("[ZenCoverArt] Initial controller found");
-    setBackgroundFromMetadata(initialController);
+ZenCoverArtCSSProvider.init();
 
-    initialController.removeEventListener("metadatachange", setBackgroundFromMetadataWrapper);
-    initialController.addEventListener("metadatachange", setBackgroundFromMetadataWrapper);
-  } else {
-     if(toolbarItem) manageWrapperElement(toolbarItem, false);
-     updateCoverArtStyle(null);
-  }
-
-  console.log("[ZenCoverArt] Hooked setupMediaController successfully (Enhanced Version 1.7b - Hover Fix)");
-
-})();
-
-
-// ========================================================================================================================================================================
-
-
-// ========================================================================================================================================================================
+}
+// ====================================================================================================
+// SCRIPT 6: Zen Workspace Button Wave Animation
+// ====================================================================================================
 // ==UserScript==
 // @ignorecache
 // @name          zen-workspace-button-wave-animation
@@ -2347,8 +769,7 @@
 // @description    helps in adding mac os dock like aniamtion to zen worspace buttons
 // @version        1.7b
 // ==/UserScript==
-
-
+if (Services.prefs.getBoolPref("arcline.script6")) {
 (function() {
   if (window.ZenBrowserCustomizableDockEffect) {
     return;
@@ -2768,7 +1189,11 @@
   }
 })();
 
-// ========================================================================================================================================================================
+}
+
+// ====================================================================================================
+// SCRIPT 7: Compact Mode Sidebar Width Fix
+// ====================================================================================================
 // ==UserScript==
 // @ignorecache
 // @name           CompactmodeSidebarWidthFix
@@ -2776,9 +1201,7 @@
 // @description    it help in adjust dynamic width of psuedo background
 // @version        1.7b
 // ==/UserScript==
-
-
-
+if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
 (function () {
   const mainWindow = document.getElementById('main-window');
   const toolbox = document.getElementById('navigator-toolbox');
@@ -2815,10 +1238,11 @@
   // Optional: run it once in case the attribute is already set at load
   updateSidebarWidthIfCompact();
 })();
+}
 
-
-
-// ========================================================================================================================================================================
+// ====================================================================================================
+// SCRIPT 8: Gradient Opacity Adjuster
+// ====================================================================================================
 // ==UserScript==
 // @ignorecache
 // @name           GradientOpacitydjuster
@@ -2826,9 +1250,6 @@
 // @description    it help in adjust dynamically opacity and contrast of icons and other elements
 // @version        1.7b
 // ==/UserScript==
-
-
-
 
 (function () {
   console.log('[UserChromeScript] custom-input-to-dual-css-vars-persistent.uc.js starting...');
@@ -3008,3 +1429,175 @@
   }
   console.log('[UserChromeScript] custom-input-to-dual-css-vars-persistent.uc.js finished initial execution.');
 })();
+
+
+// ====================================================================================================
+// SCRIPT 9: Zen Top Position Globalizer
+// ====================================================================================================
+// ==UserScript==
+// @ignorecache
+// @name          Zen Top Position Globalizer
+// @namespace      globalizier
+// // @description   Finds --zen-urlbar-top and makes it global for userChrome.css. Based on a friend's script.
+// @version        1.7b
+// ==/UserScript==
+if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
+(function() {
+    console.log('[Zen Globalizer] Script has loaded. Waiting for window to be ready...');
+
+    function runZenTopGlobalizer() {
+        console.log('[Zen Globalizer] Window is ready. Script starting...');
+
+        const rootElement = document.documentElement;
+        const urlbarElement = document.getElementById('urlbar');
+
+        if (!urlbarElement) {
+            console.error('[Zen Globalizer] FATAL ERROR: Could not find #urlbar element.');
+            return;
+        }
+
+        function syncVariable() {
+            const value = window.getComputedStyle(urlbarElement).getPropertyValue('--zen-urlbar-top');
+            if (value) {
+                rootElement.style.setProperty('--my-global-zen-top', value.trim());
+            }
+        }
+
+        const observer = new MutationObserver(syncVariable);
+
+        observer.observe(urlbarElement, {
+            attributes: true,
+            attributeFilter: ['style']
+        });
+
+        syncVariable();
+        console.log('[Zen Globalizer] Observer is now active on #urlbar.');
+    }
+
+    // A simpler way to wait for the window to be ready
+    if (document.readyState === 'complete') {
+        runZenTopGlobalizer();
+    } else {
+        window.addEventListener('load', runZenTopGlobalizer, { once: true });
+    }
+})();
+}
+
+// ====================================================================================================
+// SCRIPT 10: Zen Mdia Player Peak height
+// ====================================================================================================
+// ==UserScript==
+// @ignorecache
+// @name          Zen Media Player Peak height
+// @namespace      height
+// // @description   calculate zen media playe height on hover and store it in a variable
+// @version        1.7b
+// ==/UserScript==
+
+
+const MediaPlayerPeakHeight = {
+  _mediaPlayer: null,
+  _parentToolbar: null,
+  _currentPeakHeight: 0,
+  _isHovering: false,
+
+  _getElements() {
+    if (!this._mediaPlayer) this._mediaPlayer = document.querySelector("#zen-media-controls-toolbar > toolbaritem");
+    if (!this._parentToolbar) this._parentToolbar = document.querySelector("#zen-media-controls-toolbar");
+  },
+
+  /**
+   * The core measurement function.
+   */
+  _measureAndSetPeakHeight() {
+    this._getElements();
+    if (!this._mediaPlayer || !this._parentToolbar) return;
+
+    // 1. Create a clone of the player element.
+    const clone = this._mediaPlayer.cloneNode(true);
+
+    // 2. Style the clone to be completely invisible and not affect page layout.
+    clone.style.position = 'fixed';
+    clone.style.visibility = 'hidden';
+    clone.style.zIndex = '-1000';
+    clone.style.left = '-9999px'; // Move it far off-screen to be safe
+    clone.style.transition = 'none !important';
+
+    // 3. Find the '.show-on-hover' element WITHIN the clone.
+    const showOnHoverClone = clone.querySelector('.show-on-hover');
+    if (showOnHoverClone) {
+      // 4. Manually apply the EXACT styles from the browser's default :hover rule.
+      //    This forces the clone into its fully expanded state for measurement.
+      showOnHoverClone.style.transition = 'none !important';
+      showOnHoverClone.style.maxHeight = '50px';
+      showOnHoverClone.style.padding = '5px';
+      showOnHoverClone.style.marginBottom = '0';
+      showOnHoverClone.style.opacity = '0';
+      showOnHoverClone.style.transform = 'translateY(0)';
+    }
+
+    // 5. Append the clone to the original parent to ensure it inherits all contextual styles.
+    this._parentToolbar.appendChild(clone);
+
+    // 6. Get the height. This is the definitive peak height.
+    const peakHeight = clone.getBoundingClientRect().height;
+
+    // 7. Destroy the clone immediately.
+    this._parentToolbar.removeChild(clone);
+
+    // 8. Update the CSS variable only if the height is valid and has actually changed.
+    if (peakHeight > 0 && peakHeight !== this._currentPeakHeight) {
+      this._currentPeakHeight = peakHeight;
+      document.documentElement.style.setProperty('--zen-media-player-peak-height', `${peakHeight}px`);
+    }
+  },
+
+  init() {
+    this._getElements();
+    if (!this._mediaPlayer) {
+      setTimeout(() => this.init(), 500);
+      return;
+    }
+
+    console.log("[MediaPlayerPeakHeight] Initializing.");
+
+    // ---- Listener 1: Mouse Enter ----
+    // This is our primary trigger to calculate the height.
+    this._mediaPlayer.addEventListener("mouseenter", () => {
+      // The _isHovering flag prevents this from running multiple times if the mouse jitters.
+      if (!this._isHovering) {
+        this._isHovering = true;
+        this._measureAndSetPeakHeight();
+      }
+    });
+
+    // ---- Listener 2: Mouse Leave ----
+    this._mediaPlayer.addEventListener("mouseleave", () => {
+      this._isHovering = false;
+    });
+
+    // ---- Listener 3: Mutation Observer ----
+    // This handles the case where the song changes, which might alter the peak height.
+    const observer = new MutationObserver(() => {
+      // If the content changes while we are hovering, we need to re-calculate.
+      // Otherwise, the next mouseenter will handle it.
+      if (this._isHovering) {
+        this._measureAndSetPeakHeight();
+      }
+    });
+    observer.observe(this._mediaPlayer, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+
+    // Run one initial measurement on startup to set a default value.
+    this._measureAndSetPeakHeight();
+  }
+};
+
+window.addEventListener("load", () => {
+  MediaPlayerPeakHeight.init();
+}, { once: true });
+
+
