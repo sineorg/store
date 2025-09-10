@@ -69,6 +69,36 @@ jobs:
           echo "$repo|$branch|$folder"
         }
         
+        # Function to fetch GitHub stars for a repository
+        fetch_github_stars() {
+          local repo="$1"
+          
+          echo "Fetching stars for repo: $repo" >&2
+          
+          # Use GitHub API to get repository information
+          local api_url="https://api.github.com/repos/$repo"
+          local response=$(curl -s --fail "$api_url" 2>/dev/null)
+          local curl_exit_code=$?
+          
+          if [[ $curl_exit_code -ne 0 ]]; then
+            echo "Failed to fetch stars for $repo (exit code: $curl_exit_code)" >&2
+            echo "0"
+            return
+          fi
+          
+          # Extract stars count from API response
+          local stars=$(echo "$response" | jq -r '.stargazers_count // 0' 2>/dev/null)
+          
+          if [[ "$stars" == "null" || -z "$stars" ]]; then
+            echo "0"
+          else
+            echo "$stars"
+          fi
+          
+          # Small delay to avoid rate limiting
+          sleep 0.5
+        }
+        
         # Function to fetch theme.json using raw GitHub URLs
         fetch_theme_data() {
           local repo="$1"
@@ -95,8 +125,10 @@ jobs:
               theme_content=$(cat "$theme_path")
             else
               echo "theme.json not found at $theme_path in current repository" >&2
-              # Return a minimal object with just the homepage
-              jq -n --arg homepage "$homepage" '{homepage: $homepage}'
+              # Fetch GitHub stars for this repository
+              local stars=$(fetch_github_stars "$repo")
+              # Return a minimal object with just the homepage and stars
+              jq -n --arg homepage "$homepage" --argjson stars "$stars" '{homepage: $homepage, stars: $stars}'
               return
             fi
           else
@@ -125,13 +157,17 @@ jobs:
                 
                 if [[ $curl_exit_code -ne 0 ]]; then
                   echo "Also failed with 'master' branch" >&2
-                  # Return a minimal object with just the homepage
-                  jq -n --arg homepage "$homepage" '{homepage: $homepage}'
+                  # Fetch GitHub stars for this repository
+                  local stars=$(fetch_github_stars "$repo")
+                  # Return a minimal object with just the homepage and stars
+                  jq -n --arg homepage "$homepage" --argjson stars "$stars" '{homepage: $homepage, stars: $stars}'
                   return
                 fi
               else
-                # Return a minimal object with just the homepage
-                jq -n --arg homepage "$homepage" '{homepage: $homepage}'
+                # Fetch GitHub stars for this repository
+                local stars=$(fetch_github_stars "$repo")
+                # Return a minimal object with just the homepage and stars
+                jq -n --arg homepage "$homepage" --argjson stars "$stars" '{homepage: $homepage, stars: $stars}'
                 return
               fi
             fi
@@ -142,15 +178,21 @@ jobs:
           # Validate JSON
           if ! echo "$theme_content" | jq empty 2>/dev/null; then
             echo "Invalid JSON in theme.json" >&2
-            # Return a minimal object with just the homepage
-            jq -n --arg homepage "$homepage" '{homepage: $homepage}'
+            # Fetch GitHub stars for this repository
+            local stars=$(fetch_github_stars "$repo")
+            # Return a minimal object with just the homepage and stars
+            jq -n --arg homepage "$homepage" --argjson stars "$stars" '{homepage: $homepage, stars: $stars}'
             return
           fi
           
-          # Extract only existing fields and add homepage
-          echo "$theme_content" | jq --arg homepage "$homepage" '
+          # Fetch GitHub stars for this repository
+          local stars=$(fetch_github_stars "$repo")
+          echo "Repository $repo has $stars stars" >&2
+          
+          # Extract only existing fields and add homepage and stars
+          echo "$theme_content" | jq --arg homepage "$homepage" --argjson stars "$stars" '
             . as $original |
-            {homepage: $homepage} |
+            {homepage: $homepage, stars: $stars} |
             if $original | has("image") then . + {image: ($original.image // "")} else . end |
             if $original | has("name") then . + {name: ($original.name // "")} else . end |
             if $original | has("version") then . + {version: ($original.version // "")} else . end |
@@ -239,7 +281,7 @@ jobs:
               # Update the marketplace entry
               temp_content=$(cat "$temp_file")
               echo "$temp_content" | jq --arg key "$key" --argjson data "$theme_data" \
-                '.[$key] = $data' > "$temp_file"
+                '.[$key] = $data' > "$temp_file"1
               
               echo "Updated $key with fetched data"
             else
@@ -248,11 +290,16 @@ jobs:
           fi
         done <<< "$marketplace_keys"
         
-        # Write the updated content back to marketplace.json
-        cat "$temp_file" > marketplace.json
-        rm "$temp_file"
+        # Sort the marketplace entries by stars (descending order)
+        echo "Sorting marketplace entries by star count (descending)..."
+        temp_sorted_file=$(mktemp)
+        cat "$temp_file" | jq 'to_entries | sort_by(-.value.stars // 0) | from_entries' > "$temp_sorted_file"
         
-        echo "Updated marketplace.json successfully"
+        # Write the sorted content back to marketplace.json
+        cat "$temp_sorted_file" > marketplace.json
+        rm "$temp_file" "$temp_sorted_file"
+        
+        echo "Updated and sorted marketplace.json successfully"
 
     - name: Commit and push changes
       run: |
