@@ -8,7 +8,8 @@
     "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "advanced-tab-groups": {
     "homepage": "12th-devs/Advanced-Tab-Groups",
@@ -19,7 +20,8 @@
     "readme": "https://raw.githubusercontent.com/Anoms12/Advanced-Tab-Groups/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
     "homepage": "CosmoCreeper/Zen-Themes/tree/main/SuperPins",
@@ -30,7 +32,8 @@
     "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "Arc-2.0": {
     "homepage": "https://github.com/YashjitPal/Arc-2.0/",
@@ -41,7 +44,8 @@
     "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "zaps-cool-photon-theme": {
     "homepage": "zapSNH/zapsCoolPhotonTheme",
@@ -55,7 +59,8 @@
       "waterfox",
       "floorp",
       "mullvad"
-    ]
+    ],
+    "stars": 0
   },
   "Neo-Zen": {
     "homepage": "JustVibingWhileCoding/Neo-Zen",
@@ -66,7 +71,8 @@
     "readme": "https://raw.githubusercontent.com/JustVibingWhileCoding/Neo-Zen/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "zen-tidy-downloads": {
     "homepage": "Anoms12/Zen-Tidy-Downloads",
@@ -77,7 +83,8 @@
     "readme": "https://raw.githubusercontent.com/Anoms12/Zen-Tidy-Downloads/refs/heads/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "quick-search-zen-browser": {
     "homepage": "Darsh-A/Quick-Search-Zen-Browser",
@@ -87,7 +94,8 @@
     "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "animations-plus": {
     "homepage": "Anoms12/Animations-plus",
@@ -99,7 +107,8 @@
     "fork": [
       "zen",
       "floorp"
-    ]
+    ],
+    "stars": 0
   },
   "tab-rename-zen-browser": {
     "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
@@ -109,7 +118,8 @@
     "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "ai-tabgroups-zenbrowser": {
     "homepage": "Darsh-A/Ai-TabGroups-ZenBrowser",
@@ -120,7 +130,8 @@
     "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "context-menu-icons-for-zen": {
     "homepage": "1247343406/context-menu-icons-for-Zen",
@@ -132,7 +143,8 @@
     "fork": [
       "zen",
       "firefox"
-    ]
+    ],
+    "stars": 0
   },
   "IconTweaker": {
     "homepage": "allecsc/Icon-Tweaker",
@@ -144,7 +156,8 @@
     "fork": [
       "zen",
       "firefox"
-    ]
+    ],
+    "stars": 0
   },
   "zen-live-calendar": {
     "homepage": "Anoms12/Zen-Live-Calendar",
@@ -155,7 +168,8 @@
     "readme": "https://raw.githubusercontent.com/Anoms12/Zen-Live-Calendar/refs/heads/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "zen-drop-link": {
     "homepage": "https://github.com/octaviusz/zen-drop-link",
@@ -166,7 +180,8 @@
     "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "customize-collapsed-sidebar": {
     "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
@@ -176,7 +191,8 @@
     "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "zzzAltover": {
     "homepage": "allecsc/Altover",
@@ -187,7 +203,8 @@
     "readme": "https://raw.githubusercontent.com/allecsc/Altover/refs/heads/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "settings-shortcuts-search": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
@@ -198,7 +215,8 @@
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "search-engine-select": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
@@ -208,14 +226,16 @@
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "floating-sidebar": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/floating-sidebar",
     "name": "Floating Sidebar",
     "version": "1.0.0",
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md"
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
+    "stars": 0
   },
   "natsumi-browser": {
     "homepage": "greeeen-dev/natsumi-browser",
@@ -226,7 +246,8 @@
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
     "fork": [
       "floorp"
-    ]
+    ],
+    "stars": 0
   },
   "quick-tabs": {
     "homepage": "Darsh-A/Quick-Tabs",
@@ -237,7 +258,8 @@
     "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "browse-bot": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/findbar-ai",
@@ -247,7 +269,8 @@
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "vizen-floaty-ui": {
     "homepage": "moktavizen/floaty-ui",
@@ -258,7 +281,8 @@
     "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "paneru": {
     "homepage": "TheBigWazz/Paneru",
@@ -270,7 +294,8 @@
     "fork": [
       "floorp",
       "firefox"
-    ]
+    ],
+    "stars": 0
   },
   "c9ee0d97-d2d6-40fd-8f85-549fe000b868": {
     "homepage": "rasyidrafi/zen-deta-loading-bar",
@@ -281,7 +306,8 @@
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-deta-loading-bar/refs/heads/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
     "homepage": "rasyidrafi/zen-single-trackpad-animation",
@@ -293,7 +319,8 @@
     "fork": [
       "zen",
       "firefox"
-    ]
+    ],
+    "stars": 0
   },
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "homepage": "rasyidrafi/zen-tidy-popup",
@@ -305,7 +332,8 @@
     "fork": [
       "zen",
       "firefox"
-    ]
+    ],
+    "stars": 0
   },
   "ZenMotion-Pro": {
     "homepage": "Mohammed55Z/ZenMotion-Pro",
@@ -315,7 +343,8 @@
     "readme": "https://raw.githubusercontent.com/Mohammed55Z/ZenMotion-Pro/refs/heads/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "42b8c4ac-76d5-4521-9917-2e478931ee53": {
     "homepage": "rasyidrafi/zen-compact-transparent-mode",
@@ -327,7 +356,8 @@
     "fork": [
       "zen",
       "firefox"
-    ]
+    ],
+    "stars": 0
   },
   "e9dae25b-2ddd-4245-8581-a6dcf6d35b82": {
     "homepage": "rasyidrafi/zen-custom-urlbar",
@@ -339,13 +369,15 @@
     "fork": [
       "zen",
       "firefox"
-    ]
+    ],
+    "stars": 0
   },
   "bada16c1-3b14-483b": {
     "homepage": "themaster5209/zen-better-new-tab-button",
     "name": "Better New Tab button",
     "version": "1.0.2",
-    "description": "A mod for Zen Browser that enhances the appearance of the New Tab button and makes some changes to spacing around it"
+    "description": "A mod for Zen Browser that enhances the appearance of the New Tab button and makes some changes to spacing around it",
+    "stars": 0
   },
   "cfafe94c-5a29-4dae-8489-6be514185474": {
     "homepage": "rasyidrafi/zen-better-sidebar",
@@ -356,7 +388,8 @@
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-better-sidebar/refs/heads/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "3c8ebf69-1042-49b1-8f08-9178f9490659": {
     "homepage": "rasyidrafi/zen-always-show-music-bar",
@@ -368,7 +401,8 @@
     "fork": [
       "zen",
       "firefox"
-    ]
+    ],
+    "stars": 0
   },
   "zen-command-palette": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
@@ -378,7 +412,8 @@
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   },
   "wireframe-2.0": {
     "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
@@ -389,6 +424,7 @@
     "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 0
   }
 }
