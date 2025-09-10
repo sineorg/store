@@ -314,6 +314,10 @@ jobs:
         
         git add marketplace.json
         git commit -m "Update marketplace.json with latest marketplace data [skip ci]"
+        
+        # Pull any remote changes before pushing
+        git pull --rebase origin main
+        
         git push
 
     - name: Handle errors
