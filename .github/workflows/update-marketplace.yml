@@ -77,21 +77,38 @@ jobs:
           
           # Use GitHub API to get repository information
           local api_url="https://api.github.com/repos/$repo"
-          local response=$(curl -s --fail "$api_url" 2>/dev/null)
+          echo "API URL: $api_url" >&2
+          
+          # Add User-Agent header to avoid 403 errors
+          local response=$(curl -s --fail -H "User-Agent: GitHub-Actions" "$api_url" 2>/dev/null)
           local curl_exit_code=$?
           
           if [[ $curl_exit_code -ne 0 ]]; then
             echo "Failed to fetch stars for $repo (exit code: $curl_exit_code)" >&2
+            echo "Response: $response" >&2
             echo "0"
             return
           fi
+          
+          # Check for rate limiting or API errors
+          if echo "$response" | jq -e '.message' >/dev/null 2>&1; then
+            local error_msg=$(echo "$response" | jq -r '.message')
+            echo "GitHub API error for $repo: $error_msg" >&2
+            echo "0"
+            return
+          fi
+          
+          # Debug: show partial response for debugging
+          echo "API Response length for $repo: ${#response}" >&2
           
           # Extract stars count from API response
           local stars=$(echo "$response" | jq -r '.stargazers_count // 0' 2>/dev/null)
           
           if [[ "$stars" == "null" || -z "$stars" ]]; then
+            echo "No stars found for $repo, using 0" >&2
             echo "0"
           else
+            echo "Found $stars stars for $repo" >&2
             echo "$stars"
           fi
           
@@ -200,7 +217,10 @@ jobs:
             if $original | has("readme") then . + {readme: ($original.readme // "")} else . end |
             if $original | has("fork") then . + {fork: ($original.fork // [""])} else . end |
             if $original | has("notFork") then . + {notFork: ($original.notFork // [""])} else . end |
-            if $original | has("os") then . + {os: ($original.os // [""])} else . end
+            if $original | has("os") then . + {os: ($original.os // [""])} else . end |
+            # Reorder fields to put stars before fork
+            {homepage, image, name, version, description, readme, stars, fork, notFork, os} as $ordered |
+            $ordered | with_entries(select(.value != null and .value != "" and .value != [""]))
           '
         }
         
@@ -268,12 +288,13 @@ jobs:
             echo "Homepage for $key: $homepage"
             
             # Normalize the GitHub URL
+            echo "Normalizing URL: $homepage" >&2
             if normalized=$(normalize_github_url "$homepage"); then
               repo=$(echo "$normalized" | cut -d'|' -f1)
               branch=$(echo "$normalized" | cut -d'|' -f2)
               folder=$(echo "$normalized" | cut -d'|' -f3)
               
-              echo "Normalized - Repo: $repo, Branch: $branch, Folder: $folder"
+              echo "Normalized - Repo: $repo, Branch: $branch, Folder: $folder" >&2
               
               # Fetch theme data
               theme_data=$(fetch_theme_data "$repo" "$branch" "$folder" "$homepage")
