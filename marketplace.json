@@ -351,6 +351,18 @@
       "zen"
     ]
   },
+  "wireframe-2.0": {
+    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
+    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
+    "name": "Wireframe 2.0",
+    "version": "1.0",
+    "description": "A minimal, squared-off theme for Zen Browser",
+    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
+    "stars": 1,
+    "fork": [
+      "zen"
+    ]
+  },
   "zen-tidy-downloads": {
     "homepage": "Anoms12/Zen-Tidy-Downloads",
     "image": "https://github.com/Anoms12/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
@@ -412,18 +424,6 @@
     "fork": [
       "zen",
       "firefox"
-    ]
-  },
-  "wireframe-2.0": {
-    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
-    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
-    "name": "Wireframe 2.0",
-    "version": "1.0",
-    "description": "A minimal, squared-off theme for Zen Browser",
-    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen"
     ]
   }
 }
