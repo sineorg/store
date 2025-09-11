@@ -6,7 +6,7 @@
     "version": "3.2",
     "description": "A beautiful theme made for Zen Browser :))",
     "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
-    "stars": 1064,
+    "stars": 1065,
     "fork": [
       "zen"
     ]
@@ -116,7 +116,7 @@
     "version": "1.0.0",
     "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
-    "stars": 27,
+    "stars": 28,
     "fork": [
       "zen"
     ]
@@ -127,7 +127,7 @@
     "version": "1.0.0",
     "description": "Adds a floating UI to switch search engines on a search results page.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
-    "stars": 27,
+    "stars": 28,
     "fork": [
       "zen"
     ]
@@ -138,7 +138,7 @@
     "version": "1.0.0",
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
-    "stars": 27
+    "stars": 28
   },
   "browse-bot": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/findbar-ai",
@@ -146,7 +146,7 @@
     "version": "1.0.0",
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/README.md",
-    "stars": 27,
+    "stars": 28,
     "fork": [
       "zen"
     ]
@@ -157,7 +157,7 @@
     "version": "1.0.0",
     "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
-    "stars": 27,
+    "stars": 28,
     "fork": [
       "zen"
     ]
