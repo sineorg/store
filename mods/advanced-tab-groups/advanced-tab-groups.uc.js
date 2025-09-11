@@ -55,11 +55,19 @@ class AdvancedTabGroupsCloseButton {
               }
               // Check if the added node is a tab-group
               if (node.tagName === "tab-group") {
-                this.processGroup(node);
+                // Skip split-view-groups
+                if (!node.hasAttribute("split-view-group")) {
+                  this.processGroup(node);
+                }
               }
               // Check if any children are tab-groups
               const childGroups = node.querySelectorAll?.("tab-group") || [];
-              childGroups.forEach((group) => this.processGroup(group));
+              childGroups.forEach((group) => {
+                // Skip split-view-groups
+                if (!group.hasAttribute("split-view-group")) {
+                  this.processGroup(group);
+                }
+              });
             }
           });
         }
@@ -103,7 +111,10 @@ class AdvancedTabGroupsCloseButton {
     );
 
     groups.forEach((group) => {
-      this.processGroup(group);
+      // Skip split-view-groups
+      if (!group.hasAttribute("split-view-group")) {
+        this.processGroup(group);
+      }
     });
   }
 
@@ -177,11 +188,12 @@ class AdvancedTabGroupsCloseButton {
   }
 
   processGroup(group) {
-    // Skip if already processed or if it's a folder
+    // Skip if already processed, if it's a folder, or if it's a split-view-group
     if (
       group.hasAttribute("data-close-button-added") ||
       group.classList.contains("zen-folder") ||
-      group.hasAttribute("zen-folder")
+      group.hasAttribute("zen-folder") ||
+      group.hasAttribute("split-view-group")
     ) {
       return;
     }
@@ -369,6 +381,11 @@ class AdvancedTabGroupsCloseButton {
       const target = event.target;
       const group = target?.closest ? (target.closest('tab-group') || (target.tagName === 'tab-group' ? target : null)) : null;
       if (!group) return;
+
+      // Skip split-view-groups
+      if (group.hasAttribute("split-view-group")) {
+        return;
+      }
 
       // Remove built-in menu that may be created alongside new groups
       this.removeBuiltinTabGroupMenu();
@@ -1295,10 +1312,10 @@ class AdvancedTabGroupsCloseButton {
       if (typeof UC_API !== "undefined" && UC_API.FileSystem) {
         const colors = {};
 
-        // Get all tab groups and their colors
+        // Get all tab groups and their colors (excluding split-view-groups)
         const groups = document.querySelectorAll("tab-group");
         groups.forEach((group) => {
-          if (group.id) {
+          if (group.id && !group.hasAttribute("split-view-group")) {
             const color = group.style.getPropertyValue("--tab-group-color");
             if (color && color !== "") {
               colors[group.id] = color;
@@ -1318,7 +1335,7 @@ class AdvancedTabGroupsCloseButton {
         const colors = {};
         const groups = document.querySelectorAll("tab-group");
         groups.forEach((group) => {
-          if (group.id) {
+          if (group.id && !group.hasAttribute("split-view-group")) {
             const color = group.style.getPropertyValue("--tab-group-color");
             if (color && color !== "") {
               colors[group.id] = color;
@@ -1390,7 +1407,7 @@ class AdvancedTabGroupsCloseButton {
     try {
       Object.entries(colors).forEach(([groupId, color]) => {
         const group = document.getElementById(groupId);
-        if (group) {
+        if (group && !group.hasAttribute("split-view-group")) {
           group.style.setProperty("--tab-group-color", color);
           group.style.setProperty("--tab-group-color-invert", color);
           console.log(
