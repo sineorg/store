@@ -270,6 +270,15 @@ jobs:
         # Update marketplace_content with converted values
         marketplace_content=$(cat "$temp_file")
         
+        # Test GitHub API with a known repository first
+        echo "Testing GitHub API with a known repository..."
+        test_stars=$(fetch_github_stars "microsoft/vscode")
+        echo "Test repository microsoft/vscode has $test_stars stars" >&2
+        
+        if [[ "$test_stars" == "0" ]]; then
+          echo "WARNING: GitHub API test failed - all repositories will show 0 stars" >&2
+        fi
+        
         # Second pass: Process each marketplace entry (now all should be objects)
         marketplace_keys=$(echo "$marketplace_content" | jq -r 'keys[]')
         
@@ -299,10 +308,13 @@ jobs:
               # Fetch theme data
               theme_data=$(fetch_theme_data "$repo" "$branch" "$folder" "$homepage")
               
+              # Debug: show what data we got
+              echo "Theme data for $key: $theme_data" >&2
+              
               # Update the marketplace entry
               temp_content=$(cat "$temp_file")
               echo "$temp_content" | jq --arg key "$key" --argjson data "$theme_data" \
-                '.[$key] = $data' > "$temp_file"1
+                '.[$key] = $data' > "$temp_file"
               
               echo "Updated $key with fetched data"
             else
@@ -310,6 +322,10 @@ jobs:
             fi
           fi
         done <<< "$marketplace_keys"
+        
+        # Show star counts before sorting
+        echo "Star counts before sorting:"
+        cat "$temp_file" | jq -r 'to_entries[] | "\(.key): \(.value.stars // 0) stars"' >&2
         
         # Sort the marketplace entries by stars (descending order)
         echo "Sorting marketplace entries by star count (descending)..."
@@ -326,6 +342,10 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
+        
+        # Show what changes were made
+        echo "Checking for changes in marketplace.json..."
+        git diff marketplace.json || echo "No changes detected"
         
         # Check if there are any changes
         if git diff --quiet marketplace.json; then
