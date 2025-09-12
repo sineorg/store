@@ -222,6 +222,18 @@
       "zen"
     ]
   },
+  "wireframe-2.0": {
+    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
+    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
+    "name": "Wireframe 2.0",
+    "version": "1.0",
+    "description": "A minimal, squared-off theme for Zen Browser",
+    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
+    "stars": 7,
+    "fork": [
+      "zen"
+    ]
+  },
   "paneru": {
     "homepage": "TheBigWazz/Paneru",
     "image": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/image.png",
@@ -253,18 +265,6 @@
     "version": "1.4.0",
     "description": "A premium, performance-optimized animation framework that transforms Zen Browser into a Modern Material Interface. :))",
     "readme": "https://raw.githubusercontent.com/Mohammed55Z/ZenMotion-Pro/refs/heads/main/README.md",
-    "stars": 6,
-    "fork": [
-      "zen"
-    ]
-  },
-  "wireframe-2.0": {
-    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
-    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
-    "name": "Wireframe 2.0",
-    "version": "1.0",
-    "description": "A minimal, squared-off theme for Zen Browser",
-    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
     "stars": 6,
     "fork": [
       "zen"
