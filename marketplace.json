@@ -6,7 +6,7 @@
     "version": "3.2",
     "description": "A beautiful theme made for Zen Browser :))",
     "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
-    "stars": 1065,
+    "stars": 1066,
     "fork": [
       "zen"
     ]
@@ -104,7 +104,7 @@
     "version": "1.5.8",
     "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
     "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
-    "stars": 37,
+    "stars": 38,
     "fork": [
       "zen"
     ]
@@ -199,17 +199,6 @@
       "zen"
     ]
   },
-  "customize-collapsed-sidebar": {
-    "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
-    "name": "Customize Collapsed Sidebar",
-    "version": "1.0.1",
-    "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
-    "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
-    "stars": 12,
-    "fork": [
-      "zen"
-    ]
-  },
   "zzzAltover": {
     "homepage": "allecsc/Altover",
     "image": "https://github.com/allecsc/Altover/blob/main/image.png",
@@ -217,6 +206,17 @@
     "version": "1.3",
     "description": "Altover Add-On for Nebula theme. Bundle install for Altover & Nebula themes.",
     "readme": "https://raw.githubusercontent.com/allecsc/Altover/refs/heads/main/README.md",
+    "stars": 13,
+    "fork": [
+      "zen"
+    ]
+  },
+  "customize-collapsed-sidebar": {
+    "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
+    "name": "Customize Collapsed Sidebar",
+    "version": "1.0.1",
+    "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
+    "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
     "stars": 12,
     "fork": [
       "zen"
@@ -280,6 +280,18 @@
       "zen"
     ]
   },
+  "wireframe-2.0": {
+    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
+    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
+    "name": "Wireframe 2.0",
+    "version": "1.0",
+    "description": "A minimal, squared-off theme for Zen Browser",
+    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
+    "stars": 5,
+    "fork": [
+      "zen"
+    ]
+  },
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "homepage": "rasyidrafi/zen-tidy-popup",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
@@ -312,18 +324,6 @@
     "version": "1.0.2",
     "description": "A mod for Zen Browser that enhances the appearance of the New Tab button and makes some changes to spacing around it",
     "stars": 2
-  },
-  "wireframe-2.0": {
-    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
-    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
-    "name": "Wireframe 2.0",
-    "version": "1.0",
-    "description": "A minimal, squared-off theme for Zen Browser",
-    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
-    "stars": 2,
-    "fork": [
-      "zen"
-    ]
   },
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
     "homepage": "rasyidrafi/zen-single-trackpad-animation",
