@@ -81,7 +81,7 @@
     "version": "2.0.0",
     "description": "A sleek, futuristic theme for Zen Browser that blends modern design with mindful simplicity",
     "readme": "https://raw.githubusercontent.com/JustVibingWhileCoding/Neo-Zen/main/README.md",
-    "stars": 61,
+    "stars": 60,
     "fork": [
       "zen"
     ]
@@ -258,6 +258,18 @@
       "zen"
     ]
   },
+  "wireframe-2.0": {
+    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
+    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
+    "name": "Wireframe 2.0",
+    "version": "1.0",
+    "description": "A minimal, squared-off theme for Zen Browser",
+    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
+    "stars": 6,
+    "fork": [
+      "zen"
+    ]
+  },
   "tab-rename-zen-browser": {
     "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
     "name": "Better Tab Rename",
@@ -275,18 +287,6 @@
     "version": "0.0.2",
     "description": "This mod allows you to split tabs by drag and drop links",
     "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
-    "stars": 5,
-    "fork": [
-      "zen"
-    ]
-  },
-  "wireframe-2.0": {
-    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
-    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
-    "name": "Wireframe 2.0",
-    "version": "1.0",
-    "description": "A minimal, squared-off theme for Zen Browser",
-    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
     "stars": 5,
     "fork": [
       "zen"
