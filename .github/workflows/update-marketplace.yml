@@ -69,6 +69,53 @@ jobs:
           echo "$repo|$branch|$folder"
         }
         
+        # Function to fetch GitHub stars for a repository
+        fetch_github_stars() {
+          local repo="$1"
+          
+          echo "Fetching stars for repo: $repo" >&2
+          
+          # Use GitHub API to get repository information
+          local api_url="https://api.github.com/repos/$repo"
+          echo "API URL: $api_url" >&2
+          
+          # Add User-Agent header to avoid 403 errors
+          local response=$(curl -s --fail -H "User-Agent: GitHub-Actions" "$api_url" 2>/dev/null)
+          local curl_exit_code=$?
+          
+          if [[ $curl_exit_code -ne 0 ]]; then
+            echo "Failed to fetch stars for $repo (exit code: $curl_exit_code)" >&2
+            echo "Response: $response" >&2
+            echo "0"
+            return
+          fi
+          
+          # Check for rate limiting or API errors
+          if echo "$response" | jq -e '.message' >/dev/null 2>&1; then
+            local error_msg=$(echo "$response" | jq -r '.message')
+            echo "GitHub API error for $repo: $error_msg" >&2
+            echo "0"
+            return
+          fi
+          
+          # Debug: show partial response for debugging
+          echo "API Response length for $repo: ${#response}" >&2
+          
+          # Extract stars count from API response
+          local stars=$(echo "$response" | jq -r '.stargazers_count // 0' 2>/dev/null)
+          
+          if [[ "$stars" == "null" || -z "$stars" ]]; then
+            echo "No stars found for $repo, using 0" >&2
+            echo "0"
+          else
+            echo "Found $stars stars for $repo" >&2
+            echo "$stars"
+          fi
+          
+          # Small delay to avoid rate limiting
+          sleep 0.5
+        }
+        
         # Function to fetch theme.json using raw GitHub URLs
         fetch_theme_data() {
           local repo="$1"
@@ -95,8 +142,10 @@ jobs:
               theme_content=$(cat "$theme_path")
             else
               echo "theme.json not found at $theme_path in current repository" >&2
-              # Return a minimal object with just the homepage
-              jq -n --arg homepage "$homepage" '{homepage: $homepage}'
+              # Fetch GitHub stars for this repository
+              local stars=$(fetch_github_stars "$repo")
+              # Return a minimal object with just the homepage and stars
+              jq -n --arg homepage "$homepage" --argjson stars "$stars" '{homepage: $homepage, stars: $stars}'
               return
             fi
           else
@@ -125,13 +174,17 @@ jobs:
                 
                 if [[ $curl_exit_code -ne 0 ]]; then
                   echo "Also failed with 'master' branch" >&2
-                  # Return a minimal object with just the homepage
-                  jq -n --arg homepage "$homepage" '{homepage: $homepage}'
+                  # Fetch GitHub stars for this repository
+                  local stars=$(fetch_github_stars "$repo")
+                  # Return a minimal object with just the homepage and stars
+                  jq -n --arg homepage "$homepage" --argjson stars "$stars" '{homepage: $homepage, stars: $stars}'
                   return
                 fi
               else
-                # Return a minimal object with just the homepage
-                jq -n --arg homepage "$homepage" '{homepage: $homepage}'
+                # Fetch GitHub stars for this repository
+                local stars=$(fetch_github_stars "$repo")
+                # Return a minimal object with just the homepage and stars
+                jq -n --arg homepage "$homepage" --argjson stars "$stars" '{homepage: $homepage, stars: $stars}'
                 return
               fi
             fi
@@ -142,15 +195,21 @@ jobs:
           # Validate JSON
           if ! echo "$theme_content" | jq empty 2>/dev/null; then
             echo "Invalid JSON in theme.json" >&2
-            # Return a minimal object with just the homepage
-            jq -n --arg homepage "$homepage" '{homepage: $homepage}'
+            # Fetch GitHub stars for this repository
+            local stars=$(fetch_github_stars "$repo")
+            # Return a minimal object with just the homepage and stars
+            jq -n --arg homepage "$homepage" --argjson stars "$stars" '{homepage: $homepage, stars: $stars}'
             return
           fi
           
-          # Extract only existing fields and add homepage
-          echo "$theme_content" | jq --arg homepage "$homepage" '
+          # Fetch GitHub stars for this repository
+          local stars=$(fetch_github_stars "$repo")
+          echo "Repository $repo has $stars stars" >&2
+          
+          # Extract only existing fields and add homepage and stars
+          echo "$theme_content" | jq --arg homepage "$homepage" --argjson stars "$stars" '
             . as $original |
-            {homepage: $homepage} |
+            {homepage: $homepage, stars: $stars} |
             if $original | has("image") then . + {image: ($original.image // "")} else . end |
             if $original | has("name") then . + {name: ($original.name // "")} else . end |
             if $original | has("version") then . + {version: ($original.version // "")} else . end |
@@ -158,7 +217,10 @@ jobs:
             if $original | has("readme") then . + {readme: ($original.readme // "")} else . end |
             if $original | has("fork") then . + {fork: ($original.fork // [""])} else . end |
             if $original | has("notFork") then . + {notFork: ($original.notFork // [""])} else . end |
-            if $original | has("os") then . + {os: ($original.os // [""])} else . end
+            if $original | has("os") then . + {os: ($original.os // [""])} else . end |
+            # Reorder fields to put stars before fork
+            {homepage, image, name, version, description, readme, stars, fork, notFork, os} as $ordered |
+            $ordered | with_entries(select(.value != null and .value != "" and .value != [""]))
           '
         }
         
@@ -208,6 +270,15 @@ jobs:
         # Update marketplace_content with converted values
         marketplace_content=$(cat "$temp_file")
         
+        # Test GitHub API with a known repository first
+        echo "Testing GitHub API with a known repository..."
+        test_stars=$(fetch_github_stars "microsoft/vscode")
+        echo "Test repository microsoft/vscode has $test_stars stars" >&2
+        
+        if [[ "$test_stars" == "0" ]]; then
+          echo "WARNING: GitHub API test failed - all repositories will show 0 stars" >&2
+        fi
+        
         # Second pass: Process each marketplace entry (now all should be objects)
         marketplace_keys=$(echo "$marketplace_content" | jq -r 'keys[]')
         
@@ -226,15 +297,19 @@ jobs:
             echo "Homepage for $key: $homepage"
             
             # Normalize the GitHub URL
+            echo "Normalizing URL: $homepage" >&2
             if normalized=$(normalize_github_url "$homepage"); then
               repo=$(echo "$normalized" | cut -d'|' -f1)
               branch=$(echo "$normalized" | cut -d'|' -f2)
               folder=$(echo "$normalized" | cut -d'|' -f3)
               
-              echo "Normalized - Repo: $repo, Branch: $branch, Folder: $folder"
+              echo "Normalized - Repo: $repo, Branch: $branch, Folder: $folder" >&2
               
               # Fetch theme data
               theme_data=$(fetch_theme_data "$repo" "$branch" "$folder" "$homepage")
+              
+              # Debug: show what data we got
+              echo "Theme data for $key: $theme_data" >&2
               
               # Update the marketplace entry
               temp_content=$(cat "$temp_file")
@@ -248,16 +323,29 @@ jobs:
           fi
         done <<< "$marketplace_keys"
         
-        # Write the updated content back to marketplace.json
-        cat "$temp_file" > marketplace.json
-        rm "$temp_file"
+        # Show star counts before sorting
+        echo "Star counts before sorting:"
+        cat "$temp_file" | jq -r 'to_entries[] | "\(.key): \(.value.stars // 0) stars"' >&2
         
-        echo "Updated marketplace.json successfully"
+        # Sort the marketplace entries by stars (descending order)
+        echo "Sorting marketplace entries by star count (descending)..."
+        temp_sorted_file=$(mktemp)
+        cat "$temp_file" | jq 'to_entries | map(.value.stars = (.value.stars // 0)) | sort_by(-.value.stars) | from_entries' > "$temp_sorted_file"
+        
+        # Write the sorted content back to marketplace.json
+        cat "$temp_sorted_file" > marketplace.json
+        rm "$temp_file" "$temp_sorted_file"
+        
+        echo "Updated and sorted marketplace.json successfully"
 
     - name: Commit and push changes
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
+        
+        # Show what changes were made
+        echo "Checking for changes in marketplace.json..."
+        git diff marketplace.json || echo "No changes detected"
         
         # Check if there are any changes
         if git diff --quiet marketplace.json; then
@@ -267,6 +355,10 @@ jobs:
         
         git add marketplace.json
         git commit -m "Update marketplace.json with latest marketplace data [skip ci]"
+        
+        # Pull any remote changes before pushing
+        git pull --rebase origin main
+        
         git push
 
     - name: Handle errors
