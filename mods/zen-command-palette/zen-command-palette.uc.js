@@ -1231,6 +1231,8 @@
   const ZenCommandPalette = {
     staticCommands: commands,
     provider: null,
+    _recentCommands: [],
+    MAX_RECENT_COMMANDS: 20,
 
     safeStr(x) {
       return (x || "").toString();
@@ -1252,6 +1254,28 @@
         }
       } catch (e) {
         debugError("Error in _closeUrlBar", e);
+      }
+    },
+
+    /**
+     * Adds a command to the list of recently used commands.
+     * @param {object} cmd - The command object that was executed.
+     */
+    addRecentCommand(cmd) {
+      if (!cmd || !cmd.key) return;
+
+      // Remove if it already exists to move it to the front.
+      const existingIndex = this._recentCommands.indexOf(cmd.key);
+      if (existingIndex > -1) {
+        this._recentCommands.splice(existingIndex, 1);
+      }
+
+      // Add to the front of the list.
+      this._recentCommands.unshift(cmd.key);
+
+      // Trim the list to the maximum allowed size.
+      if (this._recentCommands.length > this.MAX_RECENT_COMMANDS) {
+        this._recentCommands.length = this.MAX_RECENT_COMMANDS;
       }
     },
 
@@ -1315,9 +1339,23 @@
       if (queryLen > targetLen) return 0;
       if (queryLen === 0) return 0;
 
-      // Heavily prioritize exact prefix matches
+      // 1. Exact match gets the highest score.
+      if (targetLower === queryLower) {
+        return 200;
+      }
+
+      // 2. Exact prefix matches are heavily prioritized.
       if (targetLower.startsWith(queryLower)) {
         return 100 + queryLen;
+      }
+
+      // 3. Exact abbreviation (e.g., 'tcm' for 'Toggle Compact Mode')
+      const initials = targetLower
+        .split(/[\s-_]+/)
+        .map((word) => word[0])
+        .join("");
+      if (initials === queryLower) {
+        return 90 + queryLen;
       }
 
       let score = 0;
@@ -1345,7 +1383,7 @@
           // Penalty for distance from the last match
           if (lastMatchIndex !== -1) {
             const distance = targetIndex - lastMatchIndex;
-            bonus -= Math.min(distance - 1, 10); // Cap penalty to avoid negative scores for valid matches
+            bonus -= Math.min(distance - 1, 10); // Cap penalty
           }
 
           score += bonus;
@@ -1354,7 +1392,6 @@
         }
       }
 
-      // If not all characters of the query were found, it's not a match.
       return queryIndex === queryLen ? score : 0;
     },
 
@@ -1425,12 +1462,21 @@
           const keyScore = this.calculateFuzzyScore(key, lowerQuery);
           const tagsScore = this.calculateFuzzyScore(tags, lowerQuery);
 
-          // Combine scores, giving label the highest weight
-          const score = Math.max(
-            labelScore * 1.5, // Label is most important
-            keyScore,
-            tagsScore * 0.5 // Tags are least important
-          );
+          // Add a bonus for recently used commands.
+          let recencyBonus = 0;
+          const recentIndex = this._recentCommands.indexOf(cmd.key);
+          if (recentIndex > -1) {
+            // More recent commands (lower index) get a higher bonus.
+            recencyBonus = (this.MAX_RECENT_COMMANDS - recentIndex) * 5;
+          }
+
+          // Combine scores, giving label the highest weight, and add recency bonus.
+          const score =
+            Math.max(
+              labelScore * 1.5, // Label is most important
+              keyScore,
+              tagsScore * 0.5 // Tags are least important
+            ) + recencyBonus;
 
           return { cmd, score };
         })
@@ -1457,6 +1503,8 @@
         debugError("executeCommandObject: no command");
         return;
       }
+
+      this.addRecentCommand(cmd);
 
       try {
         // Prioritize explicit command function if it exists.
@@ -1490,48 +1538,13 @@
      */
     findCommandFromDomRow(row) {
       try {
-        if (!row) {
-          return null;
+        if (row?.result?._zenCmd) {
+          return row.result._zenCmd;
         }
-        // The title element is prioritized as it typically contains only the command label,
-        // avoiding extra text like "Search with...".
-        const titleEl = row.querySelector(".urlbarView-title");
-        const title = titleEl?.textContent || row.getAttribute("aria-label") || row.textContent || "";
-        const trimmed = this.safeStr(title).trim();
-
-        if (!trimmed) {
-          if (
-            this.provider &&
-            this.provider._lastResults &&
-            this.provider._lastResults.length === 1
-          ) {
-            return this.provider._lastResults[0] && this.provider._lastResults[0]._zenCmd;
-          }
-          return null;
-        }
-
-        // Match by checking if the row's text starts with a known command's title.
-        // This is more robust than an exact match, as Firefox can append additional text to the row.
-        if (this.provider && this.provider._lastResults) {
-          for (const r of this.provider._lastResults) {
-            if (!r || !r.payload) continue;
-            const payloadTitle = (r.payload.title || r.payload.suggestion || "").trim();
-            if (payloadTitle && trimmed.startsWith(payloadTitle)) {
-              return r._zenCmd || null;
-            }
-          }
-        }
-
-        // As a fallback, check the full command list directly.
-        const commandList = this.provider?._currentCommandList || this.staticCommands;
-        const found = commandList.find((c) => trimmed.startsWith(c.label));
-        if (found) {
-          return found;
-        }
-
         return null;
       } catch (e) {
         debugError("findCommandFromDomRow error:", e);
+        return null;
       }
     },
 
@@ -1633,7 +1646,7 @@
           }
         }
       });
-      
+
       observer.observe(results, {
         childList: true,
         subtree: true,

@@ -233,88 +233,135 @@ if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
     return;
   }
 
+  console.log("Unified URL Bar Controller (Flicker-Free) script loading...");
+
   // --- Configuration ---
-  const prefs = {
-    VISIBLE_RESULTS_LIMIT: 5,
-    SCROLLABLE_CLASS: 'zen-global-scrollable'
+  const CONFIG = {
+    URLBAR_ID: 'urlbar',
+    URLBAR_RESULTS_ID: 'urlbar-results',
+    ROW_HEIGHT_PX: 51,           // The height of a single result row
+    VISIBLE_RESULTS_LIMIT: 5,    // The number of results to show before scrolling
+    SCROLLABLE_CLASS: 'zen-urlbar-scrollable', // A single class for our state
+    DEBOUNCE_DELAY_MS: 10,       // A tiny delay to prevent race conditions with the browser
   };
 
-  /**
-   * Waits for all necessary elements to exist before initializing the feature.
-   */
-  function waitForElementsAndInit() {
-    // We only need urlbar and results for this script's core logic.
-    const elements = {
-      urlbar: document.getElementById('urlbar'),
-      results: document.getElementById('urlbar-results')
-    };
+  let urlbarElement, resultsElement;
+  let updateTimeout = null;
 
-    if (Object.values(elements).some(el => el === null)) {
-      const observer = new MutationObserver((mutations, obs) => {
-        const updatedElements = {
-          urlbar: document.getElementById('urlbar'),
-          results: document.getElementById('urlbar-results')
-        };
-        if (!Object.values(updatedElements).some(el => el === null)) {
-          obs.disconnect();
-          initialize(updatedElements);
+  /**
+   * This is our single, unified logic function. It controls everything.
+   */
+  function updateViewState() {
+    if (!resultsElement || !urlbarElement) return;
+
+    // Clear any pending update to ensure we only run the latest one.
+    clearTimeout(updateTimeout);
+
+    // Schedule the update to run after a tiny delay.
+    updateTimeout = setTimeout(() => {
+      // The ONLY exception: if the command palette is active, our script must do nothing.
+      const isCommandModeActive = window.ZenCommandPalette?.provider?._isInPrefixMode ?? false;
+      if (isCommandModeActive) {
+        resultsElement.classList.remove(CONFIG.SCROLLABLE_CLASS);
+        resultsElement.style.height = ''; // Clean up our styles completely
+        return;
+      }
+
+      if (urlbarElement.hasAttribute('open')) {
+        const resultCount = resultsElement.querySelectorAll('.urlbarView-row:not([type="tip"], [type="dynamic"])').length;
+        const isScrollable = resultCount > CONFIG.VISIBLE_RESULTS_LIMIT;
+
+        // 1. Set the scrollable state.
+        resultsElement.classList.toggle(CONFIG.SCROLLABLE_CLASS, isScrollable);
+        
+        // 2. Calculate and set the height.
+        let targetHeight;
+        if (isScrollable) {
+          // If scrollable, the height is capped at the limit.
+          targetHeight = (CONFIG.VISIBLE_RESULTS_LIMIT) * CONFIG.ROW_HEIGHT_PX;
+        } else {
+          // If not scrollable, the height is the exact content height.
+          targetHeight = resultCount * CONFIG.ROW_HEIGHT_PX;
         }
-      });
-      observer.observe(document.documentElement, { childList: true, subtree: true });
-    } else {
-      initialize(elements);
-    }
+        resultsElement.style.height = `${targetHeight}px`;
+
+      }
+    }, CONFIG.DEBOUNCE_DELAY_MS);
   }
 
   /**
-   * The main function that contains all the logic.
+   * Sets up the necessary listeners.
    */
-  function initialize(elements) {
-    const { urlbar, results } = elements;
+  function setupListeners() {
+    // The MutationObserver watches for results being added/removed AND selection changes.
+    const mutationObserver = new MutationObserver((mutations) => {
+      updateViewState(); // On any content change, update our state.
 
-    const observer = new MutationObserver((mutations) => {
-      // This check is the most important part of the script.
-      const isCommandModeActive = window.ZenCommandPalette?.provider?._isInPrefixMode ?? false;
-
-      // --- Main Logic ---
-      if (urlbar.hasAttribute('open')) {
-
-        // If the command palette is active, our script MUST do nothing and clean up.
-        if (isCommandModeActive) {
-          results.classList.remove(prefs.SCROLLABLE_CLASS); // Yield control
-        } else {
-          // If the command palette is NOT active, our script can do its work.
-          const resultCount = results.querySelectorAll('.urlbarView-row').length;
-          results.classList.toggle(prefs.SCROLLABLE_CLASS, resultCount > prefs.VISIBLE_RESULTS_LIMIT);
-        }
-
-      } else {
-        // --- Reset on Close Logic ---
-        // When the URL bar is closed, always clean up and reset the scroll position.
-        results.classList.remove(prefs.SCROLLABLE_CLASS);
-        results.scrollTop = 0;
-      }
-
-      // This universal auto-scroll logic is safe. It will work with whatever
-      // scroll container is currently active (ours or the command palette's).
+      // Universal auto-scroll logic for arrow keys.
       for (const mutation of mutations) {
         if (mutation.attributeName === 'selected' && mutation.target.hasAttribute('selected')) {
           mutation.target.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         }
       }
     });
+    mutationObserver.observe(resultsElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['selected'] });
 
-    observer.observe(results, {
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['selected']
+    // When the panel opens or closes, we update our state.
+    urlbarElement.addEventListener('popupshown', updateViewState);
+    urlbarElement.addEventListener('popuphidden', () => {
+      clearTimeout(updateTimeout);
+      resultsElement.classList.remove(CONFIG.SCROLLABLE_CLASS);
+      resultsElement.style.height = '';
+      resultsElement.scrollTop = 0; // Reset scroll on close
     });
-    observer.observe(urlbar, { attributes: true, attributeFilter: ['open'] });
-
-    console.log("Zen Global URL Bar Scroll (Standalone, Polite) script Initialized.");
   }
 
-  waitForElementsAndInit();
+  /**
+   * Waits for all necessary UI elements to exist before initializing.
+   */
+  function initialize() {
+    urlbarElement = document.getElementById(CONFIG.URLBAR_ID);
+    resultsElement = document.getElementById(CONFIG.URLBAR_RESULTS_ID);
+
+    if (!urlbarElement || !resultsElement) {
+      setTimeout(initialize, 500);
+      return;
+    }
+    
+    // Inject the CSS directly.
+    const styleId = 'unified-urlbar-controller-styles';
+    if (!document.getElementById(styleId)) {
+      const css = `
+        #${CONFIG.URLBAR_RESULTS_ID} {
+          transition: height 200ms ease-out !important;
+          overflow: hidden !important; /* Hide overflow during animation */
+        }
+        #${CONFIG.URLBAR_RESULTS_ID}.${CONFIG.SCROLLABLE_CLASS} {
+          overflow-y: auto !important; /* Enable scrolling ONLY when the class is present */
+          scrollbar-width: thin !important;
+          margin-top: 8px !important;
+          margin-bottom: 8px !important;
+          padding-top: 0px !important;
+          padding-bottom: 2px !important;
+          scrollbar-color: var(--zen-primary-color) transparent !important;
+        }
+      `;
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = css;
+      document.head.appendChild(style);
+    }
+
+    setupListeners();
+    updateViewState(); // Initial check for new tabs.
+    console.log("Unified URL Bar Controller (Flicker-Free) Initialized.");
+  }
+
+  if (document.readyState === 'complete') {
+    initialize();
+  } else {
+    window.addEventListener('load', initialize, { once: true });
+  }
 
 })();
 
