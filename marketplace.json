@@ -54,7 +54,7 @@
     "version": "5.1.0",
     "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
-    "stars": 128,
+    "stars": 129,
     "fork": [
       "zen"
     ]
@@ -166,7 +166,7 @@
     "homepage": "1247343406/context-menu-icons-for-Zen",
     "image": "https://raw.githubusercontent.com/1247343406/context-menu-icons-for-Zen/refs/heads/main/.asset/Demo%20Image.jpg",
     "name": "Context Menu Icons",
-    "version": "1.9.5",
+    "version": "1.9.5.1",
     "description": "Bring the icon of the context menu back to Zen/Firefox browser ",
     "readme": "https://raw.githubusercontent.com/1247343406/context-menu-icons-for-Zen/refs/heads/main/README.md",
     "stars": 23,
