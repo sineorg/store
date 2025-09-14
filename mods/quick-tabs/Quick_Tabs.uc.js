@@ -222,7 +222,7 @@
                 border: 1px solid ${currentTheme.containerBorder};
                 border-radius: 8px;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-                z-index: 9998;
+                z-index: 10000;
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
@@ -245,14 +245,14 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                padding: 8px 12px;
+                padding: 6px 12px;
                 background-color: ${currentTheme.headerBg};
                 border-bottom: 1px solid ${currentTheme.containerBorder};
                 color: ${currentTheme.headerColor};
                 cursor: grab;
                 user-select: none;
                 border-radius: 8px 8px 0 0;
-                min-height: 40px;
+                min-height: 36px;
             }
 
             .quicktab-header:active {
@@ -276,8 +276,8 @@
             }
 
             .quicktab-button {
-                width: 28px;
-                height: 28px;
+                width: 26px;
+                height: 26px;
                 border: none;
                 border-radius: 4px;
                 background-color: ${currentTheme.buttonBg};
@@ -291,10 +291,21 @@
                 flex-shrink: 0;
                 text-align: center;
                 vertical-align: middle;
+                padding: 0;
+            }
+
+            .quicktab-button img {
+                filter: ${THEME === 'dark' ? 'invert(1)' : 'none'};
+                opacity: 0.8;
+                transition: opacity 0.2s ease;
             }
 
             .quicktab-button:hover {
                 background-color: ${currentTheme.buttonHover};
+            }
+
+            .quicktab-button:hover img {
+                opacity: 1;
             }
 
             .quicktab-button:disabled {
@@ -304,6 +315,10 @@
 
             .quicktab-button:disabled:hover {
                 background-color: ${currentTheme.buttonBg};
+            }
+
+            .quicktab-button:disabled img {
+                opacity: 0.3;
             }
 
             .quicktab-title-section {
@@ -351,7 +366,7 @@
                 border: 1px solid ${currentTheme.taskbarBorder};
                 border-radius: 6px;
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-                z-index: 9999;
+                z-index: 10001;
                 min-width: 110px;
                 max-width: 300px;
                 ${ANIMATIONS_ENABLED ? 'transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);' : ''}
@@ -456,12 +471,26 @@
                 opacity: 0.6;
                 font-size: 14px;
                 flex-shrink: 0;
+                padding: 2px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .quicktabs-taskbar-item .close img {
+                filter: ${THEME === 'dark' ? 'invert(1)' : 'none'};
+                opacity: 0.7;
+                transition: opacity 0.2s ease;
             }
 
             .quicktabs-taskbar-item .close:hover {
                 opacity: 1;
                 background-color: ${currentTheme.buttonHover};
                 border-radius: 2px;
+            }
+
+            .quicktabs-taskbar-item .close:hover img {
+                opacity: 1;
             }
 
 
@@ -564,27 +593,52 @@
 
         const backButton = document.createElement('button');
         backButton.className = 'quicktab-button';
-        backButton.innerHTML = '←';
+        const backIcon = document.createElement('img');
+        backIcon.src = 'chrome://global/skin/icons/arrow-left.svg';
+        backIcon.width = 14;
+        backIcon.height = 14;
+        backIcon.alt = 'Back';
+        backButton.appendChild(backIcon);
         backButton.title = 'Back';
 
         const forwardButton = document.createElement('button');
         forwardButton.className = 'quicktab-button';
-        forwardButton.innerHTML = '→';
+        const forwardIcon = document.createElement('img');
+        forwardIcon.src = 'chrome://global/skin/icons/arrow-right.svg';
+        forwardIcon.width = 14;
+        forwardIcon.height = 14;
+        forwardIcon.alt = 'Forward';
+        forwardButton.appendChild(forwardIcon);
         forwardButton.title = 'Forward';
 
         const openInTabButton = document.createElement('button');
         openInTabButton.className = 'quicktab-button';
-        openInTabButton.innerHTML = '↗';
+        const openInTabIcon = document.createElement('img');
+        openInTabIcon.src = 'chrome://global/skin/icons/open-in-new.svg';
+        openInTabIcon.width = 14;
+        openInTabIcon.height = 14;
+        openInTabIcon.alt = 'Open in New Tab';
+        openInTabButton.appendChild(openInTabIcon);
         openInTabButton.title = 'Open in New Tab';
 
         const minimizeButton = document.createElement('button');
         minimizeButton.className = 'quicktab-button';
-        minimizeButton.innerHTML = '−';
+        const minimizeIcon = document.createElement('img');
+        minimizeIcon.src = 'chrome://global/skin/icons/minus.svg';
+        minimizeIcon.width = 14;
+        minimizeIcon.height = 14;
+        minimizeIcon.alt = 'Minimize';
+        minimizeButton.appendChild(minimizeIcon);
         minimizeButton.title = 'Minimize';
 
         const closeButton = document.createElement('button');
         closeButton.className = 'quicktab-button';
-        closeButton.innerHTML = '×';
+        const closeIcon = document.createElement('img');
+        closeIcon.src = 'chrome://global/skin/icons/close.svg';
+        closeIcon.width = 14;
+        closeIcon.height = 14;
+        closeIcon.alt = 'Close';
+        closeButton.appendChild(closeIcon);
         closeButton.title = 'Close';
 
         // Create title section container
@@ -930,7 +984,7 @@
             elementStartX = rect.left;
             elementStartY = rect.top;
             
-            element.style.zIndex = '9999';
+            element.style.zIndex = '10002';
             e.preventDefault();
         });
 
@@ -954,7 +1008,7 @@
         document.addEventListener('mouseup', () => {
             if (isDragging) {
                 isDragging = false;
-                element.style.zIndex = '9998';
+                element.style.zIndex = '10000';
             }
         });
 
@@ -1159,9 +1213,9 @@
     function bringToFront(containerInfo) {
         const allContainers = document.querySelectorAll('.quicktab-container');
         allContainers.forEach(container => {
-            container.style.zIndex = '9998';
+            container.style.zIndex = '10000';
         });
-        containerInfo.element.style.zIndex = '9999';
+        containerInfo.element.style.zIndex = '10002';
     }
 
     // Create and manage taskbar
@@ -1263,7 +1317,12 @@
 
             const closeBtn = document.createElement('button');
             closeBtn.className = 'close';
-            closeBtn.innerHTML = '×';
+            const closeBtnIcon = document.createElement('img');
+            closeBtnIcon.src = 'chrome://global/skin/icons/close.svg';
+            closeBtnIcon.width = 10;
+            closeBtnIcon.height = 10;
+            closeBtnIcon.alt = 'Close';
+            closeBtn.appendChild(closeBtnIcon);
             closeBtn.title = 'Close';
 
             item.appendChild(favicon);
