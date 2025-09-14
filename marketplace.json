@@ -25,11 +25,11 @@
   },
   "advanced-tab-groups": {
     "homepage": "12th-devs/Advanced-Tab-Groups",
-    "image": "https://raw.githubusercontent.com/Anoms12/Advanced-Tab-Groups/main/image.png",
+    "image": "https://raw.githubusercontent.com/Wacky-Wombat/Advanced-Tab-Groups-dev.png",
     "name": "Advanced Tab Groups (BETA)",
-    "version": "3.0.0b",
+    "version": "3.1.0b",
     "description": "Tab Groups for Zen Browser",
-    "readme": "https://raw.githubusercontent.com/Anoms12/Advanced-Tab-Groups/main/README.md",
+    "readme": "https://raw.githubusercontent.com/Wacky-Wombat/Advanced-Tab-Groups-dev/main/README.md",
     "stars": 350,
     "fork": [
       "zen"
