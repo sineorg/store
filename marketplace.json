@@ -198,17 +198,6 @@
       "zen"
     ]
   },
-  "customize-collapsed-sidebar": {
-    "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
-    "name": "Customize Collapsed Sidebar",
-    "version": "1.0.1",
-    "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
-    "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
-    "stars": 12,
-    "fork": [
-      "zen"
-    ]
-  },
   "wireframe-2.0": {
     "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
     "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
@@ -216,6 +205,17 @@
     "version": "1.2",
     "description": "A minimal, squared-off theme for Zen Browser",
     "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
+    "stars": 13,
+    "fork": [
+      "zen"
+    ]
+  },
+  "customize-collapsed-sidebar": {
+    "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
+    "name": "Customize Collapsed Sidebar",
+    "version": "1.0.1",
+    "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
+    "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
     "stars": 12,
     "fork": [
       "zen"
