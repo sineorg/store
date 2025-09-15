@@ -6,7 +6,7 @@
     "version": "3.3",
     "description": "A beautiful theme made for Zen Browser :))",
     "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
-    "stars": 1071,
+    "stars": 1072,
     "fork": [
       "zen"
     ]
@@ -18,7 +18,7 @@
     "version": "5.3.0",
     "description": "A skin for Firefox and its forks that makes things flow.",
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
-    "stars": 432,
+    "stars": 433,
     "fork": [
       "floorp"
     ]
@@ -115,7 +115,7 @@
     "version": "1.0.0",
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/README.md",
-    "stars": 30,
+    "stars": 31,
     "fork": [
       "zen"
     ]
@@ -126,7 +126,7 @@
     "version": "1.0.0",
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
-    "stars": 30
+    "stars": 31
   },
   "settings-shortcuts-search": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
@@ -135,7 +135,7 @@
     "version": "1.0.0",
     "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
-    "stars": 30,
+    "stars": 31,
     "fork": [
       "zen"
     ]
@@ -146,7 +146,7 @@
     "version": "1.0.0",
     "description": "Adds a floating UI to switch search engines on a search results page.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
-    "stars": 30,
+    "stars": 31,
     "fork": [
       "zen"
     ]
@@ -157,7 +157,7 @@
     "version": "1.0.0",
     "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
-    "stars": 30,
+    "stars": 31,
     "fork": [
       "zen"
     ]
@@ -169,7 +169,7 @@
     "version": "1.0.1",
     "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
     "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
-    "stars": 23,
+    "stars": 24,
     "fork": [
       "zen"
     ]
@@ -181,7 +181,7 @@
     "version": "1.0.0",
     "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
-    "stars": 19,
+    "stars": 20,
     "fork": [
       "zen"
     ]
