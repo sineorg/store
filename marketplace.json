@@ -11,18 +11,6 @@
       "zen"
     ]
   },
-  "natsumi-browser": {
-    "homepage": "greeeen-dev/natsumi-browser",
-    "image": "https://github.com/greeeen-dev/natsumi-browser/raw/dev/images/main-backgroundless.png",
-    "name": "Natsumi Browser",
-    "version": "5.3.0",
-    "description": "A skin for Firefox and its forks that makes things flow.",
-    "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
-    "stars": 433,
-    "fork": [
-      "floorp"
-    ]
-  },
   "advanced-tab-groups": {
     "homepage": "12th-devs/Advanced-Tab-Groups",
     "image": "https://raw.githubusercontent.com/12th-devs/Advanced-Tab-Groups/main/image.png",
@@ -67,17 +55,6 @@
     "description": "A sleek, futuristic theme for Zen Browser that blends modern design with mindful simplicity",
     "readme": "https://raw.githubusercontent.com/JustVibingWhileCoding/Neo-Zen/main/README.md",
     "stars": 60,
-    "fork": [
-      "zen"
-    ]
-  },
-  "quick-search-zen-browser": {
-    "homepage": "Darsh-A/Quick-Search-Zen-Browser",
-    "name": "Quick Search",
-    "version": "2.2.0",
-    "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
-    "stars": 39,
     "fork": [
       "zen"
     ]
@@ -145,19 +122,6 @@
     "stars": 6,
     "fork": [
       "zen"
-    ]
-  },
-  "paneru": {
-    "homepage": "TheBigWazz/Paneru",
-    "image": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/image.png",
-    "name": "Paneru",
-    "version": "1.0.1",
-    "description": "A comprehensive theme that separates various elements onto their own panel, respects Firefox theme colors, and supports transparency.",
-    "readme": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/README.md",
-    "stars": 6,
-    "fork": [
-      "floorp",
-      "firefox"
     ]
   },
   "3c8ebf69-1042-49b1-8f08-9178f9490659": {
@@ -228,6 +192,42 @@
     "stars": 1,
     "fork": [
       "zen",
+      "firefox"
+    ]
+  },
+  "natsumi-browser": {
+    "homepage": "greeeen-dev/natsumi-browser",
+    "image": "https://github.com/greeeen-dev/natsumi-browser/raw/dev/images/main-backgroundless.png",
+    "name": "Natsumi Browser",
+    "version": "5.3.0",
+    "description": "A skin for Firefox and its forks that makes things flow.",
+    "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
+    "stars": 0,
+    "fork": [
+      "floorp"
+    ]
+  },
+  "quick-search-zen-browser": {
+    "homepage": "Darsh-A/Quick-Search-Zen-Browser",
+    "name": "Quick Search",
+    "version": "2.2.0",
+    "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "paneru": {
+    "homepage": "TheBigWazz/Paneru",
+    "image": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/image.png",
+    "name": "Paneru",
+    "version": "1.0.1",
+    "description": "A comprehensive theme that separates various elements onto their own panel, respects Firefox theme colors, and supports transparency.",
+    "readme": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/README.md",
+    "stars": 0,
+    "fork": [
+      "floorp",
       "firefox"
     ]
   },
