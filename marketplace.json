@@ -42,7 +42,7 @@
     "version": "3.2.8",
     "description": "Arc-like Zen Browser theme.",
     "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/main/README.md",
-    "stars": 335,
+    "stars": 336,
     "fork": [
       "zen"
     ]
@@ -154,7 +154,7 @@
   "zen-command-palette": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
     "name": "Zen Command Palette",
-    "version": "1.0.0",
+    "version": "1.5.0",
     "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
     "stars": 31,
