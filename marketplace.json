@@ -169,7 +169,7 @@
     "version": "1.0.1",
     "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
     "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
-    "stars": 24,
+    "stars": 25,
     "fork": [
       "zen"
     ]
