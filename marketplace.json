@@ -66,7 +66,7 @@
     "version": "142.2",
     "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
     "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
-    "stars": 113,
+    "stars": 114,
     "fork": [
       "firefox",
       "waterfox",
@@ -193,7 +193,7 @@
     "version": "1.2",
     "description": "A minimal, squared-off theme for Zen Browser",
     "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
-    "stars": 15,
+    "stars": 16,
     "fork": [
       "zen"
     ]
