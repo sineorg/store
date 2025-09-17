@@ -2,7 +2,7 @@
 // @name            Zen Command Palette
 // @description     A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar.
 // @author          BibekBhusal
-// @loadOrder    99999999999999
+// @onlyonce
 // ==/UserScript==
 
 
