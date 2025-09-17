@@ -11,18 +11,6 @@
       "zen"
     ]
   },
-  "natsumi-browser": {
-    "homepage": "greeeen-dev/natsumi-browser",
-    "image": "https://github.com/greeeen-dev/natsumi-browser/raw/dev/images/main-backgroundless.png",
-    "name": "Natsumi Browser",
-    "version": "5.3.0",
-    "description": "A skin for Firefox and its forks that makes things flow.",
-    "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
-    "stars": 432,
-    "fork": [
-      "floorp"
-    ]
-  },
   "advanced-tab-groups": {
     "homepage": "12th-devs/Advanced-Tab-Groups",
     "image": "https://raw.githubusercontent.com/12th-devs/Advanced-Tab-Groups/main/image.png",
@@ -59,21 +47,6 @@
       "zen"
     ]
   },
-  "zaps-cool-photon-theme": {
-    "homepage": "zapSNH/zapsCoolPhotonTheme",
-    "image": "https://i.imgur.com/FyzTFKg.png",
-    "name": "zap's cool photon theme",
-    "version": "142.2",
-    "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
-    "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
-    "stars": 114,
-    "fork": [
-      "firefox",
-      "waterfox",
-      "floorp",
-      "mullvad"
-    ]
-  },
   "Neo-Zen": {
     "homepage": "JustVibingWhileCoding/Neo-Zen",
     "image": "https://github.com/user-attachments/assets/c37e9f4e-1ab1-43ec-945e-2be1592351a4",
@@ -98,17 +71,6 @@
       "zen"
     ]
   },
-  "quick-search-zen-browser": {
-    "homepage": "Darsh-A/Quick-Search-Zen-Browser",
-    "name": "Quick Search",
-    "version": "2.2.0",
-    "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
-    "stars": 38,
-    "fork": [
-      "zen"
-    ]
-  },
   "browse-bot": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/findbar-ai",
     "name": "Browse Bot",
@@ -116,96 +78,6 @@
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/README.md",
     "stars": 34,
-    "fork": [
-      "zen"
-    ]
-  },
-  "floating-sidebar": {
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/floating-sidebar",
-    "name": "Floating Sidebar",
-    "version": "1.0.0",
-    "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
-    "stars": 34
-  },
-  "settings-shortcuts-search": {
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
-    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/image.png",
-    "name": "Search Keyboard shortcuts",
-    "version": "1.0.0",
-    "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
-    "stars": 34,
-    "fork": [
-      "zen"
-    ]
-  },
-  "search-engine-select": {
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
-    "name": "Search Engine Select",
-    "version": "1.0.0",
-    "description": "Adds a floating UI to switch search engines on a search results page.",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
-    "stars": 34,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-command-palette": {
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
-    "name": "Zen Command Palette",
-    "version": "1.5.0",
-    "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
-    "stars": 34,
-    "fork": [
-      "zen"
-    ]
-  },
-  "vizen-floaty-ui": {
-    "homepage": "moktavizen/floaty-ui",
-    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
-    "name": "Floaty UI",
-    "version": "1.0.1",
-    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
-    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
-    "stars": 25,
-    "fork": [
-      "zen"
-    ]
-  },
-  "quick-tabs": {
-    "homepage": "Darsh-A/Quick-Tabs",
-    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
-    "name": "Quick Tabs",
-    "version": "1.0.0",
-    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
-    "stars": 20,
-    "fork": [
-      "zen"
-    ]
-  },
-  "wireframe-2.0": {
-    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
-    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
-    "name": "Wireframe 2.0",
-    "version": "1.2",
-    "description": "A minimal, squared-off theme for Zen Browser",
-    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
-    "stars": 16,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zzzAltover": {
-    "homepage": "allecsc/Altover",
-    "image": "https://github.com/allecsc/Altover/blob/main/image.png",
-    "name": "Altover Addon",
-    "version": "1.3",
-    "description": "Altover Add-On for Nebula theme. Bundle install for Altover & Nebula themes.",
-    "readme": "https://raw.githubusercontent.com/allecsc/Altover/refs/heads/main/README.md",
-    "stars": 13,
     "fork": [
       "zen"
     ]
@@ -244,41 +116,6 @@
       "zen"
     ]
   },
-  "paneru": {
-    "homepage": "TheBigWazz/Paneru",
-    "image": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/image.png",
-    "name": "Paneru",
-    "version": "1.0.1",
-    "description": "A comprehensive theme that separates various elements onto their own panel, respects Firefox theme colors, and supports transparency.",
-    "readme": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/README.md",
-    "stars": 6,
-    "fork": [
-      "floorp",
-      "firefox"
-    ]
-  },
-  "tab-rename-zen-browser": {
-    "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
-    "name": "Better Tab Rename",
-    "version": "1.0.0",
-    "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
-    "stars": 5,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-drop-link": {
-    "homepage": "https://github.com/octaviusz/zen-drop-link",
-    "name": "Zen Drop Link to Split",
-    "version": "0.0.2",
-    "description": "This mod allows you to split tabs by drag and drop links",
-    "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
-    "stars": 5,
-    "fork": [
-      "zen"
-    ]
-  },
   "3c8ebf69-1042-49b1-8f08-9178f9490659": {
     "homepage": "rasyidrafi/zen-always-show-music-bar",
     "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
@@ -286,19 +123,6 @@
     "version": "1.0.4",
     "description": "Make your zen music bar better.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
-    "stars": 3,
-    "fork": [
-      "zen",
-      "firefox"
-    ]
-  },
-  "f966100a-4fed-4df5-a082-f001c5bd654e": {
-    "homepage": "rasyidrafi/zen-tidy-popup",
-    "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
-    "name": "Tidy Popup & Extension",
-    "version": "2.8.10",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
     "stars": 3,
     "fork": [
       "zen",
@@ -345,6 +169,182 @@
     "description": "Customizable URL bar with animations.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-custom-urlbar/refs/heads/main/README.md",
     "stars": 1,
+    "fork": [
+      "zen",
+      "firefox"
+    ]
+  },
+  "natsumi-browser": {
+    "homepage": "greeeen-dev/natsumi-browser",
+    "image": "https://github.com/greeeen-dev/natsumi-browser/raw/dev/images/main-backgroundless.png",
+    "name": "Natsumi Browser",
+    "version": "5.3.0",
+    "description": "A skin for Firefox and its forks that makes things flow.",
+    "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
+    "stars": 0,
+    "fork": [
+      "floorp"
+    ]
+  },
+  "zaps-cool-photon-theme": {
+    "homepage": "zapSNH/zapsCoolPhotonTheme",
+    "image": "https://i.imgur.com/FyzTFKg.png",
+    "name": "zap's cool photon theme",
+    "version": "142.2",
+    "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
+    "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
+    "stars": 0,
+    "fork": [
+      "firefox",
+      "waterfox",
+      "floorp",
+      "mullvad"
+    ]
+  },
+  "quick-search-zen-browser": {
+    "homepage": "Darsh-A/Quick-Search-Zen-Browser",
+    "name": "Quick Search",
+    "version": "2.2.0",
+    "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "floating-sidebar": {
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/floating-sidebar",
+    "name": "Floating Sidebar",
+    "version": "1.0.0",
+    "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
+    "stars": 0
+  },
+  "settings-shortcuts-search": {
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
+    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/image.png",
+    "name": "Search Keyboard shortcuts",
+    "version": "1.0.0",
+    "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "search-engine-select": {
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
+    "name": "Search Engine Select",
+    "version": "1.0.0",
+    "description": "Adds a floating UI to switch search engines on a search results page.",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-command-palette": {
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
+    "name": "Zen Command Palette",
+    "version": "1.5.0",
+    "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "vizen-floaty-ui": {
+    "homepage": "moktavizen/floaty-ui",
+    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
+    "name": "Floaty UI",
+    "version": "1.0.1",
+    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
+    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "quick-tabs": {
+    "homepage": "Darsh-A/Quick-Tabs",
+    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
+    "name": "Quick Tabs",
+    "version": "1.0.0",
+    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "wireframe-2.0": {
+    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
+    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
+    "name": "Wireframe 2.0",
+    "version": "1.2",
+    "description": "A minimal, squared-off theme for Zen Browser",
+    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zzzAltover": {
+    "homepage": "allecsc/Altover",
+    "image": "https://github.com/allecsc/Altover/blob/main/image.png",
+    "name": "Altover Addon",
+    "version": "1.3",
+    "description": "Altover Add-On for Nebula theme. Bundle install for Altover & Nebula themes.",
+    "readme": "https://raw.githubusercontent.com/allecsc/Altover/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "paneru": {
+    "homepage": "TheBigWazz/Paneru",
+    "image": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/image.png",
+    "name": "Paneru",
+    "version": "1.0.1",
+    "description": "A comprehensive theme that separates various elements onto their own panel, respects Firefox theme colors, and supports transparency.",
+    "readme": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/README.md",
+    "stars": 0,
+    "fork": [
+      "floorp",
+      "firefox"
+    ]
+  },
+  "tab-rename-zen-browser": {
+    "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
+    "name": "Better Tab Rename",
+    "version": "1.0.0",
+    "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-drop-link": {
+    "homepage": "https://github.com/octaviusz/zen-drop-link",
+    "name": "Zen Drop Link to Split",
+    "version": "0.0.2",
+    "description": "This mod allows you to split tabs by drag and drop links",
+    "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "f966100a-4fed-4df5-a082-f001c5bd654e": {
+    "homepage": "rasyidrafi/zen-tidy-popup",
+    "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
+    "name": "Tidy Popup & Extension",
+    "version": "2.8.10",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
+    "stars": 0,
     "fork": [
       "zen",
       "firefox"
