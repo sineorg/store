@@ -36,6 +36,8 @@
     book: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7v14m-9-3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4a4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3a3 3 0 0 0-3-3z"/></svg>`,
     star: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z"/></svg>`,
     folderOut: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M2 7.5V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-1.5M2 13h10"/><path d="m5 10l-3 3l3 3"/></g></svg>`,
+    glass: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="6" cy="15" r="4"/><circle cx="18" cy="15" r="4"/><path d="M14 15a2 2 0 0 0-2-2a2 2 0 0 0-2 2m-7.5-2L5 7c.7-1.3 1.4-2 3-2m13.5 8L19 7c-.7-1.3-1.5-2-3-2"/></g></svg>`,
+    incognito: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M14 18a2 2 0 0 0-4 0m9-7l-2.11-6.657a2 2 0 0 0-2.752-1.148l-1.276.61A2 2 0 0 1 12 4H8.5a2 2 0 0 0-1.925 1.456L5 11m-3 0h20"/><circle cx="17" cy="18" r="3"/><circle cx="7" cy="18" r="3"/></g></svg>`,
 
     // ICON CREDITS: Lucide Labs[ISC License]
     broom: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m13 11l9-9m-7.4 10.6c.8.8.9 2.1.2 3L10 22l-8-8l6.4-4.8c.9-.7 2.2-.6 3 .2Zm-7.8-2.2l6.8 6.8M5 17l1.4-1.4"/></svg>`,
@@ -568,24 +570,18 @@
     {
       key: "Browser:NextTab",
       label: "Next Tab",
-      command: () => gBrowser.tabContainer.advanceSelectedTab(1, true),
-      condition: !!gBrowser?.tabContainer,
       icon: "chrome://browser/skin/zen-icons/arrow-right.svg",
       tags: ["next", "tab", "switch", "navigate"],
     },
     {
       key: "Browser:PrevTab",
       label: "Previous Tab",
-      command: () => gBrowser.tabContainer.advanceSelectedTab(-1, true),
-      condition: !!gBrowser?.tabContainer,
       icon: "chrome://browser/skin/zen-icons/arrow-left.svg",
       tags: ["previous", "tab", "switch", "navigate"],
     },
     {
       key: "Browser:ShowAllTabs",
       label: "Show All Tabs Panel",
-      command: () => gTabsPanel.showAllTabsPanel(),
-      condition: !!window.gTabsPanel,
       tags: ["show", "all", "tabs", "panel", "overview"],
     },
     {
@@ -616,8 +612,6 @@
     {
       key: "History:UndoCloseTab",
       label: "Reopen Closed Tab",
-      command: () => SessionStore.undoCloseTab(window, 0),
-      condition: !!SessionStore?.undoCloseTab,
       icon: "chrome://browser/skin/zen-icons/edit-undo.svg",
       tags: ["undo", "close", "tab", "reopen", "restore"],
     },
@@ -680,16 +674,12 @@
     {
       key: "Tools:PrivateBrowsing",
       label: "Open Private Window",
-      command: () => OpenBrowserWindow({ private: true }),
-      condition: !!window.OpenBrowserWindow,
-      icon: "chrome://browser/skin/zen-icons/private-window.svg",
+      icon: svgToUrl(icons["incognito"]),
       tags: ["private", "browsing", "incognito", "window"],
     },
     {
       key: "History:UndoCloseWindow",
       label: "Reopen Closed Window",
-      command: () => SessionWindowUI.undoCloseWindow(),
-      condition: !!window.SessionWindowUI,
       icon: "chrome://browser/skin/zen-icons/edit-undo.svg",
       tags: ["undo", "close", "window", "reopen", "restore"],
     },
@@ -698,16 +688,12 @@
     {
       key: "Browser:Back",
       label: "Go Back",
-      command: () => gBrowser.goBack(),
-      condition: () => gBrowser.canGoBack,
       icon: "chrome://browser/skin/back.svg",
       tags: ["back", "navigate", "history", "previous"],
     },
     {
       key: "Browser:Forward",
       label: "Go Forward",
-      command: () => gBrowser.goForward(),
-      condition: () => gBrowser.canGoForward,
       icon: "chrome://browser/skin/forward.svg",
       tags: ["forward", "navigate", "history", "next"],
     },
@@ -741,6 +727,12 @@
       label: "Bookmark All Tabs",
       icon: "chrome://browser/skin/bookmarks-toolbar.svg",
       tags: ["bookmark", "all", "tabs", "save", "favorite", "library"],
+    },
+    {
+      key: "viewBookmarksToolbarKb",
+      label: "Toggle Bookmark Bar",
+      icon: "chrome://browser/skin/bookmarks-toolbar.svg",
+      tags: ["bookmark", "favorite", "library", "toolbar"],
     },
     {
       key: "Browser:SearchBookmarks",
@@ -803,7 +795,7 @@
     {
       key: "View:ReaderView",
       label: "Toggle Reader Mode",
-      icon: "chrome://browser/skin/reader-mode.svg",
+      icon: svgToUrl(icons["glass"]),
       tags: ["Read", "Glass", "Mode", "Focus"],
     },
     {
@@ -837,6 +829,73 @@
       label: "View Page Info",
       icon: "chrome://browser/skin/zen-icons/info.svg",
       tags: ["info", "page", "details", "properties"],
+    },
+
+    {
+      key: "key_toggleToolboxF12",
+      label: "Toggle web toolbox",
+      tags: ["devtools", "toolbox"],
+      icon: "chrome://devtools/skin/images/tool-webconsole.svg",
+    },
+    {
+      key: "key_browserToolbox",
+      label: "Open Browser Toolbox",
+      tags: ["devtools", "toolbox"],
+      icon: "chrome://devtools/skin/images/tool-webconsole.svg",
+    },
+    {
+      key: "key_browserConsole",
+      label: "Open Browser Console",
+      tags: ["devtools", "console"],
+      icon: "chrome://devtools/skin/images/tool-webconsole.svg",
+    },
+    {
+      key: "key_responsiveDesignMode",
+      label: "Toggle Responsive Design Mode",
+      tags: ["devtools", "responsive", "design", "mobile"],
+      icon: "chrome://devtools/skin/images/command-responsivemode.svg",
+    },
+    {
+      key: "key_inspector",
+      label: "Open web inspector",
+      tags: ["devtools", "inspector", "elements", "html"],
+      icon: "chrome://devtools/skin/images/tool-inspector.svg",
+    },
+    {
+      key: "key_webconsole",
+      label: "Open web console",
+      tags: ["devtools", "console", "web", "logs"],
+      icon: "chrome://devtools/skin/images/tool-webconsole.svg",
+    },
+    {
+      key: "key_jsdebugger",
+      label: "Open js debugger",
+      tags: ["devtools", "debugger", "js", "javascript"],
+      icon: "chrome://devtools/skin/images/tool-debugger.svg",
+    },
+    {
+      key: "key_netmonitor",
+      label: "Open network monitor",
+      tags: ["devtools", "network", "monitor"],
+      icon: "chrome://devtools/skin/images/tool-network.svg",
+    },
+    {
+      key: "key_styleeditor",
+      label: "Open style editor",
+      tags: ["devtools", "style", "editor", "css"],
+      icon: "chrome://devtools/skin/images/tool-styleeditor.svg",
+    },
+    {
+      key: "key_performance",
+      label: "Open performance panel",
+      tags: ["devtools", "performance", "panel"],
+      icon: "chrome://devtools/skin/images/tool-profiler.svg",
+    },
+    {
+      key: "key_storage",
+      label: "Open storage panel",
+      tags: ["devtools", "storage", "panel"],
+      icon: "chrome://devtools/skin/images/tool-storage.svg",
     },
 
     // ----------- Media & Screenshots -----------
@@ -941,6 +1000,14 @@
         }
       },
       tags: ["memory", "free", "ram", "minimize", "space", "fast", "slow"],
+    },
+
+    // ----------- Profiles -----------
+    {
+      key: "Profiles:CreateProfile",
+      label: "Create New Profile",
+      icon: "chrome://browser/skin/zen-icons/container-tab.svg",
+      tags: ["profile", "new", "create"],
     },
 
     // ----------- Command Palette Settings -----------
@@ -2025,6 +2092,16 @@
 
     _populateSettingsTab() {
       const container = this._modalElement.querySelector("#settings-tab-content");
+      container.innerHTML = "";
+
+      const dynamicCommandItems = this._mainModule._dynamicCommandProviders
+        .filter((provider) => provider.pref)
+        .map((provider) => ({
+          key: provider.pref,
+          label: this._mainModule._getProviderLabel(provider.func.name),
+          type: "bool",
+        }));
+
       const prefs = [
         {
           section: "General",
@@ -2051,59 +2128,7 @@
         },
         {
           section: "Dynamic Commands",
-          items: [
-            {
-              key: Prefs.KEYS.DYNAMIC_ABOUT_PAGES,
-              label: "Generate commands for about: pages",
-              type: "bool",
-            },
-            {
-              key: Prefs.KEYS.DYNAMIC_SEARCH_ENGINES,
-              label: "Generate commands for search engines",
-              type: "bool",
-            },
-            {
-              key: Prefs.KEYS.DYNAMIC_EXTENSIONS,
-              label: "Generate commands for extension options",
-              type: "bool",
-            },
-            {
-              key: Prefs.KEYS.DYNAMIC_WORKSPACES,
-              label: "Generate commands for workspaces",
-              type: "bool",
-            },
-            {
-              key: Prefs.KEYS.DYNAMIC_SINE_MODS,
-              label: "Generate commands for Sine mods",
-              type: "bool",
-            },
-            { key: Prefs.KEYS.DYNAMIC_FOLDERS, label: "Generate commands for folders", type: "bool" },
-            {
-              key: Prefs.KEYS.DYNAMIC_CONTAINER_TABS,
-              label: "Generate commands for container tabs",
-              type: "bool",
-            },
-            {
-              key: Prefs.KEYS.DYNAMIC_ACTIVE_TABS,
-              label: "Generate commands for active tabs",
-              type: "bool",
-            },
-            {
-              key: Prefs.KEYS.DYNAMIC_UNLOAD_TABS,
-              label: "Generate commands for unload tabs",
-              type: "bool",
-            },
-            {
-              key: Prefs.KEYS.DYNAMIC_EXTENSION_ENABLE_DISABLE,
-              label: "Generate commands for enabling/disabling extensions",
-              type: "bool",
-            },
-            {
-              key: Prefs.KEYS.DYNAMIC_EXTENSION_UNINSTALL,
-              label: "Generate commands for uninstalling extensions",
-              type: "bool",
-            },
-          ],
+          items: dynamicCommandItems,
         },
       ];
 
@@ -2211,20 +2236,14 @@
      */
     _dynamicCommandProviders: [
       {
-        func: generateAboutPageCommands,
-        pref: Prefs.KEYS.DYNAMIC_ABOUT_PAGES,
-        allowIcons: true,
-        allowShortcuts: true,
-      },
-      {
         func: generateSearchEngineCommands,
         pref: Prefs.KEYS.DYNAMIC_SEARCH_ENGINES,
         allowIcons: false,
         allowShortcuts: false,
       },
       {
-        func: generateExtensionCommands,
-        pref: Prefs.KEYS.DYNAMIC_EXTENSIONS,
+        func: generateSineCommands,
+        pref: Prefs.KEYS.DYNAMIC_SINE_MODS,
         allowIcons: false,
         allowShortcuts: true,
       },
@@ -2241,21 +2260,9 @@
         allowShortcuts: true,
       },
       {
-        func: generateSineCommands,
-        pref: Prefs.KEYS.DYNAMIC_SINE_MODS,
-        allowIcons: false,
-        allowShortcuts: true,
-      },
-      {
         func: generateFolderCommands,
         pref: Prefs.KEYS.DYNAMIC_FOLDERS,
         allowIcons: true,
-        allowShortcuts: true,
-      },
-      {
-        func: generateContainerTabCommands,
-        pref: Prefs.KEYS.DYNAMIC_CONTAINER_TABS,
-        allowIcons: false,
         allowShortcuts: true,
       },
       {
@@ -2265,10 +2272,28 @@
         allowShortcuts: false,
       },
       {
+        func: generateContainerTabCommands,
+        pref: Prefs.KEYS.DYNAMIC_CONTAINER_TABS,
+        allowIcons: false,
+        allowShortcuts: true,
+      },
+      {
         func: generateUnloadTabCommands,
         pref: Prefs.KEYS.DYNAMIC_UNLOAD_TABS,
         allowIcons: false,
         allowShortcuts: false,
+      },
+      {
+        func: generateAboutPageCommands,
+        pref: Prefs.KEYS.DYNAMIC_ABOUT_PAGES,
+        allowIcons: true,
+        allowShortcuts: true,
+      },
+      {
+        func: generateExtensionCommands,
+        pref: Prefs.KEYS.DYNAMIC_EXTENSIONS,
+        allowIcons: false,
+        allowShortcuts: true,
       },
       {
         func: generateExtensionEnableDisableCommands,
@@ -2589,7 +2614,7 @@
           const recentIndex = this._recentCommands.indexOf(cmd.key);
           if (recentIndex > -1) {
             // More recent commands (lower index) get a higher bonus.
-            recencyBonus = (this.MAX_RECENT_COMMANDS - recentIndex) * 5;
+            recencyBonus = (this.MAX_RECENT_COMMANDS - recentIndex) * 2;
           }
 
           // Combine scores, giving label the highest weight, and add recency bonus.
