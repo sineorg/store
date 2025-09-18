@@ -11,6 +11,8 @@
     const QUICK_TABS_TASKBAR_MIN_WIDTH_PREF = "extensions.quicktabs.taskbar.minWidth";
     const QUICK_TABS_ANIMATIONS_ENABLED_PREF = "extensions.quicktabs.animations.enabled";
     const QUICK_TABS_CLOSE_SOURCE_TAB_PREF = "extensions.quicktabs.closeSourceTab";
+    const QUICK_TABS_CMD_PALETTE_DYNAMIC_PREF = "extensions.quicktabs.commandpalette.dynamic.enabled";
+    const QUICK_TABS_INITIAL_POSITION_PREF = "extensions.quicktabs.initialPosition";
 
     // Configuration helper functions
     const getPref = (prefName, defaultValue = "") => {
@@ -57,12 +59,14 @@
     const TASKBAR_MIN_WIDTH = getPref(QUICK_TABS_TASKBAR_MIN_WIDTH_PREF, 200);
     const ANIMATIONS_ENABLED = getPref(QUICK_TABS_ANIMATIONS_ENABLED_PREF, true);
     const CLOSE_SOURCE_TAB = getPref(QUICK_TABS_CLOSE_SOURCE_TAB_PREF, false);
+    const INITIAL_POSITION = getPref(QUICK_TABS_INITIAL_POSITION_PREF, "center"); // e.g., center, top-left, bottom-right
     
     // Global state
     let quickTabContainers = new Map(); // id -> container info
     let nextContainerId = 1;
     let taskbarExpanded = false;
     let commandListenerAdded = false;
+    let wasExpandedForDrag = false;
 
     // Quick Tab command state for passing parameters
     let quickTabCommandData = {
@@ -176,6 +180,38 @@
         return text.substring(0, maxLength - 3) + '...';
     };
 
+    // Utility function to validate a URI from data transfer
+    const validateURIFromDataTransfer = (dataTransfer) => {
+        const URL_TYPES = ['text/uri-list', 'text/x-moz-url', 'text/plain'];
+
+        try {
+            // If files are being dragged, don't treat it as a URL drop for Quick Tabs
+            if (Array.from(dataTransfer.types).some(type => type === 'Files' || type === 'application/x-moz-file')) {
+                return null;
+            }
+            
+            const matchedType = URL_TYPES.find(type => {
+                const data = dataTransfer.getData(type);
+                return typeof data === 'string' && data.trim().length > 0;
+            });
+
+            if (!matchedType) return null;
+
+            const uriString = dataTransfer.getData(matchedType).trim();
+            if (!uriString) return null;
+
+            // Use fixup service to get a valid URI
+            const fixupFlags = Ci.nsIURIFixup.FIXUP_FLAG_FIX_SCHEME_TYPOS | Ci.nsIURIFixup.FIXUP_FLAG_ALLOW_KEYWORD_LOOKUP;
+            const info = Services.uriFixup.getFixupURIInfo(uriString, fixupFlags);
+
+            return info?.fixedURI?.spec || null;
+
+        } catch (e) {
+            // This can happen if dragging from a private tab, just ignore.
+            return null;
+        }
+    };
+
     // CSS injection function
     const injectCSS = () => {
         const existingStyle = document.getElementById('quicktabs-styles');
@@ -272,6 +308,19 @@
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
+                min-width: 0;
+            }
+
+            .quicktab-title-editor {
+                flex: 1;
+                font-size: 13px;
+                font-weight: 500;
+                border: 1px solid ${currentTheme.containerBorder};
+                background-color: ${currentTheme.containerBg};
+                color: ${currentTheme.headerColor};
+                padding: 2px 4px;
+                border-radius: 3px;
+                margin: 0;
                 min-width: 0;
             }
 
@@ -493,6 +542,17 @@
                 opacity: 1;
             }
 
+            #quicktabs-taskbar.drag-over {
+                background-color: ${currentTheme.buttonHover} !important;
+                border: 1px dashed ${currentTheme.headerColor} !important;
+                transform: scale(1.05);
+            }
+
+            #quicktabs-taskbar.drag-over .quicktabs-taskbar-toggle span::after {
+                content: " (Drop to open)";
+                font-style: italic;
+            }
+
 
         `;
 
@@ -679,12 +739,45 @@
         container.appendChild(browser);
         container.appendChild(resizeHandle);
 
-        // Set initial position (centered)
-        const centerX = (window.innerWidth - DEFAULT_WIDTH) / 2;
-        const centerY = (window.innerHeight - DEFAULT_HEIGHT) / 2;
-        container.style.left = `${centerX}px`;
-        container.style.top = `${centerY}px`;
-        console.log('QuickTabs: Positioning container at center:', {centerX, centerY});
+        // Set initial position
+        const { innerWidth, innerHeight } = window;
+        const containerWidth = Math.min(DEFAULT_WIDTH, innerWidth * 0.9);
+        const containerHeight = Math.min(DEFAULT_HEIGHT, innerHeight * 0.9);
+        let top, left;
+        const margin = 20; // Margin from window edges
+
+        switch (INITIAL_POSITION.toLowerCase()) {
+            case 'top-left':
+            case 'left-top':
+                left = margin;
+                top = margin;
+                break;
+            case 'top-right':
+            case 'right-top':
+                left = innerWidth - containerWidth - margin;
+                top = margin;
+                break;
+            case 'bottom-left':
+            case 'left-bottom':
+                left = margin;
+                top = innerHeight - containerHeight - margin;
+                break;
+            case 'bottom-right':
+            case 'right-bottom':
+                left = innerWidth - containerWidth - margin;
+                top = innerHeight - containerHeight - margin;
+                break;
+            case 'center':
+            default:
+                left = (innerWidth - containerWidth) / 2;
+                top = (innerHeight - containerHeight) / 2;
+                break;
+        }
+
+        // Ensure the container is not positioned off-screen
+        container.style.left = `${Math.max(margin, left)}px`;
+        container.style.top = `${Math.max(margin, top)}px`;
+        console.log(`QuickTabs: Positioning container at '${INITIAL_POSITION}':`, { left: container.style.left, top: container.style.top });
 
         document.body.appendChild(container);
 
@@ -703,13 +796,19 @@
             backButton: backButton,
             forwardButton: forwardButton,
             openInTabButton: openInTabButton,
-            minimized: false
+            minimized: false,
+            customTitle: false
         };
 
 
 
         // Function to update title and URL from various sources
         const updateContainerTitle = () => {
+            // If the title is custom, do not overwrite it
+            if (containerInfo.customTitle) {
+                return;
+            }
+
             try {
                 let pageTitle = null;
                 let currentUrl = null;
@@ -967,11 +1066,57 @@
         const closeButton = allButtons[4];
         const resizeHandle = element.querySelector('.quicktab-resize-handle');
 
+        // Double-click to rename title
+        titleElement.addEventListener('dblclick', (e) => {
+            e.stopPropagation(); // Prevent dragging from starting
+            e.preventDefault(); // Prevent text selection
+
+            const currentTitle = containerInfo.title; // Use containerInfo.title for full title
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentTitle;
+            input.className = 'quicktab-title-editor'; // For styling
+
+            // Replace titleElement with input
+            titleElement.replaceWith(input);
+            input.focus();
+            input.select();
+
+            const saveTitle = () => {
+                const newTitle = input.value.trim();
+                if (newTitle && newTitle !== currentTitle) {
+                    containerInfo.title = newTitle;
+                    containerInfo.customTitle = true; // Mark as custom title
+                    titleElement.textContent = truncateText(newTitle, 30);
+                    titleElement.title = newTitle;
+                    updateTaskbar(); // Update taskbar with new title
+                }
+                input.replaceWith(titleElement); // Replace input back with titleElement
+            };
+
+            const cancelEdit = () => {
+                input.replaceWith(titleElement); // Replace input back with titleElement
+            };
+
+            input.addEventListener('blur', saveTitle); // Save on blur
+            input.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    saveTitle();
+                    input.removeEventListener('blur', saveTitle); // Prevent blur from firing again
+                } else if (event.key === 'Escape') {
+                    cancelEdit();
+                    input.removeEventListener('blur', saveTitle); // Prevent blur from firing again
+                }
+            });
+        });
+
         // Dragging functionality
         let isDragging = false;
         let dragStartX, dragStartY, elementStartX, elementStartY;
 
         header.addEventListener('mousedown', (e) => {
+            if (e.target.classList.contains('quicktab-title-editor')) return;
+
             if (e.target === backButton || e.target === forwardButton || 
                 e.target === openInTabButton || e.target === minimizeButton || 
                 e.target === closeButton) return;
@@ -1218,6 +1363,62 @@
         containerInfo.element.style.zIndex = '10002';
     }
 
+    function handleTaskbarDragEnter(event, taskbar) {
+        const url = validateURIFromDataTransfer(event.dataTransfer);
+        if (url) {
+            event.preventDefault();
+            event.stopPropagation();
+            taskbar.classList.add('drag-over');
+            if (TASKBAR_TRIGGER === 'hover' && !taskbarExpanded) {
+                expandTaskbar();
+                wasExpandedForDrag = true;
+            }
+        }
+    }
+
+    function handleTaskbarDragOver(event) {
+        const url = validateURIFromDataTransfer(event.dataTransfer);
+        if (url) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'link';
+        }
+    }
+
+    function handleTaskbarDragLeave(event, taskbar) {
+        if (!taskbar.contains(event.relatedTarget)) {
+             taskbar.classList.remove('drag-over');
+             if (wasExpandedForDrag) {
+                 collapseTaskbar();
+                 wasExpandedForDrag = false;
+             }
+        }
+    }
+
+    function handleTaskbarDrop(event, taskbar) {
+        event.preventDefault();
+        event.stopPropagation();
+        // Cleanup is handled by dragend
+        const url = validateURIFromDataTransfer(event.dataTransfer);
+        if (url) {
+            console.log('QuickTabs: Dropped link, creating Quick Tab for:', url);
+            createQuickTabContainer(url);
+        }
+    }
+
+    function handleGlobalDragEnd(taskbar) {
+        if (taskbar && taskbar.classList.contains('drag-over')) {
+            taskbar.classList.remove('drag-over');
+        }
+        if (wasExpandedForDrag) {
+            collapseTaskbar();
+            wasExpandedForDrag = false;
+        }
+        // If no quick tabs are open, remove the taskbar from DOM
+        if (quickTabContainers.size === 0 && taskbar) {
+            taskbar.remove();
+        }
+    }
+
     // Create and manage taskbar
     function createTaskbar() {
         let taskbar = document.getElementById('quicktabs-taskbar');
@@ -1256,6 +1457,13 @@
             toggle.addEventListener('click', () => toggleTaskbar());
         }
 
+        // Drag and Drop listeners
+        taskbar.addEventListener('dragenter', (event) => handleTaskbarDragEnter(event, taskbar), false);
+        taskbar.addEventListener('dragover', handleTaskbarDragOver, false);
+        taskbar.addEventListener('dragleave', (event) => handleTaskbarDragLeave(event, taskbar), false);
+        taskbar.addEventListener('drop', (event) => handleTaskbarDrop(event, taskbar), false);
+
+
         return taskbar;
     }
 
@@ -1287,18 +1495,24 @@
 
     // Update taskbar contents
     function updateTaskbar() {
-        const taskbar = createTaskbar();
-        const itemsContainer = taskbar.querySelector('.quicktabs-taskbar-items');
-        
-        // Clear existing items
-        itemsContainer.innerHTML = '';
+        let taskbar = document.getElementById('quicktabs-taskbar');
 
         if (quickTabContainers.size === 0) {
-            taskbar.style.display = 'none';
-            return;
+            if (taskbar) {
+                taskbar.remove(); // Remove taskbar from DOM
+            }
+            return; // No taskbar needed if no quick tabs
         }
 
-        taskbar.style.display = 'block';
+        // If we reach here, quickTabContainers.size > 0
+        if (!taskbar) {
+            taskbar = createTaskbar(); // Create and append if it doesn't exist
+        }
+        
+        const itemsContainer = taskbar.querySelector('.quicktabs-taskbar-items');
+        // Clear existing items
+        itemsContainer.innerHTML = '';
+        taskbar.classList.remove('empty'); // Ensure it's not in empty state
 
         // Add items for each container
         quickTabContainers.forEach((containerInfo) => {
@@ -1626,6 +1840,125 @@
         console.log('QuickTabs: Tab context menu item visibility set to:', !hasValidTab ? 'hidden' : 'visible');
     }
 
+    // Command Palette Integration
+    function setupCommandPaletteIntegration(retryCount = 0) {
+        if (window.ZenCommandPalette) {
+            console.log('QuickTabs: Integrating with Zen Command Palette...');
+
+            // Add static commands
+            window.ZenCommandPalette.addCommands([
+                {
+                    key: "quicktabs:close-all",
+                    label: "Close All Quick Tabs",
+                    command: () => {
+                        quickTabContainers.forEach(info => closeContainer(info));
+                    },
+                    condition: () => quickTabContainers.size > 0,
+                    icon: "chrome://browser/skin/zen-icons/close-all.svg",
+                    tags: ["quick", "tabs", "close", "all"]
+                },
+                {
+                    key: "quicktabs:minimize-all",
+                    label: "Minimize All Quick Tabs",
+                    command: () => {
+                        quickTabContainers.forEach(info => {
+                            if (!info.minimized) {
+                                minimizeContainer(info);
+                            }
+                        });
+                    },
+                    condition: () => Array.from(quickTabContainers.values()).some(c => !c.minimized),
+                    icon: "chrome://global/skin/icons/minus.svg",
+                    tags: ["quick", "tabs", "minimize", "all"]
+                },
+                {
+                    key: "quicktabs:fromcurrent",
+                    label: "Add Quick Tab from Current",
+                    command: () => handleOpenQuickTabFromCurrentCommand(),
+                    tags: ["quick", "tab"]
+                },
+            ]);
+
+            // Add dynamic commands provider
+            window.ZenCommandPalette.addDynamicCommandsProvider(
+                generateQuickTabCommands,
+                QUICK_TABS_CMD_PALETTE_DYNAMIC_PREF,
+                { allowIcons : false, allowShortcuts : false }
+            );
+            
+            // Set default for the preference if not set
+            try {
+                const prefService = Services.prefs;
+                if (!prefService.prefHasUserValue(QUICK_TABS_CMD_PALETTE_DYNAMIC_PREF)) {
+                    prefService.setBoolPref(QUICK_TABS_CMD_PALETTE_DYNAMIC_PREF, true);
+                }
+            } catch (e) {
+                console.warn(`QuickTabs: Failed to set default preference for command palette integration:`, e);
+            }
+
+            console.log('QuickTabs: Zen Command Palette integration successful.');
+
+        } else {
+            console.log('QuickTabs: Zen Command Palette not found, retrying in 1000ms');
+            if (retryCount < 10) {
+                setTimeout(() => setupCommandPaletteIntegration(retryCount + 1), 1000);
+            } else {
+                console.warn('QuickTabs: Could not integrate with Zen Command Palette after 10 retries.');
+            }
+        }
+    }
+
+    async function generateQuickTabCommands() {
+        const commands = [];
+        if (quickTabContainers.size === 0) {
+            return commands;
+        }
+
+        quickTabContainers.forEach(containerInfo => {
+            const title = truncateText(containerInfo.title, 40);
+            const lowerTitle = containerInfo.title.toLowerCase();
+
+            // Command to Close
+            commands.push({
+                key: `quicktabs:close:${containerInfo.id}`,
+                label: `Close Quick Tab: ${title}`,
+                command: () => closeContainer(containerInfo),
+                icon: "chrome://global/skin/icons/close.svg",
+                tags: ["quick", "tab", "close", lowerTitle]
+            });
+
+            if (containerInfo.minimized) {
+                // Command to Expand (Restore)
+                commands.push({
+                    key: `quicktabs:expand-restore:${containerInfo.id}`,
+                    label: `Expand Quick Tab: ${title}`,
+                    command: () => restoreContainer(containerInfo),
+                    icon: containerInfo.favicon.src,
+                    tags: ["quick", "tab", "expand", "restore", lowerTitle]
+                });
+            } else {
+                // Command to Minimize
+                commands.push({
+                    key: `quicktabs:minimize:${containerInfo.id}`,
+                    label: `Minimize Quick Tab: ${title}`,
+                    command: () => minimizeContainer(containerInfo),
+                    icon: "chrome://global/skin/icons/minus.svg",
+                    tags: ["quick", "tab", "minimize", lowerTitle]
+                });
+                // Command to Expand (Focus/Bring to Front)
+                commands.push({
+                    key: `quicktabs:expand-focus:${containerInfo.id}`,
+                    label: `Expand Quick Tab: ${title}`,
+                    command: () => bringToFront(containerInfo),
+                    icon: containerInfo.favicon.src,
+                    tags: ["quick", "tab", "expand", "focus", lowerTitle]
+                });
+            }
+        });
+
+        return commands;
+    }
+
     // Initialization
     function init() {
         console.log('QuickTabs: Starting initialization...');
@@ -1638,12 +1971,31 @@
         console.log('  Taskbar Min Width:', TASKBAR_MIN_WIDTH);
         console.log('  Animations Enabled:', ANIMATIONS_ENABLED);
         console.log('  Close Source Tab:', CLOSE_SOURCE_TAB);
+        console.log('  Initial Position:', INITIAL_POSITION);
         
         injectCSS();
         setupCommands();
         addContextMenuItem();
         addTabContextMenuItem();
-        
+        setupCommandPaletteIntegration();
+
+        // Global dragenter listener to show taskbar for drops
+        document.addEventListener('dragenter', (event) => {
+            const url = validateURIFromDataTransfer(event.dataTransfer);
+            if (url) {
+                let taskbar = document.getElementById('quicktabs-taskbar');
+                if (!taskbar) {
+                    taskbar = createTaskbar(); // Create and append if not present
+                }
+                handleTaskbarDragEnter(event, taskbar);
+            }
+        }, false);
+
+        // Global dragend listener for cleanup
+        document.addEventListener('dragend', () => {
+            const taskbar = document.getElementById('quicktabs-taskbar');
+            handleGlobalDragEnd(taskbar);
+        }, false);
     }
 
     // Command setup and handling
