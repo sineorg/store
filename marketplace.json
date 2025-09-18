@@ -198,18 +198,6 @@
       "zen"
     ]
   },
-  "zzzAltover": {
-    "homepage": "allecsc/Altover",
-    "image": "https://github.com/allecsc/Altover/blob/main/image.png",
-    "name": "Altover Addon",
-    "version": "1.3",
-    "description": "Altover Add-On for Nebula theme. Bundle install for Altover & Nebula themes.",
-    "readme": "https://raw.githubusercontent.com/allecsc/Altover/refs/heads/main/README.md",
-    "stars": 13,
-    "fork": [
-      "zen"
-    ]
-  },
   "customize-collapsed-sidebar": {
     "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
     "name": "Customize Collapsed Sidebar",
@@ -348,6 +336,18 @@
     "fork": [
       "zen",
       "firefox"
+    ]
+  },
+  "zzzAltover": {
+    "homepage": "allecsc/Altover",
+    "image": "https://github.com/allecsc/Altover/blob/main/image.png",
+    "name": "Altover Addon",
+    "version": "1.3",
+    "description": "Altover Add-On for Nebula theme. Bundle install for Altover & Nebula themes.",
+    "readme": "https://raw.githubusercontent.com/allecsc/Altover/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
     ]
   },
   "context-menu-icons-for-zen": {
