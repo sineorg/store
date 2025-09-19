@@ -1,6 +1,6 @@
 /* ==== Tab groups ==== */
 /* https://github.com/Anoms12/Advanced-Tab-Groups */
-/* ====== v3.0.0b ====== */
+/* ====== v3.2.0b ====== */
 
 class AdvancedTabGroupsCloseButton {
   constructor() {
@@ -20,6 +20,9 @@ class AdvancedTabGroupsCloseButton {
 
     // Set up observer for all tab groups
     this.setupObserver();
+
+    // Add folder context menu item
+    this.addFolderContextMenuItems();
 
     // Remove built-in tab group editor menus if they exist
     this.removeBuiltinTabGroupMenu();
@@ -379,6 +382,47 @@ class AdvancedTabGroupsCloseButton {
     this._sharedContextMenu = contextMenu;
     return this._sharedContextMenu;
   }
+
+  addFolderContextMenuItems() {
+    // Use a timeout to ensure the menu exists, as it's created by another component
+    setTimeout(() => {
+      const folderMenu = document.getElementById("zenFolderActions");
+      if (!folderMenu || folderMenu.querySelector("#atg-convert-folder-to-group")) {
+        return; // Already exists or menu not found
+      }
+
+      const menuFragment = window.MozXULElement.parseXULToFragment(`
+        <menuseparator id="atg-folder-separator"/>
+        <menuitem id="atg-convert-folder-to-group" label="Convert Folder to Group"/>
+      `);
+
+      const convertToSpaceItem = folderMenu.querySelector("#context_zenFolderToSpace");
+      if (convertToSpaceItem) {
+        convertToSpaceItem.after(menuFragment);
+      } else {
+        // Fallback if the reference item isn't found
+        folderMenu.appendChild(menuFragment);
+      }
+
+      folderMenu.addEventListener('command', (event) => {
+        if (event.target.id === 'atg-convert-folder-to-group') {
+          const triggerNode = folderMenu.triggerNode;
+          if (!triggerNode) {
+            console.error("[AdvancedTabGroups] Could not find trigger node for folder context menu.");
+            return;
+          };
+          const folder = triggerNode.closest('zen-folder');
+          if (folder) {
+            this.convertFolderToGroup(folder);
+          } else {
+            console.error("[AdvancedTabGroups] Could not find folder from trigger node:", triggerNode);
+          }
+        }
+      });
+      console.log("[AdvancedTabGroups] Added 'Convert Folder to Group' to context menu.");
+    }, 1500);
+  }
+
 
   // Handle platform-dispatched creation event for groups
   onTabGroupCreate(event) {
@@ -1163,6 +1207,59 @@ class AdvancedTabGroupsCloseButton {
         "[AdvancedTabGroups] Error converting group to folder:",
         error
       );
+    }
+  }
+
+  convertFolderToGroup(folder) {
+    console.log("[AdvancedTabGroups] Converting folder to group:", folder.id);
+    try {
+      const tabsToGroup = folder.allItemsRecursive.filter(
+        item => gBrowser.isTab(item) && !item.hasAttribute('zen-empty-tab')
+      );
+
+      const folderName = folder.label || "New Group";
+
+      if (tabsToGroup.length === 0) {
+        console.log("[AdvancedTabGroups] No tabs in folder, removing empty folder.");
+        if (folder && folder.isConnected && typeof folder.delete === 'function') {
+          folder.delete();
+        }
+        return;
+      }
+
+      // Unpin all tabs before attempting to group them
+      tabsToGroup.forEach(tab => {
+        if (tab.pinned) {
+          gBrowser.unpinTab(tab);
+        }
+      });
+
+      // Use a brief timeout to allow the UI to process the unpinning before creating the group.
+      setTimeout(() => {
+        try {
+          const newGroup = document.createXULElement('tab-group');
+          newGroup.id = `${Date.now()}-${Math.round(Math.random() * 100)}`;
+          newGroup.label = folderName;
+
+          const unpinnedTabsContainer = gZenWorkspaces.activeWorkspaceStrip || gBrowser.tabContainer.querySelector('tabs');
+          unpinnedTabsContainer.prepend(newGroup);
+
+          newGroup.addTabs(tabsToGroup);
+
+          if (folder && folder.isConnected && typeof folder.delete === 'function') {
+            folder.delete();
+          }
+
+          this.processGroup(newGroup);
+
+          console.log("[AdvancedTabGroups] Folder successfully converted to group:", newGroup.id);
+        } catch (groupingError) {
+          console.error("[AdvancedTabGroups] Error during manual group creation:", groupingError);
+        }
+      }, 200);
+
+    } catch (error) {
+      console.error("[AdvancedTabGroups] Error converting folder to group:", error);
     }
   }
 
