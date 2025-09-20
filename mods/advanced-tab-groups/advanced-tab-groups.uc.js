@@ -1,6 +1,6 @@
 /* ==== Tab groups ==== */
 /* https://github.com/Anoms12/Advanced-Tab-Groups */
-/* ====== v3.2.0b ====== */
+/* ====== v3.1.0b ====== */
 
 class AdvancedTabGroupsCloseButton {
   constructor() {
