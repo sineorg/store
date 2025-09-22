@@ -350,19 +350,6 @@
       "firefox"
     ]
   },
-  "context-menu-icons-for-zen": {
-    "homepage": "1247343406/context-menu-icons-for-Zen",
-    "image": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/.asset/Demo%20Image.jpg",
-    "name": "Context Menu Icons",
-    "version": "2.0.2",
-    "description": "Improve the context menu by adding icons, fold menu items and more.",
-    "readme": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen",
-      "firefox"
-    ]
-  },
   "zen-tidy-downloads": {
     "homepage": "Anoms12/Zen-Tidy-Downloads",
     "image": "https://github.com/Anoms12/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
