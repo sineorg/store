@@ -30,7 +30,7 @@
     "version": "3.2.0b",
     "description": "Tab Groups for Zen Browser",
     "readme": "https://raw.githubusercontent.com/12th-devs/Advanced-Tab-Groups/main/README.md",
-    "stars": 348,
+    "stars": 349,
     "fork": [
       "zen"
     ]
@@ -42,7 +42,7 @@
     "version": "3.2.8.5",
     "description": "Arc-like Zen Browser theme.",
     "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/main/README.md",
-    "stars": 341,
+    "stars": 342,
     "fork": [
       "zen"
     ]
@@ -54,7 +54,7 @@
     "version": "5.1.0",
     "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
-    "stars": 132,
+    "stars": 133,
     "fork": [
       "zen"
     ]
@@ -104,7 +104,7 @@
     "version": "2.2.0",
     "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
-    "stars": 38,
+    "stars": 39,
     "fork": [
       "zen"
     ]
@@ -181,7 +181,7 @@
     "version": "1.1.0",
     "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
-    "stars": 20,
+    "stars": 21,
     "fork": [
       "zen"
     ]
@@ -352,11 +352,11 @@
   },
   "context-menu-icons-for-zen": {
     "homepage": "1247343406/context-menu-icons-for-Zen",
-    "image": "https://raw.githubusercontent.com/Starry-AXQG/context-menu-icons-for-Zen/refs/heads/main/.asset/Demo%20Image.jpg",
+    "image": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/.asset/Demo%20Image.jpg",
     "name": "Context Menu Icons",
     "version": "2.0.2",
     "description": "Bring the icon of the context menu back to Zen/Firefox browser ",
-    "readme": "https://raw.githubusercontent.com/Starry-AXQG/context-menu-icons-for-Zen/refs/heads/main/README.md",
+    "readme": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/README.md",
     "stars": 0,
     "fork": [
       "zen",
