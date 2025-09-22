@@ -402,12 +402,12 @@
     ]
   },
   "zen-live-calendar": {
-    "homepage": "Anoms12/Zen-Live-Calendar",
-    "image": "https://github.com/Anoms12/Zen-Live-Calendar/blob/main/image.png?raw=true",
+    "homepage": "vertex-mods/Zen-Live-Calendar",
+    "image": "https://github.com/vertex-mods/Zen-Live-Calendar/blob/main/image.png?raw=true",
     "name": "Live Calendar",
     "version": "1.0.0",
     "description": "Brings the live calendar functionality from Arc to Zen, making it feel as native as possible.",
-    "readme": "https://raw.githubusercontent.com/Anoms12/Zen-Live-Calendar/refs/heads/main/README.md",
+    "readme": "https://raw.githubusercontent.com/vertex-mods/Zen-Live-Calendar/refs/heads/main/README.md",
     "stars": 0,
     "fork": [
       "zen"
