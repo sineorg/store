@@ -162,6 +162,19 @@
       "zen"
     ]
   },
+  "context-menu-icons": {
+    "homepage": "Starry-AXQG/Context-Menu-Icons",
+    "image": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/.asset/Demo%20Image.jpg",
+    "name": "Context Menu Icons",
+    "version": "2.0.2",
+    "description": "Improve the context menu by adding icons, fold menu items and more.",
+    "readme": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/README.md",
+    "stars": 27,
+    "fork": [
+      "zen",
+      "firefox"
+    ]
+  },
   "vizen-floaty-ui": {
     "homepage": "moktavizen/floaty-ui",
     "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
@@ -407,19 +420,6 @@
     "version": "1.0.8",
     "description": "Make popups UI menu transparent with custom settings.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-compact-transparent-mode/refs/heads/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen",
-      "firefox"
-    ]
-  },
-  "context-menu-icons": {
-    "homepage": "Starry-AXQG/Context-Menu-Icons",
-    "image": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/.asset/Demo%20Image.jpg",
-    "name": "Context Menu Icons",
-    "version": "2.1",
-    "description": "Improve the context menu by adding icons, fold menu items and more.",
-    "readme": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/README.md",
     "stars": 0,
     "fork": [
       "zen",
