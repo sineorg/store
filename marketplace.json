@@ -279,8 +279,7 @@
       "zen"
     ]
   },
-    },
-  "zen-tidy-tab": {
+  "zen-tidy-tabs": {
     "homepage": "https://github.com/Vertex-Mods/Zen-Tidy-Tabs",
     "name": "Zen Tidy Tabs",
     "version": "1.0.0",
