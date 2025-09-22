@@ -279,6 +279,18 @@
       "zen"
     ]
   },
+    },
+  "zen-tidy-tab": {
+    "homepage": "https://github.com/Vertex-Mods/Zen-Tidy-Tabs",
+    "name": "Zen Tidy Tabs",
+    "version": "1.0.0",
+    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
+    "stars": 5,
+    "fork": [
+      "zen"
+    ]
+  },
   "3c8ebf69-1042-49b1-8f08-9178f9490659": {
     "homepage": "rasyidrafi/zen-always-show-music-bar",
     "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
