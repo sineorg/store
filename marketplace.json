@@ -280,6 +280,17 @@
       "zen"
     ]
   },
+  "zen-tidy-tabs": {
+    "homepage": "https://github.com/Vertex-Mods/Zen-Tidy-Tabs",
+    "name": "Zen Tidy Tabs",
+    "version": "1.0.0",
+    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
+    "stars": 5,
+    "fork": [
+      "zen"
+    ]
+  },
   "zen-live-calendar": {
     "homepage": "vertex-mods/Zen-Live-Calendar",
     "image": "https://github.com/Vertex-Mods/Zen-Live-Calendar/blob/main/image.png?raw=true",
