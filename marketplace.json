@@ -222,17 +222,6 @@
       "zen"
     ]
   },
-  "ZenMotion-Pro": {
-    "homepage": "Mohammed55Z/ZenMotion-Pro",
-    "name": "ZenMotion Pro",
-    "version": "1.4.0",
-    "description": "A premium, performance-optimized animation framework that transforms Zen Browser into a Modern Material Interface. :))",
-    "readme": "https://raw.githubusercontent.com/Mohammed55Z/ZenMotion-Pro/refs/heads/main/README.md",
-    "stars": 6,
-    "fork": [
-      "zen"
-    ]
-  },
   "c9ee0d97-d2d6-40fd-8f85-549fe000b868": {
     "homepage": "rasyidrafi/zen-deta-loading-bar",
     "image": "https://github.com/rasyidrafi/zen-deta-loading-bar/blob/main/image.png?raw=true",
@@ -361,6 +350,17 @@
     "fork": [
       "zen",
       "firefox"
+    ]
+  },
+  "ZenMotion-Pro": {
+    "homepage": "Mohammed55Z/ZenMotion-Pro",
+    "name": "ZenMotion Pro",
+    "version": "1.4.0",
+    "description": "A premium, performance-optimized animation framework that transforms Zen Browser into a Modern Material Interface. :))",
+    "readme": "https://raw.githubusercontent.com/Mohammed55Z/ZenMotion-Pro/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
     ]
   },
   "advanced-tab-groups": {
