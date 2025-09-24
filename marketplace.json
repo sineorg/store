@@ -23,6 +23,18 @@
       "floorp"
     ]
   },
+  "advanced-tab-groups": {
+    "homepage": "Vertex-Mods/Advanced-Tab-Groups",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/image.png",
+    "name": "Advanced Tab Groups (BETA)",
+    "version": "3.2.0b",
+    "description": "Tab Groups for Zen Browser",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
+    "stars": 348,
+    "fork": [
+      "zen"
+    ]
+  },
   "Arc-2.0": {
     "homepage": "https://github.com/YashjitPal/Arc-2.0/",
     "image": "https://github.com/user-attachments/assets/f9a25afb-2503-421a-bed0-6e94f2ab43db",
@@ -195,6 +207,18 @@
     "description": "A minimal, squared-off theme for Zen Browser",
     "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
     "stars": 18,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-tidy-downloads": {
+    "homepage": "Vertex-Mods/Zen-Tidy-Downloads",
+    "image": "https://github.com/Vertex-Mods/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
+    "name": "Tidy Downloads",
+    "version": "2.0.0",
+    "description": "Clean up your downloads with AI",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/refs/heads/main/README.md",
+    "stars": 14,
     "fork": [
       "zen"
     ]
@@ -373,30 +397,6 @@
     "fork": [
       "zen",
       "firefox"
-    ]
-  },
-  "advanced-tab-groups": {
-    "homepage": "Vertex-Mods/Advanced-Tab-Groups",
-    "image": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/image.png",
-    "name": "Advanced Tab Groups (BETA)",
-    "version": "3.2.0b",
-    "description": "Tab Groups for Zen Browser",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-tidy-downloads": {
-    "homepage": "Vertex-Mods/Zen-Tidy-Downloads",
-    "image": "https://github.com/Vertex-Mods/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
-    "name": "Tidy Downloads",
-    "version": "2.0.0",
-    "description": "Clean up your downloads with AI",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/refs/heads/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen"
     ]
   },
   "animations-plus": {
