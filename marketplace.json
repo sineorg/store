@@ -27,10 +27,10 @@
     "homepage": "Vertex-Mods/Advanced-Tab-Groups",
     "image": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/image.png",
     "name": "Advanced Tab Groups (BETA)",
-    "version": "3.2.0b",
+    "version": "3.2.1b",
     "description": "Tab Groups for Zen Browser",
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
-    "stars": 349,
+    "stars": 350,
     "fork": [
       "zen"
     ]
