@@ -1,6 +1,10 @@
+// ==UserScript==
+// @name           Advanced Tab Groups
+// @ignorecache
+// ==/UserScript==
 /* ==== Tab groups ==== */
 /* https://github.com/Anoms12/Advanced-Tab-Groups */
-/* ====== v3.2.0b ====== */
+/* ====== v3.2.1b ====== */
 
 class AdvancedTabGroups {
   constructor() {
