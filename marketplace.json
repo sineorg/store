@@ -222,6 +222,18 @@
       "zen"
     ]
   },
+  "zen-tidy-tabs": {
+    "homepage": "https://github.com/Vertex-Mods/Zen-Tidy-Tabs",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
+    "name": "Zen Tidy Tabs",
+    "version": "1.0.0s",
+    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
+    "stars": 7,
+    "fork": [
+      "zen"
+    ]
+  },
   "c9ee0d97-d2d6-40fd-8f85-549fe000b868": {
     "homepage": "rasyidrafi/zen-deta-loading-bar",
     "image": "https://github.com/rasyidrafi/zen-deta-loading-bar/blob/main/image.png?raw=true",
@@ -256,18 +268,6 @@
     "fork": [
       "floorp",
       "firefox"
-    ]
-  },
-  "zen-tidy-tabs": {
-    "homepage": "https://github.com/Vertex-Mods/Zen-Tidy-Tabs",
-    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
-    "name": "Zen Tidy Tabs",
-    "version": "1.0.0s",
-    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
-    "stars": 6,
-    "fork": [
-      "zen"
     ]
   },
   "tab-rename-zen-browser": {
