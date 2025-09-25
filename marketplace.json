@@ -179,7 +179,7 @@
     "homepage": "moktavizen/floaty-ui",
     "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
     "name": "Floaty UI",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
     "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
     "stars": 25,
