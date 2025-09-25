@@ -261,6 +261,24 @@ if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
     clearTimeout(updateTimeout);
 
     updateTimeout = setTimeout(() => {
+
+
+      // --- ZEN COMMAND PALETTE COMPATIBILITY CHECK ---
+      // This is the crucial logic from your original script.
+      const isCommandModeActive = window.ZenCommandPalette?.provider?._isInPrefixMode ?? false;
+      if (isCommandModeActive) {
+        // If the command palette is active, our script must do nothing and clean up its styles.
+        resultsElement.classList.remove(CONFIG.SCROLLABLE_CLASS);
+        resultsElement.style.removeProperty('height');
+        resultsElement.style.removeProperty('max-height');
+        resultsElement.style.removeProperty('overflow-y');
+        return; // Exit immediately.
+      }
+
+
+
+
+
       const isUrlbarOpen = urlbarElement.hasAttribute('open');
       const isUserTyping = urlbarElement.hasAttribute('usertyping');
       
@@ -1933,7 +1951,6 @@ window.addEventListener("load", () => {
 // @version        1.7b
 // ==/UserScript==
 
-
 console.log("URLBarModifier: Initializing...");
 
 // Panel Manager Class - Simplified for Native Panel Only
@@ -1941,6 +1958,37 @@ class PanelManager {
   constructor() {
     this.unifiedPanelModified = false;
     this.extrasMenuListenersSetup = false;
+  }
+
+  getPanelBackgroundColor() {
+    try {
+      const panelEl = document.getElementById('unified-extensions-panel') || document.documentElement;
+      const cs = getComputedStyle(panelEl);
+      const bg = cs && (cs.getPropertyValue('background-color') || cs.backgroundColor);
+      if (bg && bg.trim()) return bg.trim();
+    } catch {}
+    return 'Canvas';
+  }
+
+
+  customizeToolbar(event) {
+    try {
+      console.log("URLBarModifier: Opening toolbar customization");
+      
+      // Close the panel first
+      const unifiedPanel = document.querySelector("#unified-extensions-view");
+      this.closePanelImmediately(unifiedPanel);
+      
+      // Open customization immediately
+      const commandEl = document.getElementById('cmd_CustomizeToolbars');
+      if (commandEl && typeof commandEl.doCommand === "function") {
+        commandEl.doCommand();
+      } else {
+        console.warn("URLBarModifier: Customize toolbars command not found");
+      }
+    } catch (err) {
+      console.error("Error opening toolbar customization:", err);
+    }
   }
 
   modifyUnifiedExtensionsPanel() {
@@ -1956,82 +2004,90 @@ class PanelManager {
         return;
       }
 
-      // Inject minimal rules inspired by mod.extension.viewgrid and hide the Manage Extensions button
+      // Load external CSS file
       try {
         const existing = document.getElementById("uev-mod-rules");
         if (existing) existing.remove();
-        const style = document.createElementNS("http://www.w3.org/1999/xhtml", "style");
-        style.id = "uev-mod-rules";
-        style.textContent = `
-
-
-@media (-moz-bool-pref: "mod.extension.viewgrid") {
-  /* Desired width */
-  #unified-extensions-view { width: calc(var(--menu-panel-width) - 75px) !important; }
-
-  /* Hide header/description/texts and settings icon for each extension */
-  #unified-extensions-description,
-  #unified-extensions-view .panel-header,
-  #unified-extensions-view > :nth-child(2),
-  .unified-extensions-item-name,
-  .unified-extensions-item-message,
-  .unified-extensions-item-message-hover,
-  .unified-extensions-item-message-hover-menu-button,
-  .unified-extensions-item-menu-button { display: none !important; }
-
-  /* Arrange extensions in a centered grid (from mod.txt) */
-  #overflowed-extensions-list, #unified-extensions-area, .unified-extensions-list {
-    display: grid !important;
-    grid-template-columns: repeat(4, 1fr) !important;
-    justify-content: left !important;
-    align-items: center !important;
-    margin-inline: 7px !important;
-    width: 0px !important;
-  }
-  #overflowed-extensions-list { padding-block-start: 5px !important; }
-  #unified-extensions-area { padding-block-end: 10px !important; }
-
-  /* Center buttons and tidy margins */
-  .unified-extensions-item {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border-radius: 12px !important;
-  }
-  .unified-extensions-item-icon,
-  .unified-extensions-item .webextension-browser-action.subviewbutton > .toolbarbutton-badge-stack {
-    margin: 0px !important;
-  }
-  panelview .unified-extensions-item-action-button { padding: 10px 10px !important; }
-
-  #unified-extensions-view toolbarseparator { margin-top: 0px !important; }
-
-  /* Hide the Manage Extensions footer button */
-  #unified-extensions-manage-extensions { display: none !important; }
-}
-`;
-        document.documentElement.appendChild(style);
+        
+        const link = document.createElementNS("http://www.w3.org/1999/xhtml", "link");
+        link.id = "uev-mod-rules";
+        link.rel = "stylesheet";
+        link.type = "text/css";
+        // Get the script's directory path
+        const scriptPath = Components.stack.filename;
+        const scriptDir = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
+        link.href = scriptDir + "/urlbarmodifier.css";
+        document.documentElement.appendChild(link);
       } catch (e) {
         console.warn("Failed to inject mod.viewgrid rules", e);
       }
 
       console.log("Modifying unified extensions panel");
 
+      // Helper to build section labels
+      const makeSectionLabel = (id, text) => {
+        try {
+          const label = document.createElement("div");
+          label.id = id;
+          label.className = "unified-section-label";
+          label.setAttribute("cui-areatype", "panel");
+          label.setAttribute("skipintoolbarset", "true");
+          label.textContent = text;
+          label.style.cssText = `
+            padding: 0 9px 0 9px;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 1em;
+            font-weight: 600;
+            opacity: 0.85;
+          `;
+          return label;
+        } catch (e) {
+          console.warn("Failed to create section label", id, e);
+          return null;
+        }
+      };
+
+      // Remove all existing separators in the view; we'll re-add only the one before security
+      try {
+        const existingSeps = unifiedPanel.querySelectorAll('toolbarseparator');
+        existingSeps.forEach(sep => sep.remove());
+      } catch (e) {
+        console.debug('Could not remove existing separators', e);
+      }
+
+      // Insert an "Extensions" label where the first native separator used to be (before the body)
+      try {
+        const bodyContainer = unifiedPanel.querySelector('.panel-subview-body');
+        if (bodyContainer && !unifiedPanel.querySelector('#ue-section-label-extensions')) {
+          const extensionsLabel = makeSectionLabel('ue-section-label-extensions', 'Extensions');
+          if (extensionsLabel) unifiedPanel.insertBefore(extensionsLabel, bodyContainer);
+        }
+      } catch (e) {
+        console.debug('Failed to insert Extensions label', e);
+      }
+
       // Create Action Buttons section using DOM methods
       const actionSection = document.createElement("div");
+      actionSection.id = "urlbar-modifier-actions";
       actionSection.className = "urlbar-modifier-section";
+      actionSection.setAttribute("cui-areatype", "panel");
+      actionSection.setAttribute("skipintoolbarset", "true");
       actionSection.style.cssText = `
-        padding: 8px 8px;
+        padding: 7px 8px 5px;
         display: flex;
-        gap: 15px;
+        gap: 8px;
         justify-content: center;
-        margin-left: 1px;
+        align-items: center;
+        width: 100%;
+        box-sizing: border-box;
       `;
       
       // Create Share URL button
       const shareButton = document.createElement("div");
       shareButton.id = "unified-share-url-button";
       shareButton.className = "unified-extension-item";
+      shareButton.setAttribute("cui-areatype", "panel");
+      shareButton.setAttribute("skipintoolbarset", "true");
       shareButton.style.cssText = `
         display: flex;
         align-items: center;
@@ -2047,7 +2103,10 @@ class PanelManager {
       
       // Create share icon using createXULElement
       const shareIcon = document.createXULElement("image");
+      shareIcon.id = "unified-share-icon";
       shareIcon.className = "unified-extension-icon";
+      shareIcon.setAttribute("cui-areatype", "panel");
+      shareIcon.setAttribute("skipintoolbarset", "true");
       shareIcon.style.cssText = "width: 18px; height: 18px; -moz-context-properties: fill; fill: currentColor;";
       try {
         // Inline SVG using provided paths with context-fill
@@ -2070,6 +2129,8 @@ class PanelManager {
       const screenshotButton = document.createElement("div");
       screenshotButton.id = "unified-screenshot-button";
       screenshotButton.className = "unified-extension-item";
+      screenshotButton.setAttribute("cui-areatype", "panel");
+      screenshotButton.setAttribute("skipintoolbarset", "true");
       screenshotButton.style.cssText = `
         display: flex;
         align-items: center;
@@ -2084,7 +2145,10 @@ class PanelManager {
       screenshotButton.setAttribute("title", "Take a screenshot");
       
       const screenshotIcon = document.createXULElement("image");
+      screenshotIcon.id = "unified-screenshot-icon";
       screenshotIcon.className = "unified-extension-icon";
+      screenshotIcon.setAttribute("cui-areatype", "panel");
+      screenshotIcon.setAttribute("skipintoolbarset", "true");
       screenshotIcon.style.cssText = "width: 18px; height: 18px; -moz-context-properties: fill; fill: currentColor;";
       try {
         const cameraSvg = `data:image/svg+xml;utf8,`
@@ -2104,6 +2168,8 @@ class PanelManager {
       const copyUrlButton = document.createElement("div");
       copyUrlButton.id = "unified-copy-url-button";
       copyUrlButton.className = "unified-extension-item";
+      copyUrlButton.setAttribute("cui-areatype", "panel");
+      copyUrlButton.setAttribute("skipintoolbarset", "true");
       copyUrlButton.style.cssText = `
         display: flex;
         align-items: center;
@@ -2118,7 +2184,10 @@ class PanelManager {
       copyUrlButton.setAttribute("title", "Copy URL to clipboard");
       
       const copyUrlIcon = document.createXULElement("image");
+      copyUrlIcon.id = "unified-copy-icon";
       copyUrlIcon.className = "unified-extension-icon";
+      copyUrlIcon.setAttribute("cui-areatype", "panel");
+      copyUrlIcon.setAttribute("skipintoolbarset", "true");
       copyUrlIcon.style.cssText = "width: 18px; height: 18px; -moz-context-properties: fill; fill: currentColor; transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;";
       try {
         const linkSvg = `data:image/svg+xml;utf8,`
@@ -2139,14 +2208,58 @@ class PanelManager {
       
       copyUrlButton.appendChild(copyUrlIcon);
       
+      // Create Customize Toolbar button
+      const customizeButton = document.createElement("div");
+      customizeButton.id = "unified-customize-button";
+      customizeButton.className = "unified-extension-item";
+      customizeButton.setAttribute("cui-areatype", "panel");
+      customizeButton.setAttribute("skipintoolbarset", "true");
+      customizeButton.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: color-mix(in srgb, currentColor 6%, transparent);
+        width: 40px;
+        height: 20px;
+      `;
+      customizeButton.setAttribute("title", "Customize Toolbar");
+      
+      const customizeIcon = document.createXULElement("image");
+      customizeIcon.id = "unified-customize-icon";
+      customizeIcon.className = "unified-extension-icon";
+      customizeIcon.setAttribute("cui-areatype", "panel");
+      customizeIcon.setAttribute("skipintoolbarset", "true");
+      customizeIcon.style.cssText = "width: 18px; height: 18px; -moz-context-properties: fill; fill: currentColor;";
+      try {
+        const customizeSvg = `data:image/svg+xml;utf8,`
+          + encodeURIComponent(
+            `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+               <path fill="context-fill" d="M3.845 3.845a2.883 2.883 0 0 0 0 4.077L5.432 9.51l.038-.04l4-4l.04-.038l-1.588-1.587a2.883 2.883 0 0 0-4.077 0m6.723 2.645l-.038.04l-4 4l-.04.038l9.588 9.588a2.884 2.884 0 0 0 4.078-4.078zM16.1 2.307a.483.483 0 0 1 .9 0l.43 1.095a.48.48 0 0 0 .272.274l1.091.432a.486.486 0 0 1 0 .903l-1.09.432a.5.5 0 0 0-.273.273L17 6.81a.483.483 0 0 1-.9 0l-.43-1.095a.5.5 0 0 0-.273-.273l-1.09-.432a.486.486 0 0 1 0-.903l1.09-.432a.5.5 0 0 0 .273-.274zm3.867 6.823a.483.483 0 0 1 .9 0l.156.399c.05.125.148.224.273.273l.398.158a.486.486 0 0 1 0 .902l-.398.158a.5.5 0 0 0-.273.273l-.156.4a.483.483 0 0 1-.9 0l-.157-.4a.5.5 0 0 0-.272-.273l-.398-.158a.486.486 0 0 1 0-.902l.398-.158a.5.5 0 0 0 .272-.273zM5.133 15.307a.483.483 0 0 1 .9 0l.157.4a.48.48 0 0 0 .272.273l.398.157a.486.486 0 0 1 0 .903l-.398.158a.48.48 0 0 0-.272.273l-.157.4a.483.483 0 0 1-.9 0l-.157-.4a.48.48 0 0 0-.272-.273l-.398-.158a.486.486 0 0 1 0-.903l.398-.157a.48.48 0 0 0 .272-.274z"/>
+             </svg>`
+          );
+        customizeIcon.setAttribute('src', customizeSvg);
+      } catch (e) {
+        // Fallback to a known icon
+        customizeIcon.setAttribute('src', 'chrome://global/skin/icons/plus.svg');
+      }
+      
+      customizeButton.appendChild(customizeIcon);
+      
       // Add all buttons to the action section
       actionSection.appendChild(shareButton);
       actionSection.appendChild(screenshotButton);
       actionSection.appendChild(copyUrlButton);
+      actionSection.appendChild(customizeButton);
 
       // Create Picture-in-Picture Toggle section using DOM methods
       const pipSection = document.createElement("div");
+      pipSection.id = "urlbar-modifier-pip";
       pipSection.className = "urlbar-modifier-section";
+      pipSection.setAttribute("cui-areatype", "panel");
+      pipSection.setAttribute("skipintoolbarset", "true");
       pipSection.style.cssText = `
         padding: 8px 8px;
       `;
@@ -2154,74 +2267,128 @@ class PanelManager {
       const pipToggle = document.createElement("div");
       pipToggle.id = "unified-pip-toggle";
       pipToggle.className = "unified-extension-item";
+      pipToggle.setAttribute("cui-areatype", "panel");
+      pipToggle.setAttribute("skipintoolbarset", "true");
       pipToggle.style.cssText = `
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        padding: 6px 8px;
-        border-radius: 5px;
+        display: block;
         cursor: pointer;
         background-color: transparent !important;
-        width: 163px;
+        width: 190px;
       `;
       
       const pipLabelContainer = document.createElement("div");
-      pipLabelContainer.style.cssText = "display: flex; align-items: center; gap: 8px; flex: 1;";
-      
-      // Create PiP icon using createXULElement
-      const pipIcon = document.createXULElement("image");
-      pipIcon.className = "unified-extension-icon";
-      pipIcon.style.cssText = "width: 16px; height: 16px; -moz-context-properties: fill; fill: currentColor;";
-      
-      // Use Firefox's built-in Picture-in-Picture icon
-      pipIcon.setAttribute('src', 'chrome://global/skin/media/picture-in-picture-open.svg');
+      pipLabelContainer.id = "unified-pip-container";
+      pipLabelContainer.setAttribute("cui-areatype", "panel");
+      pipLabelContainer.setAttribute("skipintoolbarset", "true");
+      pipLabelContainer.style.cssText = "display: grid; grid-template-columns: 35px 1fr; grid-auto-rows: min-content; column-gap: 8px; row-gap: 2px; align-items: center; flex: 1; min-width: 0;";
       
       const pipLabel = document.createElement("span");
       pipLabel.className = "unified-extension-label";
-      pipLabel.textContent = "Auto PiP";
-      pipLabel.style.cssText = "font-size: 0.9em;";
-      
-      // Create toggle switch
-      const pipSwitch = document.createElement("div");
-      pipSwitch.id = "pip-switch";
-      pipSwitch.style.cssText = `
-        width: 32px;
-        height: 18px;
-        border-radius: 9px;
-        background-color: color-mix(in srgb, currentColor 20%, transparent);
-        position: relative;
-        transition: background-color 0.2s ease;
-        cursor: pointer;
+      pipLabel.id = "unified-pip-label";
+      pipLabel.setAttribute("cui-areatype", "panel");
+      pipLabel.setAttribute("skipintoolbarset", "true");
+      pipLabel.textContent = "Picture-in-Picture";
+      pipLabel.style.cssText = "font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 1em; display: block; font-weight: 700;";
+
+      // Small status text under the main label
+      const pipSubLabel = document.createElement("span");
+      pipSubLabel.id = "unified-pip-sublabel";
+      pipSubLabel.setAttribute("cui-areatype", "panel");
+      pipSubLabel.setAttribute("skipintoolbarset", "true");
+      pipSubLabel.textContent = "Off";
+      pipSubLabel.style.cssText = `
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 0.75em;
+        opacity: 0.75;
+        margin-top: 2px;
       `;
+
+      // Vertical stack for labels
+      const pipTextColumn = document.createElement("div");
+      pipTextColumn.id = "unified-pip-text-column";
+      pipTextColumn.setAttribute("cui-areatype", "panel");
+      pipTextColumn.setAttribute("skipintoolbarset", "true");
+      pipTextColumn.style.cssText = "display: flex; flex-direction: column; line-height: 1.1; grid-column: 2; grid-row: 1 / span 2; min-width: 0;";
+      pipTextColumn.appendChild(pipLabel);
+      pipTextColumn.appendChild(pipSubLabel);
       
-      const pipSwitchThumb = document.createElement("div");
-      pipSwitchThumb.id = "pip-switch-thumb";
-      pipSwitchThumb.style.cssText = `
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        background-color: currentColor;
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        transition: transform 0.2s ease;
+      // Create toggle button (round) with masked PiP icon
+      const pipButton = document.createElement("button");
+      pipButton.id = "pip-button";
+      pipButton.setAttribute("type", "button");
+      pipButton.setAttribute("cui-areatype", "panel");
+      pipButton.setAttribute("skipintoolbarset", "true");
+      // Intentionally avoid unified-extension(s)-item classes to prevent native overrides
+      pipButton.style.cssText = `
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 35px !important;
+        height: 35px !important;
+        min-width: 35px !important;
+        min-height: 35px !important;
+        border-radius: 50% !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        cursor: pointer !important;
+        box-sizing: border-box !important;
+        appearance: none !important;
+        -moz-appearance: none !important;
+        outline: none !important;
+        background-clip: padding-box !important;
+        background-color: color-mix(in srgb, currentColor 20%, transparent) !important;
+        transition: background-color 0.2s ease, transform 0.08s ease !important;
       `;
-      
-      pipSwitch.appendChild(pipSwitchThumb);
-      pipLabelContainer.appendChild(pipIcon);
-      pipLabelContainer.appendChild(pipLabel);
+
+      // Use XUL image with context-fill so glyph takes panel background color
+      const pipButtonIcon = document.createXULElement('image');
+      pipButtonIcon.id = 'unified-pip-icon';
+      pipButtonIcon.className = 'pip-button-glyph';
+      pipButtonIcon.setAttribute('cui-areatype', 'panel');
+      pipButtonIcon.setAttribute('skipintoolbarset', 'true');
+      pipButtonIcon.setAttribute('src', 'chrome://global/skin/media/picture-in-picture-open.svg');
+      pipButtonIcon.style.cssText = `
+        width: 16px !important;
+        height: 16px !important;
+        -moz-context-properties: fill !important;
+        fill: var(--arrowpanel-background, var(--panel-background, Canvas)) !important;
+      `;
+      pipButton.appendChild(pipButtonIcon);
+      try {
+        pipButton.style.setProperty('grid-row', '1 / span 2', 'important');
+        pipButton.style.setProperty('grid-column', '1', 'important');
+      } catch {}
+      // Place the round button to the left and the two-line text column to the right
+      pipLabelContainer.appendChild(pipButton);
+      pipLabelContainer.appendChild(pipTextColumn);
       pipToggle.appendChild(pipLabelContainer);
-      pipToggle.appendChild(pipSwitch);
       pipSection.appendChild(pipToggle);
+
+      // Press feedback for the round button
+      try {
+        pipButton.addEventListener('mousedown', () => {
+          pipButton.style.transform = 'scale(0.96)';
+        });
+        const resetPress = () => { pipButton.style.transform = 'scale(1)'; };
+        pipButton.addEventListener('mouseup', resetPress);
+        pipButton.addEventListener('mouseleave', resetPress);
+        pipButton.addEventListener('blur', resetPress);
+      } catch {}
 
       // Create separator between PiP and Security sections
       const pipSeparator = document.createXULElement("toolbarseparator");
+      pipSeparator.id = "urlbar-modifier-separator";
+      pipSeparator.setAttribute("cui-areatype", "panel");
+      pipSeparator.setAttribute("skipintoolbarset", "true");
       pipSeparator.style.cssText = "margin-top: 0px !important;";
 
       // Create Security section using DOM methods
       const securitySection = document.createElement("div");
+      securitySection.id = "urlbar-modifier-security";
       securitySection.className = "urlbar-modifier-section";
+      securitySection.setAttribute("cui-areatype", "panel");
+      securitySection.setAttribute("skipintoolbarset", "true");
       securitySection.style.cssText = `
         padding: 8px 8px;
       `;
@@ -2229,6 +2396,8 @@ class PanelManager {
       const securityStatus = document.createElement("div");
       securityStatus.id = "unified-security-status";
       securityStatus.className = "unified-security-pill";
+      securityStatus.setAttribute("cui-areatype", "panel");
+      securityStatus.setAttribute("skipintoolbarset", "true");
       securityStatus.style.cssText = `
         display: inline-flex;
         align-items: center;
@@ -2241,14 +2410,18 @@ class PanelManager {
       const securityIcon = document.createXULElement("image");
       securityIcon.id = "unified-security-icon";
       securityIcon.className = "unified-extension-icon";
+      securityIcon.setAttribute("cui-areatype", "panel");
+      securityIcon.setAttribute("skipintoolbarset", "true");
       securityIcon.setAttribute("src", "chrome://global/skin/icons/security.svg");
       // Theme-aware via context fill
       securityIcon.style.cssText = "width: 10px; height: 10px; -moz-context-properties: fill; fill: currentColor;";
       
       const securityText = document.createElement("span");
       securityText.id = "unified-security-text";
+      securityText.setAttribute("cui-areatype", "panel");
+      securityText.setAttribute("skipintoolbarset", "true");
       securityText.textContent = "Secure";
-      securityText.style.cssText = "font-size: 0.85em; font-weight: 500;";
+      securityText.style.cssText = "font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 0.85em; font-weight: 500;";
       
       securityStatus.appendChild(securityIcon);
       securityStatus.appendChild(securityText);
@@ -2257,6 +2430,8 @@ class PanelManager {
       const extrasButton = document.createElement("div");
       extrasButton.id = "unified-extras-button";
       extrasButton.className = "unified-extension-item";
+      extrasButton.setAttribute("cui-areatype", "panel");
+      extrasButton.setAttribute("skipintoolbarset", "true");
       extrasButton.style.cssText = `
         display: flex;
         align-items: center;
@@ -2267,13 +2442,15 @@ class PanelManager {
         background-color: color-mix(in srgb, currentColor 6%, transparent);
         width: 8px;
         height: 6px;
-        margin-left: 87px;
       `;
       extrasButton.setAttribute("title", "Extras Menu");
       
       // Create extras icon
       const extrasIcon = document.createElement("img");
+      extrasIcon.id = "unified-extras-icon";
       extrasIcon.className = "unified-extension-icon";
+      extrasIcon.setAttribute("cui-areatype", "panel");
+      extrasIcon.setAttribute("skipintoolbarset", "true");
       extrasIcon.src = "chrome://browser/skin/zen-icons/menu.svg";
       extrasIcon.style.cssText = "width: 14px; height: 14px; -moz-context-properties: fill; fill: currentColor;";
       
@@ -2281,6 +2458,9 @@ class PanelManager {
       
       // Create container for security status and extras button
       const securityContainer = document.createElement("div");
+      securityContainer.id = "unified-security-container";
+      securityContainer.setAttribute("cui-areatype", "panel");
+      securityContainer.setAttribute("skipintoolbarset", "true");
       securityContainer.style.cssText = "display: flex; align-items: center; gap: 8px;";
       securityContainer.appendChild(securityStatus);
       securityContainer.appendChild(extrasButton);
@@ -2332,18 +2512,25 @@ class PanelManager {
               const gridContainer = extensionsArea;
 
               const item = document.createXULElement('toolbaritem');
+              item.id = 'ue-add-extension-item';
               item.className = 'toolbaritem-combined-buttons unified-extensions-item chromeclass-toolbar-additional';
               item.setAttribute('cui-areatype', 'panel');
+              item.setAttribute('skipintoolbarset', 'true');
               item.setAttribute('widget-type', 'custom');
               item.setAttribute('removable', 'false');
               item.setAttribute('overflows', 'true');
 
               const row = document.createXULElement('box');
+              row.id = 'ue-add-extension-row';
               row.className = 'unified-extensions-item-row-wrapper';
+              row.setAttribute('cui-areatype', 'panel');
+              row.setAttribute('skipintoolbarset', 'true');
 
               const plusBtn = document.createXULElement('toolbarbutton');
               plusBtn.id = 'ue-add-extension-button';
               plusBtn.className = 'unified-extensions-item-action-button panel-no-padding subviewbutton subviewbutton-iconic';
+              plusBtn.setAttribute('cui-areatype', 'panel');
+              plusBtn.setAttribute('skipintoolbarset', 'true');
               plusBtn.setAttribute('tooltiptext', 'Browse add-ons');
               plusBtn.setAttribute('image', 'chrome://global/skin/icons/plus.svg');
               plusBtn.setAttribute('tabindex', '0');
@@ -2448,6 +2635,11 @@ class PanelManager {
         // Hide the manage button
         manageButton.style.display = "none";
         
+        // Insert a "Settings" label and PiP/Security stack before the manage button
+        const settingsLabel = makeSectionLabel('ue-section-label-settings', 'Settings');
+        if (settingsLabel && !unifiedPanel.querySelector('#ue-section-label-settings')) {
+          unifiedPanel.insertBefore(settingsLabel, manageButton);
+        }
         // Insert PiP section before the manage button
         unifiedPanel.insertBefore(pipSection, manageButton);
         // Insert separator after PiP section
@@ -2456,6 +2648,10 @@ class PanelManager {
         unifiedPanel.insertBefore(securitySection, manageButton);
       } else {
         // Fallback: append to the end
+        const settingsLabel = makeSectionLabel('ue-section-label-settings', 'Settings');
+        if (settingsLabel && !unifiedPanel.querySelector('#ue-section-label-settings')) {
+          unifiedPanel.appendChild(settingsLabel);
+        }
         unifiedPanel.appendChild(pipSection);
         unifiedPanel.appendChild(pipSeparator);
         unifiedPanel.appendChild(securitySection);
@@ -2463,6 +2659,7 @@ class PanelManager {
 
       // Add event listeners to action buttons
       shareButton.addEventListener("click", (event) => {
+        event.stopPropagation();
         this.shareCurrentUrl(event);
       });
       shareButton.addEventListener("mouseenter", () => {
@@ -2473,6 +2670,7 @@ class PanelManager {
       });
 
       screenshotButton.addEventListener("click", (event) => {
+        event.stopPropagation();
         this.takeScreenshot(event);
       });
       screenshotButton.addEventListener("mouseenter", () => {
@@ -2483,6 +2681,7 @@ class PanelManager {
       });
 
       copyUrlButton.addEventListener("click", (event) => {
+        event.stopPropagation();
         this.copyCurrentUrl(event);
       });
       copyUrlButton.addEventListener("mouseenter", () => {
@@ -2492,8 +2691,20 @@ class PanelManager {
         copyUrlButton.style.backgroundColor = "color-mix(in srgb, currentColor 6%, transparent)";
       });
 
+      customizeButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        this.customizeToolbar(event);
+      });
+      customizeButton.addEventListener("mouseenter", () => {
+        customizeButton.style.backgroundColor = "color-mix(in srgb, currentColor 10%, transparent)";
+      });
+      customizeButton.addEventListener("mouseleave", () => {
+        customizeButton.style.backgroundColor = "color-mix(in srgb, currentColor 6%, transparent)";
+      });
+
       // Add event listener for extras button
       extrasButton.addEventListener("click", (event) => {
+        event.stopPropagation();
         this.showExtrasContextMenu(event);
       });
       extrasButton.addEventListener("mouseenter", () => {
@@ -2505,6 +2716,13 @@ class PanelManager {
 
       // Add event listeners to PiP toggle
       pipToggle.addEventListener("click", (event) => {
+        event.stopPropagation();
+        // When clicking anywhere in the row, treat as a toggle
+        this.toggleAutoPiP(event);
+      });
+      pipButton.addEventListener("click", (event) => {
+        // Ensure button also toggles without relying on parent
+        event.stopPropagation();
         this.toggleAutoPiP(event);
       });
 
@@ -2577,6 +2795,7 @@ class PanelManager {
     const clearCacheButton = document.getElementById("clear-cache-button");
     const clearCookiesButton = document.getElementById("clear-cookies-button");
     const manageExtensionsButton = document.getElementById("manage-extensions-button");
+    const pagePermissionsButton = document.getElementById("page-permissions-button");
 
     if (clearCacheButton) {
       clearCacheButton.addEventListener("command", (e) => {
@@ -2610,6 +2829,66 @@ class PanelManager {
         } finally {
           const extrasMenu = document.getElementById("extras-context-menu");
           extrasMenu?.hidePopup();
+          // Also hide the unified extensions panel
+          const unifiedPanel = document.getElementById("unified-extensions-panel");
+          if (unifiedPanel && unifiedPanel.hidePopup) {
+            unifiedPanel.hidePopup();
+          }
+        }
+      });
+    }
+
+    if (pagePermissionsButton) {
+      pagePermissionsButton.addEventListener("command", (e) => {
+        e.stopPropagation();
+        // Store panel reference before any operations
+        const unifiedPanel = document.querySelector("#unified-extensions-view");
+        try {
+          // Try to open the permissions panel directly using Firefox's internal API
+            if (window.gPermissionPanel && window.gPermissionPanel.openPopup) {
+              console.log("URLBarModifier: Opening permissions panel via gPermissionPanel");
+              // Set the anchor to the unified extensions button instead of the hidden native permission button
+              const unifiedExtensionsButton = document.getElementById("unified-extensions-button");
+              if (unifiedExtensionsButton && window.gPermissionPanel.setAnchor) {
+                window.gPermissionPanel.setAnchor(unifiedExtensionsButton, "bottomleft topleft");
+              }
+              window.gPermissionPanel.openPopup(e);
+            } else if (typeof BrowserPageInfo === 'function') {
+              console.log("URLBarModifier: Opening page info dialog");
+              BrowserPageInfo(gBrowser.selectedBrowser.currentURI.spec, null, null, gBrowser.selectedBrowser);
+            } else if (window.gIdentityHandler && window.gIdentityHandler.handleMoreInfoClick) {
+              console.log("URLBarModifier: Using gIdentityHandler.handleMoreInfoClick");
+              window.gIdentityHandler.handleMoreInfoClick(e);
+            } else if (typeof openPageInfo === 'function') {
+              console.log("URLBarModifier: Using openPageInfo function");
+              openPageInfo(gBrowser.selectedBrowser.currentURI.spec, null, null, gBrowser.selectedBrowser);
+            } else {
+            // Try to trigger the page info command
+            const controller = top.document.commandDispatcher.getControllerForCommand("View:PageInfo");
+            if (controller && controller.isCommandEnabled("View:PageInfo")) {
+              console.log("URLBarModifier: Using View:PageInfo command");
+              controller.doCommand("View:PageInfo");
+            } else {
+              // Final fallback: open about:permissions
+              console.log("URLBarModifier: Using fallback about:permissions");
+              const principal = Services.scriptSecurityManager.getSystemPrincipal();
+              const tab = gBrowser.addTab("about:permissions", { triggeringPrincipal: principal });
+              gBrowser.selectedTab = tab;
+            }
+          }
+        } catch (err) {
+          console.error("URLBarModifier: Failed to open page permissions", err);
+          // Final fallback
+          try {
+            const principal = Services.scriptSecurityManager.getSystemPrincipal();
+            const tab = gBrowser.addTab("about:permissions", { triggeringPrincipal: principal });
+            gBrowser.selectedTab = tab;
+          } catch (fallbackErr) {
+            console.error("URLBarModifier: Fallback also failed", fallbackErr);
+          }
+        } finally {
+          // Close the unified extensions panel using the same method as other buttons
+          this.closePanelImmediately(unifiedPanel);
         }
       });
     }
@@ -3015,6 +3294,39 @@ class PanelManager {
       const unifiedPanel = document.querySelector("#unified-extensions-view");
       console.log("URLBarModifier: Panel found:", !!unifiedPanel, "hidePopup available:", !!unifiedPanel?.hidePopup);
       
+      // Use Zen browser native system
+      try {
+        if (window.ZenCommandPalette && typeof window.ZenCommandPalette.executeCommandByKey === "function") {
+          console.log("URLBarModifier: Using ZenCommandPalette.executeCommandByKey");
+          window.ZenCommandPalette.executeCommandByKey("cmd_zenCopyCurrentURL");
+          // Show feedback animation and close panel after delay
+          this.showCopyFeedback();
+          this.closePanelAfterDelay(unifiedPanel);
+        } else {
+          const cmd = document.getElementById("cmd_zenCopyCurrentURL");
+          if (cmd && typeof cmd.doCommand === "function") {
+            console.log("URLBarModifier: Using cmd.doCommand");
+            cmd.doCommand();
+            // Show feedback animation and close panel after delay
+            this.showCopyFeedback();
+            this.closePanelAfterDelay(unifiedPanel);
+          } else {
+            console.warn("URLBarModifier: Zen copy command not found, falling back to standard methods");
+            this.fallbackCopyMethods(unifiedPanel);
+          }
+        }
+      } catch (e) {
+        console.log("URLBarModifier: Zen copy command failed:", e.message);
+        this.fallbackCopyMethods(unifiedPanel);
+      }
+
+    } catch (err) {
+      console.error("Error copying URL:", err);
+    }
+  }
+
+  fallbackCopyMethods(unifiedPanel) {
+    try {
       // Get the current URL
       const currentUrl = gBrowser?.currentURI?.spec || 
                         window.gBrowser?.currentURI?.spec ||
@@ -3063,7 +3375,7 @@ class PanelManager {
       this.fallbackCopy(currentUrl, unifiedPanel);
 
     } catch (err) {
-      console.error("Error copying URL:", err);
+      console.error("Error in fallback copy methods:", err);
     }
   }
 
@@ -3072,6 +3384,9 @@ class PanelManager {
       console.log("URLBarModifier: Using execCommand fallback");
       // Create a temporary textarea
       const textarea = document.createElement("textarea");
+      textarea.id = "urlbar-modifier-clipboard";
+      textarea.setAttribute("cui-areatype", "panel");
+      textarea.setAttribute("skipintoolbarset", "true");
       textarea.value = text;
       textarea.style.position = "fixed";
       textarea.style.opacity = "0";
@@ -3189,6 +3504,21 @@ class PanelManager {
     }
   }
 
+  hidePanel() {
+    try {
+      console.log("URLBarModifier: hidePanel called");
+      const unifiedPanel = document.querySelector("#unified-extensions-view");
+      if (unifiedPanel && unifiedPanel.hidePopup) {
+        unifiedPanel.hidePopup();
+        console.log("URLBarModifier: Panel hidden successfully");
+      } else {
+        console.log("URLBarModifier: Panel not found or hidePopup not available");
+      }
+    } catch (e) {
+      console.log("URLBarModifier: Panel hiding failed:", e.message);
+    }
+  }
+
   toggleAutoPiP(event) {
     try {
       // Get current global preference value
@@ -3209,32 +3539,62 @@ class PanelManager {
 
   updatePiPToggleState() {
     try {
-      const pipSwitch = document.getElementById("pip-switch");
-      const pipSwitchThumb = document.getElementById("pip-switch-thumb");
-      
-      // Check if elements exist, if not, the panel might not be open
-      if (!pipSwitch || !pipSwitchThumb) {
-        console.log("PiP toggle elements not found, panel might not be open");
+      const pipButton = document.getElementById("pip-button");
+      const pipLabel = document.getElementById('unified-pip-label');
+
+      // Check if element exists, if not, the panel might not be open
+      if (!pipButton) {
+        console.log("PiP button not found, panel might not be open");
         return;
       }
-      
+
       // Get current global preference value
       const isEnabled = Services.prefs.getBoolPref("media.videocontrols.picture-in-picture.enable-when-switching-tabs.enabled", false);
-      
+
+      // Slightly darker primary in light mode; keep primary in dark
+      // Resolve primary color once; fallback to Firefox blue if missing
+      let primary = '';
+      try {
+        primary = getComputedStyle(document.documentElement)
+          .getPropertyValue('--zen-primary-color')
+          .trim();
+      } catch {}
+      if (!primary) primary = '#0a84ff';
+      // Use CSS light-dark() over a computed primary color string
+      const onColor = `light-dark(color-mix(in srgb, ${primary} 75%, gray), white)`;
+
       if (isEnabled) {
-        // Switch is ON
-        pipSwitch.style.backgroundColor = "#0a84ff"; // Firefox blue
-        pipSwitchThumb.style.transform = "translateX(14px)";
-        pipSwitch.setAttribute("aria-checked", "true");
-        pipSwitch.setAttribute("title", "Auto PiP enabled globally");
+        pipButton.style.setProperty('background-color', onColor, 'important');
+        pipButton.style.opacity = '1';
+        pipButton.setAttribute('aria-pressed', 'true');
+        pipButton.setAttribute('title', 'Auto PiP enabled globally');
+        if (pipLabel) pipLabel.style.opacity = '1';
+        try {
+          const sub = document.getElementById('unified-pip-sublabel');
+          if (sub) sub.textContent = 'Automatic';
+        } catch {}
+        // Ensure cut-out effect stays panel-colored
+        try {
+          const icon = pipButton.querySelector('.pip-button-glyph');
+          if (icon) icon.style.setProperty('fill', 'var(--arrowpanel-background, var(--panel-background, Canvas))', 'important');
+        } catch {}
       } else {
-        // Switch is OFF
-        pipSwitch.style.backgroundColor = "color-mix(in srgb, currentColor 20%, transparent)";
-        pipSwitchThumb.style.transform = "translateX(0px)";
-        pipSwitch.setAttribute("aria-checked", "false");
-        pipSwitch.setAttribute("title", "Auto PiP disabled globally");
+        pipButton.style.setProperty('background-color', 'color-mix(in srgb, currentColor 20%, transparent)', 'important');
+        pipButton.style.opacity = '0.9';
+        pipButton.setAttribute('aria-pressed', 'false');
+        pipButton.setAttribute('title', 'Auto PiP disabled globally');
+        if (pipLabel) pipLabel.style.opacity = '0.85';
+        try {
+          const sub = document.getElementById('unified-pip-sublabel');
+          if (sub) sub.textContent = 'Off';
+        } catch {}
+        // Ensure cut-out effect stays panel-colored
+        try {
+          const icon = pipButton.querySelector('.pip-button-glyph');
+          if (icon) icon.style.setProperty('fill', 'var(--arrowpanel-background, var(--panel-background, Canvas))', 'important');
+        } catch {}
       }
-      
+
       console.log(`Auto PiP state updated globally: ${isEnabled ? 'enabled' : 'disabled'}`);
     } catch (err) {
       console.error("Error updating PiP toggle state:", err);
@@ -3243,29 +3603,12 @@ class PanelManager {
 
   modifyPanelPosition() {
     try {
-      // Inject CSS to center the panel
-      const existing = document.getElementById('panel-center-style');
-      if (existing) existing.remove();
-      
-      const style = document.createElementNS('http://www.w3.org/1999/xhtml', 'style');
-      style.id = 'panel-center-style';
-      style.textContent = `
-         #unified-extensions-panel {
-           margin-left: -85px !important;
-         }
-         #unified-extensions-panel[position="bottomright topright"] {
-           position: fixed !important;
-           left: 50% !important;
-           transform: translateX(-50%) !important;
-         }
-       `;
-      document.documentElement.appendChild(style);
-      
-      // Also try to modify the panel attributes
+      // Panel positioning is now handled by external CSS file
+      // Just modify the panel attributes
       const panel = document.getElementById('unified-extensions-panel');
       if (panel) {
         panel.setAttribute('position', 'bottomcenter topcenter');
-        console.log('Panel positioning CSS injected and attributes modified');
+        console.log('Panel position attribute modified (CSS loaded from external file)');
       }
     } catch (err) {
       console.error('Error modifying panel position:', err);
@@ -3336,6 +3679,20 @@ if (!window.urlBarModifierInitialized) {
 
   // No longer need URL bar button - user can use the native unified extensions button
 
+  // Check if panel needs modification when it's shown
+  const checkPanelModification = () => {
+    const unifiedPanel = document.querySelector("#unified-extensions-view");
+    if (unifiedPanel && !panelManager.unifiedPanelModified) {
+      console.log("URLBarModifier: Panel needs re-modification, applying changes...");
+      setTimeout(() => {
+        panelManager.modifyUnifiedExtensionsPanel();
+        panelManager.modifyPanelPosition();
+        panelManager.updateUnifiedSecurityInfo();
+        panelManager.updatePiPToggleState();
+      }, 50);
+    }
+  };
+
   // Automatically modify the unified extensions panel when it opens
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
@@ -3343,6 +3700,7 @@ if (!window.urlBarModifierInitialized) {
         mutation.addedNodes.forEach((node) => {
           if (node.nodeType === Node.ELEMENT_NODE && node.id === 'unified-extensions-view') {
             // Panel was opened, modify it
+            console.log("URLBarModifier: Panel reopened, re-modifying...");
             setTimeout(() => {
               panelManager.modifyUnifiedExtensionsPanel();
               panelManager.modifyPanelPosition();
@@ -3355,14 +3713,28 @@ if (!window.urlBarModifierInitialized) {
           }
         });
       }
+      // Also check for attribute changes that might indicate panel visibility
+      if (mutation.type === 'attributes') {
+        const target = mutation.target;
+        if (target.id === 'unified-extensions-panel' || target.id === 'unified-extensions-view') {
+          checkPanelModification();
+        }
+      }
     });
   });
 
   // Start observing
   observer.observe(document.body, {
     childList: true,
-    subtree: true
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['style', 'hidden', 'class']
   });
+
+  // Also add a periodic check as a fallback
+  setInterval(() => {
+    checkPanelModification();
+  }, 1000);
 } else {
   console.log("URLBarModifier: Already initialized, skipping");
 }
