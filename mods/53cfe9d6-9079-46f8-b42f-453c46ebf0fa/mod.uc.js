@@ -219,73 +219,109 @@ if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
 }
 
 // ====================================================================================================
-// SCRIPT 2: Global URL Bar Scroller (FINAL VERSION 1.0.0)
+// SCRIPT 2: Global URL Bar Scroller (FINAL VERSION 1.0.0) - Customizable via about:config - Arcline Theme
+//  - STRINGS in about:config - NO FALLBACK VALUES
 // ====================================================================================================
 // ==UserScript==
 // @ignorecache
-// @name          Zen Global URL Bar Scroller
-// @description   Makes normal URL bar results scrollable.
+// @name          Arcline Global URL Bar Scroller
+// @description   Makes normal URL bar results scrollable. Customizable via about:config (Strings). NO FALLBACK VALUES - Arcline Theme
 // ==/UserScript==
-// zen_urlbar_global_scroll_final.js (Standalone, Polite Version)
+// arcline_urlbar_global_scroll_final.js (Standalone, Polite Version) - about:config customization - Arcline Theme
 
 (function() {
   if (location.href !== 'chrome://browser/content/browser.xhtml') {
     return;
   }
 
-  console.log("Unified URL Bar Controller (Flicker-Free) script loading...");
+  console.log("Zen URL Bar Animated Height (CSS-Controlled Easing) script loading...");
 
-  // --- Configuration ---
   const CONFIG = {
     URLBAR_ID: 'urlbar',
     URLBAR_RESULTS_ID: 'urlbar-results',
-    ROW_HEIGHT_PX: 51,           // The height of a single result row
+    MANUAL_ROW_HEIGHT_PX: 51,    // <--- Your desired manual row height
     VISIBLE_RESULTS_LIMIT: 5,    // The number of results to show before scrolling
-    SCROLLABLE_CLASS: 'zen-urlbar-scrollable', // A single class for our state
-    DEBOUNCE_DELAY_MS: 10,       // A tiny delay to prevent race conditions with the browser
+    SCROLLABLE_CLASS: 'zen-urlbar-scrollable-script',
+    DEBOUNCE_DELAY_MS: 50,
   };
+
+  // Pre-calculate the initial cap height for easier reference in CSS
+  CONFIG.INITIAL_CAP_HEIGHT_PX = CONFIG.VISIBLE_RESULTS_LIMIT * CONFIG.MANUAL_ROW_HEIGHT_PX;
 
   let urlbarElement, resultsElement;
   let updateTimeout = null;
+  let lastResultCount = -1;
 
   /**
-   * This is our single, unified logic function. It controls everything.
+   * The core logic for animating and managing the results panel height.
    */
   function updateViewState() {
     if (!resultsElement || !urlbarElement) return;
 
-    // Clear any pending update to ensure we only run the latest one.
     clearTimeout(updateTimeout);
 
-    // Schedule the update to run after a tiny delay.
     updateTimeout = setTimeout(() => {
-      // The ONLY exception: if the command palette is active, our script must do nothing.
-      const isCommandModeActive = window.ZenCommandPalette?.provider?._isInPrefixMode ?? false;
-      if (isCommandModeActive) {
-        resultsElement.classList.remove(CONFIG.SCROLLABLE_CLASS);
-        resultsElement.style.height = ''; // Clean up our styles completely
-        return;
+      const isUrlbarOpen = urlbarElement.hasAttribute('open');
+      const isUserTyping = urlbarElement.hasAttribute('usertyping');
+      
+      const computedStyle = resultsElement.ownerDocument.defaultView.getComputedStyle(resultsElement);
+      const isUrlbarViewVisibleByCSS = computedStyle.getPropertyValue('display') !== 'none' &&
+                                      parseFloat(computedStyle.getPropertyValue('opacity')) > 0;
+
+      if (!isUrlbarOpen && !isUserTyping) {
+          // If urlbar is completely closed and not typing, reset our state.
+          resultsElement.classList.remove(CONFIG.SCROLLABLE_CLASS);
+          resultsElement.style.removeProperty('height');
+          resultsElement.style.removeProperty('max-height');
+          resultsElement.style.removeProperty('overflow-y');
+          resultsElement.scrollTop = 0;
+          lastResultCount = -1;
+          return;
+      }
+      
+      if (isUrlbarOpen && !isUrlbarViewVisibleByCSS) {
+          // urlbar is open but your CSS is still animating its display/opacity, or it's not yet considered visible.
+          // Reinforce the initial cap if our script hasn't taken over height yet.
+          if (!resultsElement.style.height) {
+              resultsElement.style.height = `${CONFIG.INITIAL_CAP_HEIGHT_PX}px`;
+              resultsElement.style.overflowY = 'hidden';
+          }
+          return;
       }
 
-      if (urlbarElement.hasAttribute('open')) {
-        const resultCount = resultsElement.querySelectorAll('.urlbarView-row:not([type="tip"], [type="dynamic"])').length;
-        const isScrollable = resultCount > CONFIG.VISIBLE_RESULTS_LIMIT;
+      // At this point, the URL bar view should be visible and ready for height calculation.
+      resultsElement.style.removeProperty('max-height'); // Ensure we override any lingering max-height from Zen's CSS or our temp styles.
+      
+      const resultRows = resultsElement.querySelectorAll('.urlbarView-row:not([type="tip"], [type="dynamic"])');
+      const currentResultCount = resultRows.length;
 
-        // 1. Set the scrollable state.
-        resultsElement.classList.toggle(CONFIG.SCROLLABLE_CLASS, isScrollable);
-        
-        // 2. Calculate and set the height.
-        let targetHeight;
-        if (isScrollable) {
-          // If scrollable, the height is capped at the limit.
-          targetHeight = (CONFIG.VISIBLE_RESULTS_LIMIT) * CONFIG.ROW_HEIGHT_PX;
-        } else {
-          // If not scrollable, the height is the exact content height.
-          targetHeight = resultCount * CONFIG.ROW_HEIGHT_PX;
-        }
-        resultsElement.style.height = `${targetHeight}px`;
-
+      if (currentResultCount === lastResultCount && lastResultCount !== -1) {
+          return;
       }
+      lastResultCount = currentResultCount;
+
+      const isScrollable = currentResultCount > CONFIG.VISIBLE_RESULTS_LIMIT;
+      resultsElement.classList.toggle(CONFIG.SCROLLABLE_CLASS, isScrollable);
+
+      let targetHeight;
+      if (isScrollable) {
+        targetHeight = CONFIG.VISIBLE_RESULTS_LIMIT * CONFIG.MANUAL_ROW_HEIGHT_PX;
+      } else {
+        targetHeight = currentResultCount * CONFIG.MANUAL_ROW_HEIGHT_PX;
+      }
+
+      // Apply the height, which will trigger the CSS transition
+      resultsElement.style.height = `${targetHeight}px`;
+      resultsElement.style.overflowY = isScrollable ? 'auto' : 'hidden';
+
+      // Universal auto-scroll logic for arrow keys.
+      for (const row of resultRows) {
+          if (row.hasAttribute('selected')) {
+              row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+              break;
+          }
+      }
+
     }, CONFIG.DEBOUNCE_DELAY_MS);
   }
 
@@ -293,26 +329,28 @@ if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
    * Sets up the necessary listeners.
    */
   function setupListeners() {
-    // The MutationObserver watches for results being added/removed AND selection changes.
-    const mutationObserver = new MutationObserver((mutations) => {
-      updateViewState(); // On any content change, update our state.
-
-      // Universal auto-scroll logic for arrow keys.
-      for (const mutation of mutations) {
-        if (mutation.attributeName === 'selected' && mutation.target.hasAttribute('selected')) {
-          mutation.target.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        }
-      }
+    const mutationObserver = new MutationObserver(() => {
+      updateViewState();
     });
     mutationObserver.observe(resultsElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['selected'] });
 
-    // When the panel opens or closes, we update our state.
-    urlbarElement.addEventListener('popupshown', updateViewState);
+    const urlbarAttributeObserver = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            if (mutation.attributeName === 'usertyping' || mutation.attributeName === 'open') {
+                updateViewState();
+            }
+        }
+    });
+    urlbarAttributeObserver.observe(urlbarElement, { attributes: true, attributeFilter: ['usertyping', 'open'] });
+
     urlbarElement.addEventListener('popuphidden', () => {
-      clearTimeout(updateTimeout);
-      resultsElement.classList.remove(CONFIG.SCROLLABLE_CLASS);
-      resultsElement.style.height = '';
-      resultsElement.scrollTop = 0; // Reset scroll on close
+        clearTimeout(updateTimeout);
+        resultsElement.classList.remove(CONFIG.SCROLLABLE_CLASS);
+        resultsElement.style.removeProperty('height');
+        resultsElement.style.removeProperty('max-height');
+        resultsElement.style.removeProperty('overflow-y');
+        resultsElement.scrollTop = 0;
+        lastResultCount = -1;
     });
   }
 
@@ -327,34 +365,34 @@ if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
       setTimeout(initialize, 500);
       return;
     }
-    
-    // Inject the CSS directly.
-    const styleId = 'unified-urlbar-controller-styles';
+
+    // Inject the CSS. This CSS now uses custom properties for transition.
+    const styleId = 'zen-urlbar-animated-height-styles-css-controlled';
     if (!document.getElementById(styleId)) {
       const css = `
+        /* Default values for custom properties if not defined in userChrome.css */
+        
+
         #${CONFIG.URLBAR_RESULTS_ID} {
-          transition: height 200ms ease-out !important;
-          overflow: hidden !important; /* Hide overflow during animation */
+          /* Flicker-Free: Immediately cap height and hide overflow until JS takes over */
+          max-height: ${CONFIG.INITIAL_CAP_HEIGHT_PX}px !important;
+          overflow-y: hidden !important; 
+          
         }
         #${CONFIG.URLBAR_RESULTS_ID}.${CONFIG.SCROLLABLE_CLASS} {
-          overflow-y: auto !important; /* Enable scrolling ONLY when the class is present */
-          scrollbar-width: thin !important;
-          margin-top: 8px !important;
-          margin-bottom: 8px !important;
-          padding-top: 0px !important;
-          padding-bottom: 2px !important;
-          scrollbar-color: var(--zen-primary-color) transparent !important;
+          overflow-y: auto !important; 
         }
       `;
       const style = document.createElement('style');
       style.id = styleId;
       style.textContent = css;
       document.head.appendChild(style);
+      console.log("Zen URL Bar Animated Height (CSS-Controlled Easing) styles injected.");
     }
 
     setupListeners();
-    updateViewState(); // Initial check for new tabs.
-    console.log("Unified URL Bar Controller (Flicker-Free) Initialized.");
+    updateViewState(); 
+    console.log("Zen URL Bar Animated Height (CSS-Controlled Easing) Initialized.");
   }
 
   if (document.readyState === 'complete') {
@@ -364,7 +402,6 @@ if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
   }
 
 })();
-
 
 // ====================================================================================================
 // SCRIPT 3: Tab Explode Animation
@@ -595,117 +632,183 @@ if (Services.prefs.getBoolPref("arcline.script3")) {
 }
 
 // ====================================================================================================
-// SCRIPT 4: Permission Box Position Fix
+// SCRIPT 4: Fetching Search Engines Color
 // ====================================================================================================
 // ==UserScript==
 // @ignorecache
-// @name           permission-box-possition-fix
-// @namespace      zenPermissionBoxGranterPostionFix
-// @description    helps in switching copy url bar extension and permission box position
+// @name           store color of search engine
+// @namespace      colorofsearchengines
+// @description    helps in providing color of search engine favicon
 // @version        1.7b
 // ==/UserScript==
 
 (function() {
-  if (window.location.href !== 'chrome://browser/content/browser.xhtml' && window.location.href !== 'chrome://browser/content/browser.xul') {
+  'use strict';
+
+  if (typeof Services === 'undefined' || !Services.search) {
+    console.error('[ArclineSearchColor] Firefox Services not available. Script cannot run.');
     return;
   }
-
-  const IDENTITY_PERMISSION_BOX_ID = 'identity-permission-box';
-  const MAIN_WINDOW_ID = 'main-window'; // Or document.documentElement
-  const ACTIVE_STATE_ATTRIBUTE = 'data-identity-permission-active';
-
-  const checkAndUpdateState = () => {
-    const mainWindow = document.getElementById(MAIN_WINDOW_ID);
-    const permBox = document.getElementById(IDENTITY_PERMISSION_BOX_ID);
-
-    if (!mainWindow || !permBox) {
-      // If elements aren't found yet, ensure state is off
-      if (mainWindow && mainWindow.hasAttribute(ACTIVE_STATE_ATTRIBUTE)) {
-        mainWindow.removeAttribute(ACTIVE_STATE_ATTRIBUTE);
-      }
-      return;
-    }
-
-    const isActive = permBox.hasAttribute('open') ||
-                     permBox.hasAttribute('hasPermissions') ||
-                     permBox.hasAttribute('hasSharingIcon');
-
-    if (isActive) {
-      if (!mainWindow.hasAttribute(ACTIVE_STATE_ATTRIBUTE)) {
-        mainWindow.setAttribute(ACTIVE_STATE_ATTRIBUTE, 'true');
-        // console.log('Identity permission box active, attribute set.');
-      }
-    } else {
-      if (mainWindow.hasAttribute(ACTIVE_STATE_ATTRIBUTE)) {
-        mainWindow.removeAttribute(ACTIVE_STATE_ATTRIBUTE);
-        // console.log('Identity permission box inactive, attribute removed.');
-      }
-    }
-  };
-
-  // Observer for attribute changes on #identity-permission-box
-  const permBoxObserver = new MutationObserver((mutationsList) => {
-    for (const mutation of mutationsList) {
-      if (mutation.type === 'attributes' &&
-          (mutation.attributeName === 'open' ||
-           mutation.attributeName === 'hasPermissions' ||
-           mutation.attributeName === 'hasSharingIcon')) {
-        checkAndUpdateState();
-        break; // No need to check other mutations if relevant one found
-      }
-    }
-  });
-
-  // We also need to observe if #identity-permission-box itself is added/removed
-  // or if its parent structure changes, so observe a higher stable parent.
-  // #navigator-toolbox is a good candidate as it contains the urlbar.
-  const parentObserver = new MutationObserver(() => {
-    const permBox = document.getElementById(IDENTITY_PERMISSION_BOX_ID);
-    if (permBox) {
-      // If the box exists, ensure our attribute observer is connected to it
-      // and do an initial check.
-      permBoxObserver.observe(permBox, { attributes: true });
-      checkAndUpdateState();
-    } else {
-        // If the box is removed, ensure state is off
-        const mainWindow = document.getElementById(MAIN_WINDOW_ID);
-        if (mainWindow && mainWindow.hasAttribute(ACTIVE_STATE_ATTRIBUTE)) {
-            mainWindow.removeAttribute(ACTIVE_STATE_ATTRIBUTE);
-        }
-    }
-  });
-
-
-  // Function to start observation once the UI is ready
-  const observeWhenReady = () => {
-    const navigatorToolbox = document.getElementById('navigator-toolbox');
-    const permBox = document.getElementById(IDENTITY_PERMISSION_BOX_ID);
-
-    if (navigatorToolbox) {
-      parentObserver.observe(navigatorToolbox, { childList: true, subtree: true });
-      // console.log('Observing navigator-toolbox for identity-permission-box changes.');
-
-      // Initial check and setup observer for permBox if it already exists
-      if (permBox) {
-        permBoxObserver.observe(permBox, { attributes: true });
-        // console.log('Observing existing identity-permission-box for attribute changes.');
-      }
-      checkAndUpdateState(); // Perform an initial check
-    } else {
-      // Retry if navigator-toolbox is not found yet
-      console.warn('userChrome.js: navigator-toolbox not found, retrying...');
-      setTimeout(observeWhenReady, 500);
-    }
-  };
-
-  // Start after a brief delay for UI elements to be more likely available
-  if (document.readyState === 'complete') {
-    observeWhenReady();
-  } else {
-    window.addEventListener('load', observeWhenReady, { once: true });
+  
+  if (window.ArclineSearchColor) {
+    window.ArclineSearchColor.destroy();
   }
 
+  window.ArclineSearchColor = {
+    // --- The 2 CSS variables this script provides ---
+    GRADIENT_START_VAR: '--arcline-search-gradient-start',
+    GRADIENT_END_VAR: '--arcline-search-gradient-end',
+
+    init() {
+      console.log('[ArclineSearchColor] Initializing Script v12.0 (Auto-Darkening)...');
+      this.initSearchColor();
+      window.addEventListener('unload', () => this.destroy(), { once: true });
+    },
+
+    initSearchColor() {
+      this.searchSwitcher = document.getElementById('urlbar-searchmode-switcher');
+      if (!this.searchSwitcher) {
+        requestIdleCallback(() => this.initSearchColor());
+        return;
+      }
+      const observerCallback = () => this.updateSearchColor();
+      this.searchObserver = new MutationObserver(observerCallback);
+      this.searchObserver.observe(this.searchSwitcher, {
+        attributes: true,
+        attributeFilter: ['tooltiptext']
+      });
+      console.log('[ArclineSearchColor] Module is active.');
+      this.updateSearchColor();
+    },
+
+    async updateSearchColor() {
+      const root = document.documentElement;
+      const tooltip = this.searchSwitcher?.getAttribute('tooltiptext');
+      if (!tooltip) {
+        this.clearCssVars(root);
+        return;
+      }
+      
+      try {
+        const engines = await Services.search.getVisibleEngines();
+        const currentEngine = engines.find(engine => tooltip.includes(engine.name));
+
+        if (currentEngine?.searchForm) {
+          const domain = new URL(currentEngine.searchForm).hostname;
+          const iconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${domain}`;
+          
+          const gradient = await this.extractAutoDarkeningGradient(iconUrl);
+
+          if (gradient) {
+            root.style.setProperty(this.GRADIENT_START_VAR, `rgb(${gradient.start.r}, ${gradient.start.g}, ${gradient.start.b})`);
+            root.style.setProperty(this.GRADIENT_END_VAR, `rgb(${gradient.end.r}, ${gradient.end.g}, ${gradient.end.b})`);
+            console.log(`%c[ArclineSearchColor] SUCCESS: Set auto-darkened gradient for "${domain}"`, 'color: lightgreen; font-weight: bold;');
+          } else {
+            this.clearCssVars(root);
+          }
+        } else {
+          this.clearCssVars(root);
+        }
+      } catch (err) {
+        console.error('[ArclineSearchColor] FATAL ERROR during search update:', err);
+        this.clearCssVars(root);
+      }
+    },
+
+    clearCssVars(root) {
+        root.style.removeProperty(this.GRADIENT_START_VAR);
+        root.style.removeProperty(this.GRADIENT_END_VAR);
+    },
+
+    // --- NEW "AUTO-DARKENING GRADIENT" ALGORITHM ---
+    async extractAutoDarkeningGradient(url) {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = url;
+        await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+        });
+
+        if (!this.canvas) {
+            this.canvas = document.createElement("canvas");
+            this.ctx = this.canvas.getContext("2d", { willReadFrequently: true });
+        }
+
+        const size = 16;
+        this.canvas.width = size;
+        this.canvas.height = size;
+        this.ctx.clearRect(0, 0, size, size);
+        this.ctx.drawImage(img, 0, 0, size, size);
+
+        const pixelData = this.ctx.getImageData(0, 0, size, size).data;
+        const colorCounts = new Map();
+
+        for (let i = 0; i < pixelData.length; i += 4) {
+            const [r, g, b, a] = [pixelData[i], pixelData[i + 1], pixelData[i + 2], pixelData[i + 3]];
+            if (a < 128) continue;
+            const key = `${r >> 4},${g >> 4},${b >> 4}`;
+            if (colorCounts.has(key)) {
+                colorCounts.get(key).freq++;
+            } else {
+                colorCounts.set(key, { r, g, b, freq: 1 });
+            }
+        }
+
+        if (colorCounts.size === 0) return null;
+
+        let scoredColors = [];
+        for (const color of colorCounts.values()) {
+            const { r, g, b, freq } = color;
+            const hsl = this.rgbToHsl(r, g, b);
+            const isBoring = hsl.s < 0.05 && hsl.l > 0.95; // Only filter out pure white
+            if (isBoring && colorCounts.size > 3) continue;
+            scoredColors.push({ ...color, score: freq * (1 + hsl.s), hsl });
+        }
+        
+        if (scoredColors.length === 0) return null;
+        scoredColors.sort((a, b) => b.score - a.score);
+
+        const gradientStart = scoredColors[0];
+        let gradientEnd = scoredColors.find(c => {
+            const hueDiff = Math.abs(c.hsl.h - gradientStart.hsl.h);
+            return hueDiff > 0.15 && hueDiff < 0.85; // Find a color with a different hue
+        }) || gradientStart; // Fallback to a solid color if no second hue is found
+
+        // --- AUTO-DARKENING LOGIC ---
+        const adjustIfNeeded = (color) => {
+            const luminance = (0.299 * color.r + 0.587 * color.g + 0.114 * color.b) / 255;
+            if (luminance > 0.9) { // Is the color extremely bright (like white)?
+                let hsl = color.hsl;
+                hsl.l = 0.75; // Drastically reduce lightness to a pleasant gray/pastel
+                hsl.s = Math.max(hsl.s, 0.1); // Ensure it's not totally desaturated
+                return this.hslToRgb(hsl.h, hsl.s, hsl.l);
+            }
+            return color; // Return original if it's not too bright
+        };
+
+        const finalStart = adjustIfNeeded(gradientStart);
+        const finalEnd = adjustIfNeeded(gradientEnd);
+
+        return { start: finalStart, end: finalEnd };
+    },
+    
+    // --- Color Conversion Helpers ---
+    rgbToHsl(r,g,b){r/=255;g/=255;b/=255;const M=Math.max(r,g,b),m=Math.min(r,g,b);let h,s,l=(M+m)/2;if(M==m){h=s=0}else{const d=M-m;s=l>.5?d/(2-M-m):d/(M+m);switch(M){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break}h/=6}return{h,s,l}},
+    hslToRgb(h,s,l){let r,g,b;if(s==0){r=g=b=l}else{const hue2rgb=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p};const q=l<.5?l*(1+s):l+s-l*s;const p=2*l-q;r=hue2rgb(p,q,h+1/3);g=hue2rgb(p,q,h);b=hue2rgb(p,q,h-1/3)}return{r:Math.round(r*255),g:Math.round(g*255),b:Math.round(b*255)}},
+
+    destroy() {
+      console.log('[ArclineSearchColor] Destroying script...');
+      this.searchObserver?.disconnect();
+      this.clearCssVars(document.documentElement);
+      delete window.ArclineSearchColor;
+    }
+  };
+
+  requestIdleCallback(() => window.ArclineSearchColor.init());
 })();
+
+
 
 
 // ====================================================================================================
@@ -1648,3 +1751,1618 @@ window.addEventListener("load", () => {
 }, { once: true });
 
 
+
+
+// ====================================================================================================
+// SCRIPT 11: Move the Extension button into url bar
+// ====================================================================================================
+// ==UserScript==
+// @ignorecache
+// @name         Move Unified Extension Button
+// @version      1.0
+// @description  Moves the unified extension button to identity-box and hides it on blank pages or when URL bar is floating.
+// @author       bxthesda
+// @match        chrome://browser/content/browser.xhtml
+// @grant        none
+// ==/UserScript==
+
+
+
+(function() {
+    'use strict';
+
+    let attempts = 0;
+    const MAX_ATTEMPTS = 20; // Try for about 10 seconds (20 * 500ms)
+    let scriptObserver = null;
+
+    function updateButtonVisibilityAndPosition() {
+        // console.log("Attempting to updateButtonVisibilityAndPosition");
+        let unifiedExtensionsButton = document.getElementById('unified-extensions-button');
+        let pageActionButtons = document.getElementById('page-action-buttons');
+        let urlbar = document.getElementById('urlbar');
+
+        if (!unifiedExtensionsButton) {
+            // console.log('unifiedExtensionsButton not found in updateButtonVisibilityAndPosition.');
+            // If button doesn't exist yet, try to run doTheMove again if attempts remain.
+            if (attempts < MAX_ATTEMPTS) {
+                setTimeout(doTheMove, 100); // Try to make sure it's there
+            }
+            return;
+        }
+
+        let isFloating = false;
+        if (urlbar) {
+            isFloating = urlbar.getAttribute('breakout-extend') === 'true' ||
+                           urlbar.getAttribute('zen-floating-urlbar') === 'true';
+        }
+
+        let isBlankPage = false;
+        let identityBox = document.getElementById('identity-box');
+        if (identityBox) {
+            isBlankPage = identityBox.getAttribute('pageproxystate') === 'invalid';
+        } else if (typeof gBrowser !== 'undefined' && gBrowser.selectedBrowser) {
+            const currentSpec = gBrowser.selectedBrowser.currentURI.spec;
+            isBlankPage = ['about:blank', 'about:newtab', 'about:home'].includes(currentSpec);
+        } else {
+            // Default to considering it a blank page if identityBox and gBrowser are unavailable for checks.
+            isBlankPage = true;
+            // console.log("Could not determine page state accurately, assuming blank page to hide button.");
+        }
+
+        if (isFloating || isBlankPage) {
+            // console.log(`Hiding button. Floating: ${isFloating}, BlankPage: ${isBlankPage}`);
+            unifiedExtensionsButton.style.display = 'none';
+        } else {
+            // console.log(`Showing button. Floating: ${isFloating}, BlankPage: ${isBlankPage}`);
+            unifiedExtensionsButton.style.display = ''; // Revert to default display (e.g., flex, inline-flex)
+            
+            // Use CSS order to ensure the button appears at the extreme right
+            unifiedExtensionsButton.style.order = '9999'; // High order value to ensure it's last
+            unifiedExtensionsButton.style.marginLeft = 'auto';
+            unifiedExtensionsButton.style.marginRight = '-4px';
+            
+            if (pageActionButtons) {
+                // Ensure page-action-buttons uses flexbox layout for order to work
+                pageActionButtons.style.display = 'flex';
+                pageActionButtons.style.alignItems = 'center';
+                
+                if (unifiedExtensionsButton.parentElement !== pageActionButtons) {
+                    pageActionButtons.appendChild(unifiedExtensionsButton);
+                    // console.log('Button moved/ensured in page-action-buttons by update logic.');
+                }
+            } else {
+                // console.error('page-action-buttons not found when trying to show/position button. Will be retried by doTheMove.');
+                // If pageActionButtons is missing when we need to show the button, trigger doTheMove's retry.
+                if (attempts < MAX_ATTEMPTS) {
+                    setTimeout(doTheMove, 100);
+                }
+            }
+        }
+    }
+
+    function doTheMove() {
+        try {
+            // console.log('Attempting to doTheMove...');
+            let unifiedExtensionsButton = document.getElementById('unified-extensions-button');
+            let pageActionButtons = document.getElementById('page-action-buttons');
+
+            if (unifiedExtensionsButton && pageActionButtons) {
+                if (unifiedExtensionsButton.parentElement !== pageActionButtons) {
+                    pageActionButtons.appendChild(unifiedExtensionsButton);
+                    console.log('Unified Extensions Button initially moved to page-action-buttons.');
+                }
+                
+                // Apply order styling immediately
+                unifiedExtensionsButton.style.order = '9999';
+                unifiedExtensionsButton.style.marginLeft = 'auto';
+                unifiedExtensionsButton.style.marginRight = '-4px';
+                
+                // Ensure page-action-buttons uses flexbox layout for order to work
+                pageActionButtons.style.display = 'flex';
+                pageActionButtons.style.alignItems = 'center';
+                
+                attempts = MAX_ATTEMPTS; // Stop timed retries for finding these specific elements
+                updateButtonVisibilityAndPosition(); // Initial visibility update
+            } else {
+                if (attempts < MAX_ATTEMPTS) {
+                    attempts++;
+                    setTimeout(doTheMove, 500);
+                } else {
+                    console.error('Max attempts reached by timer. Could not find unifiedExtensionsButton and/or pageActionButtons for initial move.');
+                }
+            }
+        } catch (e) {
+            console.error('Error in doTheMove:', e);
+        }
+    }
+
+    scriptObserver = new MutationObserver(function(mutationsList) {
+        let needsUpdate = false;
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                for (const node of [...mutation.addedNodes, ...mutation.removedNodes]) {
+                    if (node.nodeType === Node.ELEMENT_NODE && (node.id === 'unified-extensions-button' || node.id === 'page-action-buttons' || node.id === 'urlbar')) {
+                        needsUpdate = true;
+                        break;
+                    }
+                }
+                const btn = document.getElementById('unified-extensions-button');
+                const pageActionBtns = document.getElementById('page-action-buttons');
+                if (btn && pageActionBtns && btn.parentElement !== pageActionBtns) {
+                    needsUpdate = true; // Button exists but is not in page-action-buttons, re-evaluate
+                }
+            } else if (mutation.type === 'attributes') {
+                const target = mutation.target;
+                if (target.nodeType === Node.ELEMENT_NODE) {
+                    if ((target.id === 'urlbar' && (mutation.attributeName === 'breakout-extend' || mutation.attributeName === 'zen-floating-urlbar')) ||
+                        (target.id === 'identity-box' && mutation.attributeName === 'pageproxystate')) {
+                        needsUpdate = true;
+                    }
+                }
+            }
+            if (needsUpdate) break;
+        }
+
+        if (needsUpdate) {
+            // console.log("Observer triggered updateButtonVisibilityAndPosition");
+            updateButtonVisibilityAndPosition();
+        }
+    });
+
+    // Observe the documentElement for broader changes initially.
+    // The observer callback will filter for relevant element/attribute changes.
+    scriptObserver.observe(document.documentElement, {
+        childList: true,
+        subtree: true,
+        attributes: true
+    });
+
+    // Initial attempt to move the button after a short delay.
+    setTimeout(doTheMove, 1500);
+
+})(); 
+
+// ====================================================================================================
+// SCRIPT 12: Extension menu like arc
+// ====================================================================================================
+// ==UserScript==
+// @ignorecache
+// @name          Ext arc
+// @namespace      nomal
+// // @description   makeextension menu like ina rc browser
+// @version        1.7b
+// ==/UserScript==
+
+
+console.log("URLBarModifier: Initializing...");
+
+// Panel Manager Class - Simplified for Native Panel Only
+class PanelManager {
+  constructor() {
+    this.unifiedPanelModified = false;
+    this.extrasMenuListenersSetup = false;
+  }
+
+  modifyUnifiedExtensionsPanel() {
+    try {
+      if (this.unifiedPanelModified) {
+        console.log("Unified extensions panel already modified");
+        return;
+      }
+
+      const unifiedPanel = document.querySelector("#unified-extensions-view");
+      if (!unifiedPanel) {
+        console.log("Unified extensions panel not found, will retry later");
+        return;
+      }
+
+      // Inject minimal rules inspired by mod.extension.viewgrid and hide the Manage Extensions button
+      try {
+        const existing = document.getElementById("uev-mod-rules");
+        if (existing) existing.remove();
+        const style = document.createElementNS("http://www.w3.org/1999/xhtml", "style");
+        style.id = "uev-mod-rules";
+        style.textContent = `
+
+
+@media (-moz-bool-pref: "mod.extension.viewgrid") {
+  /* Desired width */
+  #unified-extensions-view { width: calc(var(--menu-panel-width) - 75px) !important; }
+
+  /* Hide header/description/texts and settings icon for each extension */
+  #unified-extensions-description,
+  #unified-extensions-view .panel-header,
+  #unified-extensions-view > :nth-child(2),
+  .unified-extensions-item-name,
+  .unified-extensions-item-message,
+  .unified-extensions-item-message-hover,
+  .unified-extensions-item-message-hover-menu-button,
+  .unified-extensions-item-menu-button { display: none !important; }
+
+  /* Arrange extensions in a centered grid (from mod.txt) */
+  #overflowed-extensions-list, #unified-extensions-area, .unified-extensions-list {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    justify-content: left !important;
+    align-items: center !important;
+    margin-inline: 7px !important;
+    width: 0px !important;
+  }
+  #overflowed-extensions-list { padding-block-start: 5px !important; }
+  #unified-extensions-area { padding-block-end: 10px !important; }
+
+  /* Center buttons and tidy margins */
+  .unified-extensions-item {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 12px !important;
+  }
+  .unified-extensions-item-icon,
+  .unified-extensions-item .webextension-browser-action.subviewbutton > .toolbarbutton-badge-stack {
+    margin: 0px !important;
+  }
+  panelview .unified-extensions-item-action-button { padding: 10px 10px !important; }
+
+  #unified-extensions-view toolbarseparator { margin-top: 0px !important; }
+
+  /* Hide the Manage Extensions footer button */
+  #unified-extensions-manage-extensions { display: none !important; }
+}
+`;
+        document.documentElement.appendChild(style);
+      } catch (e) {
+        console.warn("Failed to inject mod.viewgrid rules", e);
+      }
+
+      console.log("Modifying unified extensions panel");
+
+      // Create Action Buttons section using DOM methods
+      const actionSection = document.createElement("div");
+      actionSection.className = "urlbar-modifier-section";
+      actionSection.style.cssText = `
+        padding: 8px 8px;
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-left: 1px;
+      `;
+      
+      // Create Share URL button
+      const shareButton = document.createElement("div");
+      shareButton.id = "unified-share-url-button";
+      shareButton.className = "unified-extension-item";
+      shareButton.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: color-mix(in srgb, currentColor 6%, transparent);
+        width: 40px;
+        height: 20px;
+      `;
+      shareButton.setAttribute("title", "Share URL");
+      
+      // Create share icon using createXULElement
+      const shareIcon = document.createXULElement("image");
+      shareIcon.className = "unified-extension-icon";
+      shareIcon.style.cssText = "width: 18px; height: 18px; -moz-context-properties: fill; fill: currentColor;";
+      try {
+        // Inline SVG using provided paths with context-fill
+        const shareSvg = `data:image/svg+xml;utf8,`
+          + encodeURIComponent(
+            `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+               <path fill="context-fill" d="M19 22H5c-1.654 0-3-1.346-3-3V8h2v11c0 .552.449 1 1 1h14c.552 0 1-.448 1-1v-2h2v2C22 20.654 20.654 22 19 22zM16.707 11.707L15.293 10.293 18.586 7 15.293 3.707 16.707 2.293 21.414 7z"/>
+               <path fill="context-fill" d="M8,18H6v-1c0-6.065,4.935-11,11-11h3v2h-3c-4.963,0-9,4.037-9,9V18z"/>
+             </svg>`
+          );
+        shareIcon.setAttribute('src', shareSvg);
+      } catch (e) {
+        // Fallback to a known icon
+        shareIcon.setAttribute('src', 'chrome://global/skin/icons/plus.svg');
+      }
+      
+      shareButton.appendChild(shareIcon);
+      
+      // Create Screenshot button
+      const screenshotButton = document.createElement("div");
+      screenshotButton.id = "unified-screenshot-button";
+      screenshotButton.className = "unified-extension-item";
+      screenshotButton.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: color-mix(in srgb, currentColor 6%, transparent);
+        width: 40px;
+        height: 20px;
+      `;
+      screenshotButton.setAttribute("title", "Take a screenshot");
+      
+      const screenshotIcon = document.createXULElement("image");
+      screenshotIcon.className = "unified-extension-icon";
+      screenshotIcon.style.cssText = "width: 18px; height: 18px; -moz-context-properties: fill; fill: currentColor;";
+      try {
+        const cameraSvg = `data:image/svg+xml;utf8,`
+          + encodeURIComponent(
+            `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+               <path fill="context-fill" d="M20 5h-3.2l-1.2-2H8.4L7.2 5H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-8 13a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+             </svg>`
+          );
+        screenshotIcon.setAttribute('src', cameraSvg);
+      } catch (e) {
+        screenshotIcon.setAttribute('src', 'chrome://global/skin/icons/plus.svg');
+      }
+      
+      screenshotButton.appendChild(screenshotIcon);
+      
+      // Create Copy URL button
+      const copyUrlButton = document.createElement("div");
+      copyUrlButton.id = "unified-copy-url-button";
+      copyUrlButton.className = "unified-extension-item";
+      copyUrlButton.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: color-mix(in srgb, currentColor 6%, transparent);
+        width: 40px;
+        height: 20px;
+      `;
+      copyUrlButton.setAttribute("title", "Copy URL to clipboard");
+      
+      const copyUrlIcon = document.createXULElement("image");
+      copyUrlIcon.className = "unified-extension-icon";
+      copyUrlIcon.style.cssText = "width: 18px; height: 18px; -moz-context-properties: fill; fill: currentColor; transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;";
+      try {
+        const linkSvg = `data:image/svg+xml;utf8,`
+          + encodeURIComponent(
+            `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+               <g id="SVGRepo_iconCarrier">
+                 <path d="M14.1625 18.4876L13.4417 19.2084C11.053 21.5971 7.18019 21.5971 4.79151 19.2084C2.40283 16.8198 2.40283 12.9469 4.79151 10.5583L5.51236 9.8374" stroke="context-fill" stroke-width="2" stroke-linecap="round"></path>
+                 <path d="M9.8374 14.1625L14.1625 9.8374" stroke="context-fill" stroke-width="2" stroke-linecap="round"></path>
+                 <path d="M9.8374 5.51236L10.5583 4.79151C12.9469 2.40283 16.8198 2.40283 19.2084 4.79151C21.5971 7.18019 21.5971 11.053 19.2084 13.4417L18.4876 14.1625" stroke="context-fill" stroke-width="2" stroke-linecap="round"></path>
+               </g>
+             </svg>`
+          );
+        copyUrlIcon.setAttribute('src', linkSvg);
+      } catch (e) {
+        // Use Firefox's built-in copy icon
+        copyUrlIcon.setAttribute('src', 'chrome://global/skin/icons/edit-copy.svg');
+      }
+      
+      copyUrlButton.appendChild(copyUrlIcon);
+      
+      // Add all buttons to the action section
+      actionSection.appendChild(shareButton);
+      actionSection.appendChild(screenshotButton);
+      actionSection.appendChild(copyUrlButton);
+
+      // Create Picture-in-Picture Toggle section using DOM methods
+      const pipSection = document.createElement("div");
+      pipSection.className = "urlbar-modifier-section";
+      pipSection.style.cssText = `
+        padding: 8px 8px;
+      `;
+      
+      const pipToggle = document.createElement("div");
+      pipToggle.id = "unified-pip-toggle";
+      pipToggle.className = "unified-extension-item";
+      pipToggle.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 6px 8px;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: transparent !important;
+        width: 163px;
+      `;
+      
+      const pipLabelContainer = document.createElement("div");
+      pipLabelContainer.style.cssText = "display: flex; align-items: center; gap: 8px; flex: 1;";
+      
+      // Create PiP icon using createXULElement
+      const pipIcon = document.createXULElement("image");
+      pipIcon.className = "unified-extension-icon";
+      pipIcon.style.cssText = "width: 16px; height: 16px; -moz-context-properties: fill; fill: currentColor;";
+      
+      // Use Firefox's built-in Picture-in-Picture icon
+      pipIcon.setAttribute('src', 'chrome://global/skin/media/picture-in-picture-open.svg');
+      
+      const pipLabel = document.createElement("span");
+      pipLabel.className = "unified-extension-label";
+      pipLabel.textContent = "Auto PiP";
+      pipLabel.style.cssText = "font-size: 0.9em;";
+      
+      // Create toggle switch
+      const pipSwitch = document.createElement("div");
+      pipSwitch.id = "pip-switch";
+      pipSwitch.style.cssText = `
+        width: 32px;
+        height: 18px;
+        border-radius: 9px;
+        background-color: color-mix(in srgb, currentColor 20%, transparent);
+        position: relative;
+        transition: background-color 0.2s ease;
+        cursor: pointer;
+      `;
+      
+      const pipSwitchThumb = document.createElement("div");
+      pipSwitchThumb.id = "pip-switch-thumb";
+      pipSwitchThumb.style.cssText = `
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background-color: currentColor;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        transition: transform 0.2s ease;
+      `;
+      
+      pipSwitch.appendChild(pipSwitchThumb);
+      pipLabelContainer.appendChild(pipIcon);
+      pipLabelContainer.appendChild(pipLabel);
+      pipToggle.appendChild(pipLabelContainer);
+      pipToggle.appendChild(pipSwitch);
+      pipSection.appendChild(pipToggle);
+
+      // Create separator between PiP and Security sections
+      const pipSeparator = document.createXULElement("toolbarseparator");
+      pipSeparator.style.cssText = "margin-top: 0px !important;";
+
+      // Create Security section using DOM methods
+      const securitySection = document.createElement("div");
+      securitySection.className = "urlbar-modifier-section";
+      securitySection.style.cssText = `
+        padding: 8px 8px;
+      `;
+      
+      const securityStatus = document.createElement("div");
+      securityStatus.id = "unified-security-status";
+      securityStatus.className = "unified-security-pill";
+      securityStatus.style.cssText = `
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        padding: 4px 8px;
+        border-radius: 5px;
+        background-color: color-mix(in srgb, currentColor 8%, transparent);
+      `;
+      
+      const securityIcon = document.createXULElement("image");
+      securityIcon.id = "unified-security-icon";
+      securityIcon.className = "unified-extension-icon";
+      securityIcon.setAttribute("src", "chrome://global/skin/icons/security.svg");
+      // Theme-aware via context fill
+      securityIcon.style.cssText = "width: 10px; height: 10px; -moz-context-properties: fill; fill: currentColor;";
+      
+      const securityText = document.createElement("span");
+      securityText.id = "unified-security-text";
+      securityText.textContent = "Secure";
+      securityText.style.cssText = "font-size: 0.85em; font-weight: 500;";
+      
+      securityStatus.appendChild(securityIcon);
+      securityStatus.appendChild(securityText);
+      
+      // Create extras button
+      const extrasButton = document.createElement("div");
+      extrasButton.id = "unified-extras-button";
+      extrasButton.className = "unified-extension-item";
+      extrasButton.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: color-mix(in srgb, currentColor 6%, transparent);
+        width: 8px;
+        height: 6px;
+        margin-left: 87px;
+      `;
+      extrasButton.setAttribute("title", "Extras Menu");
+      
+      // Create extras icon
+      const extrasIcon = document.createElement("img");
+      extrasIcon.className = "unified-extension-icon";
+      extrasIcon.src = "chrome://browser/skin/zen-icons/menu.svg";
+      extrasIcon.style.cssText = "width: 14px; height: 14px; -moz-context-properties: fill; fill: currentColor;";
+      
+      extrasButton.appendChild(extrasIcon);
+      
+      // Create container for security status and extras button
+      const securityContainer = document.createElement("div");
+      securityContainer.style.cssText = "display: flex; align-items: center; gap: 8px;";
+      securityContainer.appendChild(securityStatus);
+      securityContainer.appendChild(extrasButton);
+      
+      securitySection.appendChild(securityContainer);
+
+      // Hide extension names and menu buttons to clean up the UI
+      const extensionNames = unifiedPanel.querySelectorAll('.unified-extensions-item-name');
+      extensionNames.forEach(name => {
+        name.style.display = 'none';
+      });
+      
+      const extensionMenuButtons = unifiedPanel.querySelectorAll('.unified-extensions-item-menu-button.subviewbutton.subviewbutton-iconic');
+      extensionMenuButtons.forEach(button => {
+        button.style.display = 'none';
+      });
+
+      // Attempt to enable native grid view via preference if available
+      try {
+        Services.prefs.setBoolPref('mod.extension.viewgrid', true);
+      } catch (e) {
+        console.debug('Could not set mod.extension.viewgrid pref, proceeding without it');
+      }
+
+      // Use native layout; do not force grid styles. Optionally hide labels/menus after panel renders
+      const extensionsArea = unifiedPanel.querySelector('#unified-extensions-area');
+      if (extensionsArea) {
+        
+        setTimeout(() => {
+          // Only hide text labels and menu buttons - don't modify the extension items themselves
+          const extensionNames = extensionsArea.querySelectorAll('.unified-extensions-item-name');
+          extensionNames.forEach(name => {
+            name.style.display = 'none';
+          });
+          
+          const extensionMenuButtons = extensionsArea.querySelectorAll('.unified-extensions-item-menu-button');
+          extensionMenuButtons.forEach(button => {
+            button.style.display = 'none';
+          });
+          
+          const contentsBoxes = extensionsArea.querySelectorAll('.unified-extensions-item-contents');
+          contentsBoxes.forEach(box => {
+            box.style.display = 'none';
+          });
+          
+          // Append trailing "+" tile to browse add-ons (ensure only once)
+          if (!extensionsArea.querySelector('#ue-add-extension-button')) {
+            try {
+              const gridContainer = extensionsArea;
+
+              const item = document.createXULElement('toolbaritem');
+              item.className = 'toolbaritem-combined-buttons unified-extensions-item chromeclass-toolbar-additional';
+              item.setAttribute('cui-areatype', 'panel');
+              item.setAttribute('widget-type', 'custom');
+              item.setAttribute('removable', 'false');
+              item.setAttribute('overflows', 'true');
+
+              const row = document.createXULElement('box');
+              row.className = 'unified-extensions-item-row-wrapper';
+
+              const plusBtn = document.createXULElement('toolbarbutton');
+              plusBtn.id = 'ue-add-extension-button';
+              plusBtn.className = 'unified-extensions-item-action-button panel-no-padding subviewbutton subviewbutton-iconic';
+              plusBtn.setAttribute('tooltiptext', 'Browse add-ons');
+              plusBtn.setAttribute('image', 'chrome://global/skin/icons/plus.svg');
+              plusBtn.setAttribute('tabindex', '0');
+              plusBtn.setAttribute('role', 'button');
+
+              const activate = (ev) => {
+                ev.preventDefault();
+                ev.stopPropagation();
+                const url = 'https://addons.mozilla.org/en-US/firefox/extensions/';
+                try {
+                  if (typeof UC_API !== 'undefined' && UC_API?.Utils?.loadURI) {
+                    UC_API.Utils.loadURI(window, { url, where: 'tab' });
+                  } else if (typeof gBrowser !== 'undefined') {
+                    gBrowser.loadOneTab(url, { inBackground: false });
+                  } else {
+                    window.open(url, '_blank', 'noopener');
+                  }
+                } catch (e) {
+                  try { window.open(url, '_blank', 'noopener'); } catch {}
+                }
+              };
+
+              plusBtn.addEventListener('click', activate);
+              plusBtn.addEventListener('keydown', (ev) => {
+                if (ev.key === 'Enter' || ev.key === ' ') activate(ev);
+              });
+
+              row.appendChild(plusBtn);
+              item.appendChild(row);
+              gridContainer.appendChild(item);
+            } catch (e) {
+              console.warn('Failed to append add-extension plus button', e);
+            }
+          }
+
+          // Ensure the plus tile stays at the end of the grid when items change
+          try {
+            const ensurePlusAtEnd = () => {
+              if (extensionsArea.__uePlusBusy) return;
+              extensionsArea.__uePlusBusy = true;
+              // Defer to avoid running during DOM removal
+              setTimeout(() => {
+                try {
+                  if (!extensionsArea || !extensionsArea.isConnected) return;
+                  const btn = extensionsArea.querySelector('#ue-add-extension-button');
+                  if (!btn) return;
+                  // Find the container tile for the button
+                  let tile = btn.closest && btn.closest('toolbaritem');
+                  if (!tile || tile.nodeType !== Node.ELEMENT_NODE) tile = btn;
+                  if (!tile || !tile.parentNode) return;
+                  // Append to end only if not already last or wrong parent
+                  if (tile.parentNode !== extensionsArea || tile !== extensionsArea.lastElementChild) {
+                    extensionsArea.appendChild(tile);
+                  }
+                } catch (e) {
+                  console.warn('ensurePlusAtEnd failed', e);
+                } finally {
+                  extensionsArea.__uePlusBusy = false;
+                }
+              }, 0);
+            };
+
+            ensurePlusAtEnd();
+
+            if (!extensionsArea.__uePlusObserver) {
+              const plusObserver = new MutationObserver((mutations) => {
+                for (const m of mutations) {
+                  if (m.type === 'childList' && (m.addedNodes && m.addedNodes.length || m.removedNodes && m.removedNodes.length)) {
+                    ensurePlusAtEnd();
+                    break;
+                  }
+                }
+              });
+              plusObserver.observe(extensionsArea, { childList: true });
+              extensionsArea.__uePlusObserver = plusObserver;
+
+              // Clean up observer when the panel hides/closes
+              const cleanup = () => {
+                try {
+                  if (extensionsArea.__uePlusObserver) {
+                    extensionsArea.__uePlusObserver.disconnect();
+                    extensionsArea.__uePlusObserver = null;
+                  }
+                } catch {}
+              };
+              unifiedPanel.addEventListener('popuphidden', cleanup, { once: true });
+            }
+          } catch (e) {
+            console.warn('Failed to enforce plus tile ordering', e);
+          }
+
+          console.log("Applied minimal cleanup (names/menus hidden) and appended plus tile");
+        }, 150);
+      }
+
+      // Insert action buttons at the top, PiP toggle and security at the bottom
+      unifiedPanel.insertBefore(actionSection, unifiedPanel.firstChild);
+      
+      // Find the "Manage extensions" button and replace it with our sections
+      const manageButton = unifiedPanel.querySelector("#unified-extensions-manage-extensions");
+      if (manageButton) {
+        // Hide the manage button
+        manageButton.style.display = "none";
+        
+        // Insert PiP section before the manage button
+        unifiedPanel.insertBefore(pipSection, manageButton);
+        // Insert separator after PiP section
+        unifiedPanel.insertBefore(pipSeparator, manageButton);
+        // Insert security section after separator
+        unifiedPanel.insertBefore(securitySection, manageButton);
+      } else {
+        // Fallback: append to the end
+        unifiedPanel.appendChild(pipSection);
+        unifiedPanel.appendChild(pipSeparator);
+        unifiedPanel.appendChild(securitySection);
+      }
+
+      // Add event listeners to action buttons
+      shareButton.addEventListener("click", (event) => {
+        this.shareCurrentUrl(event);
+      });
+      shareButton.addEventListener("mouseenter", () => {
+        shareButton.style.backgroundColor = "color-mix(in srgb, currentColor 10%, transparent)";
+      });
+      shareButton.addEventListener("mouseleave", () => {
+        shareButton.style.backgroundColor = "color-mix(in srgb, currentColor 6%, transparent)";
+      });
+
+      screenshotButton.addEventListener("click", (event) => {
+        this.takeScreenshot(event);
+      });
+      screenshotButton.addEventListener("mouseenter", () => {
+        screenshotButton.style.backgroundColor = "color-mix(in srgb, currentColor 10%, transparent)";
+      });
+      screenshotButton.addEventListener("mouseleave", () => {
+        screenshotButton.style.backgroundColor = "color-mix(in srgb, currentColor 6%, transparent)";
+      });
+
+      copyUrlButton.addEventListener("click", (event) => {
+        this.copyCurrentUrl(event);
+      });
+      copyUrlButton.addEventListener("mouseenter", () => {
+        copyUrlButton.style.backgroundColor = "color-mix(in srgb, currentColor 10%, transparent)";
+      });
+      copyUrlButton.addEventListener("mouseleave", () => {
+        copyUrlButton.style.backgroundColor = "color-mix(in srgb, currentColor 6%, transparent)";
+      });
+
+      // Add event listener for extras button
+      extrasButton.addEventListener("click", (event) => {
+        this.showExtrasContextMenu(event);
+      });
+      extrasButton.addEventListener("mouseenter", () => {
+        extrasButton.style.backgroundColor = "color-mix(in srgb, currentColor 10%, transparent)";
+      });
+      extrasButton.addEventListener("mouseleave", () => {
+        extrasButton.style.backgroundColor = "color-mix(in srgb, currentColor 6%, transparent)";
+      });
+
+      // Add event listeners to PiP toggle
+      pipToggle.addEventListener("click", (event) => {
+        this.toggleAutoPiP(event);
+      });
+
+      // Initialize PiP toggle state
+      this.updatePiPToggleState();
+
+      // Update security info
+      this.updateUnifiedSecurityInfo();
+
+      this.unifiedPanelModified = true;
+      console.log("Unified extensions panel successfully modified");
+
+    } catch (err) {
+      console.error("Error modifying unified extensions panel:", err);
+    }
+  }
+
+  createExtrasContextMenu() {
+    // Remove existing context menu if it exists
+    const existingMenu = document.querySelector("#extras-context-menu");
+    if (existingMenu) {
+      existingMenu.remove();
+    }
+
+    const contextMenuXUL = `
+      <menupopup id="extras-context-menu">
+        <menuitem id="clear-cache-button" label="Clear Cache"/>
+        <menuitem id="clear-cookies-button" label="Clear Cookies"/>
+        <menuseparator/>
+        <menuitem id="manage-extensions-button" label="Manage Extensions"/>
+        <menuseparator/>
+        <menuitem id="page-permissions-button" label="All Page Permissions"/>
+      </menupopup>
+    `;
+
+    const mainPopupSet = document.querySelector("#mainPopupSet");
+    if (mainPopupSet) {
+      appendXUL(mainPopupSet, contextMenuXUL, null, true);
+      console.log("Extras context menu created and added to mainPopupSet");
+    }
+  }
+
+  showExtrasContextMenu(event) {
+    try {
+      // Create the context menu if it doesn't exist
+      if (!document.getElementById("extras-context-menu")) {
+        this.createExtrasContextMenu();
+      }
+
+      // Set up event listeners if not already done
+      if (!this.extrasMenuListenersSetup) {
+        this.setupExtrasMenuListeners();
+        this.extrasMenuListenersSetup = true;
+      }
+
+      const contextMenu = document.getElementById("extras-context-menu");
+      if (contextMenu) {
+        // Anchor the popup to the button for better UX
+        const anchor = event.currentTarget || event.target;
+        contextMenu.openPopup(anchor, "after_end", 0, 0, true, false, event);
+      }
+    } catch (error) {
+      console.error("Error showing extras context menu:", error);
+    }
+  }
+
+  setupExtrasMenuListeners() {
+    if (this.extrasMenuListenersSetup) return;
+
+    const clearCacheButton = document.getElementById("clear-cache-button");
+    const clearCookiesButton = document.getElementById("clear-cookies-button");
+    const manageExtensionsButton = document.getElementById("manage-extensions-button");
+
+    if (clearCacheButton) {
+      clearCacheButton.addEventListener("command", (e) => {
+        e.stopPropagation();
+        this.clearCache();
+        const extrasMenu = document.getElementById("extras-context-menu");
+        extrasMenu?.hidePopup();
+      });
+    }
+
+    if (clearCookiesButton) {
+      clearCookiesButton.addEventListener("command", (e) => {
+        e.stopPropagation();
+        this.clearCookies();
+        const extrasMenu = document.getElementById("extras-context-menu");
+        extrasMenu?.hidePopup();
+      });
+    }
+
+    if (manageExtensionsButton) {
+      manageExtensionsButton.addEventListener("command", (e) => {
+        e.stopPropagation();
+        try {
+          const principal = Services.scriptSecurityManager.getSystemPrincipal();
+          const tab = gBrowser.addTab("about:addons", { triggeringPrincipal: principal });
+          gBrowser.selectedTab = tab;
+        } catch (err) {
+          console.error("URLBarModifier: Failed to open about:addons", err);
+          // Fallback
+          try { window.openTrustedLinkIn("about:addons", "tab"); } catch (_) {}
+        } finally {
+          const extrasMenu = document.getElementById("extras-context-menu");
+          extrasMenu?.hidePopup();
+        }
+      });
+    }
+
+    this.extrasMenuListenersSetup = true;
+  }
+
+  clearCache() {
+    try {
+      console.log("Clearing cache...");
+      
+      // Clear disk cache
+      Services.cache2.clear();
+      
+      // Clear memory cache
+      const memoryService = Cc["@mozilla.org/memory-reporter-manager;1"]
+        .getService(Ci.nsIMemoryReporterManager);
+      memoryService.minimizeMemoryUsage(() => {
+        console.log("Memory cache cleared");
+      });
+      
+      // Clear image cache
+      const imgCache = Cc["@mozilla.org/image/cache;1"]
+        .getService(Ci.imgICache);
+      imgCache.clearCache(false); // false = don't clear chrome cache
+      
+      // Refresh current tab
+      if (gBrowser && gBrowser.selectedBrowser) {
+        gBrowser.selectedBrowser.reload();
+      }
+      
+      console.log("Cache cleared successfully");
+    } catch (error) {
+      console.error("Error clearing cache:", error);
+    }
+  }
+
+  clearCookies() {
+    try {
+      console.log("Clearing cookies for current site...");
+      
+      const currentURI = gBrowser.currentURI;
+      if (!currentURI) {
+        console.warn("No current URI found");
+        return;
+      }
+      
+      const host = currentURI.host;
+      if (!host) {
+        console.warn("No host found in current URI");
+        return;
+      }
+      
+      // Clear cookies for the current domain
+      const cookieManager = Cc["@mozilla.org/cookiemanager;1"]
+        .getService(Ci.nsICookieManager);
+      
+      // Get all cookies and remove those matching the current host
+      const cookies = cookieManager.cookies;
+      for (const cookie of cookies) {
+        if (cookie.host === host || cookie.host === `.${host}`) {
+          cookieManager.remove(cookie.host, cookie.name, cookie.path, {});
+        }
+      }
+      
+      // Clear site data (localStorage, sessionStorage, indexedDB, etc.)
+      const principal = Services.scriptSecurityManager.createContentPrincipal(
+        currentURI, {}
+      );
+      
+      Services.clearData.deleteDataFromPrincipal(
+        principal,
+        true, // user request
+        Ci.nsIClearDataService.CLEAR_ALL,
+        () => {
+          console.log("Site data cleared successfully");
+          // Refresh current tab
+          if (gBrowser && gBrowser.selectedBrowser) {
+            gBrowser.selectedBrowser.reload();
+          }
+        }
+      );
+      
+      console.log(`Cookies and site data cleared for: ${host}`);
+    } catch (error) {
+      console.error("Error clearing cookies:", error);
+    }
+  }
+
+  updateUnifiedSecurityInfo() {
+    try {
+      const currentURI = gBrowser.currentURI;
+      const securityStatus = document.getElementById("unified-security-status");
+      const securityIcon = document.getElementById("unified-security-icon");
+      const securityText = document.getElementById("unified-security-text");
+      
+      if (!currentURI || !securityStatus || !securityIcon || !securityText) {
+        console.warn("Unified security elements not found or no current URI");
+        return;
+      }
+
+      // Check connection security
+      const scheme = currentURI.scheme;
+      
+      if (scheme === "https") {
+        securityText.textContent = "Secure";
+        securityStatus.setAttribute("title", "Secure HTTPS Connection");
+        securityStatus.style.color = "currentColor";
+        securityIcon.style.filter = "";
+      } else if (scheme === "http") {
+        securityText.textContent = "Insecure";
+        securityStatus.setAttribute("title", "Insecure HTTP Connection");
+        securityStatus.style.color = "#ef4444";
+        securityIcon.style.filter = "hue-rotate(0deg) saturate(2) brightness(0.6) sepia(1) hue-rotate(-50deg)";
+      } else {
+        securityText.textContent = "Local";
+        securityStatus.setAttribute("title", "Local or Special Page");
+        securityStatus.style.color = "currentColor";
+        securityIcon.style.filter = "";
+      }
+
+      console.log("Unified security info updated for:", currentURI.spec);
+    } catch (err) {
+      console.error("Error updating unified security info:", err);
+    }
+  }
+
+
+  shareCurrentUrl(event) {
+    const currentUrl = gBrowser.currentURI.spec;
+    if (
+      currentUrl &&
+      (currentUrl.startsWith("http://") || currentUrl.startsWith("https://"))
+    ) {
+      const buttonRect = event.target.getBoundingClientRect();
+      Services.zen.share(
+        Services.io.newURI(currentUrl),
+        "",
+        "",
+        buttonRect.left,
+        window.innerHeight - buttonRect.bottom,
+        buttonRect.width,
+        buttonRect.height
+      );
+      // Close the unified extensions panel after sharing
+      const unifiedPanel = document.querySelector("#unified-extensions-view");
+      if (unifiedPanel && unifiedPanel.hidePopup) {
+        unifiedPanel.hidePopup();
+      }
+    }
+  }
+
+  takeScreenshot(event) {
+    try {
+      console.log("URLBarModifier: takeScreenshot invoked");
+      // Store panel reference before any async operations
+      const unifiedPanel = document.querySelector("#unified-extensions-view");
+
+      // Debug: Check what screenshot commands are available
+      console.log("URLBarModifier: Checking available screenshot commands...");
+      console.log("- BrowserCommands.screenshot:", !!window.BrowserCommands?.screenshot);
+      console.log("- ScreenshotUI.openSelectedBrowser:", !!window.ScreenshotUI?.openSelectedBrowser);
+      console.log("- Services.zen.screenshot:", !!Services?.zen?.screenshot);
+      console.log("- goDoCommand function:", typeof goDoCommand);
+      console.log("- gBrowser available:", typeof gBrowser !== 'undefined');
+      console.log("- window.gBrowser available:", typeof window.gBrowser !== 'undefined');
+
+      // Get the correct browser reference
+      const browser = gBrowser?.selectedBrowser || 
+                     window.gBrowser?.selectedBrowser || 
+                     document.getElementById('content')?.selectedBrowser ||
+                     window.content;
+
+      // Try Firefox Screenshots API directly
+      try {
+        if (typeof Screenshots !== 'undefined' && Screenshots.showPanel && browser) {
+          console.log("URLBarModifier: Using Screenshots.showPanel");
+          Screenshots.showPanel(window, browser);
+          return;
+        }
+      } catch (e) {
+        console.log("URLBarModifier: Screenshots.showPanel failed:", e.message);
+      }
+
+      // Try the newer Screenshots.jsm API with ChromeUtils.importESModule
+      try {
+        const { Screenshots } = ChromeUtils.importESModule("resource:///modules/Screenshots.sys.mjs");
+        if (Screenshots && Screenshots.showPanel && browser) {
+          console.log("URLBarModifier: Using Screenshots.sys.mjs showPanel");
+          Screenshots.showPanel(window, browser);
+          return;
+        }
+      } catch (e) {
+        console.log("URLBarModifier: Screenshots.sys.mjs failed:", e.message);
+      }
+
+      // Try the older Screenshots.jsm API
+      try {
+        const { Screenshots } = ChromeUtils.import("resource:///modules/Screenshots.jsm");
+        if (Screenshots && Screenshots.showPanel && browser) {
+          console.log("URLBarModifier: Using Screenshots.jsm showPanel");
+          Screenshots.showPanel(window, browser);
+          return;
+        }
+      } catch (e) {
+        console.log("URLBarModifier: Screenshots.jsm failed:", e.message);
+      }
+
+      // Try using Services.obs to notify screenshot service with different topics and data
+      const screenshotTopics = [
+        { topic: "menuitem-screenshot", data: null },
+        { topic: "screenshots-take-screenshot", data: browser?.outerWindowID || null }, 
+        { topic: "screenshot-ui-show", data: JSON.stringify({windowId: window.windowUtils?.outerWindowID}) },
+        { topic: "Screenshots:ShowPanel", data: browser?.outerWindowID || null }
+      ];
+      
+      for (const {topic, data} of screenshotTopics) {
+        try {
+          console.log(`URLBarModifier: Using Services.obs with topic: ${topic}, data: ${data}`);
+          Services.obs.notifyObservers(window, topic, data);
+          // Close panel after successful screenshot
+          this.closePanelImmediately(unifiedPanel);
+          return;
+        } catch (e) {
+          console.log(`URLBarModifier: Services.obs ${topic} failed:`, e.message);
+        }
+      }
+
+      // Try Firefox's internal screenshot command controller with context
+      try {
+        // Set up the context that Firefox screenshot expects
+        if (typeof gBrowser !== 'undefined' && gBrowser.selectedBrowser) {
+          window._tempScreenshotBrowser = gBrowser.selectedBrowser;
+        }
+        
+        const controller = top.document.commandDispatcher.getControllerForCommand("cmd_screenshot");
+        if (controller && controller.isCommandEnabled("cmd_screenshot")) {
+          console.log("URLBarModifier: Using command controller for cmd_screenshot");
+          controller.doCommand("cmd_screenshot");
+          return;
+        }
+      } catch (e) {
+        console.log("URLBarModifier: Command controller failed:", e.message);
+      } finally {
+        // Clean up temp reference
+        if (window._tempScreenshotBrowser) {
+          delete window._tempScreenshotBrowser;
+        }
+      }
+
+      // Try alternative screenshot command IDs
+      const screenshotCommands = ["cmd_screenshot", "Browser:Screenshot", "Tools:Screenshot"];
+      for (const cmdId of screenshotCommands) {
+        try {
+          const controller = top.document.commandDispatcher.getControllerForCommand(cmdId);
+          if (controller && controller.isCommandEnabled(cmdId)) {
+            console.log(`URLBarModifier: Using command controller for ${cmdId}`);
+            controller.doCommand(cmdId);
+            return;
+          }
+        } catch (e) {
+          console.log(`URLBarModifier: Command controller ${cmdId} failed:`, e.message);
+        }
+      }
+
+      // Prefer native BrowserCommands if available
+      if (window.BrowserCommands?.screenshot && browser) {
+        console.log("URLBarModifier: Using BrowserCommands.screenshot");
+        window.BrowserCommands.screenshot(browser);
+        return;
+      }
+
+      // Try gBrowser ownerDocument commands (cmd_screenshot)
+      try {
+        if (typeof goDoCommand === 'function') {
+          console.log("URLBarModifier: Using goDoCommand('cmd_screenshot')");
+          goDoCommand('cmd_screenshot');
+          return;
+        }
+      } catch {}
+
+      // Try alternative Browser command id
+      try {
+        if (typeof goDoCommand === 'function') {
+          console.log("URLBarModifier: Using goDoCommand('Browser:Screenshot')");
+          goDoCommand('Browser:Screenshot');
+          return;
+        }
+      } catch {}
+
+      // Try invoking command elements directly if present
+      try {
+        const cmdEl = document.getElementById('cmd_screenshot') || document.getElementById('Browser:Screenshot');
+        if (cmdEl && typeof cmdEl.doCommand === 'function') {
+          console.log("URLBarModifier: Using command element doCommand for screenshot");
+          cmdEl.doCommand();
+          return;
+        }
+      } catch {}
+
+      // Try the ScreenshotUI API used internally in some builds
+      try {
+        if (window.ScreenshotUI?.openSelectedBrowser && browser) {
+          console.log("URLBarModifier: Using ScreenshotUI.openSelectedBrowser");
+          window.ScreenshotUI.openSelectedBrowser(browser);
+          return;
+        }
+      } catch {}
+
+      // Zen specific: Services.zen.screenshot if provided
+      try {
+        if (Services?.zen?.screenshot && browser) {
+          console.log("URLBarModifier: Using Services.zen.screenshot");
+          Services.zen.screenshot(browser);
+          return;
+        }
+      } catch {}
+
+      // Try direct access to Firefox screenshot functionality via window object
+      try {
+        console.log("URLBarModifier: Trying window.screenshot API");
+        if (typeof window.screenshot === 'function') {
+          window.screenshot();
+          return;
+        }
+      } catch (e) {
+        console.log("URLBarModifier: window.screenshot failed:", e.message);
+      }
+
+      // Try accessing screenshot through the content window
+      try {
+        console.log("URLBarModifier: Trying content window screenshot");
+        const contentWin = browser?.contentWindow || window.content;
+        if (contentWin && typeof contentWin.screenshot === 'function') {
+          contentWin.screenshot();
+          return;
+        }
+      } catch (e) {
+        console.log("URLBarModifier: Content window screenshot failed:", e.message);
+      }
+
+      // Try keyboard shortcut simulation for screenshot (more comprehensive)
+      try {
+        console.log("URLBarModifier: Trying keyboard shortcut simulation");
+        // Try multiple key event targets
+        const targets = [document, window, browser?.contentDocument, browser?.contentWindow];
+        
+        for (const target of targets) {
+          if (!target) continue;
+          try {
+            const keyEvent = new KeyboardEvent('keydown', {
+              key: 'S',
+              code: 'KeyS',
+              ctrlKey: true,
+              shiftKey: true,
+              bubbles: true,
+              cancelable: true
+            });
+            target.dispatchEvent(keyEvent);
+            
+            // Also try keyup
+            const keyUpEvent = new KeyboardEvent('keyup', {
+              key: 'S',
+              code: 'KeyS',
+              ctrlKey: true,
+              shiftKey: true,
+              bubbles: true,
+              cancelable: true
+            });
+            target.dispatchEvent(keyUpEvent);
+          } catch (e) {
+            console.log(`URLBarModifier: Keyboard shortcut on ${target.constructor.name} failed:`, e.message);
+          }
+        }
+        return;
+      } catch (e) {
+        console.log("URLBarModifier: Keyboard shortcut failed:", e.message);
+      }
+
+      // As a very last resort try clicking a toolbar screenshot button if present
+      const screenshotCommand = document.getElementById('screenshot-button') ||
+                               document.getElementById('screenshot') ||
+                               document.querySelector('[command="screenshot"]');
+      if (screenshotCommand) {
+        console.log("URLBarModifier: Clicking existing screenshot button");
+        screenshotCommand.click();
+        return;
+      }
+
+      console.warn('URLBarModifier: No screenshot command available');
+      
+      // Close panel after screenshot attempts
+      this.closePanelImmediately(unifiedPanel);
+    } catch (err) {
+      console.error("Error taking screenshot:", err);
+    }
+  }
+
+  copyCurrentUrl(event) {
+    try {
+      console.log("URLBarModifier: copyCurrentUrl invoked");
+      // Store panel reference before any async operations
+      const unifiedPanel = document.querySelector("#unified-extensions-view");
+      console.log("URLBarModifier: Panel found:", !!unifiedPanel, "hidePopup available:", !!unifiedPanel?.hidePopup);
+      
+      // Get the current URL
+      const currentUrl = gBrowser?.currentURI?.spec || 
+                        window.gBrowser?.currentURI?.spec ||
+                        window.location.href;
+      
+      if (!currentUrl) {
+        console.warn("URLBarModifier: No URL found to copy");
+        return;
+      }
+
+      console.log("URLBarModifier: Copying URL:", currentUrl);
+
+      // Method 1: Try modern Clipboard API
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          console.log("URLBarModifier: Using navigator.clipboard.writeText");
+          navigator.clipboard.writeText(currentUrl).then(() => {
+            console.log("URLBarModifier: URL copied successfully via Clipboard API");
+            this.showCopyFeedback();
+            this.closePanelAfterDelay(unifiedPanel);
+          }).catch(e => {
+            console.log("URLBarModifier: Clipboard API failed:", e.message);
+            this.fallbackCopy(currentUrl, unifiedPanel);
+          });
+          return;
+        }
+      } catch (e) {
+        console.log("URLBarModifier: Clipboard API not available:", e.message);
+      }
+
+      // Method 2: Try Firefox's clipboard service
+      try {
+        console.log("URLBarModifier: Using Firefox clipboard service");
+        const clipboardHelper = Cc["@mozilla.org/widget/clipboardhelper;1"]
+                               .getService(Ci.nsIClipboardHelper);
+        clipboardHelper.copyString(currentUrl);
+        console.log("URLBarModifier: URL copied successfully via Firefox clipboard service");
+        this.showCopyFeedback();
+        this.closePanelAfterDelay(unifiedPanel);
+        return;
+      } catch (e) {
+        console.log("URLBarModifier: Firefox clipboard service failed:", e.message);
+      }
+
+      // Method 3: Try execCommand as fallback
+      this.fallbackCopy(currentUrl, unifiedPanel);
+
+    } catch (err) {
+      console.error("Error copying URL:", err);
+    }
+  }
+
+  fallbackCopy(text, unifiedPanel) {
+    try {
+      console.log("URLBarModifier: Using execCommand fallback");
+      // Create a temporary textarea
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      
+      const success = document.execCommand('copy');
+      document.body.removeChild(textarea);
+      
+      if (success) {
+        console.log("URLBarModifier: URL copied successfully via execCommand");
+        this.showCopyFeedback();
+        this.closePanelAfterDelay(unifiedPanel);
+      } else {
+        console.warn("URLBarModifier: execCommand copy failed");
+      }
+    } catch (e) {
+      console.error("URLBarModifier: Fallback copy failed:", e.message);
+    }
+  }
+
+  showCopyFeedback() {
+    try {
+      // Show a subtle, modern visual feedback by smoothly morphing the icon
+      const button = document.getElementById("unified-copy-url-button");
+      const icon = button?.querySelector(".unified-extension-icon");
+      
+      if (button && icon) {
+        const originalTitle = button.getAttribute("title");
+        const originalSrc = icon.getAttribute("src");
+        
+        // Create checkmark SVG with context-fill
+        const checkmarkSvg = `data:image/svg+xml;utf8,`
+          + encodeURIComponent(
+            `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="context-fill" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+               <polyline points="8 17 14 23 24 9"/>
+             </svg>`
+          );
+        
+        // Step 1: Fade out with subtle scale down
+        icon.style.opacity = "0";
+        icon.style.transform = "scale(0.8)";
+        
+        setTimeout(() => {
+          // Step 2: Change to checkmark and update title
+          button.setAttribute("title", "URL copied!");
+          icon.setAttribute("src", checkmarkSvg);
+          
+          // Step 3: Fade in with subtle scale up
+          icon.style.opacity = "1";
+          icon.style.transform = "scale(1.1)";
+          
+          // Step 4: Settle to normal scale
+          setTimeout(() => {
+            icon.style.transform = "scale(1)";
+          }, 100);
+          
+        }, 200); // Wait for fade out to complete
+        
+        // Step 5: Fade back to original after 1.2 seconds
+        setTimeout(() => {
+          icon.style.opacity = "0";
+          icon.style.transform = "scale(0.8)";
+          
+          setTimeout(() => {
+            button.setAttribute("title", originalTitle);
+            icon.setAttribute("src", originalSrc);
+            icon.style.opacity = "1";
+            icon.style.transform = "scale(1)";
+          }, 200);
+          
+        }, 1200);
+      }
+    } catch (e) {
+      console.log("URLBarModifier: Feedback display failed:", e.message);
+    }
+  }
+
+  closePanelImmediately(unifiedPanel) {
+    try {
+      console.log("URLBarModifier: closePanelImmediately called with panel:", !!unifiedPanel);
+      if (unifiedPanel) {
+        // Use Escape key simulation (most reliable method)
+        try {
+          console.log("URLBarModifier: Simulating Escape key press");
+          const escapeEvent = new KeyboardEvent('keydown', {
+            key: 'Escape',
+            code: 'Escape',
+            keyCode: 27,
+            bubbles: true,
+            cancelable: true
+          });
+          document.dispatchEvent(escapeEvent);
+          console.log("URLBarModifier: Panel closed successfully with Escape key");
+        } catch (e) {
+          console.log("URLBarModifier: Escape key simulation failed:", e.message);
+        }
+      } else {
+        console.log("URLBarModifier: Panel not found");
+      }
+    } catch (e) {
+      console.log("URLBarModifier: Panel closing failed:", e.message);
+    }
+  }
+
+  closePanelAfterDelay(unifiedPanel) {
+    try {
+      console.log("URLBarModifier: closePanelAfterDelay called with panel:", !!unifiedPanel);
+      // Close panel with a delay to allow feedback animation to complete
+      setTimeout(() => {
+        this.closePanelImmediately(unifiedPanel);
+      }, 700); // Delay to allow animation to complete before panel closes
+    } catch (e) {
+      console.log("URLBarModifier: Panel closing failed:", e.message);
+    }
+  }
+
+  toggleAutoPiP(event) {
+    try {
+      // Get current global preference value
+      const currentValue = Services.prefs.getBoolPref("media.videocontrols.picture-in-picture.enable-when-switching-tabs.enabled", false);
+      const newValue = !currentValue;
+      
+      // Set the new global preference value
+      Services.prefs.setBoolPref("media.videocontrols.picture-in-picture.enable-when-switching-tabs.enabled", newValue);
+      
+      // Update the toggle state visually
+      this.updatePiPToggleState();
+      
+      console.log(`Auto PiP toggled globally: ${newValue ? 'enabled' : 'disabled'}`);
+    } catch (err) {
+      console.error("Error toggling Auto PiP:", err);
+    }
+  }
+
+  updatePiPToggleState() {
+    try {
+      const pipSwitch = document.getElementById("pip-switch");
+      const pipSwitchThumb = document.getElementById("pip-switch-thumb");
+      
+      // Check if elements exist, if not, the panel might not be open
+      if (!pipSwitch || !pipSwitchThumb) {
+        console.log("PiP toggle elements not found, panel might not be open");
+        return;
+      }
+      
+      // Get current global preference value
+      const isEnabled = Services.prefs.getBoolPref("media.videocontrols.picture-in-picture.enable-when-switching-tabs.enabled", false);
+      
+      if (isEnabled) {
+        // Switch is ON
+        pipSwitch.style.backgroundColor = "#0a84ff"; // Firefox blue
+        pipSwitchThumb.style.transform = "translateX(14px)";
+        pipSwitch.setAttribute("aria-checked", "true");
+        pipSwitch.setAttribute("title", "Auto PiP enabled globally");
+      } else {
+        // Switch is OFF
+        pipSwitch.style.backgroundColor = "color-mix(in srgb, currentColor 20%, transparent)";
+        pipSwitchThumb.style.transform = "translateX(0px)";
+        pipSwitch.setAttribute("aria-checked", "false");
+        pipSwitch.setAttribute("title", "Auto PiP disabled globally");
+      }
+      
+      console.log(`Auto PiP state updated globally: ${isEnabled ? 'enabled' : 'disabled'}`);
+    } catch (err) {
+      console.error("Error updating PiP toggle state:", err);
+    }
+  }
+
+  modifyPanelPosition() {
+    try {
+      // Inject CSS to center the panel
+      const existing = document.getElementById('panel-center-style');
+      if (existing) existing.remove();
+      
+      const style = document.createElementNS('http://www.w3.org/1999/xhtml', 'style');
+      style.id = 'panel-center-style';
+      style.textContent = `
+         #unified-extensions-panel {
+           margin-left: -85px !important;
+         }
+         #unified-extensions-panel[position="bottomright topright"] {
+           position: fixed !important;
+           left: 50% !important;
+           transform: translateX(-50%) !important;
+         }
+       `;
+      document.documentElement.appendChild(style);
+      
+      // Also try to modify the panel attributes
+      const panel = document.getElementById('unified-extensions-panel');
+      if (panel) {
+        panel.setAttribute('position', 'bottomcenter topcenter');
+        console.log('Panel positioning CSS injected and attributes modified');
+      }
+    } catch (err) {
+      console.error('Error modifying panel position:', err);
+    }
+  }
+}
+
+// Helper function to append XUL elements
+const appendXUL = (
+  parentElement,
+  xulString,
+  insertBefore = null,
+  XUL = false
+) => {
+  let element;
+  if (XUL) {
+    element = window.MozXULElement.parseXULToFragment(xulString);
+  } else {
+    element = new DOMParser().parseFromString(xulString, "text/html");
+    if (element.body.children.length) {
+      element = element.body.firstChild;
+    } else {
+      element = element.head.firstChild;
+    }
+  }
+
+  element = parentElement.ownerDocument.importNode(element, true);
+
+  if (insertBefore) {
+    parentElement.insertBefore(element, insertBefore);
+  } else {
+    parentElement.appendChild(element);
+  }
+
+  return element;
+};
+
+// Prevent duplicate execution
+if (!window.urlBarModifierInitialized) {
+  window.urlBarModifierInitialized = true;
+
+  // Initialize panel manager
+  const panelManager = new PanelManager();
+
+  // Make panelManager globally accessible for other scripts
+  window.panelManager = panelManager;
+
+  // Listen for tab changes and location changes to update security info in unified panel
+  if (typeof gBrowser !== "undefined") {
+    gBrowser.tabContainer.addEventListener("TabSelect", () => {
+      // Small delay to ensure the new tab's URI is loaded
+      setTimeout(() => {
+        panelManager.updateUnifiedSecurityInfo();
+      }, 100);
+    });
+
+    // Listen for location changes within the same tab
+    gBrowser.addTabsProgressListener({
+      onLocationChange: function(browser, webProgress, request, location, flags) {
+        if (browser === gBrowser.selectedBrowser) {
+          setTimeout(() => {
+            panelManager.updateUnifiedSecurityInfo();
+          }, 100);
+        }
+      }
+    });
+  }
+
+  // No longer need URL bar button - user can use the native unified extensions button
+
+  // Automatically modify the unified extensions panel when it opens
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === Node.ELEMENT_NODE && node.id === 'unified-extensions-view') {
+            // Panel was opened, modify it
+            setTimeout(() => {
+              panelManager.modifyUnifiedExtensionsPanel();
+              panelManager.modifyPanelPosition();
+              panelManager.updateUnifiedSecurityInfo();
+              // Always update PiP state when panel opens
+              setTimeout(() => {
+                panelManager.updatePiPToggleState();
+              }, 100);
+            }, 50);
+          }
+        });
+      }
+    });
+  });
+
+  // Start observing
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+} else {
+  console.log("URLBarModifier: Already initialized, skipping");
+}
