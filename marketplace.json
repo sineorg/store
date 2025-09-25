@@ -6,7 +6,7 @@
     "version": "3.3",
     "description": "A beautiful theme made for Zen Browser :))",
     "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
-    "stars": 1085,
+    "stars": 1086,
     "fork": [
       "zen"
     ]
@@ -169,7 +169,7 @@
     "version": "2.1.1",
     "description": "Improve the context menu by adding icons, fold menu items and more.",
     "readme": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/README.md",
-    "stars": 27,
+    "stars": 28,
     "fork": [
       "zen",
       "firefox"
