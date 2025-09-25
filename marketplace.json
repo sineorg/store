@@ -6,7 +6,7 @@
     "version": "3.3",
     "description": "A beautiful theme made for Zen Browser :))",
     "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
-    "stars": 1086,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -18,7 +18,7 @@
     "version": "5.3.0",
     "description": "A skin for Firefox and its forks that makes things flow.",
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
-    "stars": 432,
+    "stars": 0,
     "fork": [
       "floorp"
     ]
@@ -30,7 +30,7 @@
     "version": "3.2.1b",
     "description": "Tab Groups for Zen Browser",
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
-    "stars": 350,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -42,7 +42,7 @@
     "version": "3.2.8.5",
     "description": "Arc-like Zen Browser theme.",
     "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/main/README.md",
-    "stars": 343,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -54,7 +54,7 @@
     "version": "5.1.0",
     "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
-    "stars": 134,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -66,7 +66,7 @@
     "version": "143.0",
     "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
     "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
-    "stars": 114,
+    "stars": 0,
     "fork": [
       "firefox",
       "waterfox",
@@ -81,7 +81,7 @@
     "version": "2.0.0",
     "description": "A sleek, futuristic theme for Zen Browser that blends modern design with mindful simplicity",
     "readme": "https://raw.githubusercontent.com/JustVibingWhileCoding/Neo-Zen/main/README.md",
-    "stars": 61,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -93,7 +93,7 @@
     "version": "1.5.8",
     "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
     "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
-    "stars": 41,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -104,7 +104,7 @@
     "version": "2.2.0",
     "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
-    "stars": 39,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -115,7 +115,7 @@
     "version": "1.0.0",
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/README.md",
-    "stars": 37,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -126,7 +126,7 @@
     "version": "1.0.0",
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
-    "stars": 37
+    "stars": 0
   },
   "search-engine-select": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
@@ -134,7 +134,7 @@
     "version": "1.0.0",
     "description": "Adds a floating UI to switch search engines on a search results page.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
-    "stars": 37,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -146,7 +146,7 @@
     "version": "1.0.0",
     "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
-    "stars": 37,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -157,7 +157,7 @@
     "version": "1.5.0",
     "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
-    "stars": 37,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -169,7 +169,7 @@
     "version": "2.1.1",
     "description": "Improve the context menu by adding icons, fold menu items and more.",
     "readme": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/README.md",
-    "stars": 28,
+    "stars": 0,
     "fork": [
       "zen",
       "firefox"
@@ -182,7 +182,7 @@
     "version": "1.0.1",
     "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
     "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
-    "stars": 25,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -194,7 +194,7 @@
     "version": "1.1.0",
     "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
-    "stars": 21,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -206,7 +206,7 @@
     "version": "1.4",
     "description": "A minimal, squared-off theme for Zen Browser",
     "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
-    "stars": 18,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -218,7 +218,7 @@
     "version": "2.0.0",
     "description": "Clean up your downloads with AI",
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/refs/heads/main/README.md",
-    "stars": 14,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -230,7 +230,7 @@
     "version": "1.3",
     "description": "Altover Add-On for Nebula theme. Bundle install for Altover & Nebula themes.",
     "readme": "https://raw.githubusercontent.com/allecsc/Altover/refs/heads/main/README.md",
-    "stars": 13,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -241,7 +241,7 @@
     "version": "1.0.1",
     "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
     "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
-    "stars": 12,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -253,7 +253,7 @@
     "version": "1.0.0s",
     "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
-    "stars": 9,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -264,7 +264,7 @@
     "version": "1.4.0",
     "description": "A premium, performance-optimized animation framework that transforms Zen Browser into a Modern Material Interface. :))",
     "readme": "https://raw.githubusercontent.com/Mohammed55Z/ZenMotion-Pro/refs/heads/main/README.md",
-    "stars": 6,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -276,7 +276,7 @@
     "version": "2.0.2",
     "description": "A sleek animated loading bar that appears at the top of the page during loading, similar to Deta Surf browser. Features customizable colors, gradient effects, blur animation, adjustable thickness, and optional box shadows. Integrates with Zen Browser's theme colors or use custom colors and width.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-deta-loading-bar/refs/heads/main/README.md",
-    "stars": 6,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -288,7 +288,7 @@
     "version": "1.0.1",
     "description": "A comprehensive theme that separates various elements onto their own panel, respects Firefox theme colors, and supports transparency.",
     "readme": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/README.md",
-    "stars": 6,
+    "stars": 0,
     "fork": [
       "floorp",
       "firefox"
@@ -300,7 +300,7 @@
     "version": "1.0.0",
     "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
-    "stars": 5,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -311,7 +311,7 @@
     "version": "0.0.2",
     "description": "This mod allows you to split tabs by drag and drop links",
     "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
-    "stars": 5,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -323,7 +323,7 @@
     "version": "1.0.0",
     "description": "Brings the live calendar functionality from Arc to Zen, making it feel as native as possible.",
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Live-Calendar/refs/heads/main/README.md",
-    "stars": 5,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -335,7 +335,7 @@
     "version": "1.0.4",
     "description": "Make your zen music bar better.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
-    "stars": 3,
+    "stars": 0,
     "fork": [
       "zen",
       "firefox"
@@ -348,7 +348,7 @@
     "version": "2.8.10",
     "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
-    "stars": 3,
+    "stars": 0,
     "fork": [
       "zen",
       "firefox"
@@ -359,7 +359,7 @@
     "name": "Better New Tab button",
     "version": "1.0.2",
     "description": "A mod for Zen Browser that enhances the appearance of the New Tab button and makes some changes to spacing around it",
-    "stars": 2
+    "stars": 0
   },
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
     "homepage": "rasyidrafi/zen-single-trackpad-animation",
@@ -368,7 +368,7 @@
     "version": "2.0.5",
     "description": "Customizable trackpad swipe transitions and the colors for the swipe UI.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/README.md",
-    "stars": 1,
+    "stars": 0,
     "fork": [
       "zen",
       "firefox"
@@ -381,7 +381,7 @@
     "version": "1.1.8",
     "description": "Enhance default firefox sidebar with a modern look and feel matching Zen UI.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-better-sidebar/refs/heads/main/README.md",
-    "stars": 1,
+    "stars": 0,
     "fork": [
       "zen"
     ]
@@ -393,7 +393,7 @@
     "version": "1.0.5",
     "description": "Customizable URL bar with animations.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-custom-urlbar/refs/heads/main/README.md",
-    "stars": 1,
+    "stars": 0,
     "fork": [
       "zen",
       "firefox"
