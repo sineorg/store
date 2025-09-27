@@ -328,6 +328,17 @@
       "zen"
     ]
   },
+  "reopen-closed-tabs": {
+    "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
+    "name": "Reopen Closed Tabs Menu",
+    "version": "1.0.0",
+    "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
+    "stars": 4,
+    "fork": [
+      "zen"
+    ]
+  },
   "3c8ebf69-1042-49b1-8f08-9178f9490659": {
     "homepage": "rasyidrafi/zen-always-show-music-bar",
     "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
@@ -424,15 +435,5 @@
       "zen",
       "firefox"
     ]
-  },
-  "reopen-closed-tabs":{
-    "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
-    "id": "reopen-closed-tabs",
-    "name": "Reopen Closed Tabs Menu",
-    "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/readme.md",
-    "version": "1.0.0",
-    "stars": 0,
-    "fork": ["zen"]
   }
 }
