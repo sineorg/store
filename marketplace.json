@@ -399,19 +399,6 @@
       "firefox"
     ]
   },
-  "animations-plus": {
-    "homepage": "Anoms12/Animations-plus",
-    "image": "https://raw.githubusercontent.com/Anoms12/Animations-plus/main/image.png",
-    "name": "Animations Plus",
-    "version": "1.2.2",
-    "description": "A nice animation pack for Zen Browser.",
-    "readme": "https://raw.githubusercontent.com/Anoms12/Animations-plus/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen",
-      "floorp"
-    ]
-  },
   "IconTweaker": {
     "homepage": "allecsc/Icon-Tweaker",
     "image": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/image.png",
