@@ -242,7 +242,7 @@ if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
     MANUAL_ROW_HEIGHT_PX: 51,    // <--- Your desired manual row height
     VISIBLE_RESULTS_LIMIT: 5,    // The number of results to show before scrolling
     SCROLLABLE_CLASS: 'zen-urlbar-scrollable-script',
-    DEBOUNCE_DELAY_MS: 50,
+    DEBOUNCE_DELAY_MS: 40,
   };
 
   // Pre-calculate the initial cap height for easier reference in CSS
@@ -310,7 +310,7 @@ if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
       // At this point, the URL bar view should be visible and ready for height calculation.
       resultsElement.style.removeProperty('max-height'); // Ensure we override any lingering max-height from Zen's CSS or our temp styles.
       
-      const resultRows = resultsElement.querySelectorAll('.urlbarView-row:not([type="tip"], [type="dynamic"])');
+      const resultRows = resultsElement.querySelectorAll('.urlbarView-row:not([type="tip"])');
       const currentResultCount = resultRows.length;
 
       if (currentResultCount === lastResultCount && lastResultCount !== -1) {
@@ -649,188 +649,11 @@ if (Services.prefs.getBoolPref("arcline.script3")) {
 })(); 
 }
 
-// ====================================================================================================
-// SCRIPT 4: Fetching Search Engines Color
-// ====================================================================================================
-// ==UserScript==
-// @ignorecache
-// @name           store color of search engine
-// @namespace      colorofsearchengines
-// @description    helps in providing color of search engine favicon
-// @version        1.7b
-// ==/UserScript==
-
-(function() {
-  'use strict';
-
-  if (typeof Services === 'undefined' || !Services.search) {
-    console.error('[ArclineSearchColor] Firefox Services not available. Script cannot run.');
-    return;
-  }
-  
-  if (window.ArclineSearchColor) {
-    window.ArclineSearchColor.destroy();
-  }
-
-  window.ArclineSearchColor = {
-    // --- The 2 CSS variables this script provides ---
-    GRADIENT_START_VAR: '--arcline-search-gradient-start',
-    GRADIENT_END_VAR: '--arcline-search-gradient-end',
-
-    init() {
-      console.log('[ArclineSearchColor] Initializing Script v12.0 (Auto-Darkening)...');
-      this.initSearchColor();
-      window.addEventListener('unload', () => this.destroy(), { once: true });
-    },
-
-    initSearchColor() {
-      this.searchSwitcher = document.getElementById('urlbar-searchmode-switcher');
-      if (!this.searchSwitcher) {
-        requestIdleCallback(() => this.initSearchColor());
-        return;
-      }
-      const observerCallback = () => this.updateSearchColor();
-      this.searchObserver = new MutationObserver(observerCallback);
-      this.searchObserver.observe(this.searchSwitcher, {
-        attributes: true,
-        attributeFilter: ['tooltiptext']
-      });
-      console.log('[ArclineSearchColor] Module is active.');
-      this.updateSearchColor();
-    },
-
-    async updateSearchColor() {
-      const root = document.documentElement;
-      const tooltip = this.searchSwitcher?.getAttribute('tooltiptext');
-      if (!tooltip) {
-        this.clearCssVars(root);
-        return;
-      }
-      
-      try {
-        const engines = await Services.search.getVisibleEngines();
-        const currentEngine = engines.find(engine => tooltip.includes(engine.name));
-
-        if (currentEngine?.searchForm) {
-          const domain = new URL(currentEngine.searchForm).hostname;
-          const iconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${domain}`;
-          
-          const gradient = await this.extractAutoDarkeningGradient(iconUrl);
-
-          if (gradient) {
-            root.style.setProperty(this.GRADIENT_START_VAR, `rgb(${gradient.start.r}, ${gradient.start.g}, ${gradient.start.b})`);
-            root.style.setProperty(this.GRADIENT_END_VAR, `rgb(${gradient.end.r}, ${gradient.end.g}, ${gradient.end.b})`);
-            console.log(`%c[ArclineSearchColor] SUCCESS: Set auto-darkened gradient for "${domain}"`, 'color: lightgreen; font-weight: bold;');
-          } else {
-            this.clearCssVars(root);
-          }
-        } else {
-          this.clearCssVars(root);
-        }
-      } catch (err) {
-        console.error('[ArclineSearchColor] FATAL ERROR during search update:', err);
-        this.clearCssVars(root);
-      }
-    },
-
-    clearCssVars(root) {
-        root.style.removeProperty(this.GRADIENT_START_VAR);
-        root.style.removeProperty(this.GRADIENT_END_VAR);
-    },
-
-    // --- NEW "AUTO-DARKENING GRADIENT" ALGORITHM ---
-    async extractAutoDarkeningGradient(url) {
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.src = url;
-        await new Promise((resolve, reject) => {
-            img.onload = resolve;
-            img.onerror = reject;
-        });
-
-        if (!this.canvas) {
-            this.canvas = document.createElement("canvas");
-            this.ctx = this.canvas.getContext("2d", { willReadFrequently: true });
-        }
-
-        const size = 16;
-        this.canvas.width = size;
-        this.canvas.height = size;
-        this.ctx.clearRect(0, 0, size, size);
-        this.ctx.drawImage(img, 0, 0, size, size);
-
-        const pixelData = this.ctx.getImageData(0, 0, size, size).data;
-        const colorCounts = new Map();
-
-        for (let i = 0; i < pixelData.length; i += 4) {
-            const [r, g, b, a] = [pixelData[i], pixelData[i + 1], pixelData[i + 2], pixelData[i + 3]];
-            if (a < 128) continue;
-            const key = `${r >> 4},${g >> 4},${b >> 4}`;
-            if (colorCounts.has(key)) {
-                colorCounts.get(key).freq++;
-            } else {
-                colorCounts.set(key, { r, g, b, freq: 1 });
-            }
-        }
-
-        if (colorCounts.size === 0) return null;
-
-        let scoredColors = [];
-        for (const color of colorCounts.values()) {
-            const { r, g, b, freq } = color;
-            const hsl = this.rgbToHsl(r, g, b);
-            const isBoring = hsl.s < 0.05 && hsl.l > 0.95; // Only filter out pure white
-            if (isBoring && colorCounts.size > 3) continue;
-            scoredColors.push({ ...color, score: freq * (1 + hsl.s), hsl });
-        }
-        
-        if (scoredColors.length === 0) return null;
-        scoredColors.sort((a, b) => b.score - a.score);
-
-        const gradientStart = scoredColors[0];
-        let gradientEnd = scoredColors.find(c => {
-            const hueDiff = Math.abs(c.hsl.h - gradientStart.hsl.h);
-            return hueDiff > 0.15 && hueDiff < 0.85; // Find a color with a different hue
-        }) || gradientStart; // Fallback to a solid color if no second hue is found
-
-        // --- AUTO-DARKENING LOGIC ---
-        const adjustIfNeeded = (color) => {
-            const luminance = (0.299 * color.r + 0.587 * color.g + 0.114 * color.b) / 255;
-            if (luminance > 0.9) { // Is the color extremely bright (like white)?
-                let hsl = color.hsl;
-                hsl.l = 0.75; // Drastically reduce lightness to a pleasant gray/pastel
-                hsl.s = Math.max(hsl.s, 0.1); // Ensure it's not totally desaturated
-                return this.hslToRgb(hsl.h, hsl.s, hsl.l);
-            }
-            return color; // Return original if it's not too bright
-        };
-
-        const finalStart = adjustIfNeeded(gradientStart);
-        const finalEnd = adjustIfNeeded(gradientEnd);
-
-        return { start: finalStart, end: finalEnd };
-    },
-    
-    // --- Color Conversion Helpers ---
-    rgbToHsl(r,g,b){r/=255;g/=255;b/=255;const M=Math.max(r,g,b),m=Math.min(r,g,b);let h,s,l=(M+m)/2;if(M==m){h=s=0}else{const d=M-m;s=l>.5?d/(2-M-m):d/(M+m);switch(M){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break}h/=6}return{h,s,l}},
-    hslToRgb(h,s,l){let r,g,b;if(s==0){r=g=b=l}else{const hue2rgb=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p};const q=l<.5?l*(1+s):l+s-l*s;const p=2*l-q;r=hue2rgb(p,q,h+1/3);g=hue2rgb(p,q,h);b=hue2rgb(p,q,h-1/3)}return{r:Math.round(r*255),g:Math.round(g*255),b:Math.round(b*255)}},
-
-    destroy() {
-      console.log('[ArclineSearchColor] Destroying script...');
-      this.searchObserver?.disconnect();
-      this.clearCssVars(document.documentElement);
-      delete window.ArclineSearchColor;
-    }
-  };
-
-  requestIdleCallback(() => window.ArclineSearchColor.init());
-})();
-
 
 
 
 // ====================================================================================================
-// SCRIPT 5: Zen Media Cover Art Provider
+// SCRIPT 4: Zen Media Cover Art Provider
 // ====================================================================================================
 // ==UserScript==
 // @ignorecache
@@ -927,440 +750,9 @@ const ZenCoverArtCSSProvider = {
 ZenCoverArtCSSProvider.init();
 
 }
-// ====================================================================================================
-// SCRIPT 6: Zen Workspace Button Wave Animation
-// ====================================================================================================
-// ==UserScript==
-// @ignorecache
-// @name          zen-workspace-button-wave-animation
-// @namespace      zenWorkspaceButtonAnimation
-// @description    helps in adding mac os dock like aniamtion to zen worspace buttons
-// @version        1.7b
-// ==/UserScript==
-if (Services.prefs.getBoolPref("arcline.script6")) {
-(function() {
-  if (window.ZenBrowserCustomizableDockEffect) {
-    return;
-  }
-  window.ZenBrowserCustomizableDockEffect = true;
-  let isEffectInitialized = false;
-
-  // --- Configuration (These are your main tuning knobs!) ---
-  // ========================================================
-
-  // --- DOM Selectors ---
-  const DOCK_CONTAINER_ID = 'zen-workspaces-button';
-  const BUTTON_SELECTOR = '.subviewbutton';
-
-  // --- Inactive Icon Display Mode --- NEW ---
-  // 'dot': Inactive icons are heavily dimmed/grayscaled (like dots).
-  // 'visible': Inactive icons are more visible, just less prominent.
-  // This can be overridden by a browser preference/setting if implemented.
-  const INACTIVE_ICON_MODE_DEFAULT = 'dot'; // or 'visible'
-
-  // --- Base Appearance (Initial state derived from CSS, with JS fallbacks) ---
-  const BASE_SCALE = 1;
-
-  // -- For 'dot' mode (current behavior) --
-  const JS_FALLBACK_INITIAL_OPACITY_DOT_MODE = 0.75; // Or lower for more "dot-like"
-  const JS_FALLBACK_INITIAL_GRAYSCALE_DOT_MODE = 100; // In %
-
-  // -- For 'visible' mode (new behavior) --
-  const JS_FALLBACK_INITIAL_OPACITY_VISIBLE_MODE = 0.85; // More visible
-  const JS_FALLBACK_INITIAL_GRAYSCALE_VISIBLE_MODE = 50; // Less grayscale, more color
-
-  // --- Magnification & Wave Effect ---
-  const MAX_MAGNIFICATION_SCALE = 1.3;
-  const NEIGHBOR_INFLUENCE_WIDTH_FACTOR = 3;
-  const SCALE_FALLOFF_POWER = 5.7;
-
-  // --- Opacity Transition ---
-  const MAX_OPACITY = 1.0;
-  const OPACITY_FALLOFF_POWER = 1.5;
-
-  // --- Grayscale Transition ---
-  const MAX_GRAYSCALE = 0; // Grayscale (%) for icon closest to mouse (0 = full color)
-  const GRAYSCALE_FALLOFF_POWER = 1.5;
-
-  // --- Stacking Order ---
-  const BASE_Z_INDEX = 1;
-  const Z_INDEX_BOOST = 10;
-
-  // --- Performance Tuning ---
-  const MOUSE_MOVE_THROTTLE_MS = 10;
-  const RESIZE_DEBOUNCE_MS = 150;
-
-  // --- Dynamic Gapping ---
-  const DYNAMIC_GAP_CSS_VARIABLE = '--zen-dock-dynamic-gap';
-  const JS_FALLBACK_DEFAULT_GAP = '0.1em';
-  // ========================================================
-  // --- End Configuration ---
-
-  let dockContainerElement = null;
-  let currentButtons = [];
-  let buttonCachedProperties = [];
-  let lastMouseMoveTime = 0;
-  let resizeDebounceTimeout;
-  let isMouseOverDock = false;
-  let lastMouseXInDock = 0;
-
-  // --- NEW: Function to get the current inactive icon mode ---
-  // This is where you'd integrate reading from `about:config` or similar browser settings
-  function getCurrentInactiveIconMode() {
-      // Example: Placeholder for reading a browser preference
-      // if (typeof browser !== 'undefined' && browser.prefs && browser.prefs.get) {
-      // try {
-      //   const prefValue = await browser.prefs.get('extensions.zenBrowser.dock.inactiveIconMode');
-      //   if (prefValue === 'visible' || prefValue === 'dot') {
-      //     return prefValue;
-      //   }
-      // } catch (e) { console.warn("Zen Dock: Could not read preference", e); }
-      // }
-      // For now, we'll use a CSS custom property or the JS default
-      const modeFromCSS = getCssVariableOrDefault('--zen-dock-inactive-icon-mode', INACTIVE_ICON_MODE_DEFAULT, false);
-      if (modeFromCSS === 'visible' || modeFromCSS === 'dot') {
-          return modeFromCSS;
-      }
-      return INACTIVE_ICON_MODE_DEFAULT;
-  }
-
-
-  function getCssVariableOrDefault(varName, fallbackValue, isInteger = false, treatAsString = false) {
-      try {
-          const rootStyle = getComputedStyle(document.documentElement);
-          let value = rootStyle.getPropertyValue(varName).trim();
-          if (value) {
-              if (treatAsString) return value; // Return as string if requested
-              return isInteger ? parseInt(value, 10) : parseFloat(value);
-          }
-      } catch (e) { /* CSS variable might not be defined yet or invalid */ }
-      return fallbackValue;
-  }
-
-  // --- MODIFIED: Function to get initial properties based on mode ---
-  function getInitialButtonProperties() {
-    const mode = getCurrentInactiveIconMode();
-    let initialOpacity, initialGrayscale;
-
-    if (mode === 'visible') {
-        initialOpacity = getCssVariableOrDefault('--zen-dock-icon-initial-opacity-visible', JS_FALLBACK_INITIAL_OPACITY_VISIBLE_MODE);
-        initialGrayscale = getCssVariableOrDefault('--zen-dock-icon-initial-grayscale-visible', JS_FALLBACK_INITIAL_GRAYSCALE_VISIBLE_MODE, true);
-    } else { // Default to 'dot' mode
-        initialOpacity = getCssVariableOrDefault('--zen-dock-icon-initial-opacity-dot', JS_FALLBACK_INITIAL_OPACITY_DOT_MODE);
-        initialGrayscale = getCssVariableOrDefault('--zen-dock-icon-initial-grayscale-dot', JS_FALLBACK_INITIAL_GRAYSCALE_DOT_MODE, true);
-    }
-    return { initialOpacity, initialGrayscale };
-  }
-
-
-  function getDynamicGapValue(buttonCount) {
-    // ... (same as before)
-    let gapValue = JS_FALLBACK_DEFAULT_GAP;
-    if (buttonCount <= 1) gapValue = '0em';
-    else if (buttonCount === 2) gapValue = '1em';
-    else if (buttonCount === 3) gapValue = '0em';
-    else if (buttonCount <= 5) gapValue = '0.5em';
-    else if (buttonCount <= 7) gapValue = '0.3em';
-    else if (buttonCount === 8) gapValue = '0.2em';
-    else if (buttonCount >= 9) gapValue = '0.1em';
-    return gapValue;
-  }
-
-  function updateDockGapping() {
-    // ... (same as before)
-    if (!dockContainerElement) return;
-    const buttonCount = currentButtons.length;
-    const gapValue = getDynamicGapValue(buttonCount);
-    dockContainerElement.style.setProperty(DYNAMIC_GAP_CSS_VARIABLE, gapValue);
-  }
-
-  function cacheButtonProperties() {
-    // ... (same as before)
-    if (!dockContainerElement) return [];
-    const newButtons = Array.from(dockContainerElement.querySelectorAll(BUTTON_SELECTOR));
-    const newButtonProperties = newButtons.map(btn => {
-      const rect = btn.getBoundingClientRect();
-      return {
-        element: btn,
-        center: rect.left + rect.width / 2,
-        width: rect.width,
-      };
-    });
-    let buttonsChangedStructurally = newButtons.length !== currentButtons.length;
-    if (!buttonsChangedStructurally) {
-        for (let i = 0; i < newButtons.length; i++) {
-            if (newButtons[i] !== currentButtons[i]) {
-                buttonsChangedStructurally = true;
-                break;
-            }
-        }
-    }
-    currentButtons = newButtons;
-    buttonCachedProperties = newButtonProperties;
-    updateDockGapping();
-    return buttonsChangedStructurally;
-  }
-
-  function resetAllButtonsToDefault() {
-    // --- MODIFIED to use getInitialButtonProperties ---
-    const { initialOpacity, initialGrayscale } = getInitialButtonProperties();
-    const isActiveButton = (btn) => btn.matches('[active="true"]');
-
-    currentButtons.forEach(btn => {
-      let targetOpacity = initialOpacity;
-      let targetGrayscale = initialGrayscale;
-
-      if (isActiveButton(btn)) {
-        // Active buttons should always be quite visible, regardless of inactive mode
-        targetOpacity = getCssVariableOrDefault('--zen-dock-icon-active-opacity', MAX_OPACITY);
-        // Potentially make active grayscale slightly less than full color if preferred
-        targetGrayscale = getCssVariableOrDefault('--zen-dock-icon-active-grayscale', MAX_GRAYSCALE + 10); // e.g., 10% grayscale for active
-      }
-      
-      btn.style.transform = `scale(${BASE_SCALE})`;
-      btn.style.opacity = targetOpacity;
-      btn.style.filter = `grayscale(${targetGrayscale}%)`;
-      btn.style.zIndex = BASE_Z_INDEX;
-    });
-  }
-
-  function updateDockEffectStyles(mouseX) {
-    const now = performance.now();
-    if (MOUSE_MOVE_THROTTLE_MS > 0 && (now - lastMouseMoveTime < MOUSE_MOVE_THROTTLE_MS)) {
-      return;
-    }
-    lastMouseMoveTime = now;
-
-    if (buttonCachedProperties.length === 0 && currentButtons.length > 0) {
-      cacheButtonProperties(); 
-      if (buttonCachedProperties.length === 0) return;
-    } else if (currentButtons.length === 0) {
-        return;
-    }
-
-    // --- MODIFIED to use getInitialButtonProperties ---
-    const { initialOpacity: currentInitialOpacity, initialGrayscale: currentInitialGrayscale } = getInitialButtonProperties();
-    
-    // Active button properties remain separate
-    const currentActiveOpacity = getCssVariableOrDefault('--zen-dock-icon-active-opacity', MAX_OPACITY);
-    const currentActiveGrayscale = getCssVariableOrDefault('--zen-dock-icon-active-grayscale', MAX_GRAYSCALE + 10);
-
-    const isActiveButton = (btn) => btn.matches('[active="true"]');
-
-    buttonCachedProperties.forEach(props => {
-      const iconElement = props.element;
-      const iconCenter = props.center;
-      const iconWidth = props.width;
-
-      if (!iconElement || iconWidth === 0) return;
-
-      const distanceToMouse = Math.abs(mouseX - iconCenter);
-      const maxEffectDistance = iconWidth * NEIGHBOR_INFLUENCE_WIDTH_FACTOR;
-      let effectStrength = 0;
-
-      if (distanceToMouse < maxEffectDistance) {
-        effectStrength = Math.cos((distanceToMouse / maxEffectDistance) * (Math.PI / 2));
-        effectStrength = Math.pow(effectStrength, SCALE_FALLOFF_POWER);
-      }
-
-      const scale = BASE_SCALE + (MAX_MAGNIFICATION_SCALE - BASE_SCALE) * effectStrength;
-
-      let baseOpacityForCalc = currentInitialOpacity;
-      let baseGrayscaleForCalc = currentInitialGrayscale;
-
-      // If active and mouse is far, use active base properties
-      if (isActiveButton(iconElement) && effectStrength < 0.1) {
-        baseOpacityForCalc = currentActiveOpacity;
-        baseGrayscaleForCalc = currentActiveGrayscale;
-      }
-
-      let opacityEffectStrengthMod = effectStrength;
-      if (OPACITY_FALLOFF_POWER !== SCALE_FALLOFF_POWER && distanceToMouse < maxEffectDistance) {
-         let tempStrength = Math.cos((distanceToMouse / maxEffectDistance) * (Math.PI / 2));
-         opacityEffectStrengthMod = Math.pow(tempStrength, OPACITY_FALLOFF_POWER);
-      }
-      // If icon is active, it should not become less opaque than its active base when mouse is far
-      // And it should not become less opaque than initial general opacity when mouse is near
-      let targetOpacity;
-      if(isActiveButton(iconElement)) {
-        // Active buttons transition from their `currentActiveOpacity` towards `MAX_OPACITY`
-        targetOpacity = currentActiveOpacity + (MAX_OPACITY - currentActiveOpacity) * opacityEffectStrengthMod;
-      } else {
-        // Inactive buttons transition from `currentInitialOpacity` towards `MAX_OPACITY`
-        targetOpacity = currentInitialOpacity + (MAX_OPACITY - currentInitialOpacity) * opacityEffectStrengthMod;
-      }
-      
-
-      let grayscaleEffectStrengthMod = effectStrength;
-      if (GRAYSCALE_FALLOFF_POWER !== SCALE_FALLOFF_POWER && distanceToMouse < maxEffectDistance) {
-         let tempStrength = Math.cos((distanceToMouse / maxEffectDistance) * (Math.PI / 2));
-         grayscaleEffectStrengthMod = Math.pow(tempStrength, GRAYSCALE_FALLOFF_POWER);
-      }
-      // Similar logic for grayscale
-      let targetGrayscale;
-      if(isActiveButton(iconElement)) {
-        // Active buttons transition from their `currentActiveGrayscale` towards `MAX_GRAYSCALE`
-        targetGrayscale = currentActiveGrayscale - (currentActiveGrayscale - MAX_GRAYSCALE) * grayscaleEffectStrengthMod;
-      } else {
-        // Inactive buttons transition from `currentInitialGrayscale` towards `MAX_GRAYSCALE`
-        targetGrayscale = currentInitialGrayscale - (currentInitialGrayscale - MAX_GRAYSCALE) * grayscaleEffectStrengthMod;
-      }
-            
-      const zIndex = BASE_Z_INDEX + Math.ceil(Z_INDEX_BOOST * effectStrength);
-
-      iconElement.style.transform = `scale(${scale})`;
-      
-      // Determine the absolute minimum opacity (should not go below its non-hovered state)
-      let minOpacityForElement = isActiveButton(iconElement) ? currentActiveOpacity : currentInitialOpacity;
-      // If under mouse influence, it could even go down to the general initial opacity if that's lower than active
-      if (isActiveButton(iconElement) && effectStrength > 0.1 && currentInitialOpacity < currentActiveOpacity) {
-          minOpacityForElement = currentInitialOpacity;
-      }
-
-      iconElement.style.opacity = Math.min(MAX_OPACITY, Math.max(minOpacityForElement, targetOpacity));
-      iconElement.style.filter = `grayscale(${Math.max(0, Math.min(100, Math.round(targetGrayscale)))}%)`;
-      iconElement.style.zIndex = zIndex;
-    });
-  }
-
-  function initializeDockEffect() {
-    // ... (same as before)
-    dockContainerElement = document.getElementById(DOCK_CONTAINER_ID);
-    if (!dockContainerElement) return;
-
-    cacheButtonProperties();
-    if (currentButtons.length === 0) {
-        // Observer will handle when buttons appear
-    } else {
-        resetAllButtonsToDefault(); // This will now use the configured mode
-    }
-
-    dockContainerElement.addEventListener('mousemove', (event) => {
-      const dockRect = dockContainerElement.getBoundingClientRect();
-      if (event.clientX >= dockRect.left && event.clientX <= dockRect.right &&
-          event.clientY >= dockRect.top && event.clientY <= dockRect.bottom) {
-        isMouseOverDock = true;
-        lastMouseXInDock = event.clientX;
-        updateDockEffectStyles(event.clientX);
-      } else {
-        if (isMouseOverDock) {
-            isMouseOverDock = false;
-            resetAllButtonsToDefault();
-        }
-      }
-    });
-
-    dockContainerElement.addEventListener('mouseleave', () => {
-      isMouseOverDock = false;
-      resetAllButtonsToDefault();
-    });
-
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeDebounceTimeout);
-      resizeDebounceTimeout = setTimeout(() => {
-        cacheButtonProperties();
-        if (isMouseOverDock && lastMouseXInDock !== 0 && currentButtons.length > 0) {
-            updateDockEffectStyles(lastMouseXInDock);
-        } else {
-            resetAllButtonsToDefault();
-        }
-      }, RESIZE_DEBOUNCE_MS);
-    });
-  }
-
-  const observer = new MutationObserver((mutationsList, obs) => {
-    // ... (logic largely the same, but resetAllButtonsToDefault and updateDockEffectStyles now use mode)
-    const dockNowExists = document.getElementById(DOCK_CONTAINER_ID);
-    
-    if (!dockNowExists) {
-      if (isEffectInitialized) {
-        isEffectInitialized = false;
-        isMouseOverDock = false;
-        currentButtons = [];
-        buttonCachedProperties = [];
-      }
-      return;
-    }
-    if (dockContainerElement !== dockNowExists) dockContainerElement = dockNowExists;
-
-    const buttonsArePresent = dockNowExists.querySelector(BUTTON_SELECTOR);
-
-    if (buttonsArePresent) {
-      if (!isEffectInitialized) {
-        initializeDockEffect();
-        isEffectInitialized = true;
-      } else {
-        const structuralChange = cacheButtonProperties();
-        if (isMouseOverDock && !structuralChange && currentButtons.length > 0) {
-          updateDockEffectStyles(lastMouseXInDock);
-        } else {
-          resetAllButtonsToDefault();
-          if (isMouseOverDock && currentButtons.length > 0) {
-            updateDockEffectStyles(lastMouseXInDock);
-          }
-        }
-      }
-    } else if (isEffectInitialized && currentButtons.length > 0) {
-        currentButtons = [];
-        buttonCachedProperties = [];
-        updateDockGapping();
-    }
-  });
-  
-  function attemptInitialization() {
-    // ... (same as before)
-    const dock = document.getElementById(DOCK_CONTAINER_ID);
-    if (dock) {
-        dockContainerElement = dock;
-        if (dock.querySelector(BUTTON_SELECTOR)) {
-            if (!isEffectInitialized) {
-                initializeDockEffect();
-                isEffectInitialized = true;
-            }
-        } else {
-            if (!isEffectInitialized) {
-                updateDockGapping();
-                observer.observe(document.documentElement, { childList: true, subtree: true });
-            }
-        }
-    } else {
-        observer.observe(document.documentElement, { childList: true, subtree: true });
-    }
-  }
-
-  // --- NEW: Listen for preference changes (if applicable) ---
-  // This is a conceptual example. Actual implementation depends on your browser environment.
-  // For a typical WebExtension:
-  // if (typeof browser !== 'undefined' && browser.storage && browser.storage.onChanged) {
-  //   browser.storage.onChanged.addListener((changes, areaName) => {
-  //     if (areaName === 'local' || areaName === 'sync') { // Or wherever your preference is stored
-  //       if (changes['extensions.zenBrowser.dock.inactiveIconMode']) { // Or your actual preference key
-  //         console.log("Zen Dock: Inactive icon mode preference changed. Re-applying styles.");
-  //         // Re-apply styles based on the new preference
-  //         if (isMouseOverDock && lastMouseXInDock !== 0 && currentButtons.length > 0) {
-  //           updateDockEffectStyles(lastMouseXInDock);
-  //         } else {
-  //           resetAllButtonsToDefault();
-  //         }
-  //       }
-  //     }
-  //   });
-  // } else if (/* You have another way to detect preference changes, e.g., custom events */) {
-  //   // document.addEventListener('myCustomPreferenceChangeEvent', () => { ... });
-  // }
-
-
-  if (document.readyState === "complete" || document.readyState === "interactive") {
-    attemptInitialization();
-  } else {
-    document.addEventListener("DOMContentLoaded", attemptInitialization, { once: true });
-  }
-})();
-
-}
 
 // ====================================================================================================
-// SCRIPT 7: Compact Mode Sidebar Width Fix
+// SCRIPT 5: Compact Mode Sidebar Width Fix
 // ====================================================================================================
 // ==UserScript==
 // @ignorecache
@@ -1409,7 +801,7 @@ if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
 }
 
 // ====================================================================================================
-// SCRIPT 8: Gradient Opacity Adjuster
+// SCRIPT 6: Gradient Opacity Adjuster
 // ====================================================================================================
 // ==UserScript==
 // @ignorecache
@@ -1600,7 +992,7 @@ if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
 
 
 // ====================================================================================================
-// SCRIPT 9: Zen Top Position Globalizer
+// SCRIPT 7: Zen Top Position Globalizer
 // ====================================================================================================
 // ==UserScript==
 // @ignorecache
@@ -1652,7 +1044,7 @@ if (Services.prefs.getBoolPref("browser.tabs.allow_transparent_browser")) {
 }
 
 // ====================================================================================================
-// SCRIPT 10: Zen Mdia Player Peak height
+// SCRIPT 8: Zen Mdia Player Peak height
 // ====================================================================================================
 // ==UserScript==
 // @ignorecache
@@ -1771,8 +1163,10 @@ window.addEventListener("load", () => {
 
 
 
+
+
 // ====================================================================================================
-// SCRIPT 11: Move the Extension button into url bar
+// SCRIPT 9: Move the Extension button into url bar
 // ====================================================================================================
 // ==UserScript==
 // @ignorecache
@@ -1940,8 +1334,14 @@ window.addEventListener("load", () => {
 
 })(); 
 
+
+
+
+
+
+
 // ====================================================================================================
-// SCRIPT 12: Extension menu like arc
+// SCRIPT 10: Extension menu like arc
 // ====================================================================================================
 // ==UserScript==
 // @ignorecache
@@ -2073,7 +1473,7 @@ class PanelManager {
       actionSection.setAttribute("cui-areatype", "panel");
       actionSection.setAttribute("skipintoolbarset", "true");
       actionSection.style.cssText = `
-        padding: 7px 8px 5px;
+        padding: 7px 8px 5px 9px;
         display: flex;
         gap: 8px;
         justify-content: center;
@@ -2990,27 +2390,135 @@ class PanelManager {
         return;
       }
 
-      // Check connection security
       const scheme = currentURI.scheme;
+      const spec = currentURI.spec;
       
-      if (scheme === "https") {
-        securityText.textContent = "Secure";
-        securityStatus.setAttribute("title", "Secure HTTPS Connection");
-        securityStatus.style.color = "currentColor";
-        securityIcon.style.filter = "";
-      } else if (scheme === "http") {
-        securityText.textContent = "Insecure";
-        securityStatus.setAttribute("title", "Insecure HTTP Connection");
-        securityStatus.style.color = "#ef4444";
-        securityIcon.style.filter = "hue-rotate(0deg) saturate(2) brightness(0.6) sepia(1) hue-rotate(-50deg)";
-      } else {
-        securityText.textContent = "Local";
-        securityStatus.setAttribute("title", "Local or Special Page");
-        securityStatus.style.color = "currentColor";
-        securityIcon.style.filter = "";
+      // Get the browser's security UI for more accurate info
+      const browser = gBrowser.selectedBrowser;
+      let securityUI = null;
+      let securityState = null;
+      
+      try {
+        if (browser && browser.securityUI) {
+          securityUI = browser.securityUI;
+          securityState = securityUI.state;
+        }
+      } catch (e) {
+        console.debug("Could not get security UI state:", e.message);
       }
 
-      console.log("Unified security info updated for:", currentURI.spec);
+      // Check Firefox's identity handler for more accurate security info
+      let identityMode = null;
+      try {
+        if (window.gIdentityHandler && window.gIdentityHandler._mode) {
+          identityMode = window.gIdentityHandler._mode;
+        }
+      } catch (e) {
+        console.debug("Could not get identity handler mode:", e.message);
+      }
+
+      // Determine security status with multiple checks
+      let isSecure = false;
+      let isInsecure = false;
+      let isLocal = false;
+      let securityLabel = "Unknown";
+      let tooltipText = "Security status unknown";
+      let textColor = "currentColor";
+      let iconFilter = "";
+
+      // Check for special/local pages first
+      if (spec.startsWith('about:') || 
+          spec.startsWith('chrome:') || 
+          spec.startsWith('moz-extension:') ||
+          spec.startsWith('resource:') ||
+          spec.startsWith('file:') ||
+          spec === 'about:blank') {
+        isLocal = true;
+        securityLabel = "Local";
+        tooltipText = "Local or Special Page";
+      }
+      // Check for secure HTTPS
+      else if (scheme === "https") {
+        // Use security UI state if available for more accuracy
+        if (securityState !== null) {
+          const Ci = Components.interfaces;
+          if (securityState & Ci.nsIWebProgressListener.STATE_IS_SECURE) {
+            isSecure = true;
+            securityLabel = "Secure";
+            tooltipText = "Secure HTTPS Connection";
+          } else if (securityState & Ci.nsIWebProgressListener.STATE_IS_INSECURE) {
+            isInsecure = true;
+            securityLabel = "Mixed Content";
+            tooltipText = "HTTPS with Mixed Content";
+            textColor = "#f59e0b"; // Orange for mixed content
+            iconFilter = "hue-rotate(30deg) saturate(1.5)";
+          } else {
+            isSecure = true; // Default to secure for HTTPS
+            securityLabel = "Secure";
+            tooltipText = "Secure HTTPS Connection";
+          }
+        } else {
+          // Fallback for HTTPS without security UI
+          isSecure = true;
+          securityLabel = "Secure";
+          tooltipText = "Secure HTTPS Connection";
+        }
+      }
+      // Check for insecure HTTP
+      else if (scheme === "http") {
+        isInsecure = true;
+        securityLabel = "Insecure";
+        tooltipText = "Insecure HTTP Connection";
+        textColor = "#ef4444"; // Red for insecure
+        iconFilter = "hue-rotate(0deg) saturate(2) brightness(0.8) sepia(1) hue-rotate(-50deg)";
+      }
+      // Handle other schemes
+      else {
+        isLocal = true;
+        securityLabel = "Local";
+        tooltipText = `${scheme.toUpperCase()} Connection`;
+      }
+
+      // Cross-check with identity handler mode if available
+      if (identityMode) {
+        switch (identityMode) {
+          case "verifiedDomain":
+          case "verifiedIdentity":
+            if (scheme === "https") {
+              isSecure = true;
+              isInsecure = false;
+              securityLabel = "Secure";
+              tooltipText = "Secure HTTPS Connection";
+              textColor = "currentColor";
+              iconFilter = "";
+            }
+            break;
+          case "mixedActiveContent":
+          case "mixedPassiveContent":
+            securityLabel = "Mixed Content";
+            tooltipText = "HTTPS with Mixed Content";
+            textColor = "#f59e0b";
+            iconFilter = "hue-rotate(30deg) saturate(1.5)";
+            break;
+          case "notSecure":
+            if (scheme === "http") {
+              isInsecure = true;
+              securityLabel = "Insecure";
+              tooltipText = "Insecure HTTP Connection";
+              textColor = "#ef4444";
+              iconFilter = "hue-rotate(0deg) saturate(2) brightness(0.8) sepia(1) hue-rotate(-50deg)";
+            }
+            break;
+        }
+      }
+
+      // Apply the determined security state
+      securityText.textContent = securityLabel;
+      securityStatus.setAttribute("title", tooltipText);
+      securityStatus.style.color = textColor;
+      securityIcon.style.filter = iconFilter;
+
+      console.log(`Unified security info updated for: ${spec} - Status: ${securityLabel}`);
     } catch (err) {
       console.error("Error updating unified security info:", err);
     }
@@ -3673,11 +3181,327 @@ if (!window.urlBarModifierInitialized) {
             panelManager.updateUnifiedSecurityInfo();
           }, 100);
         }
+      },
+      onSecurityChange: function(browser, webProgress, request, state) {
+        if (browser === gBrowser.selectedBrowser) {
+          setTimeout(() => {
+            panelManager.updateUnifiedSecurityInfo();
+          }, 50);
+        }
+      },
+      onStateChange: function(browser, webProgress, request, stateFlags, status) {
+        if (browser === gBrowser.selectedBrowser) {
+          // Only update on document load completion
+          const Ci = Components.interfaces;
+          if (stateFlags & Ci.nsIWebProgressListener.STATE_STOP && 
+              stateFlags & Ci.nsIWebProgressListener.STATE_IS_DOCUMENT) {
+            setTimeout(() => {
+              panelManager.updateUnifiedSecurityInfo();
+            }, 200);
+          }
+        }
       }
     });
+
+    // Also listen for identity handler updates
+    try {
+      if (window.gIdentityHandler) {
+        const originalRefresh = window.gIdentityHandler.refreshIdentityPopup;
+        if (originalRefresh) {
+          window.gIdentityHandler.refreshIdentityPopup = function(...args) {
+            const result = originalRefresh.apply(this, args);
+            setTimeout(() => {
+              panelManager.updateUnifiedSecurityInfo();
+            }, 50);
+            return result;
+          };
+        }
+      }
+    } catch (e) {
+      console.debug("Could not hook identity handler refresh:", e.message);
+    }
   }
 
-  // No longer need URL bar button - user can use the native unified extensions button
+  // Create copy URL toolbar button to the left of unified extensions button
+  const createCopyUrlToolbarButton = () => {
+    try {
+      // Check if button already exists
+      if (document.getElementById("unified-copy-url-toolbar-button")) {
+        console.log("Copy URL toolbar button already exists");
+        return;
+      }
+
+      // Find the page-action-buttons container (where extension-button.uc.js moves the unified extensions button)
+      const pageActionButtons = document.getElementById("page-action-buttons");
+      const unifiedExtensionsButton = document.getElementById("unified-extensions-button");
+      
+      if (!pageActionButtons) {
+        console.log("Page action buttons container not found, will retry later");
+        return;
+      }
+
+      // Create the copy URL button
+      const copyUrlButton = document.createXULElement("toolbarbutton");
+      copyUrlButton.id = "unified-copy-url-toolbar-button";
+      copyUrlButton.className = "toolbarbutton-1 chromeclass-toolbar-additional";
+      copyUrlButton.setAttribute("tooltiptext", "Copy URL to clipboard");
+      copyUrlButton.setAttribute("cui-areatype", "toolbar");
+      copyUrlButton.setAttribute("removable", "true");
+      
+      // Style to work with the page-action-buttons layout
+      copyUrlButton.style.order = '9998'; // One less than unified extensions button (9999)
+      copyUrlButton.style.marginLeft = '0px';
+      copyUrlButton.style.marginRight = '0px';
+      
+      // Add click event listener using the existing copyCurrentUrl function
+      copyUrlButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        panelManager.copyCurrentUrl(event);
+      });
+
+      // Insert the button into page-action-buttons
+      if (unifiedExtensionsButton && unifiedExtensionsButton.parentNode === pageActionButtons) {
+        // Insert before the unified extensions button if it's already moved there
+        pageActionButtons.insertBefore(copyUrlButton, unifiedExtensionsButton);
+      } else {
+        // Just append to page-action-buttons if unified extensions button isn't there yet
+        pageActionButtons.appendChild(copyUrlButton);
+      }
+      
+      // Apply same visibility logic as extension-button.uc.js
+      updateCopyUrlButtonVisibility();
+      
+      console.log("Copy URL toolbar button created successfully in page-action-buttons");
+    } catch (err) {
+      console.error("Error creating copy URL toolbar button:", err);
+    }
+  };
+
+  // Update copy URL button visibility using the same logic as extension-button.uc.js
+  const updateCopyUrlButtonVisibility = () => {
+    try {
+      const copyUrlButton = document.getElementById("unified-copy-url-toolbar-button");
+      if (!copyUrlButton) return;
+
+      const urlbar = document.getElementById('urlbar');
+      
+      // Check if URL bar is floating (same as extension-button.uc.js)
+      let isFloating = false;
+      if (urlbar) {
+        isFloating = urlbar.getAttribute('breakout-extend') === 'true' ||
+                     urlbar.getAttribute('zen-floating-urlbar') === 'true';
+      }
+
+      // Check if it's a blank page (same logic as extension-button.uc.js)
+      let isBlankPage = false;
+      let identityBox = document.getElementById('identity-box');
+      if (identityBox) {
+        isBlankPage = identityBox.getAttribute('pageproxystate') === 'invalid';
+      } else if (typeof gBrowser !== 'undefined' && gBrowser.selectedBrowser) {
+        const currentSpec = gBrowser.selectedBrowser.currentURI.spec;
+        isBlankPage = ['about:blank', 'about:newtab', 'about:home'].includes(currentSpec);
+      } else {
+        // Default to considering it a blank page if identityBox and gBrowser are unavailable
+        isBlankPage = true;
+      }
+
+      // Hide/show button based on same conditions as unified extensions button
+      if (isFloating || isBlankPage) {
+        copyUrlButton.style.display = 'none';
+      } else {
+        copyUrlButton.style.display = '';
+      }
+    } catch (err) {
+      console.error("Error updating copy URL button visibility:", err);
+    }
+  };
+
+  // CSS Custom Property Change Detection for --zen-primary-color
+  const setupCSSPropertyObserver = () => {
+    console.log("URLBarModifier: Setting up CSS property change detection for --zen-primary-color");
+    
+    // Method 1: MutationObserver on document.documentElement for attribute changes
+    const documentObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'attributes' && 
+            (mutation.attributeName === 'style' || mutation.attributeName === 'class')) {
+          checkColorChange();
+        }
+      }
+    });
+    
+    documentObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['style', 'class']
+    });
+    
+    // Method 2: Listen for zen-workspace-switched event (from tab_sort.uc.js pattern)
+    window.addEventListener('zen-workspace-switched', () => {
+      console.log("URLBarModifier: zen-workspace-switched event detected");
+      setTimeout(checkColorChange, 100);
+    });
+    
+    // Method 2.5: Hook into ZenWorkspaces if available (similar to tab_sort.uc.js)
+    const setupZenWorkspaceHooks = () => {
+      if (typeof window.gZenWorkspaces !== 'undefined' && window.gZenWorkspaces.changeWorkspace) {
+        const originalChangeWorkspace = window.gZenWorkspaces.changeWorkspace;
+        window.gZenWorkspaces.changeWorkspace = function(...args) {
+          const result = originalChangeWorkspace.apply(this, args);
+          console.log("URLBarModifier: ZenWorkspaces.changeWorkspace called");
+          setTimeout(checkColorChange, 150);
+          return result;
+        };
+        console.log("URLBarModifier: Hooked into gZenWorkspaces.changeWorkspace");
+      } else if (typeof ZenWorkspaces !== 'undefined' && ZenWorkspaces.changeWorkspace) {
+        const originalChangeWorkspace = ZenWorkspaces.changeWorkspace;
+        ZenWorkspaces.changeWorkspace = function(...args) {
+          const result = originalChangeWorkspace.apply(this, args);
+          console.log("URLBarModifier: ZenWorkspaces.changeWorkspace called");
+          setTimeout(checkColorChange, 150);
+          return result;
+        };
+        console.log("URLBarModifier: Hooked into ZenWorkspaces.changeWorkspace");
+      } else {
+        console.log("URLBarModifier: ZenWorkspaces not found, will retry later");
+        setTimeout(setupZenWorkspaceHooks, 1000);
+      }
+    };
+    
+    // Try to setup workspace hooks
+    setupZenWorkspaceHooks();
+    
+    // Method 3: Periodic check as fallback
+    let lastKnownColor = getComputedStyle(document.documentElement)
+      .getPropertyValue('--zen-primary-color').trim();
+    
+    const periodicCheck = setInterval(() => {
+      checkColorChange();
+    }, 500); // Check every 500ms
+    
+    // Method 4: ResizeObserver as additional trigger
+    const resizeObserver = new ResizeObserver(() => {
+      checkColorChange();
+    });
+    resizeObserver.observe(document.documentElement);
+    
+    function checkColorChange() {
+      const currentColor = getComputedStyle(document.documentElement)
+        .getPropertyValue('--zen-primary-color').trim();
+      
+      console.log(`URLBarModifier: Checking color - Current: "${currentColor}", Last: "${lastKnownColor}"`);
+      
+      if (currentColor !== lastKnownColor && currentColor) {
+        console.log(`URLBarModifier: --zen-primary-color changed from "${lastKnownColor}" to "${currentColor}"`);
+        lastKnownColor = currentColor;
+        
+        // Trigger workspace color change handler with delay
+        setTimeout(() => {
+          onWorkspaceColorChange(currentColor);
+        }, 50);
+      }
+    }
+    
+    // Store observers for cleanup
+    window.urlBarModifierCSSObserver = {
+      documentObserver,
+      resizeObserver,
+      periodicCheck,
+      disconnect: () => {
+        documentObserver.disconnect();
+        resizeObserver.disconnect();
+        clearInterval(periodicCheck);
+      }
+    };
+    
+    console.log("URLBarModifier: CSS property observer setup complete with multiple detection methods");
+  };
+  
+  // Handle workspace color changes
+  const onWorkspaceColorChange = (newColor) => {
+    console.log(`URLBarModifier: Workspace color changed to: ${newColor}`);
+    
+    // Update PiP toggle state when color changes (it uses --zen-primary-color)
+    if (panelManager && typeof panelManager.updatePiPToggleState === 'function') {
+      // Force a re-evaluation by temporarily modifying and restoring the PiP button
+      const pipButton = document.getElementById("pip-button");
+      if (pipButton) {
+        // Force a style recalculation
+        pipButton.style.display = 'none';
+        void pipButton.offsetHeight; // Force reflow
+        pipButton.style.display = '';
+      }
+      panelManager.updatePiPToggleState();
+    }
+    
+    // Update security info when color changes
+    if (panelManager && typeof panelManager.updateUnifiedSecurityInfo === 'function') {
+      panelManager.updateUnifiedSecurityInfo();
+    }
+    
+    // Update copy URL button visibility when color changes
+    updateCopyUrlButtonVisibility();
+    
+    // Dispatch a custom event for other scripts to listen to
+    window.dispatchEvent(new CustomEvent('zen-workspace-color-changed', {
+      detail: { color: newColor }
+    }));
+  };
+
+  // Create the button immediately
+  createCopyUrlToolbarButton();
+
+  // Setup CSS property observer for workspace color changes
+  setupCSSPropertyObserver();
+
+  // Monitor the same changes as extension-button.uc.js to keep buttons in sync
+  const copyUrlButtonObserver = new MutationObserver(function(mutationsList) {
+    let needsUpdate = false;
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'childList') {
+        for (const node of [...mutation.addedNodes, ...mutation.removedNodes]) {
+          if (node.nodeType === Node.ELEMENT_NODE && (node.id === 'unified-extensions-button' || node.id === 'page-action-buttons' || node.id === 'urlbar')) {
+            needsUpdate = true;
+            break;
+          }
+        }
+        // Check if copy URL button needs to be recreated or moved
+        const copyBtn = document.getElementById('unified-copy-url-toolbar-button');
+        const pageActionBtns = document.getElementById('page-action-buttons');
+        if (!copyBtn && pageActionBtns) {
+          // Button missing but container exists, recreate it
+          setTimeout(createCopyUrlToolbarButton, 100);
+        } else if (copyBtn && pageActionBtns && copyBtn.parentElement !== pageActionBtns) {
+          // Button exists but not in the right place, move it
+          needsUpdate = true;
+        }
+      } else if (mutation.type === 'attributes') {
+        const target = mutation.target;
+        if (target.nodeType === Node.ELEMENT_NODE) {
+          if ((target.id === 'urlbar' && (mutation.attributeName === 'breakout-extend' || mutation.attributeName === 'zen-floating-urlbar')) ||
+              (target.id === 'identity-box' && mutation.attributeName === 'pageproxystate')) {
+            needsUpdate = true;
+          }
+        }
+      }
+      if (needsUpdate) break;
+    }
+
+    if (needsUpdate) {
+      updateCopyUrlButtonVisibility();
+    }
+  });
+
+  // Observe the same scope as extension-button.uc.js
+  copyUrlButtonObserver.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+    attributes: true
+  });
+
+  // Also create it when DOM is ready if it wasn't created initially
+  setTimeout(() => {
+    createCopyUrlToolbarButton();
+  }, 1000);
 
   // Check if panel needs modification when it's shown
   const checkPanelModification = () => {
@@ -3705,11 +3529,26 @@ if (!window.urlBarModifierInitialized) {
               panelManager.modifyUnifiedExtensionsPanel();
               panelManager.modifyPanelPosition();
               panelManager.updateUnifiedSecurityInfo();
-              // Always update PiP state when panel opens
+              // Always update PiP state when panel opens - with longer delay to ensure CSS is applied
               setTimeout(() => {
+                console.log("URLBarModifier: Updating PiP toggle state after panel open");
                 panelManager.updatePiPToggleState();
-              }, 100);
+              }, 200);
             }, 50);
+          }
+          // Check if unified extensions button was added/recreated
+          if (node.nodeType === Node.ELEMENT_NODE && node.id === 'unified-extensions-button') {
+            console.log("URLBarModifier: Unified extensions button detected, creating copy URL button...");
+            setTimeout(() => {
+              createCopyUrlToolbarButton();
+            }, 100);
+          }
+          // Check if page-action-buttons was added/recreated
+          if (node.nodeType === Node.ELEMENT_NODE && node.id === 'page-action-buttons') {
+            console.log("URLBarModifier: Page action buttons detected, creating copy URL button...");
+            setTimeout(() => {
+              createCopyUrlToolbarButton();
+            }, 200);
           }
         });
       }
@@ -3718,6 +3557,22 @@ if (!window.urlBarModifierInitialized) {
         const target = mutation.target;
         if (target.id === 'unified-extensions-panel' || target.id === 'unified-extensions-view') {
           checkPanelModification();
+          
+          // If panel is being shown (not hidden), force PiP state update
+          if (target.id === 'unified-extensions-panel' && 
+              (mutation.attributeName === 'hidden' || mutation.attributeName === 'style')) {
+            const isHidden = target.hasAttribute('hidden') || 
+                            target.style.display === 'none' || 
+                            target.style.visibility === 'hidden';
+            if (!isHidden) {
+              console.log("URLBarModifier: Panel shown, forcing PiP state update");
+              setTimeout(() => {
+                if (panelManager && typeof panelManager.updatePiPToggleState === 'function') {
+                  panelManager.updatePiPToggleState();
+                }
+              }, 100);
+            }
+          }
         }
       }
     });
@@ -3735,6 +3590,24 @@ if (!window.urlBarModifierInitialized) {
   setInterval(() => {
     checkPanelModification();
   }, 1000);
+
+  // Cleanup function for CSS property observer
+  const cleanup = () => {
+    if (window.urlBarModifierCSSObserver) {
+      if (typeof window.urlBarModifierCSSObserver.disconnect === 'function') {
+        window.urlBarModifierCSSObserver.disconnect();
+      } else {
+        // Fallback for old observer structure
+        window.urlBarModifierCSSObserver.disconnect?.();
+      }
+      window.urlBarModifierCSSObserver = null;
+      console.log("URLBarModifier: CSS property observer disconnected");
+    }
+  };
+
+  // Add cleanup listeners
+  window.addEventListener('beforeunload', cleanup);
+  window.addEventListener('unload', cleanup);
 } else {
   console.log("URLBarModifier: Already initialized, skipping");
 }
