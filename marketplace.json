@@ -300,7 +300,7 @@
     "version": "1.0.0",
     "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
-    "stars": 5,
+    "stars": 6,
     "fork": [
       "zen"
     ]
