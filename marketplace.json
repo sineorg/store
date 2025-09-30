@@ -258,6 +258,17 @@
       "zen"
     ]
   },
+  "reopen-closed-tabs": {
+    "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
+    "name": "Reopen Closed Tabs Menu",
+    "version": "1.0.0",
+    "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
+    "stars": 7,
+    "fork": [
+      "zen"
+    ]
+  },
   "ZenMotion-Pro": {
     "homepage": "Mohammed55Z/ZenMotion-Pro",
     "name": "ZenMotion Pro",
@@ -292,17 +303,6 @@
     "fork": [
       "floorp",
       "firefox"
-    ]
-  },
-  "reopen-closed-tabs": {
-    "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
-    "name": "Reopen Closed Tabs Menu",
-    "version": "1.0.0",
-    "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
-    "stars": 6,
-    "fork": [
-      "zen"
     ]
   },
   "tab-rename-zen-browser": {
