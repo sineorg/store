@@ -54,7 +54,7 @@
     "version": "5.1.0",
     "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
-    "stars": 135,
+    "stars": 136,
     "fork": [
       "zen"
     ]
@@ -66,7 +66,7 @@
     "version": "143.0",
     "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
     "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
-    "stars": 114,
+    "stars": 115,
     "fork": [
       "firefox",
       "waterfox",
