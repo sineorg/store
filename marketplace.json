@@ -6,7 +6,7 @@
     "version": "3.3",
     "description": "A beautiful theme made for Zen Browser :))",
     "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
-    "stars": 1101,
+    "stars": 1100,
     "fork": [
       "zen"
     ]
@@ -18,7 +18,7 @@
     "version": "5.3.0",
     "description": "A skin for Firefox and its forks that makes things flow.",
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
-    "stars": 442,
+    "stars": 440,
     "fork": [
       "floorp"
     ]
@@ -30,7 +30,7 @@
     "version": "3.2.1b",
     "description": "Tab Groups for Zen Browser",
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
-    "stars": 353,
+    "stars": 352,
     "fork": [
       "zen"
     ]
@@ -54,7 +54,7 @@
     "version": "5.1.0",
     "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
-    "stars": 136,
+    "stars": 135,
     "fork": [
       "zen"
     ]
@@ -203,7 +203,7 @@
     "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
     "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
     "name": "Wireframe 2.0",
-    "version": "2.1",
+    "version": "2.1.1",
     "description": "A minimal, squared-off theme for Zen Browser",
     "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
     "stars": 21,
