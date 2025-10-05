@@ -104,18 +104,7 @@
     "version": "1.0.0",
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/README.md",
-    "stars": 39,
-    "fork": [
-      "zen"
-    ]
-  },
-  "quick-search-zen-browser": {
-    "homepage": "Darsh-A/Quick-Search-Zen-Browser",
-    "name": "Quick Search",
-    "version": "2.2.0",
-    "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
-    "stars": 39,
+    "stars": 40,
     "fork": [
       "zen"
     ]
@@ -126,7 +115,7 @@
     "version": "1.0.0",
     "description": "Adds a floating UI to switch search engines on a search results page.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
-    "stars": 39,
+    "stars": 40,
     "fork": [
       "zen"
     ]
@@ -138,7 +127,7 @@
     "version": "1.0.0",
     "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
-    "stars": 39,
+    "stars": 40,
     "fork": [
       "zen"
     ]
@@ -149,7 +138,7 @@
     "version": "1.0.0",
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
-    "stars": 39
+    "stars": 40
   },
   "zen-command-palette": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
@@ -157,6 +146,17 @@
     "version": "1.5.0",
     "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
+    "stars": 40,
+    "fork": [
+      "zen"
+    ]
+  },
+  "quick-search-zen-browser": {
+    "homepage": "Darsh-A/Quick-Search-Zen-Browser",
+    "name": "Quick Search",
+    "version": "2.2.0",
+    "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
     "stars": 39,
     "fork": [
       "zen"
