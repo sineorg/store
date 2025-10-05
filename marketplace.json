@@ -86,25 +86,13 @@
       "zen"
     ]
   },
-  "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
-    "homepage": "CosmoCreeper/Zen-Themes/tree/main/SuperPins",
-    "image": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/image.png",
-    "name": "SuperPins",
-    "version": "1.5.8",
-    "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
-    "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
-    "stars": 41,
-    "fork": [
-      "zen"
-    ]
-  },
   "browse-bot": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/findbar-ai",
     "name": "Browse Bot",
     "version": "1.0.0",
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/README.md",
-    "stars": 41,
+    "stars": 42,
     "fork": [
       "zen"
     ]
@@ -115,7 +103,7 @@
     "version": "1.0.0",
     "description": "Adds a floating UI to switch search engines on a search results page.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
-    "stars": 41,
+    "stars": 42,
     "fork": [
       "zen"
     ]
@@ -127,7 +115,7 @@
     "version": "1.0.0",
     "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
-    "stars": 41,
+    "stars": 42,
     "fork": [
       "zen"
     ]
@@ -138,7 +126,7 @@
     "version": "1.0.0",
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
-    "stars": 41
+    "stars": 42
   },
   "zen-command-palette": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
@@ -146,6 +134,18 @@
     "version": "1.5.0",
     "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
+    "stars": 42,
+    "fork": [
+      "zen"
+    ]
+  },
+  "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
+    "homepage": "CosmoCreeper/Zen-Themes/tree/main/SuperPins",
+    "image": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/image.png",
+    "name": "SuperPins",
+    "version": "1.5.8",
+    "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
+    "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
     "stars": 41,
     "fork": [
       "zen"
