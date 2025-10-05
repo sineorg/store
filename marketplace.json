@@ -211,18 +211,6 @@
       "zen"
     ]
   },
-  "zen-tidy-downloads": {
-    "homepage": "Vertex-Mods/Zen-Tidy-Downloads",
-    "image": "https://github.com/Vertex-Mods/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
-    "name": "Tidy Downloads",
-    "version": "2.0.0",
-    "description": "Clean up your downloads with AI",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/refs/heads/main/README.md",
-    "stars": 14,
-    "fork": [
-      "zen"
-    ]
-  },
   "customize-collapsed-sidebar": {
     "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
     "name": "Customize Collapsed Sidebar",
@@ -230,18 +218,6 @@
     "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
     "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
     "stars": 12,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-tidy-tabs": {
-    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
-    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
-    "name": "Zen Tidy Tabs",
-    "version": "1.0.0s",
-    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
-    "stars": 9,
     "fork": [
       "zen"
     ]
@@ -299,29 +275,6 @@
     "version": "1.0.0",
     "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
-    "stars": 5,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-drop-link": {
-    "homepage": "https://github.com/octaviusz/zen-drop-link",
-    "name": "Zen Drop Link to Split",
-    "version": "0.0.2",
-    "description": "This mod allows you to split tabs by drag and drop links",
-    "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
-    "stars": 5,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-live-calendar": {
-    "homepage": "Vertex-Mods/Zen-Live-Calendar",
-    "image": "https://github.com/Vertex-Mods/Zen-Live-Calendar/blob/main/image.png?raw=true",
-    "name": "Live Calendar",
-    "version": "1.0.0",
-    "description": "Brings the live calendar functionality from Arc to Zen, making it feel as native as possible.",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Live-Calendar/refs/heads/main/README.md",
     "stars": 5,
     "fork": [
       "zen"
@@ -396,6 +349,53 @@
     "fork": [
       "zen",
       "firefox"
+    ]
+  },
+  "zen-tidy-downloads": {
+    "homepage": "Vertex-Mods/Zen-Tidy-Downloads",
+    "image": "https://github.com/Vertex-Mods/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
+    "name": "Tidy Downloads",
+    "version": "2.0.0",
+    "description": "Clean up your downloads with AI",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-tidy-tabs": {
+    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
+    "name": "Zen Tidy Tabs",
+    "version": "1.0.0s",
+    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-drop-link": {
+    "homepage": "https://github.com/octaviusz/zen-drop-link",
+    "name": "Zen Drop Link to Split",
+    "version": "0.0.2",
+    "description": "This mod allows you to split tabs by drag and drop links",
+    "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-live-calendar": {
+    "homepage": "Vertex-Mods/Zen-Live-Calendar",
+    "image": "https://github.com/Vertex-Mods/Zen-Live-Calendar/blob/main/image.png?raw=true",
+    "name": "Live Calendar",
+    "version": "1.0.0",
+    "description": "Brings the live calendar functionality from Arc to Zen, making it feel as native as possible.",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Live-Calendar/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
     ]
   },
   "IconTweaker": {
