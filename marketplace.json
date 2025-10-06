@@ -398,19 +398,6 @@
       "firefox"
     ]
   },
-  "IconTweaker": {
-    "homepage": "allecsc/Icon-Tweaker",
-    "image": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/image.png",
-    "name": "Icon Tweaker",
-    "version": "1.2",
-    "description": "Tab icon resizer for Essentials, Pinned, Normal and Workspaces.",
-    "readme": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen",
-      "firefox"
-    ]
-  },
   "42b8c4ac-76d5-4521-9917-2e478931ee53": {
     "homepage": "rasyidrafi/zen-compact-transparent-mode",
     "image": "https://github.com/rasyidrafi/zen-compact-transparent-mode/blob/main/image.png?raw=true",
@@ -418,6 +405,19 @@
     "version": "1.1.2",
     "description": "Make popups UI menu transparent with custom settings.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-compact-transparent-mode/refs/heads/main/README.md",
+    "stars": 1,
+    "fork": [
+      "zen",
+      "firefox"
+    ]
+  },
+  "IconTweaker": {
+    "homepage": "allecsc/Icon-Tweaker",
+    "image": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/image.png",
+    "name": "Icon Tweaker",
+    "version": "1.2",
+    "description": "Tab icon resizer for Essentials, Pinned, Normal and Workspaces.",
+    "readme": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/README.md",
     "stars": 0,
     "fork": [
       "zen",
