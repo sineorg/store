@@ -6,20 +6,14 @@
 // ==/UserScript==
 
 
-(function (factory) {
-  typeof define === 'function' && define.amd ? define(factory) :
-  factory();
-})((function () { 'use strict';
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.ZenCommandPalette = {}));
+})(this, (function (exports) { 'use strict';
 
   const svgToUrl = (iconSVG) => {
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(iconSVG)}`;
-  };
-
-  const textToSvgDataUrl = (text) => {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-    <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="10" fill="currentColor">${text}</text>
-  </svg>`;
-    return svgToUrl(svg);
   };
 
   const icons = {
@@ -28,14 +22,13 @@
     zoomIn: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21l-4.35-4.35M11 8v6m-3-3h6"/></g></svg>`,
     zoomOut: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21l-4.35-4.35M8 11h6"/></g></svg>`,
     pin: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 17v5M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4a1 1 0 0 1 1 1z"/></svg>`,
-    unpin: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 17v5m3-12.66V7a1 1 0 0 1 1-1a2 2 0 0 0 0-4H7.89M2 2l20 20M9 9v1.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h11"/></svg>`,
     swap: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="context-fill light-dark(black, white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-repeat-icon lucide-repeat"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>`,
     bug: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 20v-9m2-4a4 4 0 0 1 4 4v3a6 6 0 0 1-12 0v-3a4 4 0 0 1 4-4zm.12-3.12L16 2"/><path d="M21 21a4 4 0 0 0-3.81-4M21 5a4 4 0 0 1-3.55 3.97M22 13h-4M3 21a4 4 0 0 1 3.81-4M3 5a4 4 0 0 0 3.55 3.97M6 13H2M8 2l1.88 1.88M9 7.13V6a3 3 0 1 1 6 0v1.13"/></g></svg>`,
     book: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7v14m-9-3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4a4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3a3 3 0 0 0-3-3z"/></svg>`,
     star: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.12 2.12 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.12 2.12 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.12 2.12 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.12 2.12 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.12 2.12 0 0 0 1.597-1.16z"/></svg>`,
     folderOut: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M2 7.5V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-1.5M2 13h10"/><path d="m5 10l-3 3l3 3"/></g></svg>`,
     glass: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="6" cy="15" r="4"/><circle cx="18" cy="15" r="4"/><path d="M14 15a2 2 0 0 0-2-2a2 2 0 0 0-2 2m-7.5-2L5 7c.7-1.3 1.4-2 3-2m13.5 8L19 7c-.7-1.3-1.5-2-3-2"/></g></svg>`,
-    incognito: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M14 18a2 2 0 0 0-4 0m9-7l-2.11-6.657a2 2 0 0 0-2.752-1.148l-1.276.61A2 2 0 0 1 12 4H8.5a2 2 0 0 0-1.925 1.456L5 11m-3 0h20"/><circle cx="17" cy="18" r="3"/><circle cx="7" cy="18" r="3"/></g></svg>`,
+    warning: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21.73 18l-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3M12 9v4m0 4h.01"/></svg>`,
 
     // ICON CREDITS: Lucide Labs[ISC License]
     broom: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="context-fill light-dark(black, white)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m13 11l9-9m-7.4 10.6c.8.8.9 2.1.2 3L10 22l-8-8l6.4-4.8c.9-.7 2.2-.6 3 .2Zm-7.8-2.2l6.8 6.8M5 17l1.4-1.4"/></svg>`,
@@ -113,18 +106,18 @@
     },
 
     // ----------- Zen Workspace Management -----------
-    {
-      key: "cmd_zenWorkspaceForward",
-      label: "Next Workspace",
-      icon: "chrome://browser/skin/zen-icons/arrow-right.svg",
-      tags: ["workspace", "next", "forward", "navigate"],
-    },
-    {
-      key: "cmd_zenWorkspaceBackward",
-      label: "Previous Workspace",
-      icon: "chrome://browser/skin/zen-icons/arrow-left.svg",
-      tags: ["workspace", "previous", "backward", "navigate"],
-    },
+    // {
+    //   key: "cmd_zenWorkspaceForward",
+    //   label: "Next Workspace",
+    //   icon: "chrome://browser/skin/zen-icons/arrow-right.svg",
+    //   tags: ["workspace", "next", "forward", "navigate"],
+    // },
+    // {
+    //   key: "cmd_zenWorkspaceBackward",
+    //   label: "Previous Workspace",
+    //   icon: "chrome://browser/skin/zen-icons/arrow-left.svg",
+    //   tags: ["workspace", "previous", "backward", "navigate"],
+    // },
     {
       key: "cmd_zenCtxDeleteWorkspace",
       label: "Delete Workspace",
@@ -246,18 +239,18 @@
     },
 
     // ----------- Additional Zen Commands -----------
-    {
-      key: "cmd_zenOpenZenThemePicker",
-      label: "Open Theme Picker",
-      icon: "chrome://browser/skin/zen-icons/palette.svg",
-      tags: ["theme", "picker", "customize", "appearance", "color"],
-    },
-    {
-      key: "cmd_zenToggleTabsOnRight",
-      label: "Toggle Tabs on Right",
-      icon: "chrome://browser/skin/zen-icons/sidebars-right.svg",
-      tags: ["tabs", "right", "position", "layout"],
-    },
+    // {
+    //   key: "cmd_zenOpenZenThemePicker",
+    //   label: "Open Theme Picker",
+    //   icon: "chrome://browser/skin/zen-icons/palette.svg",
+    //   tags: ["theme", "picker", "customize", "appearance", "color"],
+    // },
+    // {
+    //   key: "cmd_zenToggleTabsOnRight",
+    //   label: "Toggle Tabs on Right",
+    //   icon: "chrome://browser/skin/zen-icons/sidebars-right.svg",
+    //   tags: ["tabs", "right", "position", "layout"],
+    // },
     // {
     //   key: "remove-from-essentials",
     //   label: "Remove from Essentials",
@@ -278,12 +271,12 @@
       icon: "chrome://browser/skin/zen-icons/sidebar.svg",
       tags: ["sidebar", "toggle", "show", "hide"],
     },
-    {
-      key: "cmd_zenCopyCurrentURL",
-      label: "Copy Current URL",
-      icon: "chrome://browser/skin/zen-icons/link.svg",
-      tags: ["copy", "url", "current", "clipboard"],
-    },
+    // {
+    //   key: "cmd_zenCopyCurrentURL",
+    //   label: "Copy Current URL",
+    //   icon: "chrome://browser/skin/zen-icons/link.svg",
+    //   tags: ["copy", "url", "current", "clipboard"],
+    // },
     {
       key: "cmd_zenCopyCurrentURLMarkdown",
       label: "Copy Current URL as Markdown",
@@ -292,14 +285,14 @@
     },
 
     // ----------- Folder Management -----------
-    {
-      key: "cmd_zenOpenFolderCreation",
-      label: "Create New Folder",
-      command: () => gZenFolders.createFolder([], { renameFolder: true }),
-      condition: () => !!window.gZenFolders,
-      icon: "chrome://browser/skin/zen-icons/folder.svg",
-      tags: ["folder", "create", "new", "group", "tabs"],
-    },
+    // {
+    //   key: "cmd_zenOpenFolderCreation",
+    //   label: "Create New Folder",
+    //   command: () => gZenFolders.createFolder([], { renameFolder: true }),
+    //   condition: () => !!window.gZenFolders,
+    //   icon: "chrome://browser/skin/zen-icons/folder.svg",
+    //   tags: ["folder", "create", "new", "group", "tabs"],
+    // },
     {
       key: "folder-remove-active-tab",
       label: "Remove Tab from Folder",
@@ -389,13 +382,13 @@
       icon: "chrome://browser/skin/zen-icons/arrow-down.svg",
       tags: ["move", "tab", "down", "forward", "reorder", "next"],
     },
-    {
-      key: "cmd_close",
-      label: "Close Tab",
-      icon: "chrome://browser/skin/zen-icons/close.svg",
-      condition: isNotEmptyTab,
-      tags: ["tab", "close", "remove"],
-    },
+    // {
+    //   key: "cmd_close",
+    //   label: "Close Tab",
+    //   icon: "chrome://browser/skin/zen-icons/close.svg",
+    //   condition: isNotEmptyTab,
+    //   tags: ["tab", "close", "remove"],
+    // },
     {
       key: "cmd_toggleMute",
       label: "Toggle Mute Tab",
@@ -403,34 +396,34 @@
       tags: ["tab", "mute", "audio", "sound", "toggle"],
       condition: isNotEmptyTab,
     },
-    {
-      key: "Browser:PinTab",
-      label: "Pin Tab",
-      command: () => gBrowser.pinTab(gBrowser.selectedTab),
-      condition: () => gBrowser?.selectedTab && !gBrowser.selectedTab.pinned && isNotEmptyTab,
-      icon: svgToUrl(icons["pin"]), // using lucde icon for pin this looks better than browser's pin icon
-      tags: ["pin", "tab", "stick", "affix"],
-    },
-    {
-      key: "Browser:UnpinTab",
-      label: "Unpin Tab",
-      command: () => gBrowser.unpinTab(gBrowser.selectedTab),
-      condition: () => gBrowser?.selectedTab?.pinned && isNotEmptyTab,
-      icon: svgToUrl(icons["unpin"]),
-      tags: ["unpin", "tab", "release", "detach"],
-    },
-    {
-      key: "Browser:NextTab",
-      label: "Next Tab",
-      icon: "chrome://browser/skin/zen-icons/arrow-right.svg",
-      tags: ["next", "tab", "switch", "navigate"],
-    },
-    {
-      key: "Browser:PrevTab",
-      label: "Previous Tab",
-      icon: "chrome://browser/skin/zen-icons/arrow-left.svg",
-      tags: ["previous", "tab", "switch", "navigate"],
-    },
+    // {
+    //   key: "Browser:PinTab",
+    //   label: "Pin Tab",
+    //   command: () => gBrowser.pinTab(gBrowser.selectedTab),
+    //   condition: () => gBrowser?.selectedTab && !gBrowser.selectedTab.pinned && isNotEmptyTab,
+    //   icon: svgToUrl(icons["pin"]), // using lucde icon for pin this looks better than browser's pin icon
+    //   tags: ["pin", "tab", "stick", "affix"],
+    // },
+    // {
+    //   key: "Browser:UnpinTab",
+    //   label: "Unpin Tab",
+    //   command: () => gBrowser.unpinTab(gBrowser.selectedTab),
+    //   condition: () => gBrowser?.selectedTab?.pinned && isNotEmptyTab,
+    //   icon: svgToUrl(icons["unpin"]),
+    //   tags: ["unpin", "tab", "release", "detach"],
+    // },
+    // {
+    //   key: "Browser:NextTab",
+    //   label: "Next Tab",
+    //   icon: "chrome://browser/skin/zen-icons/arrow-right.svg",
+    //   tags: ["next", "tab", "switch", "navigate"],
+    // },
+    // {
+    //   key: "Browser:PrevTab",
+    //   label: "Previous Tab",
+    //   icon: "chrome://browser/skin/zen-icons/arrow-left.svg",
+    //   tags: ["previous", "tab", "switch", "navigate"],
+    // },
     {
       key: "Browser:ShowAllTabs",
       label: "Show All Tabs Panel",
@@ -501,12 +494,12 @@
     },
 
     // ----------- Window Management -----------
-    {
-      key: "cmd_newNavigator",
-      label: "New Window",
-      icon: "chrome://browser/skin/zen-icons/window.svg",
-      tags: ["window", "new", "create", "open"],
-    },
+    // {
+    //   key: "cmd_newNavigator",
+    //   label: "New Window",
+    //   icon: "chrome://browser/skin/zen-icons/window.svg",
+    //   tags: ["window", "new", "create", "open"],
+    // },
     {
       key: "cmd_closeWindow",
       label: "Close Window",
@@ -525,12 +518,12 @@
       icon: "chrome://browser/skin/zen-icons/window.svg",
       tags: ["window", "Maximize", "fullscreen"],
     },
-    {
-      key: "Tools:PrivateBrowsing",
-      label: "Open Private Window",
-      icon: svgToUrl(icons["incognito"]),
-      tags: ["private", "browsing", "incognito", "window"],
-    },
+    // {
+    //   key: "Tools:PrivateBrowsing",
+    //   label: "Open Private Window",
+    //   icon: svgToUrl(icons["incognito"]),
+    //   tags: ["private", "browsing", "incognito", "window"],
+    // },
     {
       key: "History:UndoCloseWindow",
       label: "Reopen Closed Window",
@@ -553,20 +546,20 @@
       icon: "chrome://browser/skin/forward.svg",
       tags: ["forward", "navigate", "history", "next"],
     },
-    {
-      key: "Browser:Reload",
-      label: "Reload Page",
-      icon: "chrome://browser/skin/zen-icons/reload.svg",
-      condition: isNotEmptyTab,
-      tags: ["reload", "refresh", "page", "update"],
-    },
-    {
-      key: "Browser:ReloadSkipCache",
-      label: "Hard Reload (Skip Cache)",
-      icon: "chrome://browser/skin/zen-icons/reload.svg",
-      tags: ["reload", "hard", "cache", "refresh"],
-      condition: isNotEmptyTab,
-    },
+    // {
+    //   key: "Browser:Reload",
+    //   label: "Reload Page",
+    //   icon: "chrome://browser/skin/zen-icons/reload.svg",
+    //   condition: isNotEmptyTab,
+    //   tags: ["reload", "refresh", "page", "update"],
+    // },
+    // {
+    //   key: "Browser:ReloadSkipCache",
+    //   label: "Hard Reload (Skip Cache)",
+    //   icon: "chrome://browser/skin/zen-icons/reload.svg",
+    //   tags: ["reload", "hard", "cache", "refresh"],
+    //   condition: isNotEmptyTab,
+    // },
 
     // ----------- Bookmarks & History -----------
     {
@@ -776,13 +769,13 @@
       icon: "chrome://browser/skin/zen-icons/media-pip.svg",
       tags: ["picture", "pip", "video", "floating"],
     },
-    {
-      key: "Browser:Screenshot",
-      label: "Take Screenshot",
-      icon: "chrome://browser/skin/screenshot.svg",
-      tags: ["screenshot", "capture", "image", "snap"],
-      condition: isNotEmptyTab,
-    },
+    // {
+    //   key: "Browser:Screenshot",
+    //   label: "Take Screenshot",
+    //   icon: "chrome://browser/skin/screenshot.svg",
+    //   tags: ["screenshot", "capture", "image", "snap"],
+    //   condition: isNotEmptyTab,
+    // },
 
     // ----------- Files & Downloads -----------
     {
@@ -889,7 +882,6 @@
       key: "command-palette:settings-commands",
       label: "Command Palette: Configure Commands",
       command: () => ZenCommandPalette.Settings.show("commands"),
-      condition: () => !!window.ZenCommandPalette,
       icon: "chrome://browser/skin/zen-icons/settings.svg",
       tags: ["command", "palette", "settings", "configure", "customize"],
     },
@@ -897,7 +889,6 @@
       key: "command-palette:settings-preferences",
       label: "Command Palette: Preferences",
       command: () => ZenCommandPalette.Settings.show("settings"),
-      condition: () => !!window.ZenCommandPalette,
       icon: "chrome://browser/skin/zen-icons/settings.svg",
       tags: ["command", "palette", "settings", "preferences", "options"],
     },
@@ -905,9 +896,14 @@
       key: "command-palette:settings-help",
       label: "Command Palette: Help",
       command: () => ZenCommandPalette.Settings.show("help"),
-      condition: () => !!window.ZenCommandPalette,
       icon: "chrome://browser/skin/zen-icons/info.svg",
       tags: ["command", "palette", "help", "documentation", "support"],
+    },
+    {
+      key: "command-palette:custom-command",
+      label: "Command Palette: Custom Commands",
+      command: () => ZenCommandPalette.Settings.show("custom-commands"),
+      tags: ["command", "palette", "custom", "more"],
     },
 
     // ----------- Tidy Tabs --------
@@ -923,12 +919,47 @@
       icon: "chrome://global/skin/icons/highlights.svg",
       tags: ["sort", "manage", "group", "folder", "AI", "auto"],
     },
+
+    // ----------- Advanced tab Group management ------------
+    {
+      key: "cmd_zenCollapseGroups",
+      label: "Collapse All Groups",
+      command: () => {
+        const labels = gBrowser.tabContainer.querySelectorAll(".tab-group-label");
+        labels.forEach((label) => {
+          const expanded = label.getAttribute("aria-expanded");
+          if (expanded === "true") {
+            label.focus();
+            label.click();
+          }
+        });
+      },
+      icon: "chrome://browser/skin/zen-icons/folder.svg",
+      tags: ["folder", "collapse", "group", "tabs", "all"],
+    },
+    {
+      key: "cmd_zenExpandGroups",
+      label: "Expand All Groups",
+      command: () => {
+        const labels = gBrowser.tabContainer.querySelectorAll(".tab-group-label");
+        labels.forEach((label) => {
+          const expanded = label.getAttribute("aria-expanded");
+          if (expanded === "false") {
+            label.focus();
+            label.click();
+          }
+        });
+      },
+      icon: "chrome://browser/skin/zen-icons/folder.svg",
+      tags: ["folder", "expand", "group", "tabs", "all"],
+    },
   ];
 
   let _originalMaxResults = null;
 
   const Prefs = {
     KEYS: {
+      PREFIX: "zen-command-palette.prefix",
       PREFIX_REQUIRED: "zen-command-palette.prefix-required",
       DEBUG_MODE: "zen-command-palette.debug-mode",
       MAX_COMMANDS: "zen-command-palette.max-commands",
@@ -971,6 +1002,9 @@
       }
     },
 
+    get prefix() {
+      return this.getPref(this.KEYS.PREFIX);
+    },
     get prefixRequired() {
       return this.getPref(this.KEYS.PREFIX_REQUIRED);
     },
@@ -1034,6 +1068,7 @@
 
   Prefs.defaultValues = {
     [Prefs.KEYS.PREFIX_REQUIRED]: false,
+    [Prefs.KEYS.PREFIX]: ":",
     [Prefs.KEYS.DEBUG_MODE]: false,
     [Prefs.KEYS.MAX_COMMANDS]: 3,
     [Prefs.KEYS.MAX_COMMANDS_PREFIX]: 50,
@@ -1059,6 +1094,161 @@
 
   const debugError = (...args) => {
     if (Prefs.debugMode) console.error("zen-command-palette:", ...args);
+  };
+
+  const DEFAULTS = {
+    hiddenCommands: [],
+    customIcons: {},
+    customShortcuts: {},
+    toolbarButtons: [],
+    customCommands: [],
+  };
+
+  let _settings = null;
+
+  const Storage = {
+    _getFilePath() {
+      const relativePath = Prefs.commandSettingsFile;
+      if (!relativePath) {
+        debugError("Settings file path preference is not set.");
+        return null;
+      }
+      try {
+        const profileDir = Services.dirsvc.get("ProfD", Ci.nsIFile);
+        const file = profileDir.clone();
+        // Handle both forward and backslashes in the path
+        const pathParts = relativePath.split(/[/\\]/);
+        for (const part of pathParts) {
+          if (part) file.append(part);
+        }
+        return file.path;
+      } catch (e) {
+        debugError("Could not construct file path:", e);
+        return null;
+      }
+    },
+
+    async loadSettings() {
+      if (_settings) return _settings;
+
+      const path = this._getFilePath();
+      if (!path) {
+        _settings = { ...DEFAULTS };
+        return _settings;
+      }
+
+      try {
+        if (await IOUtils.exists(path)) {
+          const content = await IOUtils.readJSON(path);
+          _settings = { ...DEFAULTS, ...content };
+          debugLog("Command palette settings loaded from", path);
+        } else {
+          debugLog("No settings file found at", path, ". Using defaults.");
+          _settings = { ...DEFAULTS };
+        }
+      } catch (e) {
+        debugError("Error loading command palette settings:", e);
+        _settings = { ...DEFAULTS };
+      }
+      return _settings;
+    },
+
+    async saveSettings(newSettings) {
+      const path = this._getFilePath();
+      if (!path) {
+        debugError("Settings file path preference is not set. Cannot save.");
+        return;
+      }
+
+      try {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(JSON.stringify(newSettings, null, 2));
+        await IOUtils.write(path, data, { tmpPath: path + ".tmp" });
+
+        _settings = newSettings;
+        debugLog("Command palette settings saved to", path);
+      } catch (e) {
+        debugError("Error saving command palette settings:", e);
+      }
+    },
+
+    getSettings() {
+      return _settings || DEFAULTS;
+    },
+
+    reset() {
+      _settings = null;
+    },
+  };
+
+  const commandChainUtils = {
+    async openLink(params) {
+      const { link, where = "new tab" } = params;
+      if (!link) return;
+      const whereNormalized = where?.toLowerCase()?.trim();
+      try {
+        switch (whereNormalized) {
+          case "current tab":
+            openTrustedLinkIn(link, "current");
+            break;
+          case "new tab":
+            openTrustedLinkIn(link, "tab");
+            break;
+          case "new window":
+            openTrustedLinkIn(link, "window");
+            break;
+          case "incognito":
+          case "private":
+            window.openTrustedLinkIn(link, "window", { private: true });
+            break;
+          case "glance":
+            if (window.gZenGlanceManager) {
+              const rect = gBrowser.selectedBrowser.getBoundingClientRect();
+              window.gZenGlanceManager.openGlance({
+                url: link,
+                x: rect.left + rect.width / 2,
+                y: rect.top + rect.height / 2,
+                width: 10,
+                height: 10,
+              });
+            } else {
+              openTrustedLinkIn(link, "tab");
+            }
+            break;
+          case "vsplit":
+          case "hsplit":
+            if (window.gZenViewSplitter) {
+              const sep = whereNormalized === "vsplit" ? "vsep" : "hsep";
+              const tab1 = gBrowser.selectedTab;
+              await openTrustedLinkIn(link, "tab");
+              const tab2 = gBrowser.selectedTab;
+              gZenViewSplitter.splitTabs([tab1, tab2], sep, 1);
+            } else {
+              openTrustedLinkIn(link, "tab");
+            }
+            break;
+          default:
+            openTrustedLinkIn(link, "tab");
+        }
+      } catch (e) {
+        debugError(`Command Chain: Failed to open link "${link}" in "${where}".`, e);
+      }
+    },
+    async delay(params) {
+      const { time = 50 } = params;
+      if (!time) return;
+      await new Promise((resolve) => setTimeout(resolve, time));
+    },
+    async showToast(params) {
+      const { title, description } = params;
+      if (!title || !description) return;
+      if (window.ucAPI?.showToast) {
+        window.ucAPI.showToast([title || "", description || ""], 0);
+      } else {
+        debugError("ucAPI.showToast is not available.");
+        alert([title, description], 0);
+      }
+    },
   };
 
   /**
@@ -1411,37 +1601,6 @@
   }
 
   /**
-   * Generates commands for switching between Zen Workspaces.
-   * @returns {Promise<Array<object>>} A promise that resolves to an array of workspace commands.
-   */
-  async function generateWorkspaceCommands() {
-    if (!window.gZenWorkspaces?.workspaceEnabled) return [];
-    const workspacesData = await window.gZenWorkspaces._workspaces();
-    if (!workspacesData || !workspacesData.workspaces) return [];
-
-    return workspacesData.workspaces.map((workspace) => {
-      const icon = window.gZenWorkspaces.getWorkspaceIcon(workspace);
-      let iconUrl = "chrome://browser/skin/zen-icons/workspace.svg"; // Default icon
-
-      if (icon) {
-        if (icon.endsWith(".svg")) {
-          iconUrl = icon;
-        } else {
-          iconUrl = textToSvgDataUrl(icon);
-        }
-      }
-      return {
-        key: `workspace:${workspace.uuid}`,
-        label: `Switch to workspace: ${workspace.name}`,
-        command: () => window.gZenWorkspaces.changeWorkspaceWithID(workspace.uuid),
-        condition: () => workspace.uuid !== window.gZenWorkspaces.activeWorkspace,
-        icon: iconUrl,
-        tags: ["workspace", "switch", workspace.name.toLowerCase()],
-      };
-    });
-  }
-
-  /**
    * Generates commands for installing and uninstalling Sine mods.
    * @returns {Promise<Array<object>>} A promise that resolves to an array of Sine mod commands.
    */
@@ -1634,89 +1793,60 @@
     return commands;
   }
 
-  const DEFAULTS = {
-    hiddenCommands: [],
-    customIcons: {},
-    customShortcuts: {},
-    toolbarButtons: [],
-  };
+  async function generateCustomCommands() {
+    const { customCommands } = await Storage.loadSettings();
+    if (!customCommands || customCommands.length === 0) {
+      return [];
+    }
 
-  let _settings = null;
-
-  const Storage = {
-    _getFilePath() {
-      const relativePath = Prefs.commandSettingsFile;
-      if (!relativePath) {
-        debugError("Settings file path preference is not set.");
-        return null;
-      }
-      try {
-        const profileDir = Services.dirsvc.get("ProfD", Ci.nsIFile);
-        const file = profileDir.clone();
-        // Handle both forward and backslashes in the path
-        const pathParts = relativePath.split(/[/\\]/);
-        for (const part of pathParts) {
-          if (part) file.append(part);
-        }
-        return file.path;
-      } catch (e) {
-        debugError("Could not construct file path:", e);
-        return null;
-      }
-    },
-
-    async loadSettings() {
-      if (_settings) return _settings;
-
-      const path = this._getFilePath();
-      if (!path) {
-        _settings = { ...DEFAULTS };
-        return _settings;
-      }
-
-      try {
-        if (await IOUtils.exists(path)) {
-          const content = await IOUtils.readJSON(path);
-          _settings = { ...DEFAULTS, ...content };
-          debugLog("Command palette settings loaded from", path);
-        } else {
-          debugLog("No settings file found at", path, ". Using defaults.");
-          _settings = { ...DEFAULTS };
-        }
-      } catch (e) {
-        debugError("Error loading command palette settings:", e);
-        _settings = { ...DEFAULTS };
-      }
-      return _settings;
-    },
-
-    async saveSettings(newSettings) {
-      const path = this._getFilePath();
-      if (!path) {
-        debugError("Settings file path preference is not set. Cannot save.");
-        return;
+    return customCommands.map((cmd) => {
+      let commandFunc;
+      if (cmd.type === "js") {
+        commandFunc = () => {
+          try {
+            const Cu = Components.utils;
+            const sandbox = Cu.Sandbox(window, {
+              sandboxPrototype: window,
+              wantXrays: false,
+            });
+            Cu.evalInSandbox(cmd.code, sandbox);
+          } catch (e) {
+            debugError(`Error executing custom JS command "${cmd.name}":`, e);
+            if (window.ucAPI?.showToast) {
+              window.ucAPI.showToast(`Custom command error: ${e.message}`);
+            }
+          }
+        };
+      } else if (cmd.type === "chain") {
+        commandFunc = async () => {
+          for (const step of cmd.commands) {
+            if (typeof step === "string") {
+              // It's a regular command key
+              await new Promise((resolve) => setTimeout(resolve, 50));
+              ZenCommandPalette.executeCommandByKey(step);
+            } else if (typeof step === "object" && step.action && commandChainUtils[step.action]) {
+              // It's a utility function call
+              await commandChainUtils[step.action](step.params || {});
+            }
+          }
+        };
       }
 
-      try {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(JSON.stringify(newSettings, null, 2));
-        await IOUtils.write(path, data, { tmpPath: path + ".tmp" });
-
-        _settings = newSettings;
-        debugLog("Command palette settings saved to", path);
-      } catch (e) {
-        debugError("Error saving command palette settings:", e);
-      }
-    },
-
-    getSettings() {
-      return _settings || DEFAULTS;
-    },
-
-    reset() {
-      _settings = null;
-    },
-  };
+      return {
+        key: `custom:${cmd.id}`,
+        label: cmd.name,
+        command: commandFunc,
+        icon:
+          cmd.icon ||
+          (cmd.type === "js"
+            ? "chrome://browser/skin/zen-icons/source-code.svg"
+            : "chrome://browser/skin/zen-icons/settings.svg"),
+        tags: ["custom", cmd.name.toLowerCase()],
+        allowIcons: true,
+        allowShortcuts: true,
+      };
+    });
+  }
 
   const parseElement = (elementString, type = "html") => {
     if (type === "xul") {
@@ -1739,6 +1869,41 @@
       .replace(/'/g, "&apos;");
   };
 
+  const commandChainFunctions = {
+    delay: {
+      label: "Delay",
+      params: [{ name: "time", type: "number", label: "Time (ms)", defaultValue: 500 }],
+    },
+    showToast: {
+      label: "Show Toast",
+      params: [
+        { name: "title", type: "text", label: "Title", defaultValue: "Hello!" },
+        { name: "description", type: "text", label: "Description", defaultValue: "" },
+      ],
+    },
+    openLink: {
+      label: "Open Link",
+      params: [
+        { name: "link", type: "text", label: "URL", defaultValue: "https://" },
+        {
+          name: "where",
+          type: "select",
+          label: "Where",
+          defaultValue: "new tab",
+          options: [
+            { value: "new tab", label: "New Tab" },
+            { value: "current tab", label: "Current Tab" },
+            { value: "new window", label: "New Window" },
+            { value: "private", label: "Private Window" },
+            { value: "vsplit", label: "Vertical Split" },
+            { value: "hsplit", label: "Horizontal Split" },
+            { value: "glance", label: "Glance" },
+          ],
+        },
+      ],
+    },
+  };
+
   const SettingsModal = {
     _modalElement: null,
     _mainModule: null,
@@ -1747,6 +1912,9 @@
     _currentShortcutTarget: null,
     _boundHandleShortcutKeyDown: null,
     _boundCloseOnEscape: null,
+    _boundEditorClickHandler: null,
+    // BUG: I can't figure out way to control size of icon for menulist, not including icon till fixed, turn this variable to true when fixed
+    _showCommandIconsInSelect: true,
 
     init(mainModule) {
       this._mainModule = mainModule;
@@ -1767,6 +1935,8 @@
 
       this._populateCommandsTab();
       this._populateSettingsTab();
+      this._populateCustomCommandsTab();
+      this._populateHelpTab();
       this._attachEventListeners();
 
       window.addEventListener("keydown", this._boundCloseOnEscape);
@@ -1810,6 +1980,7 @@
         customIcons: { ...this._currentSettings.customIcons },
         customShortcuts: { ...this._currentSettings.customShortcuts },
         toolbarButtons: [...(this._currentSettings.toolbarButtons || [])],
+        customCommands: [...(this._currentSettings.customCommands || [])],
       };
 
       // Commands tab
@@ -1835,6 +2006,7 @@
         Prefs.setPref(prefKey, value);
       });
 
+      const oldSettings = JSON.parse(this._initialSettingsState);
       const somethingChanged = JSON.stringify(newSettings) !== this._initialSettingsState;
 
       if (somethingChanged) {
@@ -1844,30 +2016,31 @@
 
       this.hide();
 
-      const shortcutsChanged =
-        JSON.stringify(JSON.parse(this._initialSettingsState).customShortcuts) !==
-        JSON.stringify(newSettings.customShortcuts);
-      const toolbarButtonsChanged =
-        JSON.stringify(JSON.parse(this._initialSettingsState).toolbarButtons) !==
-        JSON.stringify(newSettings.toolbarButtons);
+      // Handle Dynamic Widget Changes
+      const oldButtons = oldSettings.toolbarButtons || [];
+      const newButtons = newSettings.toolbarButtons || [];
+      const addedButtons = newButtons.filter((b) => !oldButtons.includes(b));
+      const removedButtons = oldButtons.filter((b) => !newButtons.includes(b));
 
-      if (shortcutsChanged || toolbarButtonsChanged) {
-        let changedItem = shortcutsChanged
-          ? toolbarButtonsChanged
-            ? "Shortcuts and Toolbar buttons"
-            : "Shortcuts"
-          : "Toolbar buttons";
+      for (const key of addedButtons) {
+        this._mainModule.addWidget(key);
+      }
+      for (const key of removedButtons) {
+        this._mainModule.removeWidget(key);
+      }
 
-        // TODO: Figure out how to apply changes real time (without restart)
+      // Check if Shortcuts Changed
+      const oldShortcutsJSON = JSON.stringify(oldSettings.customShortcuts || {});
+      const newShortcutsJSON = JSON.stringify(newSettings.customShortcuts || {});
+
+      if (oldShortcutsJSON !== newShortcutsJSON) {
         if (window.ucAPI && typeof window.ucAPI.showToast === "function") {
           window.ucAPI.showToast(
-            [`${changedItem} Changed`, "A restart is required for changes to take effect."],
+            ["Shortcut Changed", "A restart is required for shortcut changes to take effect."],
             1 // Restart preset
           );
         } else {
-          alert(
-            "Settings changed. Please restart Zen for shortcut or toolbar changes to take effect."
-          );
+          alert("Please restart Zen for shortcut changes to take effect.");
         }
       }
     },
@@ -1929,15 +2102,26 @@
 
       const allCommands = await this._mainModule.getAllCommandsForConfig();
 
-      const staticCmds = allCommands
-        .filter((c) => !c.isDynamic)
-        .sort((a, b) => a.label.localeCompare(b.label));
-
-      if (staticCmds.length > 0) {
-        const groupWrapper = parseElement('<div class="commands-group static-commands"></div>');
-        staticCmds.forEach((cmd) => this._renderCommand(groupWrapper, cmd));
+      const renderGroup = (title, commands) => {
+        if (commands.length === 0) return;
+        const groupWrapper = parseElement('<div class="commands-group"></div>');
+        const headerHtml = `
+        <div class="commands-group-header">
+          <h4>${escapeXmlAttribute(title)}</h4>
+        </div>
+      `;
+        groupWrapper.appendChild(parseElement(headerHtml));
+        commands
+          .sort((a, b) => a.label.localeCompare(b.label))
+          .forEach((cmd) => this._renderCommand(groupWrapper, cmd));
         container.appendChild(groupWrapper);
-      }
+      };
+
+      const nativeCmds = allCommands.filter((c) => c.isNative);
+      const staticCmds = allCommands.filter((c) => !c.isDynamic && !c.isNative);
+
+      renderGroup("Native Commands", nativeCmds);
+      renderGroup("Customizable Commands", staticCmds);
 
       const dynamicGroups = {};
       allCommands.forEach((cmd) => {
@@ -1957,25 +2141,7 @@
         if (group.pref && !Prefs.getPref(group.pref)) {
           continue;
         }
-        const configurableCommands = group.commands.filter(
-          (c) => c.allowIcons !== false || c.allowShortcuts !== false
-        );
-
-        if (configurableCommands.length > 0) {
-          const groupWrapper = parseElement('<div class="commands-group dynamic-commands"></div>');
-
-          const headerHtml = `
-          <div class="commands-group-header">
-            <h4>${escapeXmlAttribute(label)}</h4>
-          </div>
-        `;
-          groupWrapper.appendChild(parseElement(headerHtml));
-
-          configurableCommands
-            .sort((a, b) => a.label.localeCompare(b.label))
-            .forEach((cmd) => this._renderCommand(groupWrapper, cmd));
-          container.appendChild(groupWrapper);
-        }
+        renderGroup(label, group.commands);
       }
     },
 
@@ -1984,21 +2150,25 @@
       const customIcon = this._currentSettings.customIcons[cmd.key];
       const customShortcut = this._currentSettings.customShortcuts[cmd.key];
       const nativeShortcut = this._mainModule.getShortcutForCommand(cmd.key);
-      const allowIcons = cmd.allowIcons !== false;
-      const allowShortcuts = cmd.allowShortcuts !== false;
-      const isToolbarButton = this._currentSettings.toolbarButtons?.includes(cmd.key);
 
-      const shortcutInputHtml = allowShortcuts
-        ? `<input type="text" class="shortcut-input" placeholder="Set Shortcut" value="${escapeXmlAttribute(
-          customShortcut || nativeShortcut || ""
-        )}" readonly />`
-        : "";
-      const visibilityToggleHtml = !cmd.isDynamic
-        ? `<input type="checkbox" class="visibility-toggle" title="Show/Hide Command" ${
-          !isHidden ? "checked" : ""
-        } />`
-        : "";
-      const toolbarButtonHtml = allowShortcuts
+      const allowIconChange = cmd.allowIcons !== false;
+      const allowShortcutChange = cmd.allowShortcuts !== false;
+      const allowToolbarButton = cmd.allowShortcuts !== false;
+
+      const shortcutValue = customShortcut || nativeShortcut || "";
+      const shortcutInputHtml = `<div class="shortcut-input-wrapper">
+      <input type="text" class="shortcut-input" placeholder="Set Shortcut" value="${escapeXmlAttribute(
+        shortcutValue
+      )}" ${!allowShortcutChange ? "readonly" : ""} />
+      <span class="shortcut-conflict-warning" hidden>Conflict!</span>
+    </div>`;
+
+      const visibilityToggleHtml = `<input type="checkbox" class="visibility-toggle" title="Show/Hide Command" ${
+      !isHidden ? "checked" : ""
+    } />`;
+
+      const isToolbarButton = this._currentSettings.toolbarButtons?.includes(cmd.key);
+      const toolbarButtonHtml = allowToolbarButton
         ? `<button class="toolbar-button-toggle ${isToolbarButton ? "active" : ""}" title="${
           isToolbarButton ? "Remove from Toolbar" : "Add to Toolbar"
         }">${icons.pin}</button>`
@@ -2008,7 +2178,7 @@
       <div class="command-item" data-key="${escapeXmlAttribute(cmd.key)}">
         <img src="${escapeXmlAttribute(
           customIcon || cmd.icon || "chrome://browser/skin/trending.svg"
-        )}" class="command-icon ${allowIcons ? "editable" : ""}" />
+        )}" class="command-icon ${allowIconChange ? "editable" : ""}" />
         <span class="command-label">${escapeXmlAttribute(cmd.label)}</span>
         <div class="command-controls">
             ${shortcutInputHtml}
@@ -2026,7 +2196,7 @@
         this.onerror = null;
       };
 
-      if (allowIcons) {
+      if (allowIconChange) {
         item.querySelector(".command-icon").addEventListener("click", (e) => {
           const newIconInput = prompt("Enter new icon URL or paste SVG code:", e.target.src);
           if (newIconInput !== null) {
@@ -2041,7 +2211,7 @@
         });
       }
 
-      if (allowShortcuts) {
+      if (allowShortcutChange) {
         const shortcutInput = item.querySelector(".shortcut-input");
         shortcutInput.addEventListener("focus", (e) => {
           this._currentShortcutTarget = e.target;
@@ -2056,7 +2226,9 @@
           }
           window.removeEventListener("keydown", this._boundHandleShortcutKeyDown, true);
         });
+      }
 
+      if (allowToolbarButton) {
         const toolbarToggle = item.querySelector(".toolbar-button-toggle");
         toolbarToggle.addEventListener("click", (e) => {
           const button = e.currentTarget;
@@ -2078,7 +2250,7 @@
       }
     },
 
-    _handleShortcutKeyDown(event) {
+    async _handleShortcutKeyDown(event) {
       if (!this._currentShortcutTarget) return;
 
       event.preventDefault();
@@ -2086,16 +2258,33 @@
 
       const key = event.key;
       const targetInput = this._currentShortcutTarget;
-      const commandKey = targetInput.closest(".command-item").dataset.key;
+      const commandItem = targetInput.closest(".command-item");
+      const commandKey = commandItem.dataset.key;
+      const conflictWarning = commandItem.querySelector(".shortcut-conflict-warning");
+
+      const clearConflict = () => {
+        targetInput.classList.remove("conflict");
+        conflictWarning.hidden = true;
+      };
 
       if (key === "Escape") {
+        clearConflict();
         targetInput.blur();
         return;
       }
+
       if (key === "Backspace" || key === "Delete") {
         targetInput.value = "";
         delete this._currentSettings.customShortcuts[commandKey];
+        clearConflict();
+        window.removeEventListener("keydown", this._boundHandleShortcutKeyDown, true);
+        this._currentShortcutTarget = null;
         targetInput.blur();
+        return;
+      }
+
+      // Ignore modifier-only key presses
+      if (["Control", "Alt", "Shift", "Meta"].includes(key)) {
         return;
       }
 
@@ -2104,14 +2293,510 @@
       if (event.altKey) shortcutString += "Alt+";
       if (event.shiftKey) shortcutString += "Shift+";
       if (event.metaKey) shortcutString += "Meta+";
+      shortcutString += key.toUpperCase();
 
-      // Avoid adding modifier keys themselves as the shortcut
-      if (!["Control", "Alt", "Shift", "Meta"].includes(key)) {
-        shortcutString += key.toUpperCase();
+      const modifiers = new nsKeyShortcutModifiers(
+        event.ctrlKey,
+        event.altKey,
+        event.shiftKey,
+        event.metaKey,
+        false
+      );
+
+      let hasConflict = window.gZenKeyboardShortcutsManager.checkForConflicts(
+        key,
+        modifiers,
+        commandKey
+      );
+
+      if (!hasConflict) {
+        for (const [otherCmdKey, otherShortcutStr] of Object.entries(
+          this._currentSettings.customShortcuts
+        )) {
+          if (otherCmdKey !== commandKey && otherShortcutStr === shortcutString) {
+            hasConflict = true;
+            break;
+          }
+        }
       }
 
       targetInput.value = shortcutString;
-      this._currentSettings.customShortcuts[commandKey] = shortcutString;
+
+      if (hasConflict) {
+        targetInput.classList.add("conflict");
+        conflictWarning.hidden = false;
+        debugLog(`Shortcut conflict detected for "${commandKey}" with shortcut "${shortcutString}".`);
+        delete this._currentSettings.customShortcuts[commandKey];
+      } else {
+        clearConflict();
+        this._currentSettings.customShortcuts[commandKey] = shortcutString;
+      }
+    },
+
+    _populateCustomCommandsTab() {
+      const container = this._modalElement.querySelector("#custom-commands-tab-content");
+      const content = parseElement(`
+      <div>
+        <div id="custom-commands-view">
+          <div class="custom-commands-toolbar">
+            <p>Define your own commands. They will be available in the command palette immediately after saving.</p>
+            <div class="custom-commands-actions">
+              <button id="add-js-command">Add JS Command</button>
+              <button id="add-chain-command">Add Command Chain</button>
+            </div>
+          </div>
+          <div id="custom-commands-list"></div>
+        </div>
+        <div id="custom-command-editor" hidden="true"></div>
+      </div>
+    `);
+      container.replaceChildren(content);
+
+      this._renderCustomCommands();
+
+      container.querySelector("#add-js-command").addEventListener("click", () => {
+        this._showCustomCommandEditor({
+          type: "js",
+          id: `custom-js-${Date.now()}`,
+          name: "",
+          code: "",
+        });
+      });
+
+      container.querySelector("#add-chain-command").addEventListener("click", () => {
+        this._showCustomCommandEditor({
+          type: "chain",
+          id: `custom-chain-${Date.now()}`,
+          name: "",
+          commands: [],
+        });
+      });
+    },
+
+    _renderCustomCommands() {
+      const listContainer = this._modalElement.querySelector("#custom-commands-list");
+      listContainer.innerHTML = "";
+      const customCommands = this._currentSettings.customCommands || [];
+
+      if (customCommands.length === 0) {
+        listContainer.innerHTML = `<p class="no-custom-commands">No custom commands yet. Add one to get started!</p>`;
+        return;
+      }
+
+      customCommands.forEach((cmd) => {
+        const defaultIcon =
+          cmd.type === "js"
+            ? "chrome://browser/skin/zen-icons/source-code.svg"
+            : "chrome://browser/skin/zen-icons/settings.svg";
+        const icon = cmd.icon || defaultIcon;
+
+        const item = parseElement(`
+        <div class="custom-command-item" data-id="${cmd.id}">
+          <img src="${escapeXmlAttribute(icon)}" class="custom-command-icon" />
+          <span class="custom-command-name">${escapeXmlAttribute(cmd.name)}</span>
+          <span class="custom-command-type">${cmd.type === "js" ? "JS" : "Chain"}</span>
+          <div class="custom-command-controls">
+            <button class="edit-custom-cmd icon-button" title="Edit Command"><img src="chrome://browser/skin/zen-icons/edit.svg" /></button>
+            <button class="delete-custom-cmd delete-button icon-button" title="Delete Command"><img src="chrome://browser/skin/zen-icons/edit-delete.svg" /></button>
+          </div>
+        </div>
+      `);
+        item.querySelector(".edit-custom-cmd").addEventListener("click", () => {
+          const commandData = (this._currentSettings.customCommands || []).find(
+            (c) => c.id === cmd.id
+          );
+          this._showCustomCommandEditor(commandData);
+        });
+        item
+          .querySelector(".delete-custom-cmd")
+          .addEventListener("click", () => this._deleteCustomCommand(cmd.id));
+        listContainer.appendChild(item);
+      });
+    },
+
+    _deleteCustomCommand(id) {
+      if (!confirm("Are you sure you want to delete this custom command?")) return;
+      this._currentSettings.customCommands = (this._currentSettings.customCommands || []).filter(
+        (c) => c.id !== id
+      );
+      this._renderCustomCommands();
+    },
+
+    _createCommandMenuItems(allCommands) {
+      const sortedCommands = allCommands.sort((a, b) => a.label.localeCompare(b.label));
+      return sortedCommands
+        .map((c) => {
+          const iconAttr = this._showCommandIconsInSelect
+            ? `image="${escapeXmlAttribute(c.icon || "chrome://browser/skin/trending.svg")}"`
+            : "";
+          return `<menuitem value="${escapeXmlAttribute(c.key)}"
+                         label="${escapeXmlAttribute(c.label)}"
+                         ${iconAttr}
+                         />`;
+        })
+        .join("");
+    },
+
+    _renderFunctionStep(step, index, chain) {
+      const functionSchema = commandChainFunctions[step.action];
+      if (!functionSchema) return parseElement(`<div>Unknown function: ${step.action}</div>`);
+
+      const wrapper = parseElement(`<div class="function-step" data-index="${index}"></div>`);
+      const label = parseElement(`<label>${escapeXmlAttribute(functionSchema.label)}</label>`);
+      wrapper.appendChild(label);
+
+      for (const param of functionSchema.params) {
+        const paramWrapper = parseElement(`<div class="param-item"></div>`);
+        const currentValue = step.params[param.name];
+        let inputHtml = "";
+
+        switch (param.type) {
+          case "number":
+          case "text":
+            inputHtml = `<input
+            type="${param.type}"
+            class="param-input"
+            data-param="${param.name}"
+            placeholder="${param.label || ""}"
+            value="${escapeXmlAttribute(currentValue)}"
+          />`;
+            break;
+          case "select":
+            const optionsHtml = param.options
+              .map(
+                (opt) =>
+                  `<option value="${escapeXmlAttribute(opt.value)}" ${
+                  (currentValue || "").trim() === opt.value ? "selected" : ""
+                } > ${escapeXmlAttribute(opt.label)} </option>`
+              )
+              .join("");
+            inputHtml = `<select class="param-input" data-param="${param.name}">${optionsHtml}</select>`;
+            break;
+        }
+        paramWrapper.appendChild(parseElement(inputHtml));
+        wrapper.appendChild(paramWrapper);
+      }
+
+      wrapper.addEventListener("input", (e) => {
+        const inputElement = e.target;
+        if (inputElement.classList.contains("param-input")) {
+          const paramName = inputElement.dataset.param;
+          const value =
+            inputElement.type === "number" ? Number(inputElement.value) : inputElement.value;
+          chain[index].params[paramName] = value;
+        }
+      });
+
+      return wrapper;
+    },
+
+    _showCustomCommandEditor(cmd) {
+      const self = this;
+      this._modalElement.querySelector("#custom-commands-view").hidden = true;
+      const editorContainer = this._modalElement.querySelector("#custom-command-editor");
+      editorContainer.hidden = false;
+
+      // Cleanup previous listener before adding a new one
+      if (this._boundEditorClickHandler) {
+        editorContainer.removeEventListener("click", this._boundEditorClickHandler);
+      }
+
+      const isEditing = !!cmd.name;
+      let currentChain = [...(cmd.commands || [])];
+
+      const baseEditorHtml = `
+      <h3>${isEditing ? "Edit" : "Add"} ${cmd.type === "js" ? "JS Command" : "Command Chain"}</h3>
+      <div class="setting-item">
+        <label for="custom-cmd-name">Name</label>
+        <input type="text" id="custom-cmd-name" value="${escapeXmlAttribute(cmd.name)}"/>
+      </div>
+      <div class="setting-item">
+        <label for="custom-cmd-icon">Icon URL</label>
+        <input type="text" id="custom-cmd-icon" placeholder="Leave empty for default" value="${escapeXmlAttribute(
+          cmd.icon || ""
+        )}"/>
+      </div>
+    `;
+
+      let typeSpecificHtml = "";
+      if (cmd.type === "js") {
+        typeSpecificHtml = `
+        <div class="setting-item-vertical">
+          <label for="custom-cmd-code">JavaScript Code</label>
+          <div class="js-warning">
+            ${icons.warning}
+            Only run code from sources you trust. Malicious code can compromise your browser.
+          </div>
+          <textarea id="custom-cmd-code">${escapeXmlAttribute(cmd.code)}</textarea>
+        </div>
+      `;
+      } else {
+        const functionButtons = Object.entries(commandChainFunctions)
+          .map(([action, schema]) => `<button data-action="${action}">${schema.label}</button>`)
+          .join("");
+
+        typeSpecificHtml = `
+        <div class="setting-item-vertical">
+          <label>Commands</label>
+          <div id="chain-builder">
+            <div id="chain-command-selector-container">
+              <div id="chain-command-selector-placeholder">Loading...</div>
+              <button id="add-command-to-chain">Add Command</button>
+            </div>
+            <div class="function-actions">
+                <label>Add Function:</label>
+                ${functionButtons}
+            </div>
+            <div id="current-chain-list"></div>
+          </div>
+        </div>
+      `;
+      }
+
+      const actionsHtml = `
+      <div class="custom-command-editor-actions">
+        <button id="cancel-custom-cmd">Cancel</button>
+        <button id="save-custom-cmd">Save Command</button>
+      </div>
+    `;
+
+      const fullEditorHtml = `<div>${baseEditorHtml}${typeSpecificHtml}${actionsHtml}</div>`;
+      editorContainer.replaceChildren(parseElement(fullEditorHtml));
+
+      const renderChainList = async () => {
+        debugLog("renderChainList called");
+        const listContainer = editorContainer.querySelector("#current-chain-list");
+        if (!listContainer) {
+          debugLog("renderChainList: listContainer not found");
+          return;
+        }
+        listContainer.innerHTML = "";
+
+        if (currentChain.length === 0) {
+          listContainer.innerHTML = `<p class="no-custom-commands">No commands in chain. Use the dropdown above to add one.</p>`;
+          return;
+        }
+
+        const allCommands = await this._mainModule.getAllCommandsForConfig();
+        debugLog(`renderChainList: building list with ${currentChain.length} items`);
+
+        const menuitemsXUL = this._createCommandMenuItems(allCommands);
+
+        currentChain.forEach((step, index) => {
+          const itemContainer = parseElement(`<div class="chain-item-container"></div>`);
+
+          if (typeof step === "string") {
+            const menulistXUL = `
+              <menulist class="chain-item-selector" value="${escapeXmlAttribute(step)}">
+                <menupopup>${menuitemsXUL}</menupopup>
+              </menulist>`;
+            const menulistElement = parseElement(menulistXUL, "xul");
+            menulistElement.addEventListener("command", (e) => {
+              currentChain[index] = e.target.value;
+            });
+            itemContainer.appendChild(menulistElement);
+          } else if (typeof step === "object" && step.action) {
+            debugLog(`Rendering function step: ${step.action}`);
+            const functionStepEl = self._renderFunctionStep(step, index, currentChain);
+            itemContainer.appendChild(functionStepEl);
+          }
+
+          const deleteButton = parseElement(
+            `<button class="delete-button icon-button" title="Remove Command">
+             <img src="chrome://browser/skin/zen-icons/edit-delete.svg" />
+           </button>`
+          );
+          deleteButton.addEventListener("click", () => {
+            currentChain.splice(index, 1);
+            renderChainList();
+          });
+          itemContainer.appendChild(deleteButton);
+
+          listContainer.appendChild(itemContainer);
+        });
+      };
+
+      // Define and bind the new delegated event listener
+      this._boundEditorClickHandler = (e) => {
+        const target = e.target;
+
+        // Handle "Add Function" buttons
+        if (target.matches(".function-actions button[data-action]")) {
+          const action = target.dataset.action;
+          const functionSchema = commandChainFunctions[action];
+          if (!functionSchema) return;
+
+          debugLog(`Function button clicked: ${action}`);
+
+          const newStep = { action, params: {} };
+          functionSchema.params.forEach((p) => {
+            newStep.params[p.name] = p.defaultValue;
+          });
+
+          currentChain.push(newStep);
+          renderChainList();
+          return;
+        }
+
+        // Handle "Add Command" button
+        if (target.id === "add-command-to-chain") {
+          const selector = editorContainer.querySelector("#chain-command-selector");
+          if (selector && selector.value) {
+            currentChain.push(selector.value);
+            renderChainList();
+          }
+          return;
+        }
+
+        // Handle "Save" button
+        if (target.id === "save-custom-cmd") {
+          self._saveCustomCommand(cmd, currentChain);
+          return;
+        }
+
+        // Handle "Cancel" button
+        if (target.id === "cancel-custom-cmd") {
+          self._hideCustomCommandEditor();
+          return;
+        }
+      };
+
+      editorContainer.addEventListener("click", this._boundEditorClickHandler);
+
+      if (cmd.type === "chain") {
+        // Initial population of the command selector dropdown
+        debugLog("Chain editor: getting all commands...");
+        this._mainModule
+          .getAllCommandsForConfig()
+          .then((allCommands) => {
+            debugLog(`Chain editor: received ${allCommands.length} commands.`);
+            const placeholder = editorContainer.querySelector("#chain-command-selector-placeholder");
+            if (!placeholder) {
+              debugLog("Chain editor: placeholder DIV not found!");
+              return;
+            }
+
+            const menuitemsXUL = this._createCommandMenuItems(allCommands);
+
+            const menulistXUL = `
+            <menulist id="chain-command-selector">
+              <menupopup>${menuitemsXUL}</menupopup>
+            </menulist>`;
+
+            try {
+              const menulistElement = parseElement(menulistXUL, "xul");
+              placeholder.replaceWith(menulistElement);
+              debugLog("Chain editor: XUL menulist successfully created and inserted.");
+            } catch (e) {
+              debugLog("Chain editor: Failed to parse or insert XUL menulist.", e);
+              placeholder.textContent = "Error creating command list.";
+            }
+          })
+          .catch((err) => {
+            debugLog("Chain editor: getAllCommandsForConfig promise rejected.", err);
+            const placeholder = editorContainer.querySelector("#chain-command-selector-placeholder");
+            if (placeholder) {
+              placeholder.textContent = "Error loading commands.";
+            }
+          });
+
+        // Initial render of the chain list
+        renderChainList();
+      }
+    },
+
+    _hideCustomCommandEditor() {
+      const editorContainer = this._modalElement?.querySelector("#custom-command-editor");
+      if (editorContainer && this._boundEditorClickHandler) {
+        editorContainer.removeEventListener("click", this._boundEditorClickHandler);
+        this._boundEditorClickHandler = null;
+      }
+
+      this._modalElement.querySelector("#custom-commands-view").hidden = false;
+      this._modalElement.querySelector("#custom-command-editor").hidden = true;
+      this._renderCustomCommands();
+    },
+
+    _saveCustomCommand(cmd, currentChain) {
+      const editor = this._modalElement.querySelector("#custom-command-editor");
+      const name = editor.querySelector("#custom-cmd-name").value.trim();
+      let icon = editor.querySelector("#custom-cmd-icon").value.trim();
+
+      if (!name) {
+        alert("Command name cannot be empty.");
+        return;
+      }
+
+      if (icon.startsWith("<svg") && icon.endsWith("</svg>")) {
+        icon = svgToUrl(icon);
+      }
+
+      const newCmd = { ...cmd, name, icon: icon || undefined };
+
+      if (cmd.type === "js") {
+        const code = editor.querySelector("#custom-cmd-code").value;
+        newCmd.code = code;
+      } else {
+        newCmd.commands = currentChain;
+      }
+
+      const commands = this._currentSettings.customCommands || [];
+      const existingIndex = commands.findIndex((c) => c.id === cmd.id);
+
+      if (existingIndex > -1) {
+        commands[existingIndex] = newCmd;
+      } else {
+        commands.push(newCmd);
+      }
+      this._currentSettings.customCommands = commands;
+      this._hideCustomCommandEditor();
+    },
+
+    _populateHelpTab() {
+      const container = this._modalElement.querySelector("#help-tab-content");
+      container.innerHTML = "";
+
+      const helpItems = [
+        {
+          url: "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
+          icon: svgToUrl(icons["book"]),
+          title: "View Documentation",
+          description: "Read the full guide on GitHub.",
+        },
+        {
+          url: "https://github.com/BibekBhusal0/zen-custom-js",
+          icon: svgToUrl(icons["star"]),
+          title: "Star on GitHub",
+          description: "Enjoying the mod? Leave a star!",
+        },
+        {
+          url: "https://github.com/BibekBhusal0/zen-custom-js/issues/new",
+          icon: svgToUrl(icons["bug"]),
+          title: "Report a Bug",
+          description: "Found an issue? Let us know.",
+        },
+        {
+          url: "https://github.com/BibekBhusal0/zen-custom-js/issues/22",
+          icon: "chrome://browser/skin/trending.svg",
+          title: "More Commands",
+          description: "Want more commands? Share your ideas here.",
+        },
+      ];
+
+      const buttonsContainer = parseElement(`<div class="help-buttons-container"></div>`);
+
+      for (const item of helpItems) {
+        const buttonHtml = `
+        <button class="help-button" data-url="${escapeXmlAttribute(item.url)}">
+          <img src="${escapeXmlAttribute(item.icon)}" />
+          <span>${escapeXmlAttribute(item.title)}</span>
+          <p>${escapeXmlAttribute(item.description)}</p>
+        </button>
+      `;
+        buttonsContainer.appendChild(parseElement(buttonHtml));
+      }
+
+      container.appendChild(buttonsContainer);
     },
 
     _populateSettingsTab() {
@@ -2131,8 +2816,13 @@
           section: "General",
           items: [
             {
+              key: Prefs.KEYS.PREFIX,
+              label: "Command Prefix",
+              type: "char",
+            },
+            {
               key: Prefs.KEYS.PREFIX_REQUIRED,
-              label: "Require ':' prefix to activate",
+              label: "Require prefix to activate",
               type: "bool",
             },
             {
@@ -2183,6 +2873,15 @@
               )}" />
             </div>
           `;
+          } else if (item.type === "char") {
+            itemHtml = `
+            <div class="setting-item">
+              <label for="${safeId}">${escapeXmlAttribute(item.label)}</label>
+              <input type="text" id="${safeId}" data-pref="${item.key}" value="${escapeXmlAttribute(
+                currentValue
+              )}" maxlength="1" />
+            </div>
+          `;
           }
           if (itemHtml) {
             sectionEl.appendChild(parseElement(itemHtml));
@@ -2206,6 +2905,7 @@
           <div class="cmd-settings-tabs">
             <button class="cmd-settings-tab" data-tab="commands">Commands</button>
             <button class="cmd-settings-tab" data-tab="settings">Settings</button>
+            <button class="cmd-settings-tab" data-tab="custom-commands">Custom Commands</button>
             <button class="cmd-settings-tab" data-tab="help">Help</button>
           </div>
           <div class="cmd-settings-content">
@@ -2218,29 +2918,11 @@
             <div id="settings-tab-content" class="cmd-settings-tab-content" hidden>
               <!-- Content will be populated by _populateSettingsTab -->
             </div>
+            <div id="custom-commands-tab-content" class="cmd-settings-tab-content" hidden>
+              <!-- Content will be populated by _populateCustomCommandsTab -->
+            </div>
             <div id="help-tab-content" class="cmd-settings-tab-content" hidden>
-              <div class="help-buttons-container">
-                <button class="help-button" data-url="https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette">
-                  <img src="${escapeXmlAttribute(svgToUrl(icons["book"]))}" />
-                  <span>View Documentation</span>
-                  <p>Read the full guide on GitHub.</p>
-                </button>
-                <button class="help-button" data-url="https://github.com/BibekBhusal0/zen-custom-js">
-                  <img src="${escapeXmlAttribute(svgToUrl(icons["star"]))}" />
-                  <span>Star on GitHub</span>
-                  <p>Enjoying the mod? Leave a star!</p>
-                </button>
-                <button class="help-button" data-url="https://github.com/BibekBhusal0/zen-custom-js/issues/new">
-                  <img src="${escapeXmlAttribute(svgToUrl(icons["bug"]))}" />
-                  <span>Report a Bug</span>
-                  <p>Found an issue? Let us know.</p>
-                </button>
-                <button class="help-button" data-url="https://github.com/BibekBhusal0/zen-custom-js/issues/22">
-                  <img src= "chrome://browser/skin/trending.svg"/>
-                  <span>More Commands</span>
-                  <p>Want more commands? Share your ideas here.</p>
-                </button>
-              </div>
+              <!-- Content will be populated by _populateHelpTab -->
             </div>
           </div>
         </div>
@@ -2249,6 +2931,50 @@
       return parseElement(html);
     },
   };
+
+  const KEY_MAP = {
+    f1: "VK_F1",
+    f2: "VK_F2",
+    f3: "VK_F3",
+    f4: "VK_F4",
+    f5: "VK_F5",
+    f6: "VK_F6",
+    f7: "VK_F7",
+    f8: "VK_F8",
+    f9: "VK_F9",
+    f10: "VK_F10",
+    f11: "VK_F11",
+    f12: "VK_F12",
+    f13: "VK_F13",
+    f14: "VK_F14",
+    f15: "VK_F15",
+    f16: "VK_F16",
+    f17: "VK_F17",
+    f18: "VK_F18",
+    f19: "VK_F19",
+    f20: "VK_F20",
+    f21: "VK_F21",
+    f22: "VK_F22",
+    f23: "VK_F23",
+    f24: "VK_F24",
+    tab: "VK_TAB",
+    enter: "VK_RETURN",
+    escape: "VK_ESCAPE",
+    space: "VK_SPACE",
+    arrowleft: "VK_LEFT",
+    arrowright: "VK_RIGHT",
+    arrowup: "VK_UP",
+    arrowdown: "VK_DOWN",
+    delete: "VK_DELETE",
+    backspace: "VK_BACK",
+    home: "VK_HOME",
+    num_lock: "VK_NUMLOCK",
+    scroll_lock: "VK_SCROLL",
+  };
+
+  Object.fromEntries(
+    Object.entries(KEY_MAP).map(([key, value]) => [value, key])
+  );
 
   /**
    * Parses a shortcut string (e.g., "Ctrl+Shift+K") into an object for a <key> element.
@@ -2288,27 +3014,7 @@
       }
     }
 
-    // A rough mapping for special keys.
-    const KEYCODE_MAP = {
-      f1: "VK_F1",
-      f2: "VK_F2",
-      f3: "VK_F3",
-      f4: "VK_F4",
-      f5: "VK_F5",
-      f6: "VK_F6",
-      f7: "VK_F7",
-      f8: "VK_F8",
-      f9: "VK_F9",
-      f10: "VK_F10",
-      f11: "VK_F11",
-      f12: "VK_F12",
-      enter: "VK_RETURN",
-      escape: "VK_ESCAPE",
-      delete: "VK_DELETE",
-      backspace: "VK_BACK",
-    };
-
-    const keycode = KEYCODE_MAP[keyPart] || null;
+    const keycode = KEY_MAP[keyPart] || null;
     const key = keycode ? null : keyPart;
 
     return {
@@ -2331,6 +3037,12 @@
      */
     _dynamicCommandProviders: [
       {
+        func: generateCustomCommands,
+        pref: null,
+        allowIcons: true,
+        allowShortcuts: true,
+      },
+      {
         func: generateSearchEngineCommands,
         pref: Prefs.KEYS.DYNAMIC_SEARCH_ENGINES,
         allowIcons: false,
@@ -2340,13 +3052,7 @@
         func: generateSineCommands,
         pref: Prefs.KEYS.DYNAMIC_SINE_MODS,
         allowIcons: false,
-        allowShortcuts: true,
-      },
-      {
-        func: generateWorkspaceCommands,
-        pref: Prefs.KEYS.DYNAMIC_WORKSPACES,
-        allowIcons: false,
-        allowShortcuts: true,
+        allowShortcuts: false,
       },
       {
         func: generateWorkspaceMoveCommands,
@@ -2409,9 +3115,9 @@
     _recentCommands: [],
     MAX_RECENT_COMMANDS: 20,
     _dynamicCommandsCache: null,
-    _commandVisibilityCache: {},
     _userConfig: {},
-    _boundHandleKeysetCommand: null,
+    _closeListenersAttached: false,
+    _globalActions: null,
 
     safeStr(x) {
       return (x || "").toString();
@@ -2447,16 +3153,11 @@
     addRecentCommand(cmd) {
       if (!cmd || !cmd.key) return;
 
-      // Remove if it already exists to move it to the front.
       const existingIndex = this._recentCommands.indexOf(cmd.key);
       if (existingIndex > -1) {
         this._recentCommands.splice(existingIndex, 1);
       }
-
-      // Add to the front of the list.
       this._recentCommands.unshift(cmd.key);
-
-      // Trim the list to the maximum allowed size.
       if (this._recentCommands.length > this.MAX_RECENT_COMMANDS) {
         this._recentCommands.length = this.MAX_RECENT_COMMANDS;
       }
@@ -2470,26 +3171,21 @@
      */
     commandIsVisible(cmd) {
       try {
-        if (cmd && cmd.key && this._commandVisibilityCache[cmd.key] !== undefined) {
-          return this._commandVisibilityCache[cmd.key];
-        }
-
         if (this._userConfig.hiddenCommands?.includes(cmd.key)) {
-          if (cmd && cmd.key) this._commandVisibilityCache[cmd.key] = false;
           return false;
         }
         let isVisible = true;
 
         // First, evaluate an explicit `condition` if it exists.
         if (typeof cmd.condition === "function") {
-          isVisible = !!cmd.condition();
+          isVisible = !!cmd.condition(window);
         } else if (cmd.condition !== undefined) {
           isVisible = cmd.condition !== false;
         }
 
         // If the command relies on a native <command> element (has no custom function),
         // its visibility is also determined by the element's state.
-        if (isVisible && !cmd.command) {
+        if (isVisible && typeof cmd.command !== "function") {
           const commandEl = document.getElementById(cmd.key);
           // The command is only visible if its element exists and is not disabled.
           if (!commandEl || commandEl.disabled) {
@@ -2497,7 +3193,6 @@
           }
         }
 
-        if (cmd && cmd.key) this._commandVisibilityCache[cmd.key] = isVisible;
         return isVisible;
       } catch (e) {
         debugError("Error evaluating condition for", cmd && cmd.key, e);
@@ -2522,17 +3217,14 @@
       if (queryLen > targetLen) return 0;
       if (queryLen === 0) return 0;
 
-      // 1. Exact match gets the highest score.
       if (targetLower === queryLower) {
         return 200;
       }
 
-      // 2. Exact prefix matches are heavily prioritized.
       if (targetLower.startsWith(queryLower)) {
         return 100 + queryLen;
       }
 
-      // 3. Exact abbreviation (e.g., 'tcm' for 'Toggle Compact Mode')
       const initials = targetLower
         .split(/[\s-_]+/)
         .map((word) => word[0])
@@ -2541,7 +3233,6 @@
         return 90 + queryLen;
       }
 
-      // 4. Calculate score based on character match
       let score = 0;
       let queryIndex = 0;
       let lastMatchIndex = -1;
@@ -2550,32 +3241,24 @@
       for (let targetIndex = 0; targetIndex < targetLen; targetIndex++) {
         if (queryIndex < queryLen && targetLower[targetIndex] === queryLower[queryIndex]) {
           let bonus = 10;
-
-          // Bonus for matching at the beginning of a word
           if (targetIndex === 0 || [" ", "-", "_"].includes(targetLower[targetIndex - 1])) {
             bonus += 15;
           }
-
-          // Bonus for consecutive matches
           if (lastMatchIndex === targetIndex - 1) {
             consecutiveMatches++;
             bonus += 20 * consecutiveMatches;
           } else {
             consecutiveMatches = 0;
           }
-
-          // Penalty for distance from the last match
           if (lastMatchIndex !== -1) {
             const distance = targetIndex - lastMatchIndex;
-            bonus -= Math.min(distance - 1, 10); // Cap penalty
+            bonus -= Math.min(distance - 1, 10);
           }
-
           score += bonus;
           lastMatchIndex = targetIndex;
           queryIndex++;
         }
       }
-
       return queryIndex === queryLen ? score : 0;
     },
 
@@ -2584,33 +3267,45 @@
      * with dynamically generated ones based on current preferences.
      * @returns {Promise<Array<object>>} A promise that resolves to the full list of commands.
      */
-    async generateLiveCommands(createCache = true) {
+    async generateLiveCommands(useCache = true, isPrefixMode = false) {
       let dynamicCommands;
-      if (this._dynamicCommandsCache) {
+      if (useCache && this._dynamicCommandsCache) {
         dynamicCommands = this._dynamicCommandsCache;
       } else {
-        const commandPromises = [];
-        for (const provider of this._dynamicCommandProviders) {
-          const shouldLoad =
-            provider.pref === null ? true : provider.pref ? Prefs.getPref(provider.pref) : false;
-          if (shouldLoad) {
+        const commandSets = await Promise.all(
+          this._dynamicCommandProviders.map(async (provider) => {
+            const shouldLoad =
+              provider.pref === null ? true : provider.pref ? Prefs.getPref(provider.pref) : false;
+            if (!shouldLoad) return [];
             try {
-              commandPromises.push(provider.func());
-            } catch {}
-          }
-        }
-        const commandSets = await Promise.all(commandPromises);
+              const commands = await provider.func();
+              return commands.map((c) => ({ ...c, providerFunc: provider.func }));
+            } catch (e) {
+              debugError(`Error executing dynamic provider ${provider.func.name}`, e);
+              return [];
+            }
+          })
+        );
         dynamicCommands = commandSets.flat();
-        if (createCache) this._dynamicCommandsCache = dynamicCommands;
+        if (useCache) {
+          this._dynamicCommandsCache = dynamicCommands;
+        }
       }
 
       let allCommands = [...commands, ...dynamicCommands];
 
-      // Apply custom icons from user config
-      for (const cmd of allCommands) {
-        if (this._userConfig.customIcons?.[cmd.key]) {
-          cmd.icon = this._userConfig.customIcons[cmd.key];
-        }
+      if (isPrefixMode && this._globalActions) {
+        const nativeCommands = this._globalActions
+          .filter((a) => a.commandId)
+          .map((a) => ({
+            key: a.commandId,
+            label: a.label,
+            icon: this._userConfig.customIcons?.[a.commandId] || a.icon,
+            isNative: true,
+            command: a.command,
+            condition: a.isAvailable,
+          }));
+        allCommands.push(...nativeCommands);
       }
 
       return allCommands;
@@ -2632,33 +3327,48 @@
      * @returns {Promise<Array<object>>} A promise that resolves to the full list of commands.
      */
     async getAllCommandsForConfig() {
-      let liveCommands = [...commands.map((c) => ({ ...c, isDynamic: false }))];
+      // 1. Get all commands from the mod (static and dynamic)
+      const modCommands = await this.generateLiveCommands(false); // Force fresh generation
+      const liveCommands = modCommands.map((c) => {
+        if (c.providerFunc) {
+          const provider = this._dynamicCommandProviders.find((p) => p.func === c.providerFunc);
+          if (provider) {
+            return {
+              ...c,
+              isDynamic: true,
+              providerPref: provider.pref,
+              providerLabel: this._getProviderLabel(provider.func.name),
+              allowIcons: c.allowIcons ?? provider.allowIcons,
+              allowShortcuts: c.allowShortcuts ?? provider.allowShortcuts,
+            };
+          }
+        }
+        // It's a static command if it doesn't have a providerFunc
+        return { ...c, isDynamic: false, allowIcons: true, allowShortcuts: true };
+      });
 
-      const commandPromises = [];
-      for (const provider of this._dynamicCommandProviders) {
-        const promise = provider.func().then((commands) => {
-          return commands.map((cmd) => ({
-            ...cmd,
-            isDynamic: true,
-            providerPref: provider.pref,
-            providerLabel: this._getProviderLabel(provider.func.name),
-            allowIcons: cmd.allowIcons ?? provider.allowIcons,
-            allowShortcuts: cmd.allowShortcuts ?? provider.allowShortcuts,
+      // 2. Get all native Zen commands
+      if (this._globalActions) {
+        const nativeCommands = this._globalActions
+          .filter((a) => a.commandId)
+          .map((a) => ({
+            key: a.commandId,
+            label: a.label,
+            icon: this._userConfig.customIcons?.[a.commandId] || a.icon,
+            isNative: true,
+            allowIcons: true,
+            allowShortcuts: true,
+            command: a.command,
           }));
-        });
-        commandPromises.push(promise);
+        liveCommands.push(...nativeCommands);
       }
 
-      const commandSets = await Promise.all(commandPromises);
-      liveCommands.push(...commandSets.flat());
-
-      // Apply custom icons
+      // 3. Apply custom icons (for mod commands)
       for (const cmd of liveCommands) {
         if (this._userConfig.customIcons?.[cmd.key]) {
           cmd.icon = this._userConfig.customIcons[cmd.key];
         }
       }
-
       return liveCommands;
     },
 
@@ -2670,26 +3380,19 @@
      */
     filterCommandsByInput(input, allCommands) {
       let query = this.safeStr(input).trim();
-      const isCommandPrefix = query.startsWith(":");
+      const isCommandPrefix = query.startsWith(Prefs.prefix);
       if (isCommandPrefix) {
         query = query.substring(1).trim();
       }
-
-      // If the input was just the prefix, show a capped number of available commands.
-      // now handled asynchronously in startQuery
       if (isCommandPrefix && !query) {
         return [];
       }
-
-      // For non-prefixed queries, only show results if the query is long enough.
       if (!isCommandPrefix && query.length < Prefs.minQueryLength) {
         return [];
       }
-
       if (!query) {
         return [];
       }
-
       const lowerQuery = query.toLowerCase();
 
       const scoredCommands = allCommands
@@ -2697,36 +3400,21 @@
           const label = cmd.label || "";
           const key = cmd.key || "";
           const tags = (cmd.tags || []).join(" ");
-
-          // Calculate scores for different fields
           const labelScore = this.calculateFuzzyScore(label, lowerQuery);
           const keyScore = this.calculateFuzzyScore(key, lowerQuery);
           const tagsScore = this.calculateFuzzyScore(tags, lowerQuery);
-
-          // Add a bonus for recently used commands.
           let recencyBonus = 0;
           const recentIndex = this._recentCommands.indexOf(cmd.key);
           if (recentIndex > -1) {
-            // More recent commands (lower index) get a higher bonus.
             recencyBonus = (this.MAX_RECENT_COMMANDS - recentIndex) * 2;
           }
-
-          // Combine scores, giving label the highest weight, and add recency bonus.
-          const score =
-            Math.max(
-              labelScore * 1.5, // Label is most important
-              keyScore,
-              tagsScore * 0.5 // Tags are least important
-            ) + recencyBonus;
-
+          const score = Math.max(labelScore * 1.5, keyScore, tagsScore * 0.5) + recencyBonus;
           return { cmd, score };
         })
         .filter((item) => item.score >= Prefs.minScoreThreshold)
         .filter((item) => this.commandIsVisible(item.cmd));
 
-      // Sort by score, descending
       scoredCommands.sort((a, b) => b.score - a.score);
-
       const finalCmds = scoredCommands.map((item) => item.cmd);
 
       if (isCommandPrefix) {
@@ -2736,53 +3424,112 @@
     },
 
     /**
-     * Safely executes a command's action within a try-catch block.
-     * @param {object} cmd - The command object to execute.
-     */
-    executeCommandObject(cmd) {
-      if (!cmd) {
-        debugError("executeCommandObject: no command");
-        return;
-      }
-
-      this.addRecentCommand(cmd);
-
-      try {
-        // Prioritize explicit command function if it exists.
-        if (cmd.command && typeof cmd.command === "function") {
-          debugLog("Executing command via function:", cmd.key || cmd.label);
-          const ret = cmd.command();
-          if (ret && typeof ret.then === "function") {
-            ret.catch((e) => debugError("Command promise rejected:", e));
-          }
-          return; // Execution handled.
-        }
-
-        // Fallback for commands that rely on a DOM element.
-        const commandEl = document.getElementById(cmd.key);
-        if (commandEl && typeof commandEl.doCommand === "function") {
-          debugLog("Executing command via doCommand fallback:", cmd.key);
-          commandEl.doCommand();
-        } else {
-          debugError("Command has no executable action:", cmd.key);
-        }
-      } catch (e) {
-        debugError("Command execution error:", e);
-      }
-    },
-
-    /**
      * Finds a command by its key and executes it.
      * @param {string} key - The key of the command to execute.
      */
-    async executeCommandByKey(key) {
+    executeCommandByKey(key) {
       if (!key) return;
-      const allCommands = await this.generateLiveCommands(false);
-      const cmd = allCommands.find((c) => c.key === key);
-      if (cmd) {
-        this.executeCommandObject(cmd);
+
+      let cmdToExecute;
+      const nativeAction = this._globalActions?.find((a) => a.commandId === key);
+
+      if (nativeAction) {
+        cmdToExecute = { key: nativeAction.commandId, command: nativeAction.command };
       } else {
-        debugError(`executeCommandByKey: Command with key "${key}" not found.`);
+        const findInCommands = (arr) => arr?.find((c) => c.key === key);
+        cmdToExecute = findInCommands(commands) || findInCommands(this._dynamicCommandsCache);
+      }
+
+      if (cmdToExecute) {
+        debugLog("Executing command via key:", key);
+        this.addRecentCommand(cmdToExecute);
+        if (typeof cmdToExecute.command === "function") {
+          cmdToExecute.command(window);
+        } else {
+          const commandEl = document.getElementById(cmdToExecute.key);
+          if (commandEl?.doCommand) {
+            commandEl.doCommand();
+          } else {
+            debugError(`Command element not found for key: ${key}`);
+          }
+        }
+      } else {
+        debugError(`executeCommandByKey: Command with key "${key}" could not be found.`);
+      }
+    },
+
+    async addWidget(key) {
+      debugLog(`addWidget called for key: ${key}`);
+      const sanitizedKey = key.replace(/[^a-zA-Z0-9-_]/g, "-");
+      const widgetId = `zen-cmd-palette-widget-${sanitizedKey}`;
+
+      const existingWidget = document.getElementById(widgetId);
+      if (existingWidget) {
+        existingWidget.hidden = false;
+        debugLog(`Widget "${widgetId}" already exists, un-hiding it.`);
+        return;
+      }
+
+      const allCommands = await this.getAllCommandsForConfig();
+      const cmd = allCommands.find((c) => c.key === key);
+      if (!cmd) {
+        debugLog(`addWidget: Command with key "${key}" not found.`);
+        return;
+      }
+
+      try {
+        UC_API.Utils.createWidget({
+          id: widgetId,
+          type: "toolbarbutton",
+          label: cmd.label,
+          tooltip: cmd.label,
+          class: "toolbarbutton-1 chromeclass-toolbar-additional zen-command-widget",
+          image: cmd.icon || "chrome://browser/skin/trending.svg",
+          callback: () => this.executeCommandByKey(key),
+        });
+        debugLog(`Successfully created widget "${widgetId}" for command: ${key}`);
+      } catch (e) {
+        debugError(`Failed to create widget for ${key}:`, e);
+      }
+    },
+
+    removeWidget(key) {
+      debugLog(`removeWidget: Hiding widget for key: ${key}`);
+      const sanitizedKey = key.replace(/[^a-zA-Z0-9-_]/g, "-");
+      const widgetId = `zen-cmd-palette-widget-${sanitizedKey}`;
+      const widget = document.getElementById(widgetId);
+      if (widget) {
+        widget.hidden = true;
+        debugLog(`Successfully hid widget: ${widgetId}`);
+      } else {
+        debugLog(`removeWidget: Widget "${widgetId}" not found, nothing to hide.`);
+      }
+    },
+
+    async addHotkey(commandKey, shortcutStr) {
+      debugLog(`addHotkey called for command "${commandKey}" with shortcut "${shortcutStr}"`);
+      const { key, keycode, modifiers } = parseShortcutString(shortcutStr);
+      const useKey = key || keycode;
+      if (!useKey) {
+        debugError(`addHotkey: Invalid shortcut string "${shortcutStr}" for command "${commandKey}"`);
+        return;
+      }
+
+      const translatedModifiers = modifiers.replace(/accel/g, "ctrl").replace(/,/g, " ");
+      try {
+        const hotkey = {
+          id: `zen-cmd-palette-shortcut-for-${commandKey}`,
+          modifiers: translatedModifiers,
+          key: useKey,
+          command: () => this.executeCommandByKey(commandKey),
+        };
+        const registeredHotkey = await UC_API.Hotkeys.define(hotkey);
+        if (registeredHotkey) {
+          registeredHotkey.autoAttach({ suppressOriginal: true });
+          debugLog(`Successfully defined hotkey for command "${commandKey}"`);
+        }
+      } catch (e) {
+        debugError(`Failed to register new shortcut for ${commandKey}:`, e);
       }
     },
 
@@ -2817,7 +3564,7 @@
       }
 
       const onUrlbarClose = () => {
-        const isPrefixModeActive = ZenCommandPalette.provider?._isInPrefixMode ?? false;
+        const isPrefixModeActive = this.provider?._isInPrefixMode ?? false;
         if (this.provider) this.provider.dispose();
         if (isPrefixModeActive) gURLBar.value = "";
       };
@@ -2836,6 +3583,7 @@
       this._userConfig = await Storage.loadSettings();
       this.clearDynamicCommandsCache();
       debugLog("User config loaded:", this._userConfig);
+      this.applyNativeOverrides();
     },
 
     /**
@@ -2844,87 +3592,64 @@
     applyUserConfig() {
       this.applyCustomShortcuts();
       this.applyToolbarButtons();
+      this.applyNativeOverrides();
+    },
+    
+    /**
+     * Patches the native global actions array with user customizations like hidden commands and icons.
+     */
+    applyNativeOverrides() {
+      if (!this._globalActions) return;
+    
+      for (const action of this._globalActions) {
+        if (action.commandId) {
+          // Apply custom icon
+          if (this._userConfig.customIcons?.[action.commandId]) {
+            action.icon = this._userConfig.customIcons[action.commandId];
+          }
+    
+          // Patch isAvailable to respect hidden commands
+          if (!action.isAvailable_patched) {
+            const originalIsAvailable = action.isAvailable;
+            action.isAvailable = (window) => {
+              if (this._userConfig.hiddenCommands?.includes(action.commandId)) {
+                return false;
+              }
+              return originalIsAvailable.call(action, window);
+            };
+            action.isAvailable_patched = true;
+          }
+        }
+      }
+      debugLog("Applied native command overrides (icons and visibility).");
     },
 
     /**
      * Creates <key> elements for custom shortcuts and adds them to the document.
      */
-    applyCustomShortcuts() {
-      if (!this._userConfig.customShortcuts) return;
-      const KEYSET_ID = "zen-command-palette-keyset";
-      let keyset = document.getElementById(KEYSET_ID);
-
-      if (keyset && keyset._zenCmdListenerAttached) {
-        keyset.removeEventListener("command", this._boundHandleKeysetCommand);
-      } else if (!keyset) {
-        keyset = document.createXULElement("keyset");
-        keyset.id = KEYSET_ID;
-        document.getElementById("mainKeyset").after(keyset);
+    async applyCustomShortcuts() {
+      if (!this._userConfig.customShortcuts) {
+        debugLog("No custom shortcuts to apply on initial load.");
+        return;
       }
-
-      keyset.replaceChildren();
 
       for (const [commandKey, shortcutStr] of Object.entries(this._userConfig.customShortcuts)) {
         if (!shortcutStr) continue;
-
-        const { key, keycode, modifiers } = parseShortcutString(shortcutStr);
-        if (!key && !keycode) continue;
-
-        const keyEl = document.createXULElement("key");
-        keyEl.id = `zen-cmd-palette-shortcut-for-${commandKey}`;
-        if (key) keyEl.setAttribute("key", key);
-        if (keycode) keyEl.setAttribute("keycode", keycode);
-        if (modifiers) keyEl.setAttribute("modifiers", modifiers);
-        keyEl.setAttribute("data-command-key", commandKey);
-
-        keyset.appendChild(keyEl);
+        await this.addHotkey(commandKey, shortcutStr);
       }
-
-      keyset.addEventListener("command", this._boundHandleKeysetCommand);
-      keyset._zenCmdListenerAttached = true;
-      debugLog("Applied custom shortcuts.");
-    },
-
-    _handleKeysetCommand(event) {
-      const commandKey = event.target.getAttribute("data-command-key");
-      if (commandKey) {
-        this.executeCommandByKey(commandKey);
-      }
+      debugLog("Applied initial custom shortcuts.");
     },
 
     async applyToolbarButtons() {
-      const WIDGET_PREFIX = "zen-cmd-palette-widget-";
-      const allCommands = await this.getAllCommandsForConfig();
-
-      // TODO: this is requiered for realtime changes
-      // First, remove all widgets created by this mod to handle removals cleanly.
-
-      if (!this._userConfig?.toolbarButtons) return;
+      if (!this._userConfig?.toolbarButtons) {
+        debugLog("No toolbar buttons to apply on initial load.");
+        return;
+      }
 
       for (const key of this._userConfig.toolbarButtons) {
-        const cmd = allCommands.find((c) => c.key === key);
-        if (!cmd) continue;
-
-        // Sanitize the command key to create a valid widget ID.
-        const sanitizedKey = key.replace(/[^a-zA-Z0-9-_]/g, "-");
-        const widgetId = `${WIDGET_PREFIX}${sanitizedKey}`;
-        try {
-          UC_API.Utils.createWidget({
-            id: widgetId,
-            type: "toolbarbutton",
-            label: cmd.label,
-            tooltip: cmd.label,
-            class: "toolbarbutton-1 chromeclass-toolbar-additional zen-command-widget",
-            image: cmd.icon || "chrome://browser/skin/trending.svg",
-            callback: () => this.executeCommandByKey(key),
-          });
-          debugLog(`Created widget for command: ${key}`);
-        } catch (e) {
-          if (!e.message.includes("widget with same id already exists")) {
-            debugError(`Failed to create widget for ${key}:`, e);
-          }
-        }
+        await this.addWidget(key);
       }
+      debugLog("Applied initial toolbar buttons.");
     },
 
     destroy() {
@@ -2944,7 +3669,15 @@
      */
     async init() {
       debugLog("Starting ZenCommandPalette init...");
-      this._boundHandleKeysetCommand = this._handleKeysetCommand.bind(this);
+
+      try {
+        const { globalActions } = ChromeUtils.importESModule(
+          "resource:///modules/ZenUBGlobalActions.sys.mjs"
+        );
+        this._globalActions = globalActions;
+      } catch (e) {
+        debugError("Could not load native globalActions, native commands will be unavailable.", e);
+      }
 
       this.Settings = SettingsModal;
       this.Settings.init(this);
@@ -2984,7 +3717,6 @@
           _isInPrefixMode = false;
 
           get name() {
-            // HACK: setting name to "TestProvider" don't cause too many error messages in console due to setting result.heuristic = true;
             return "TestProvider";
           }
           get type() {
@@ -2992,22 +3724,19 @@
           }
           getPriority(context) {
             const input = (context.searchString || "").trim();
-            // Returning a high priority ensures this provider's results are shown exclusively
-            // when the ':' prefix is used, effectively creating a command-only mode.
-            return input.startsWith(":") ? 10000 : 0;
+            return input.startsWith(Prefs.prefix) ? 10000 : 0;
           }
 
           async isActive(context) {
             try {
               const input = (context.searchString || "").trim();
-              const isPrefixSearch = input.startsWith(":");
+              const isPrefixSearch = input.startsWith(Prefs.prefix);
 
               if (this._isInPrefixMode && !isPrefixSearch) {
                 this._isInPrefixMode = false;
                 Prefs.resetTempMaxRichResults();
               }
 
-              // Do not activate if a one-off search engine is already active.
               const inSearchMode =
                 !!context.searchMode?.engineName || !!gURLBar.searchMode?.engineName;
               if (inSearchMode) {
@@ -3018,7 +3747,7 @@
               if (Prefs.prefixRequired) return false;
 
               if (input.length >= Prefs.minQueryLength) {
-                const liveCommands = await self.generateLiveCommands();
+                const liveCommands = await self.generateLiveCommands(true, isPrefixSearch);
                 return self.filterCommandsByInput(input, liveCommands).length > 0;
               }
 
@@ -3035,7 +3764,7 @@
               const input = (context.searchString || "").trim();
               debugLog(`startQuery for: "${input}"`);
 
-              const isPrefixSearch = input.startsWith(":");
+              const isPrefixSearch = input.startsWith(Prefs.prefix);
               const query = isPrefixSearch ? input.substring(1).trim() : input.trim();
 
               this._isInPrefixMode = isPrefixSearch;
@@ -3045,7 +3774,7 @@
 
               if (context.canceled) return;
 
-              const liveCommands = await self.generateLiveCommands();
+              const liveCommands = await self.generateLiveCommands(true, isPrefixSearch);
               if (context.canceled) return;
 
               const addResult = (cmd, isHeuristic = false) => {
@@ -3102,7 +3831,7 @@
                   addResult({
                     key: "no-results",
                     label: "No available commands",
-                    command: self._closeUrlBar.bind(self),
+                    command: () => self._closeUrlBar(),
                     icon: "chrome://browser/skin/zen-icons/info.svg",
                   });
                 }
@@ -3115,7 +3844,7 @@
                 addResult({
                   key: "no-results",
                   label: "No matching commands found",
-                  command: self._closeUrlBar.bind(self),
+                  command: () => self._closeUrlBar(),
                   icon: "chrome://browser/skin/zen-icons/info.svg",
                 });
                 return;
@@ -3132,7 +3861,6 @@
             this._isInPrefixMode = false;
             setTimeout(() => {
               self.clearDynamicCommandsCache();
-              self._commandVisibilityCache = {};
             }, 0);
           }
 
@@ -3141,7 +3869,8 @@
             if (cmd) {
               debugLog("Executing command from onEngagement:", cmd.key);
               self._closeUrlBar();
-              setTimeout(() => self.executeCommandObject(cmd), 0);
+              self.addRecentCommand(cmd);
+              setTimeout(() => self.executeCommandByKey(cmd.key), 0);
             }
           }
 
@@ -3188,6 +3917,7 @@
         throw new Error("addCommand: command must have {key, label}");
       }
       this.staticCommands.push(cmd);
+      this.clearDynamicCommandsCache();
       return cmd;
     },
 
@@ -3209,7 +3939,7 @@
       debugLog(
         "addCommands: added",
         addedCount,
-        "items. total commands:",
+        "items. total static commands:",
         this.staticCommands.length
       );
       return this.staticCommands;
@@ -3227,6 +3957,7 @@
           : this.staticCommands.findIndex((c) => c.key === keyOrPredicate);
       if (idx >= 0) {
         const [removed] = this.staticCommands.splice(idx, 1);
+        this.clearDynamicCommandsCache();
         debugLog("removeCommand:", removed && removed.key);
         return removed;
       }
@@ -3252,19 +3983,22 @@
         allowIcons,
         allowShortcuts,
       });
+      this.clearDynamicCommandsCache();
     },
   };
 
-  // --- Initialization ---
+  // Initialization
   UC_API.Runtime.startupFinished().then(() => {
     Prefs.setInitialPrefs();
     window.ZenCommandPalette = ZenCommandPalette;
-    window.ZenCommandPalette.init();
+    ZenCommandPalette.init();
 
     debugLog(
       "Zen Command Palette initialized. Static commands count:",
       window.ZenCommandPalette.staticCommands.length
     );
   });
+
+  exports.ZenCommandPalette = ZenCommandPalette;
 
 }));
