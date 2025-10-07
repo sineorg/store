@@ -131,7 +131,7 @@
   "zen-command-palette": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
     "name": "Zen Command Palette",
-    "version": "1.5.0",
+    "version": "1.7.3",
     "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
     "stars": 42,
