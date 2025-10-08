@@ -269,17 +269,6 @@
       "zen"
     ]
   },
-  "ZenMotion-Pro": {
-    "homepage": "Mohammed55Z/ZenMotion-Pro",
-    "name": "ZenMotion Pro",
-    "version": "1.4.0",
-    "description": "A premium, performance-optimized animation framework that transforms Zen Browser into a Modern Material Interface. :))",
-    "readme": "https://raw.githubusercontent.com/Mohammed55Z/ZenMotion-Pro/refs/heads/main/README.md",
-    "stars": 6,
-    "fork": [
-      "zen"
-    ]
-  },
   "paneru": {
     "homepage": "TheBigWazz/Paneru",
     "image": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/image.png",
