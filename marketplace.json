@@ -11,6 +11,24 @@
       "zen"
     ]
   },
+  {
+    "id": "No-Gaps",
+    "homepage": "https://github.com/Comp-Tech-Guy/No-Gaps",
+    "author": "CompTechGuy",
+    "name": "No-Gaps",
+    "description": "There will be no gaps in the sides to have a sleek look",
+    "version": "1.0.0",
+    "style":{"chrome": "https://raw.githubusercontent.com/Comp-Tech-Guy/No-Gaps/main/style.css"},
+    "readme": "https://raw.githubusercontent.com/Comp-Tech-Guy/No-Gaps/refs/heads/main/README.md",
+    "image": "https://github.com/Comp-Tech-Guy/No-Gaps/blob/main/images/CompactMode.png?raw=true",
+    "tags":[
+      "Remove",
+      "Clean",
+      "No-Gaps",
+      "Border removed",
+      "Border"
+    ]
+  },
   "natsumi-browser": {
     "homepage": "greeeen-dev/natsumi-browser",
     "image": "https://github.com/greeeen-dev/natsumi-browser/raw/dev/images/main-backgroundless.png",
