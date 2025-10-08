@@ -345,13 +345,22 @@
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "name": "Tidy Popup & Extension",
     "version": "2.8.11",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser's primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
     "stars": 3,
     "fork": [
       "zen",
       "firefox"
     ]
+  },
+  "No-Gaps": {
+    "homepage": "Comp-Tech-Guy/No-Gaps",
+    "image": "https://github.com/Comp-Tech-Guy/No-Gaps/blob/main/images/CompactMode.png?raw=true",
+    "name": "No-Gaps",
+    "version": "1.0.0",
+    "description": "There will be no gaps in the sides to have a sleek look",
+    "readme": "https://raw.githubusercontent.com/Comp-Tech-Guy/No-Gaps/refs/heads/main/README.md",
+    "stars": 3
   },
   "bada16c1-3b14-483b": {
     "homepage": "themaster5209/zen-better-new-tab-button",
@@ -423,6 +432,5 @@
       "zen",
       "firefox"
     ]
-  },
-  "No-Gaps": "Comp-Tech-Guy/No-Gaps"
+  }
 }
