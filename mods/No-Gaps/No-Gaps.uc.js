@@ -1,3 +1,7 @@
+// ==UserScript==
+// @ignorecache
+// ==/UserScript==
+
 document.addEventListener('DOMContentLoaded', () => {
     const containerDiv = document.querySelector('zen-appcontent-navbar-wrapper');
     const targetDiv = document.querySelector('browser');
