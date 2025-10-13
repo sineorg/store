@@ -6,7 +6,7 @@
     "version": "3.3",
     "description": "A beautiful theme made for Zen Browser :))",
     "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
-    "stars": 1109,
+    "stars": 1116,
     "fork": [
       "zen"
     ]
@@ -18,7 +18,7 @@
     "version": "5.3.0",
     "description": "A skin for Firefox and its forks that makes things flow.",
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
-    "stars": 440,
+    "stars": 442,
     "fork": [
       "floorp"
     ]
@@ -54,7 +54,7 @@
     "version": "5.1.0",
     "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
-    "stars": 135,
+    "stars": 136,
     "fork": [
       "zen"
     ]
@@ -66,7 +66,7 @@
     "version": "143.0",
     "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
     "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
-    "stars": 116,
+    "stars": 117,
     "fork": [
       "firefox",
       "waterfox",
@@ -92,7 +92,7 @@
     "version": "1.0.0",
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/README.md",
-    "stars": 46,
+    "stars": 47,
     "fork": [
       "zen"
     ]
@@ -103,18 +103,7 @@
     "version": "1.0.0",
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
-    "stars": 46
-  },
-  "search-engine-select": {
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
-    "name": "Search Engine Select",
-    "version": "1.0.0",
-    "description": "Adds a floating UI to switch search engines on a search results page.",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
-    "stars": 46,
-    "fork": [
-      "zen"
-    ]
+    "stars": 47
   },
   "settings-shortcuts-search": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
@@ -123,7 +112,18 @@
     "version": "1.0.0",
     "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
-    "stars": 46,
+    "stars": 47,
+    "fork": [
+      "zen"
+    ]
+  },
+  "search-engine-select": {
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
+    "name": "Search Engine Select",
+    "version": "1.0.0",
+    "description": "Adds a floating UI to switch search engines on a search results page.",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
+    "stars": 47,
     "fork": [
       "zen"
     ]
@@ -134,7 +134,7 @@
     "version": "1.7.3",
     "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
-    "stars": 46,
+    "stars": 47,
     "fork": [
       "zen"
     ]
@@ -146,7 +146,7 @@
     "version": "1.5.8",
     "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
     "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
-    "stars": 41,
+    "stars": 42,
     "fork": [
       "zen"
     ]
@@ -166,7 +166,7 @@
     "homepage": "Starry-AXQG/Context-Menu-Icons",
     "image": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/.asset/Demo%20Image.jpg",
     "name": "Context Menu Icons",
-    "version": "2.2.1",
+    "version": "2.3",
     "description": "Improve the context menu by adding icons, fold menu items and more.",
     "readme": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/README.md",
     "stars": 29,
@@ -194,7 +194,7 @@
     "version": "1.1.0",
     "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
-    "stars": 24,
+    "stars": 25,
     "fork": [
       "zen"
     ]
@@ -203,10 +203,10 @@
     "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
     "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
     "name": "Wireframe 2.0",
-    "version": "2.2.1",
+    "version": "2.3.3",
     "description": "A minimal, squared-off theme for Zen Browser",
     "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
-    "stars": 23,
+    "stars": 25,
     "fork": [
       "zen"
     ]
@@ -226,7 +226,7 @@
   "customize-collapsed-sidebar": {
     "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
     "name": "Customize Collapsed Sidebar",
-    "version": "1.0.3",
+    "version": "1.0.5",
     "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
     "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
     "stars": 12,
@@ -241,7 +241,7 @@
     "version": "1.0.0s",
     "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
-    "stars": 9,
+    "stars": 10,
     "fork": [
       "zen"
     ]
@@ -269,17 +269,6 @@
       "zen"
     ]
   },
-  "ZenMotion-Pro": {
-    "homepage": "Mohammed55Z/ZenMotion-Pro",
-    "name": "ZenMotion Pro",
-    "version": "1.4.0",
-    "description": "A premium, performance-optimized animation framework that transforms Zen Browser into a Modern Material Interface. :))",
-    "readme": "https://raw.githubusercontent.com/Mohammed55Z/ZenMotion-Pro/refs/heads/main/README.md",
-    "stars": 6,
-    "fork": [
-      "zen"
-    ]
-  },
   "paneru": {
     "homepage": "TheBigWazz/Paneru",
     "image": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/image.png",
@@ -292,6 +281,15 @@
       "floorp",
       "firefox"
     ]
+  },
+  "No-Gaps": {
+    "homepage": "Comp-Tech-Guy/No-Gaps",
+    "image": "https://github.com/Comp-Tech-Guy/No-Gaps/blob/main/images/CompactMode.png?raw=true",
+    "name": "No-Gaps",
+    "version": "1.0.0",
+    "description": "There will be no gaps in the sides to have a sleek look (Still for single toolbar)",
+    "readme": "https://raw.githubusercontent.com/Comp-Tech-Guy/No-Gaps/refs/heads/main/README.md",
+    "stars": 6
   },
   "tab-rename-zen-browser": {
     "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
@@ -353,10 +351,23 @@
       "firefox"
     ]
   },
+  "42b8c4ac-76d5-4521-9917-2e478931ee53": {
+    "homepage": "rasyidrafi/zen-compact-transparent-mode",
+    "image": "https://github.com/rasyidrafi/zen-compact-transparent-mode/blob/main/image.png?raw=true",
+    "name": "Zen Compact Transparent Mode",
+    "version": "1.1.2",
+    "description": "Make popups UI menu transparent with custom settings.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-compact-transparent-mode/refs/heads/main/README.md",
+    "stars": 2,
+    "fork": [
+      "zen",
+      "firefox"
+    ]
+  },
   "bada16c1-3b14-483b": {
     "homepage": "themaster5209/zen-better-new-tab-button",
     "name": "Better New Tab button",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "A Zen Browser mod that enhances the New Tab button experience",
     "stars": 2
   },
@@ -379,19 +390,6 @@
     "version": "1.0.5",
     "description": "Customizable URL bar with animations.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-custom-urlbar/refs/heads/main/README.md",
-    "stars": 2,
-    "fork": [
-      "zen",
-      "firefox"
-    ]
-  },
-  "42b8c4ac-76d5-4521-9917-2e478931ee53": {
-    "homepage": "rasyidrafi/zen-compact-transparent-mode",
-    "image": "https://github.com/rasyidrafi/zen-compact-transparent-mode/blob/main/image.png?raw=true",
-    "name": "Zen Compact Transparent Mode",
-    "version": "1.1.2",
-    "description": "Make popups UI menu transparent with custom settings.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-compact-transparent-mode/refs/heads/main/README.md",
     "stars": 2,
     "fork": [
       "zen",
