@@ -1,7 +1,11 @@
 // ==UserScript==
 // @name            Zen Command Palette
-// @description     A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar.
-// @author          BibekBhusal
+// @description     A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.
+// @author          Bibek Bhusal
+// @version         1.7.3
+// @lastUpdated     2025-10-23
+// @ignorecache
+// @homepage        https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette
 // @onlyonce
 // ==/UserScript==
 
@@ -9,7 +13,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.ZenCommandPalette = {}));
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.zen_command_palette = {}));
 })(this, (function (exports) { 'use strict';
 
   const svgToUrl = (iconSVG) => {
@@ -955,6 +959,42 @@
     },
   ];
 
+  /**
+   * @param {string} domainOrUrl
+   * @param {number} size
+   * @returns {string}
+   */
+  function googleFaviconAPI(domainOrUrl, size = 32) {
+    let domain;
+    try {
+      domain = new URL(domainOrUrl).hostname;
+    } catch (e) {
+      domain = domainOrUrl;
+    }
+    return `https://s2.googleusercontent.com/s2/favicons?domain_url=https://${domain}&sz=${size}`;
+  }
+
+  /**
+   * Gets a favicon for a search engine, with fallbacks.
+   * @param {object} engine - The search engine object.
+   * @returns {string} The URL of the favicon.
+   */
+  function getSearchEngineFavicon(engine) {
+    const fallbackIcon = "chrome://browser/skin/search-glass.svg";
+    if (engine?.iconURI?.spec) {
+      return engine.iconURI.spec;
+    }
+    try {
+      const submissionUrl = engine.getSubmission("test_query")?.uri.spec;
+      if (submissionUrl) {
+        return googleFaviconAPI(submissionUrl);
+      }
+    } catch (e) {
+      // ignore
+    }
+    return fallbackIcon;
+  }
+
   let _originalMaxResults = null;
 
   const Prefs = {
@@ -1252,24 +1292,6 @@
   };
 
   /**
-   * Gets a favicon for a search engine, with fallbacks.
-   * @param {object} engine - The search engine object.
-   * @returns {string} The URL of the favicon.
-   */
-  const getSearchEngineFavicon = (engine) => {
-    if (engine.iconURI?.spec) {
-      return engine.iconURI.spec;
-    }
-    try {
-      const submissionUrl = engine.getSubmission("test_query").uri.spec;
-      const hostName = new URL(submissionUrl).hostname;
-      return `https://s2.googleusercontent.com/s2/favicons?domain_url=https://${hostName}&sz=32`;
-    } catch (e) {
-      return "chrome://browser/skin/search-glass.svg"; // Absolute fallback
-    }
-  };
-
-  /**
    * Generates commands for opening "about:" pages.
    * @returns {Promise<Array<object>>} A promise that resolves to an array of about page commands.
    */
@@ -1548,7 +1570,7 @@
       }
 
       commands.push({
-        key: `switch-tab:${tab.linkedBrowser.outerWindowID}-${tab.linkedBrowser.tabId}`,
+        key: `switch-tab:${tab.label}`,
         label: `Switch to Tab: ${tab.label}`,
         command: () => {
           if (window.gZenWorkspaces?.workspaceEnabled) {
@@ -1690,6 +1712,7 @@
         },
         icon: "chrome://browser/skin/zen-icons/edit-delete.svg",
         tags: ["folder", "delete", "remove", folder.label.toLowerCase()],
+        allowShortcuts: false,
       });
     });
 
@@ -3027,6 +3050,11 @@
     };
   }
 
+  function startupFinish(callback) {
+    if (typeof UC_API === "undefined") return;
+    UC_API.Runtime.startupFinished().then(() => callback());
+  }
+
   const ZenCommandPalette = {
     /**
      * An array of dynamic command providers. Each provider is an object
@@ -3263,11 +3291,10 @@
     },
 
     /**
-     * Generates a complete, up-to-date list of commands by combining static commands
-     * with dynamically generated ones based on current preferences.
+     * Generates a complete, up-to-date list of dynamic commands.
      * @returns {Promise<Array<object>>} A promise that resolves to the full list of commands.
      */
-    async generateLiveCommands(useCache = true, isPrefixMode = false) {
+    async generateDynamicCommands(useCache = true) {
       let dynamicCommands;
       if (useCache && this._dynamicCommandsCache) {
         dynamicCommands = this._dynamicCommandsCache;
@@ -3291,7 +3318,16 @@
           this._dynamicCommandsCache = dynamicCommands;
         }
       }
+      return dynamicCommands;
+    },
 
+    /**
+     * Generates a complete, up-to-date list of commands by combining static commands
+     * with dynamically generated ones based on current preferences.
+     * @returns {Promise<Array<object>>} A promise that resolves to the full list of commands.
+     */
+    async generateLiveCommands(useCache = true, isPrefixMode = false) {
+      const dynamicCommands = await this.generateDynamicCommands(useCache);
       let allCommands = [...commands, ...dynamicCommands];
 
       if (isPrefixMode && this._globalActions) {
@@ -3374,26 +3410,25 @@
 
     /**
      * Filters and sorts the command list using a fuzzy-matching algorithm.
-     * @param {string} input - The user's search string from the URL bar.
+     * @param {string} query - The user's search string, without the command prefix.
      * @param {Array<object>} allCommands - The full list of commands to filter.
+     * @param {boolean} isPrefixMode - Whether the command palette is in prefix mode.
      * @returns {Array<object>} A sorted array of command objects that match the input.
      */
-    filterCommandsByInput(input, allCommands) {
-      let query = this.safeStr(input).trim();
-      const isCommandPrefix = query.startsWith(Prefs.prefix);
-      if (isCommandPrefix) {
-        query = query.substring(1).trim();
+    filterCommandsByInput(query, allCommands, isPrefixMode) {
+      const cleanQuery = this.safeStr(query).trim();
+
+      if (isPrefixMode) {
+        if (!cleanQuery) {
+          return [];
+        }
+      } else {
+        if (cleanQuery.length < Prefs.minQueryLength) {
+          return [];
+        }
       }
-      if (isCommandPrefix && !query) {
-        return [];
-      }
-      if (!isCommandPrefix && query.length < Prefs.minQueryLength) {
-        return [];
-      }
-      if (!query) {
-        return [];
-      }
-      const lowerQuery = query.toLowerCase();
+
+      const lowerQuery = cleanQuery.toLowerCase();
 
       const scoredCommands = allCommands
         .map((cmd) => {
@@ -3417,7 +3452,7 @@
       scoredCommands.sort((a, b) => b.score - a.score);
       const finalCmds = scoredCommands.map((item) => item.cmd);
 
-      if (isCommandPrefix) {
+      if (isPrefixMode) {
         return finalCmds.slice(0, Prefs.maxCommandsPrefix);
       }
       return finalCmds.slice(0, Prefs.maxCommands);
@@ -3427,17 +3462,21 @@
      * Finds a command by its key and executes it.
      * @param {string} key - The key of the command to execute.
      */
-    executeCommandByKey(key) {
+    async executeCommandByKey(key) {
       if (!key) return;
 
       let cmdToExecute;
       const nativeAction = this._globalActions?.find((a) => a.commandId === key);
 
+      const findInCommands = (arr) => arr?.find((c) => c.key === key);
       if (nativeAction) {
         cmdToExecute = { key: nativeAction.commandId, command: nativeAction.command };
       } else {
-        const findInCommands = (arr) => arr?.find((c) => c.key === key);
-        cmdToExecute = findInCommands(commands) || findInCommands(this._dynamicCommandsCache);
+        cmdToExecute = findInCommands(commands);
+      }
+      if (!cmdToExecute) {
+        const dynamicCommands = await this.generateDynamicCommands(false, false);
+        cmdToExecute = findInCommands(dynamicCommands);
       }
 
       if (cmdToExecute) {
@@ -3594,20 +3633,20 @@
       this.applyToolbarButtons();
       this.applyNativeOverrides();
     },
-    
+
     /**
      * Patches the native global actions array with user customizations like hidden commands and icons.
      */
     applyNativeOverrides() {
       if (!this._globalActions) return;
-    
+
       for (const action of this._globalActions) {
         if (action.commandId) {
           // Apply custom icon
           if (this._userConfig.customIcons?.[action.commandId]) {
             action.icon = this._userConfig.customIcons[action.commandId];
           }
-    
+
           // Patch isAvailable to respect hidden commands
           if (!action.isAvailable_patched) {
             const originalIsAvailable = action.isAvailable;
@@ -3663,6 +3702,10 @@
       }
     },
 
+    _exitPrefixMode() {
+      if (this.provider) this.provider.dispose();
+    },
+
     /**
      * Initializes the command palette by creating and registering the UrlbarProvider.
      * This is the main entry point for the script.
@@ -3688,6 +3731,15 @@
       debugLog("User config loaded and applied.");
 
       this.attachUrlbarCloseListeners();
+
+      gURLBar.inputField.addEventListener("keydown", (event) => {
+        if (this.provider?._isInPrefixMode && gURLBar.value === "") {
+          if (event.key === "Backspace" || event.key === "Escape") {
+            event.preventDefault();
+            this._exitPrefixMode();
+          }
+        }
+      });
 
       window.addEventListener("unload", () => this.destroy(), { once: true });
 
@@ -3722,24 +3774,24 @@
           get type() {
             return UrlbarUtils.PROVIDER_TYPE.HEURISTIC;
           }
-          getPriority(context) {
-            const input = (context.searchString || "").trim();
-            return input.startsWith(Prefs.prefix) ? 10000 : 0;
+          getPriority() {
+            return this._isInPrefixMode ? 10000 : 0;
           }
 
           async isActive(context) {
             try {
+              if (this._isInPrefixMode) {
+                if (context.searchMode?.engineName) {
+                  this.dispose();
+                  return false;
+                }
+                return true;
+              }
+
               const input = (context.searchString || "").trim();
               const isPrefixSearch = input.startsWith(Prefs.prefix);
 
-              if (this._isInPrefixMode && !isPrefixSearch) {
-                this._isInPrefixMode = false;
-                Prefs.resetTempMaxRichResults();
-              }
-
-              const inSearchMode =
-                !!context.searchMode?.engineName || !!gURLBar.searchMode?.engineName;
-              if (inSearchMode) {
+              if (context.searchMode?.engineName) {
                 return false;
               }
 
@@ -3747,8 +3799,8 @@
               if (Prefs.prefixRequired) return false;
 
               if (input.length >= Prefs.minQueryLength) {
-                const liveCommands = await self.generateLiveCommands(true, isPrefixSearch);
-                return self.filterCommandsByInput(input, liveCommands).length > 0;
+                const liveCommands = await self.generateLiveCommands(true, false);
+                return self.filterCommandsByInput(input, liveCommands, false).length > 0;
               }
 
               return false;
@@ -3764,17 +3816,24 @@
               const input = (context.searchString || "").trim();
               debugLog(`startQuery for: "${input}"`);
 
-              const isPrefixSearch = input.startsWith(Prefs.prefix);
-              const query = isPrefixSearch ? input.substring(1).trim() : input.trim();
+              const isEnteringPrefixMode = !this._isInPrefixMode && input.startsWith(Prefs.prefix);
+              let query;
 
-              this._isInPrefixMode = isPrefixSearch;
+              if (isEnteringPrefixMode) {
+                this._isInPrefixMode = true;
+                gURLBar.setAttribute("zen-cmd-palette-prefix-mode", "true");
+                query = input.substring(Prefs.prefix.length).trim();
+                gURLBar.value = query;
+              } else {
+                query = input;
+              }
 
-              if (isPrefixSearch) Prefs.setTempMaxRichResults(Prefs.maxCommandsPrefix);
+              if (this._isInPrefixMode) Prefs.setTempMaxRichResults(Prefs.maxCommandsPrefix);
               else Prefs.resetTempMaxRichResults();
 
               if (context.canceled) return;
 
-              const liveCommands = await self.generateLiveCommands(true, isPrefixSearch);
+              const liveCommands = await self.generateLiveCommands(true, this._isInPrefixMode);
               if (context.canceled) return;
 
               const addResult = (cmd, isHeuristic = false) => {
@@ -3801,7 +3860,7 @@
                 return true;
               };
 
-              if (isPrefixSearch && !query) {
+              if (this._isInPrefixMode && !query) {
                 let count = 0;
                 const maxResults = Prefs.maxCommandsPrefix;
                 const recentCmds = self._recentCommands
@@ -3838,9 +3897,9 @@
                 return;
               }
 
-              const matches = self.filterCommandsByInput(input, liveCommands);
+              const matches = self.filterCommandsByInput(query, liveCommands, this._isInPrefixMode);
 
-              if (!matches.length && isPrefixSearch) {
+              if (!matches.length && this._isInPrefixMode) {
                 addResult({
                   key: "no-results",
                   label: "No matching commands found",
@@ -3858,6 +3917,7 @@
 
           dispose() {
             Prefs.resetTempMaxRichResults();
+            gURLBar.removeAttribute("zen-cmd-palette-prefix-mode");
             this._isInPrefixMode = false;
             setTimeout(() => {
               self.clearDynamicCommandsCache();
@@ -3988,7 +4048,7 @@
   };
 
   // Initialization
-  UC_API.Runtime.startupFinished().then(() => {
+  function init() {
     Prefs.setInitialPrefs();
     window.ZenCommandPalette = ZenCommandPalette;
     ZenCommandPalette.init();
@@ -3997,7 +4057,9 @@
       "Zen Command Palette initialized. Static commands count:",
       window.ZenCommandPalette.staticCommands.length
     );
-  });
+  }
+
+  startupFinish(init);
 
   exports.ZenCommandPalette = ZenCommandPalette;
 
