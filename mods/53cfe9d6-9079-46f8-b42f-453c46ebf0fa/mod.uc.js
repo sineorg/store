@@ -1161,4 +1161,96 @@ window.addEventListener("load", () => {
 }, { once: true });
 
 
+// ====================================================================================================
+// SCRIPT 9: Compact mode toogle button
+// ====================================================================================================
+// ==UserScript==
+// @name           Combine PanelUI and Compact Mode Button (Reliable Startup)
+// @description    Uses a MutationObserver to reliably merge button functionality on browser start, preventing race conditions.
+// @author         Zen Analyzer
+// @include        chrome://browser/content/browser.xhtml
+// ==/UserScript==
+
+(function() {
+
+  // This is the core function that applies all our desired changes.
+  function setupCombinedButton() {
+    // --- Define element IDs ---
+    const panelButtonId = 'PanelUI-menu-button';
+    const compactModeButtonId = 'zen-toggle-compact-mode';
+    const reloadButtonId = 'stop-reload-button';
+    
+    const panelButton = document.getElementById(panelButtonId);
+    const compactModeButton = document.getElementById(compactModeButtonId);
+    const reloadButtonContainer = document.getElementById(reloadButtonId);
+
+    // --- Hide the original "Compact Mode" button ---
+    if (compactModeButton) {
+      compactModeButton.style.display = 'none';
+    }
+
+    // --- Prevent the reload button from overflowing ---
+    if (reloadButtonContainer) {
+      reloadButtonContainer.setAttribute('overflows', 'false');
+    }
+    
+    // --- Add the smart click logic to the PanelUI button ---
+    if (panelButton) {
+      // Check if listeners are already attached to prevent duplication.
+      if (panelButton.getAttribute('data-custom-listeners-lr') === 'true') {
+        return;
+      }
+      panelButton.setAttribute('data-custom-listeners-lr', 'true');
+
+      // --- Handle Left-Click using 'mousedown' to prevent the menu from opening ---
+      panelButton.addEventListener('mousedown', (event) => {
+        // A standard left-click is event.button === 0
+        if (event.button === 0) {
+          document.getElementById('cmd_toggleCompactModeIgnoreHover')?.doCommand();
+          // This is the key: prevent the default action of mousedown.
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      }, true);
+
+      // --- Handle Right-Click ---
+      panelButton.addEventListener('contextmenu', (event) => {
+        // Manually show the main application panel.
+        PanelUI.show();
+        // Prevent the default browser right-click menu.
+        event.preventDefault();
+        event.stopPropagation();
+      }, true);
+    }
+  }
+
+  // --- The Smart Fix: A MutationObserver ---
+  // This observer waits for the UI to be built instead of guessing with a timer.
+  // It watches for elements to be added to the page.
+  const observer = new MutationObserver((mutations, obs) => {
+    // We check if the key buttons we need to modify have appeared yet.
+    const panelButton = document.getElementById('PanelUI-menu-button');
+    const reloadButtonContainer = document.getElementById('stop-reload-button');
+
+    // If both buttons now exist in the document...
+    if (panelButton && reloadButtonContainer) {
+      // ...run our main setup function to apply all the changes.
+      setupCombinedButton();
+      // ...and then disconnect the observer. Its job is done, and this saves resources.
+      obs.disconnect();
+    }
+  });
+
+  // Start the observer, telling it to watch the entire document ('documentElement')
+  // for any changes to its direct children ('childList') or any of their children ('subtree').
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  });
+
+})();
+
+
+
+
 
