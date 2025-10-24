@@ -169,7 +169,7 @@
     "version": "2.4",
     "description": "Improve the context menu by adding icons, fold menu items and more.",
     "readme": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/README.md",
-    "stars": 32,
+    "stars": 33,
     "fork": [
       "zen",
       "firefox"
@@ -194,7 +194,7 @@
     "version": "2.4.3",
     "description": "A minimal, squared-off theme for Zen Browser",
     "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
-    "stars": 26,
+    "stars": 27,
     "fork": [
       "zen"
     ]
@@ -265,7 +265,7 @@
     "version": "2.0.0",
     "description": "There will be no gaps in the sides to have a sleek look (Still for single toolbar)",
     "readme": "https://raw.githubusercontent.com/Comp-Tech-Guy/No-Gaps/refs/heads/main/README.md",
-    "stars": 7,
+    "stars": 8,
     "fork": [
       "zen"
     ]
