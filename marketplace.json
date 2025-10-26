@@ -6,7 +6,7 @@
     "version": "3.3.2",
     "description": "A beautiful theme made for Zen Browser :))",
     "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
-    "stars": 1134,
+    "stars": 1135,
     "fork": [
       "zen"
     ]
@@ -276,7 +276,7 @@
     "version": "1.0.0",
     "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
-    "stars": 7,
+    "stars": 8,
     "fork": [
       "zen"
     ]
