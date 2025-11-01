@@ -241,7 +241,7 @@
     "version": "1.0.0s",
     "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
-    "stars": 10,
+    "stars": 11,
     "fork": [
       "zen"
     ]
