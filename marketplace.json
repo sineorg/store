@@ -234,18 +234,6 @@
       "zen"
     ]
   },
-  "zen-tidy-tabs": {
-    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
-    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
-    "name": "Zen Tidy Tabs",
-    "version": "1.0.0s",
-    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
-    "stars": 11,
-    "fork": [
-      "zen"
-    ]
-  },
   "No-Gaps": {
     "homepage": "Comp-Tech-Guy/No-Gaps",
     "image": "https://github.com/Comp-Tech-Guy/No-Gaps/blob/main/images/CompactMode.png?raw=true",
@@ -410,6 +398,18 @@
     "fork": [
       "zen",
       "firefox"
+    ]
+  },
+  "zen-tidy-tabs": {
+    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
+    "name": "Zen Tidy Tabs",
+    "version": "1.0.0s",
+    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
     ]
   },
   "IconTweaker": {
