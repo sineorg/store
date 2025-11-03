@@ -59,6 +59,21 @@
       "zen"
     ]
   },
+  "zaps-cool-photon-theme": {
+    "homepage": "zapSNH/zapsCoolPhotonTheme",
+    "image": "https://i.imgur.com/FyzTFKg.png",
+    "name": "zap's cool photon theme",
+    "version": "143.3",
+    "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
+    "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
+    "stars": 118,
+    "fork": [
+      "firefox",
+      "waterfox",
+      "floorp",
+      "mullvad"
+    ]
+  },
   "Neo-Zen": {
     "homepage": "JustVibingWhileCoding/Neo-Zen",
     "image": "https://github.com/user-attachments/assets/c37e9f4e-1ab1-43ec-945e-2be1592351a4",
@@ -167,6 +182,18 @@
     "version": "1.0.2",
     "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
     "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
+    "stars": 27,
+    "fork": [
+      "zen"
+    ]
+  },
+  "wireframe-2.0": {
+    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
+    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
+    "name": "Wireframe 2.0",
+    "version": "2.5.4",
+    "description": "A minimal, squared-off theme for Zen Browser",
+    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
     "stars": 27,
     "fork": [
       "zen"
@@ -383,33 +410,6 @@
     "fork": [
       "zen",
       "firefox"
-    ]
-  },
-  "zaps-cool-photon-theme": {
-    "homepage": "zapSNH/zapsCoolPhotonTheme",
-    "image": "https://i.imgur.com/FyzTFKg.png",
-    "name": "zap's cool photon theme",
-    "version": "143.3",
-    "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
-    "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
-    "stars": 0,
-    "fork": [
-      "firefox",
-      "waterfox",
-      "floorp",
-      "mullvad"
-    ]
-  },
-  "wireframe-2.0": {
-    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
-    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
-    "name": "Wireframe 2.0",
-    "version": "2.5.4",
-    "description": "A minimal, squared-off theme for Zen Browser",
-    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen"
     ]
   },
   "IconTweaker": {
