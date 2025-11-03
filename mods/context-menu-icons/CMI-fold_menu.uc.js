@@ -208,20 +208,30 @@
 
 // Obtain the status of the theme
 (() => {
-  let timeoutId;
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  let timeoutId = null;
+  let currentIsDark = mediaQuery.matches;
 
-  const updateTheme = () => {
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const apply = (isDark) => {
+    if (isDark === currentIsDark) return; // Skip if no change 
+    currentIsDark = isDark;
     document.documentElement.setAttribute('zen-theme', isDark ? 'dark' : 'light');
   };
 
-  const debouncedUpdate = () => {
+  const debouncedHandler = () => {
     clearTimeout(timeoutId);
-    timeoutId = setTimeout(updateTheme, 150); // Debounce for 150ms
+    timeoutId = setTimeout(() => apply(mediaQuery.matches), 150);
   };
 
-  updateTheme();
+  apply(mediaQuery.matches);
+  mediaQuery.addEventListener('change', debouncedHandler);
 
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-  mediaQuery.addEventListener('change', debouncedUpdate);
+  // Auto clean
+  const cleanup = () => {
+    mediaQuery.removeEventListener('change', debouncedHandler);
+    window.removeEventListener('focus', focusHandler);
+    clearTimeout(timeoutId);
+  };
+  window.addEventListener('pagehide', cleanup, { once: true });
 })();
+
