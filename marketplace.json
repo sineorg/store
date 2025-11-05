@@ -6,7 +6,7 @@
     "version": "3.3.3",
     "description": "A beautiful theme made for Zen Browser :))",
     "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
-    "stars": 1168,
+    "stars": 1169,
     "fork": [
       "zen"
     ]
@@ -54,7 +54,7 @@
     "version": "5.1.0",
     "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
-    "stars": 139,
+    "stars": 138,
     "fork": [
       "zen"
     ]
@@ -166,7 +166,7 @@
     "homepage": "Starry-AXQG/Context-Menu-Icons",
     "image": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/.asset/Demo%20Image.jpg",
     "name": "Context Menu Icons",
-    "version": "2.4.3",
+    "version": "2.4.3.1",
     "description": "Improve the context menu by adding icons, fold menu items and more.",
     "readme": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/README.md",
     "stars": 35,
