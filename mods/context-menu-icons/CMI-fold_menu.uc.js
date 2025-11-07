@@ -206,22 +206,101 @@
 
 })();
 
-// Obtain the status of the theme
+// Listen to system color scheme changes with debounce and automatic cleanup
 (() => {
-  let timeoutId;
+  // Prevent multiple managers from being registered in SPA environments
+  if (window.__zenThemeManagerRegistered) return;
+  window.__zenThemeManagerRegistered = true;
 
-  const updateTheme = () => {
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.setAttribute('zen-theme', isDark ? 'dark' : 'light');
-  };
+  const MQ = '(prefers-color-scheme: dark)';
+  let mediaQuery = null;
+  let timeoutId = null;
 
-  const debouncedUpdate = () => {
+  // Internal update
+  function updateThemeImmediate() {
+    if (!mediaQuery) mediaQuery = window.matchMedia(MQ);
+    document.documentElement.setAttribute('zen-theme', mediaQuery.matches ? 'dark' : 'light');
+  }
+
+  // Debounced update used for media query events
+  function debouncedUpdate() {
     clearTimeout(timeoutId);
-    timeoutId = setTimeout(updateTheme, 150); // Debounce for 150ms
+    timeoutId = setTimeout(() => {
+      updateThemeImmediate();
+    }, 150);
+  }
+
+  // Install media query listener
+  function installListener() {
+    if (!mediaQuery) mediaQuery = window.matchMedia(MQ);
+    // avoid double-binding by checking a flag
+    if (mediaQuery.__zenBound) return;
+
+    try {
+      if (typeof mediaQuery.addEventListener === 'function') {
+        mediaQuery.addEventListener('change', debouncedUpdate);
+      } else if (typeof mediaQuery.addListener === 'function') {
+        mediaQuery.addListener(debouncedUpdate);
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    mediaQuery.__zenBound = true;
+  }
+
+  // Remove media query listener
+  function removeListener() {
+    if (!mediaQuery || !mediaQuery.__zenBound) return;
+    try {
+      if (typeof mediaQuery.removeEventListener === 'function') {
+        mediaQuery.removeEventListener('change', debouncedUpdate);
+      } else if (typeof mediaQuery.removeListener === 'function') {
+        mediaQuery.removeListener(debouncedUpdate);
+      }
+    } catch (e) {
+      // ignore
+    }
+    mediaQuery.__zenBound = false;
+    clearTimeout(timeoutId);
+  }
+
+  // Cleanup that removes listeners but keeps manager registered
+  function cleanup() {
+    removeListener();
+  }
+
+  // Visibility handler: uninstall when hidden, reinstall + immediate check when visible
+  function visibilityHandler() {
+    try {
+      if (document.visibilityState === 'hidden') {
+        removeListener();
+      } else if (document.visibilityState === 'visible') {
+        // reinstall listener and force immediate sync to catch missed changes
+        installListener();
+        updateThemeImmediate();
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  // Ensure listeners for visibility and unload are present once
+  window.addEventListener('beforeunload', cleanup);
+  document.addEventListener('visibilitychange', visibilityHandler);
+
+  // Expose manual controls for SPA lifecycle
+  window.__installZenTheme = function () {
+    installListener();
+    updateThemeImmediate();
+  };
+  window.__cleanupZenTheme = function () {
+    cleanup();
   };
 
-  updateTheme();
-
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-  mediaQuery.addEventListener('change', debouncedUpdate);
+  // Initial behavior: if visible -> install; if hidden -> don't install (will install on visible)
+  if (document.visibilityState === 'visible') {
+    installListener();
+    updateThemeImmediate();
+  }
 })();
