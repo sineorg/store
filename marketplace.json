@@ -169,7 +169,7 @@
     "version": "2.4.3.1",
     "description": "Improve the context menu by adding icons, fold menu items and more.",
     "readme": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/README.md",
-    "stars": 35,
+    "stars": 36,
     "fork": [
       "zen",
       "firefox"
