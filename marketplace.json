@@ -202,18 +202,6 @@
       "zen"
     ]
   },
-  "quick-tabs": {
-    "homepage": "Darsh-A/Quick-Tabs",
-    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
-    "name": "Quick Tabs",
-    "version": "1.1.0",
-    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
-    "stars": 25,
-    "fork": [
-      "zen"
-    ]
-  },
   "zen-tidy-downloads": {
     "homepage": "Vertex-Mods/Zen-Tidy-Downloads",
     "image": "https://github.com/Vertex-Mods/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
@@ -268,17 +256,6 @@
     "version": "2.0.2",
     "description": "A sleek animated loading bar that appears at the top of the page during loading, similar to Deta Surf browser. Features customizable colors, gradient effects, blur animation, adjustable thickness, and optional box shadows. Integrates with Zen Browser's theme colors or use custom colors and width.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-deta-loading-bar/refs/heads/main/README.md",
-    "stars": 8,
-    "fork": [
-      "zen"
-    ]
-  },
-  "reopen-closed-tabs": {
-    "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
-    "name": "Reopen Closed Tabs Menu",
-    "version": "1.0.0",
-    "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
     "stars": 8,
     "fork": [
       "zen"
@@ -413,6 +390,29 @@
     "fork": [
       "zen",
       "firefox"
+    ]
+  },
+  "quick-tabs": {
+    "homepage": "Darsh-A/Quick-Tabs",
+    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
+    "name": "Quick Tabs",
+    "version": "1.1.0",
+    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "reopen-closed-tabs": {
+    "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
+    "name": "Reopen Closed Tabs Menu",
+    "version": "1.0.0",
+    "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
+    "stars": 0,
+    "fork": [
+      "zen"
     ]
   },
   "IconTweaker": {
