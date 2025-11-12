@@ -178,18 +178,6 @@
       "firefox"
     ]
   },
-  "vizen-floaty-ui": {
-    "homepage": "moktavizen/floaty-ui",
-    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
-    "name": "Floaty UI",
-    "version": "1.0.2",
-    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
-    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
-    "stars": 27,
-    "fork": [
-      "zen"
-    ]
-  },
   "wireframe-2.0": {
     "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
     "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
@@ -198,6 +186,18 @@
     "description": "A minimal theme for Zen. Unconventional by design.",
     "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
     "stars": 27,
+    "fork": [
+      "zen"
+    ]
+  },
+  "vizen-floaty-ui": {
+    "homepage": "moktavizen/floaty-ui",
+    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
+    "name": "Floaty UI",
+    "version": "1.0.2",
+    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
+    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
+    "stars": 26,
     "fork": [
       "zen"
     ]
