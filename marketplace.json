@@ -6,7 +6,7 @@
     "version": "3.3.3",
     "description": "A beautiful theme made for Zen Browser :))",
     "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
-    "stars": 1178,
+    "stars": 1179,
     "fork": [
       "zen"
     ]
@@ -84,7 +84,7 @@
     "version": "2.0.0",
     "description": "A sleek, futuristic theme for Zen Browser that blends modern design with mindful simplicity",
     "readme": "https://raw.githubusercontent.com/JustVibingWhileCoding/Neo-Zen/main/README.md",
-    "stars": 63,
+    "stars": 64,
     "fork": [
       "zen"
     ]
@@ -393,7 +393,7 @@
     "homepage": "rasyidrafi/zen-tidy-popup",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "name": "Tidy Popup & Extension",
-    "version": "2.9.0",
+    "version": "2.9.1",
     "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
     "stars": 2,
