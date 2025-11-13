@@ -5134,7 +5134,7 @@ const urlbarAI = {
         gURLBar.removeAttribute("is-ai-thinking");
         gURLBar.inputField.setAttribute("placeholder", this._originalPlaceholder);
         this.toggleAIMode(false, true);
-        urlbarLLM.clearData();
+        urlBarLLM.clearData();
       });
     } else {
       this.toggleAIMode(false, true);
