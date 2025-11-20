@@ -1,16 +1,4 @@
 {
-  "Nebula": {
-    "homepage": "CosmoCreeper/Nubulu",
-    "image": "https://i.ibb.co/Lqk4krw/Screenshot-2025-09-03-232353.png",
-    "name": "Nebula",
-    "version": "3.3.3",
-    "description": "A beautiful theme made for Zen Browser :))",
-    "readme": "https://raw.githubusercontent.com/CosmoCreeper/Nubulu/main/README.md",
-    "stars": 1188,
-    "fork": [
-      "zen"
-    ]
-  },
   "natsumi-browser": {
     "homepage": "greeeen-dev/natsumi-browser",
     "image": "https://github.com/greeeen-dev/natsumi-browser/raw/dev/images/main-backgroundless.png",
@@ -375,6 +363,18 @@
     "version": "1.0.6",
     "description": "A Zen Browser mod that enhances the New Tab button experience",
     "stars": 3
+  },
+  "Nebula": {
+    "homepage": "CosmoCreeper/Nubulu",
+    "image": "https://i.ibb.co/Lqk4krw/Screenshot-2025-09-03-232353.png",
+    "name": "Nebula",
+    "version": "3.3.3",
+    "description": "A beautiful theme made for Zen Browser :))",
+    "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
+    "stars": 2,
+    "fork": [
+      "zen"
+    ]
   },
   "e9dae25b-2ddd-4245-8581-a6dcf6d35b82": {
     "homepage": "rasyidrafi/zen-custom-urlbar",
