@@ -6,7 +6,7 @@
     "version": "5.7.1",
     "description": "A skin for Firefox and its forks that makes things flow.",
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
-    "stars": 491,
+    "stars": 492,
     "fork": [
       "floorp",
       "firefox",
@@ -21,7 +21,7 @@
     "version": "3.2.1b",
     "description": "Tab Groups for Zen Browser",
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
-    "stars": 364,
+    "stars": 363,
     "fork": [
       "zen"
     ]
