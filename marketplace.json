@@ -202,12 +202,36 @@
       "zen"
     ]
   },
+  "zen-tidy-downloads": {
+    "homepage": "Vertex-Mods/Zen-Tidy-Downloads",
+    "image": "https://github.com/Vertex-Mods/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
+    "name": "Tidy Downloads",
+    "version": "2.0.0",
+    "description": "Clean up your downloads with AI",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/refs/heads/main/README.md",
+    "stars": 15,
+    "fork": [
+      "zen"
+    ]
+  },
   "customize-collapsed-sidebar": {
     "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
     "name": "Customize Collapsed Sidebar",
     "version": "1.0.5",
     "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
     "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
+    "stars": 12,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-tidy-tabs": {
+    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
+    "name": "Zen Tidy Tabs",
+    "version": "1.0.0s",
+    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
     "stars": 12,
     "fork": [
       "zen"
@@ -389,30 +413,6 @@
     "fork": [
       "zen",
       "firefox"
-    ]
-  },
-  "zen-tidy-downloads": {
-    "homepage": "Vertex-Mods/Zen-Tidy-Downloads",
-    "image": "https://github.com/Vertex-Mods/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
-    "name": "Tidy Downloads",
-    "version": "2.0.0",
-    "description": "Clean up your downloads with AI",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/refs/heads/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-tidy-tabs": {
-    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
-    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
-    "name": "Zen Tidy Tabs",
-    "version": "1.0.0s",
-    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen"
     ]
   },
   "IconTweaker": {
