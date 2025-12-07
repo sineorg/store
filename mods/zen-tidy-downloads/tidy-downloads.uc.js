@@ -128,6 +128,11 @@
     // AI Process Management
     const activeAIProcesses = new Map(); // downloadKey -> { abortController, processState, startTime }
     
+    // AI Rename Queue System - proper FIFO queueing for multiple downloads
+    const aiRenameQueue = []; // Array of { downloadKey, download, originalFilename, queuedAt }
+    let isProcessingAIQueue = false; // Flag to prevent concurrent queue processing
+    let currentlyProcessingKey = null; // Track which download is currently being processed
+    
     // CSS availability flag
     let cssStylesAvailable = false;
 
@@ -349,7 +354,6 @@
         
         const testContainer = document.createElement('div');
         testContainer.id = 'userchrome-download-cards-container';
-        testContainer.style.position = 'absolute';
         testContainer.style.left = '-9999px';
         testContainer.style.top = '-9999px';
         testContainer.style.visibility = 'hidden';
@@ -389,8 +393,8 @@
                                  tooltipStyle.borderRadius === '10px' &&
                                  tooltipStyle.zIndex === '51';
         
-        const containerHasStyling = containerStyle.position === 'fixed' &&
-                                   containerStyle.zIndex === '50' &&
+        const containerHasStyling = containerStyle.position === 'absolute' &&
+                                   (containerStyle.zIndex === '4' || containerStyle.zIndex === '50') &&
                                    containerStyle.pointerEvents === 'none' &&
                                    containerStyle.display === 'flex' && 
                                    containerStyle.flexDirection === 'column';
@@ -660,11 +664,59 @@
           downloadCardsContainer.style.opacity = "0";
           downloadCardsContainer.style.visibility = "hidden";
           
-          document.body.appendChild(downloadCardsContainer);
+          // Insert after media controls toolbar (same approach as zen-stuff pile)
+          const mediaControlsToolbar = document.getElementById('zen-media-controls-toolbar');
+          const zenMainAppWrapper = document.getElementById('zen-main-app-wrapper');
+          
+          let parentContainer = null;
+          if (mediaControlsToolbar && mediaControlsToolbar.parentNode) {
+            // Primary: insert after media controls toolbar (as sibling) - same as zen-stuff
+            parentContainer = mediaControlsToolbar.parentNode;
+            parentContainer.insertBefore(downloadCardsContainer, mediaControlsToolbar.nextSibling);
+            debugLog("Inserted download cards container after zen-media-controls-toolbar");
+          } else if (zenMainAppWrapper) {
+            // Fallback: insert into zen-main-app-wrapper
+            parentContainer = zenMainAppWrapper;
+            zenMainAppWrapper.appendChild(downloadCardsContainer);
+            debugLog("Inserted download cards container into zen-main-app-wrapper (fallback)");
+          } else {
+            // Final fallback: append to document.body
+            parentContainer = document.body;
+            document.body.appendChild(downloadCardsContainer);
+            debugLog("Inserted download cards container into document.body (final fallback)");
+          }
+          
+          // Ensure parent container has position: relative for absolute positioning
+          if (parentContainer && parentContainer !== document.body) {
+            const parentStyle = window.getComputedStyle(parentContainer);
+            if (parentStyle.position === 'static') {
+              parentContainer.style.position = 'relative';
+              debugLog("Set parent container position to relative for absolute positioning");
+            }
+          }
+          
+          // Apply inline styles matching zen-stuff positioning (bottom: 35px, z-index: 4)
+          downloadCardsContainer.style.cssText = `
+            position: absolute;
+            left: 5px;
+            right: 5px;
+            bottom: 35px;
+            z-index: 4;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            pointer-events: none;
+            box-sizing: border-box;
+          `;
+          
+          // Set up compact mode observer
+          setupCompactModeObserver();
 
-          // Create the single master tooltip element (fixed position at the top of the container)
+          // Create the single master tooltip element (relative position for toolbar integration)
           masterTooltipDOMElement = document.createElement("div");
           masterTooltipDOMElement.className = "details-tooltip master-tooltip";
+          // Ensure tooltip uses relative positioning (not fixed) for proper toolbar integration
+          masterTooltipDOMElement.style.position = 'relative';
           // Most styles are now in CSS file, only dynamic styles remain inline
 
           masterTooltipDOMElement.innerHTML = `
@@ -1215,11 +1267,12 @@
       if (!orderedPodKeys.includes(key)) {
         orderedPodKeys.push(key);
         
-        // Show the container when we add the first pod
-        if (orderedPodKeys.length === 1 && downloadCardsContainer) {
-          downloadCardsContainer.style.display = "flex";
-          downloadCardsContainer.style.opacity = "1";
-          downloadCardsContainer.style.visibility = "visible";
+        // Show the container when we add the first pod (respects compact mode)
+        if (orderedPodKeys.length === 1) {
+          updateDownloadCardsVisibility();
+          if (downloadCardsContainer && downloadCardsContainer.style.display !== 'none') {
+            hideMediaControlsToolbar(); // Hide media controls when showing download pods
+          }
         }
         
         // Focus behavior based on stable_focus_mode preference
@@ -1297,7 +1350,35 @@
         cardData.userCanceled = false; // Clear user-canceled flag on successful completion
         podElement.classList.add("completed"); // For potential styling
         debugLog(`[PodFUNC] Existing pod marked as complete: ${key}`);
-        // Schedule autohide after 20 seconds for completed downloads
+        
+        // Add to AI rename queue for existing completed pods
+        const aiRenamingEnabled = getPref("extensions.downloads.enable_ai_renaming", true);
+        debugLog(`[PodFUNC] Checking AI rename eligibility for ${key}:`, {
+          aiRenamingEnabled,
+          aiRenamingPossible,
+          hasPath: !!download.target?.path,
+          path: download.target?.path,
+          alreadyRenamed: renamedFiles.has(download.target?.path)
+        });
+        
+        if (aiRenamingEnabled && aiRenamingPossible && download.target?.path && 
+            !renamedFiles.has(download.target.path)) {
+          // Small delay to ensure download is fully settled before queuing
+          // Use cardData.download to ensure we have the latest download object
+          setTimeout(() => {
+            const currentCardData = activeDownloadCards.get(key);
+            if (currentCardData && currentCardData.download) {
+              debugLog(`[PodFUNC] Adding ${key} to AI rename queue after delay`);
+              addToAIRenameQueue(key, currentCardData.download, currentCardData.originalFilename);
+            } else {
+              debugLog(`[PodFUNC] Cannot add ${key} to queue - cardData missing after delay`);
+            }
+          }, 1000);
+        } else {
+          debugLog(`[PodFUNC] Not adding ${key} to AI rename queue - conditions not met`);
+        }
+        
+        // Schedule autohide after configured delay for completed downloads
         scheduleCardRemoval(key);
       }
     }
@@ -1325,8 +1406,36 @@
       cardData.userCanceled = false; // Clear user-canceled flag on successful completion
       podElement.classList.add("completed"); // For potential styling
       debugLog(`[PodFUNC] Download marked as complete: ${key}`);
-      // AI renaming logic will be triggered by updateUIForFocusedDownload if this is the focused item
-      // Schedule autohide after 20 seconds for completed downloads
+      
+      // Add to AI rename queue for ALL completed downloads (not just focused)
+      // This ensures proper FIFO processing regardless of focus state
+      const aiRenamingEnabled = getPref("extensions.downloads.enable_ai_renaming", true);
+      debugLog(`[PodFUNC] Checking AI rename eligibility for ${key} (new pod):`, {
+        aiRenamingEnabled,
+        aiRenamingPossible,
+        hasPath: !!download.target?.path,
+        path: download.target?.path,
+        alreadyRenamed: renamedFiles.has(download.target?.path)
+      });
+      
+      if (aiRenamingEnabled && aiRenamingPossible && download.target?.path && 
+          !renamedFiles.has(download.target.path)) {
+        // Small delay to ensure download is fully settled before queuing
+        // Use cardData.download to ensure we have the latest download object
+        setTimeout(() => {
+          const currentCardData = activeDownloadCards.get(key);
+          if (currentCardData && currentCardData.download) {
+            debugLog(`[PodFUNC] Adding ${key} to AI rename queue after delay (new pod)`);
+            addToAIRenameQueue(key, currentCardData.download, currentCardData.originalFilename);
+          } else {
+            debugLog(`[PodFUNC] Cannot add ${key} to queue - cardData missing after delay (new pod)`);
+          }
+        }, 1000);
+      } else {
+        debugLog(`[PodFUNC] Not adding ${key} to AI rename queue - conditions not met (new pod)`);
+      }
+      
+      // Schedule autohide after configured delay for completed downloads
       scheduleCardRemoval(key);
     }
     if (download.error) {
@@ -1370,6 +1479,10 @@
       masterTooltipDOMElement.style.opacity = "0";
       masterTooltipDOMElement.style.transform = "scaleY(0.8) translateY(10px)";
       masterTooltipDOMElement.style.pointerEvents = "none";
+      // Show media controls if no pods are visible
+      if (orderedPodKeys.length === 0) {
+        showMediaControlsToolbar();
+      }
     } else {
       // cardDataToFocus and podElement are valid, proceed with UI updates for tooltip and AI.
       masterTooltipDOMElement.style.display = "flex"; 
@@ -1401,6 +1514,33 @@
           cardDataToFocus.userCanceled = false;
           podElement.classList.add("completed");
           debugLog(`[UIUPDATE] Download marked as complete during UI update: ${focusedDownloadKey}`);
+          
+          // Add to AI rename queue when completion is detected in UI update
+          const aiRenamingEnabled = getPref("extensions.downloads.enable_ai_renaming", true);
+          debugLog(`[UIUPDATE] Checking AI rename eligibility for ${focusedDownloadKey}:`, {
+            aiRenamingEnabled,
+            aiRenamingPossible,
+            hasPath: !!download.target?.path,
+            path: download.target?.path,
+            alreadyRenamed: renamedFiles.has(download.target?.path)
+          });
+          
+          if (aiRenamingEnabled && aiRenamingPossible && download.target?.path && 
+              !renamedFiles.has(download.target.path)) {
+            // Small delay to ensure download is fully settled before queuing
+            setTimeout(() => {
+              const currentCardData = activeDownloadCards.get(focusedDownloadKey);
+              if (currentCardData && currentCardData.download) {
+                debugLog(`[UIUPDATE] Adding ${focusedDownloadKey} to AI rename queue after delay`);
+                addToAIRenameQueue(focusedDownloadKey, currentCardData.download, currentCardData.originalFilename);
+              } else {
+                debugLog(`[UIUPDATE] Cannot add ${focusedDownloadKey} to queue - cardData missing after delay`);
+              }
+            }, 1000);
+          } else {
+            debugLog(`[UIUPDATE] Not adding ${focusedDownloadKey} to AI rename queue - conditions not met`);
+          }
+          
           scheduleCardRemoval(focusedDownloadKey);
           
           // Set image preview for completed downloads
@@ -1541,56 +1681,19 @@
             }
         }
         
-        if (currentZenSidebarWidth && currentZenSidebarWidth !== "0px" && !isNaN(parseFloat(currentZenSidebarWidth))) {
-            masterTooltipDOMElement.style.width = `calc(${currentZenSidebarWidth} - 20px)`;
-        } else {
-            masterTooltipDOMElement.style.width = '350px'; // Default
-          }
+        // Use 100% width - container already has padding
+        masterTooltipDOMElement.style.width = '100%';
 
-        // 5. Handle AI Renaming for the focused item if it just completed
-        const aiRenamingEnabled = getPref("extensions.downloads.enable_ai_renaming", true);
-        debugLog(`[AI Rename Check] Conditions for ${keyToFocus}: aiRenamingEnabled=${aiRenamingEnabled}, aiRenamingPossible=${aiRenamingPossible}, succeeded=${download.succeeded}, complete=${cardDataToFocus.complete}, hasPath=${!!download.target?.path}, notRenamed=${!renamedFiles.has(download.target?.path)}, notInitiated=${!podElement.classList.contains('renaming-initiated')}, noActiveAI=${!activeAIProcesses.has(keyToFocus)}`);
+        // 5. Handle AI Renaming UI status - queue addition is handled in createOrUpdatePodElement
+        //    Here we just update the UI to reflect queue status
+        const isInQueue = aiRenameQueue.some(item => item.downloadKey === keyToFocus);
+        const isCurrentlyProcessing = currentlyProcessingKey === keyToFocus;
         
-        if (aiRenamingEnabled && aiRenamingPossible && download.succeeded && cardDataToFocus.complete &&
-            download.target?.path && !renamedFiles.has(download.target.path) && 
-            !podElement.classList.contains('renaming-initiated') && !activeAIProcesses.has(keyToFocus)) {
-          
-          podElement.classList.add('renaming-initiated'); 
-          debugLog(`[AI Rename] Triggering for focused item: ${focusedDownloadKey}`);
-            
-            // Show Analyzing / Renaming Status Immediately on Master Tooltip if this is focused
-            if (focusedDownloadKey === keyToFocus && masterTooltipDOMElement) {
-                const status = masterTooltipDOMElement.querySelector(".card-status");
-                const undoBtn = masterTooltipDOMElement.querySelector(".card-undo-button");
-                if (status) status.textContent = "Analyzing for rename...";
-                if (undoBtn) undoBtn.style.display = "none"; // Hide undo while analyzing
-            }
-            
-            setTimeout(() => {
-            processDownloadForAIRenaming(download, cardDataToFocus.originalFilename, focusedDownloadKey)
-              .then(success => {
-                  if (success && focusedDownloadKey === download.target.path && masterTooltipDOMElement) { // keyToFocus might be outdated if path changed
-                      const undoBtn = masterTooltipDOMElement.querySelector(".card-undo-button");
-                      if (undoBtn) undoBtn.style.display = "inline-flex"; // Show after successful rename
-                  }
-              })
-              .catch((e) => {
-                if (e.name === 'AbortError') {
-                  debugLog("AI renaming was canceled for focused download:", keyToFocus);
-                } else {
-                  console.error("Error in AI renaming for focused download:", e);
-                }
-                podElement.classList.remove('renaming-initiated'); 
-                // Restore status if needed
-                if (focusedDownloadKey === keyToFocus && masterTooltipDOMElement) {
-                    const status = masterTooltipDOMElement.querySelector(".card-status");
-                    if (status && (status.textContent === "Analyzing for rename..." || status.textContent.includes("Analyzing"))) {
-                         // Re-run updateUI to restore correct status based on download object
-                         updateUIForFocusedDownload(keyToFocus, false);
-                    }
-                }
-              });
-          }, 1500); 
+        debugLog(`[AI Rename Status] ${keyToFocus}: inQueue=${isInQueue}, processing=${isCurrentlyProcessing}, succeeded=${download.succeeded}, hasAiName=${!!download.aiName}`);
+        
+        // Update UI to show queue status
+        if (isInQueue || isCurrentlyProcessing) {
+          updateQueueStatusInUI(keyToFocus);
         }
       } // End of a valid 'download' object check
     } // End of valid 'cardDataToFocus' and 'podElement' check
@@ -1653,16 +1756,16 @@
                 if (masterTooltipDOMElement.style.opacity === "0") masterTooltipDOMElement.style.display = "none";
             }, 300);
         }
+        showMediaControlsToolbar(); // Show media controls when no pods exist
         debugLog(`[LayoutManager] Exiting: No OrderedPodKeys.`);
         podsRowContainerElement.style.gap = '0px'; // Reset gap just in case
         return;
     }
 
-    // Show the container when we have pods
-    if (downloadCardsContainer) {
-        downloadCardsContainer.style.display = "flex";
-        downloadCardsContainer.style.opacity = "1";
-        downloadCardsContainer.style.visibility = "visible";
+    // Show the container when we have pods (respects compact mode via updateDownloadCardsVisibility)
+    updateDownloadCardsVisibility();
+    if (downloadCardsContainer && downloadCardsContainer.style.display !== 'none') {
+        hideMediaControlsToolbar(); // Hide media controls when showing download pods
     }
 
     if (tooltipWidth === 0 && orderedPodKeys.length > 0) {
@@ -1846,6 +1949,7 @@
                     masterTooltipDOMElement.style.opacity = "1";
                     masterTooltipDOMElement.style.transform = "scaleY(1) translateY(0)";
                     masterTooltipDOMElement.style.pointerEvents = "auto"; // Enable interactions when visible
+                    hideMediaControlsToolbar(); // Hide media controls when tooltip is shown
                 }, 100); 
             }
         } else {
@@ -2112,6 +2216,7 @@
           downloadCardsContainer.style.display = "none";
           downloadCardsContainer.style.opacity = "0";
           downloadCardsContainer.style.visibility = "hidden";
+          showMediaControlsToolbar(); // Show media controls when all pods are dismissed
         }
 
       }, 300); // Corresponds to pod animation duration
@@ -2618,7 +2723,8 @@
         });
     }
 
-    renamedFiles.add(downloadPath);
+    // Note: We no longer add to renamedFiles here - we add ONLY after successful rename
+    // The queue system prevents duplicate processing
 
     try {
       // Update process state
@@ -2627,7 +2733,6 @@
       // Check for abort signal
       if (abortController.signal.aborted) {
         debugLog(`[AI Process] Process aborted during setup: ${key}`);
-        renamedFiles.delete(downloadPath); // Allow retry
         activeAIProcesses.delete(key);
         throw new DOMException('AI process was aborted', 'AbortError');
       }
@@ -2765,6 +2870,12 @@ Respond with ONLY the filename.`;
       if (success) {
         const newPath = download.target.path; // This is now the new path after rename
         download.aiName = cleanName; // Set the aiName property on the download object
+        
+        // Mark BOTH old and new paths as renamed to prevent re-processing
+        renamedFiles.add(downloadPath); // Original path
+        renamedFiles.add(newPath);      // New path after rename
+        debugLog(`[AI Rename] Added paths to renamedFiles: ${downloadPath} and ${newPath}`);
+        
         // cardData.originalFilename = cleanName; // NO! Keep cardData.originalFilename as the name before this specific AI op.
                                             // The titleEl will pick up download.aiName.
                                             // The originalFilenameEl will use the trueOriginalFilename captured above.
@@ -2962,6 +3073,32 @@ Respond with ONLY the filename.`;
     const sizes = ["B", "KB", "MB", "GB", "TB"];
     const i = Math.floor(Math.log(b) / Math.log(1024));
     return `${parseFloat((b / Math.pow(1024, i)).toFixed(d))} ${sizes[i]}`;
+  }
+
+  // Helper functions to hide/show media controls toolbar
+  function hideMediaControlsToolbar() {
+    const mediaControlsToolbar = document.getElementById('zen-media-controls-toolbar');
+    if (mediaControlsToolbar) {
+      mediaControlsToolbar.style.opacity = '0';
+      mediaControlsToolbar.style.pointerEvents = 'none';
+      debugLog('[MediaControls] Hid media controls toolbar');
+    }
+  }
+
+  function showMediaControlsToolbar() {
+    const mediaControlsToolbar = document.getElementById('zen-media-controls-toolbar');
+    if (mediaControlsToolbar) {
+      // Check if context menu is visible
+      const contextMenu = document.getElementById('zen-pile-pod-context-menu');
+      const isContextMenuVisible = contextMenu && typeof contextMenu.state === 'string' && contextMenu.state === 'open';
+      
+      // Only show if no download pods are visible and context menu is not visible
+      if (orderedPodKeys.length === 0 && !isContextMenuVisible) {
+        mediaControlsToolbar.style.opacity = '1';
+        mediaControlsToolbar.style.pointerEvents = 'auto';
+        debugLog('[MediaControls] Showed media controls toolbar');
+      }
+    }
   }
 
   // Mistral API function - with better error handling
@@ -3244,12 +3381,335 @@ Respond with ONLY the filename.`;
     }
   }
 
+  // === AI RENAME QUEUE SYSTEM ===
+  
+  // Add a completed download to the AI rename queue
+  function addToAIRenameQueue(downloadKey, download, originalFilename) {
+    debugLog(`[AI Queue] addToAIRenameQueue called for ${downloadKey}`, {
+      downloadKey,
+      hasDownload: !!download,
+      downloadPath: download?.target?.path,
+      originalFilename,
+      queueLength: aiRenameQueue.length,
+      isProcessing: isProcessingAIQueue,
+      currentlyProcessing: currentlyProcessingKey
+    });
+    
+    // Check if already in queue or being processed
+    if (aiRenameQueue.some(item => item.downloadKey === downloadKey)) {
+      debugLog(`[AI Queue] Download ${downloadKey} already in queue, skipping`);
+      return false;
+    }
+    
+    if (currentlyProcessingKey === downloadKey) {
+      debugLog(`[AI Queue] Download ${downloadKey} is currently being processed, skipping`);
+      return false;
+    }
+    
+    // Check if already renamed
+    if (renamedFiles.has(download.target?.path)) {
+      debugLog(`[AI Queue] Download ${downloadKey} already renamed (path: ${download.target?.path}), skipping`);
+      return false;
+    }
+    
+    if (!download || !download.target?.path) {
+      debugLog(`[AI Queue] Download ${downloadKey} missing download object or path, skipping`);
+      return false;
+    }
+    
+    const queueItem = {
+      downloadKey,
+      download,
+      originalFilename,
+      queuedAt: Date.now()
+    };
+    
+    aiRenameQueue.push(queueItem);
+    debugLog(`[AI Queue] ✅ Successfully added ${downloadKey} to queue. Queue length: ${aiRenameQueue.length}`, {
+      position: aiRenameQueue.length,
+      originalFilename,
+      path: download.target.path
+    });
+    
+    // Update UI to show queue position if this is the focused download
+    updateQueueStatusInUI(downloadKey);
+    
+    // Start processing if not already running
+    if (!isProcessingAIQueue) {
+      debugLog(`[AI Queue] Starting queue processor (was not running)`);
+      processAIRenameQueue();
+    } else {
+      debugLog(`[AI Queue] Queue processor already running, will process this item when ready`);
+    }
+    
+    return true;
+  }
+  
+  // Remove a download from the queue (e.g., when dismissed or canceled)
+  function removeFromAIRenameQueue(downloadKey) {
+    const index = aiRenameQueue.findIndex(item => item.downloadKey === downloadKey);
+    if (index !== -1) {
+      aiRenameQueue.splice(index, 1);
+      debugLog(`[AI Queue] Removed ${downloadKey} from queue. Queue length: ${aiRenameQueue.length}`);
+      return true;
+    }
+    return false;
+  }
+  
+  // Get a download's position in the queue (1-based, 0 means not in queue)
+  function getQueuePosition(downloadKey) {
+    if (currentlyProcessingKey === downloadKey) {
+      return 0; // Currently processing, not "waiting"
+    }
+    const index = aiRenameQueue.findIndex(item => item.downloadKey === downloadKey);
+    return index === -1 ? -1 : index + 1;
+  }
+  
+  // Update queue status in the tooltip UI
+  function updateQueueStatusInUI(downloadKey) {
+    if (downloadKey !== focusedDownloadKey || !masterTooltipDOMElement) return;
+    
+    const statusEl = masterTooltipDOMElement.querySelector(".card-status");
+    if (!statusEl) return;
+    
+    const position = getQueuePosition(downloadKey);
+    const cardData = activeDownloadCards.get(downloadKey);
+    
+    if (position > 0) {
+      // In queue, waiting
+      statusEl.textContent = `Waiting for AI rename (${position} in queue)...`;
+      statusEl.style.color = "#f39c12"; // Orange for waiting
+    } else if (currentlyProcessingKey === downloadKey) {
+      // Currently being processed - don't override the processing status
+      // The processDownloadForAIRenaming function handles its own status updates
+    } else if (cardData?.download?.aiName) {
+      // Already renamed
+      statusEl.textContent = "Download renamed to:";
+      statusEl.style.color = "#a0a0a0";
+    } else if (cardData?.download?.succeeded) {
+      // Completed but not in queue (either not eligible or already processed)
+      statusEl.textContent = "Download completed";
+      statusEl.style.color = "#1dd1a1";
+    }
+  }
+  
+  // Process the AI rename queue - one at a time, FIFO order
+  async function processAIRenameQueue() {
+    debugLog(`[AI Queue] processAIRenameQueue called`, {
+      isProcessingAIQueue,
+      queueLength: aiRenameQueue.length,
+      currentlyProcessing: currentlyProcessingKey
+    });
+    
+    if (isProcessingAIQueue) {
+      debugLog("[AI Queue] Queue processing already in progress, returning");
+      return;
+    }
+    
+    if (aiRenameQueue.length === 0) {
+      debugLog("[AI Queue] Queue is empty, nothing to process");
+      return;
+    }
+    
+    isProcessingAIQueue = true;
+    debugLog(`[AI Queue] ✅ Starting queue processing. Queue length: ${aiRenameQueue.length}`, {
+      queueItems: aiRenameQueue.map(item => ({
+        key: item.downloadKey,
+        path: item.download?.target?.path
+      }))
+    });
+    
+    try {
+      while (aiRenameQueue.length > 0) {
+      const queueItem = aiRenameQueue.shift(); // Get first item (FIFO)
+      const { downloadKey, download, originalFilename } = queueItem;
+      
+      currentlyProcessingKey = downloadKey;
+      debugLog(`[AI Queue] Processing ${downloadKey}. Remaining in queue: ${aiRenameQueue.length}`);
+      
+      // Verify the download is still valid and eligible
+      const cardData = activeDownloadCards.get(downloadKey);
+      if (!cardData || !cardData.download) {
+        debugLog(`[AI Queue] Skipping ${downloadKey} - card data no longer exists`);
+        currentlyProcessingKey = null;
+        continue;
+      }
+      
+      // Check if already renamed (path might have changed)
+      const currentPath = cardData.download.target?.path;
+      if (renamedFiles.has(currentPath)) {
+        debugLog(`[AI Queue] Skipping ${downloadKey} - already renamed`);
+        currentlyProcessingKey = null;
+        continue;
+      }
+      
+      // Check if download still succeeded (might have been retried/canceled)
+      if (!cardData.download.succeeded) {
+        debugLog(`[AI Queue] Skipping ${downloadKey} - no longer in succeeded state`);
+        currentlyProcessingKey = null;
+        continue;
+      }
+      
+      // Update UI to show "processing" for this download if it's focused
+      if (focusedDownloadKey === downloadKey && masterTooltipDOMElement) {
+        const statusEl = masterTooltipDOMElement.querySelector(".card-status");
+        if (statusEl) {
+          statusEl.textContent = "Analyzing for rename...";
+          statusEl.style.color = "#54a0ff";
+        }
+      }
+      
+      // Update queue positions for other items in queue
+      aiRenameQueue.forEach(item => updateQueueStatusInUI(item.downloadKey));
+      
+      try {
+        // Process the AI rename
+        const podElement = cardData.podElement;
+        if (podElement) {
+          podElement.classList.add('renaming-initiated');
+        }
+        
+        await processDownloadForAIRenaming(cardData.download, originalFilename, downloadKey);
+        debugLog(`[AI Queue] Successfully processed ${downloadKey}`);
+        
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          debugLog(`[AI Queue] Processing of ${downloadKey} was aborted`);
+        } else {
+          debugLog(`[AI Queue] Error processing ${downloadKey}:`, error);
+        }
+        
+        // Clean up on error
+        const cardData = activeDownloadCards.get(downloadKey);
+        if (cardData?.podElement) {
+          cardData.podElement.classList.remove('renaming-initiated', 'renaming-active');
+        }
+      }
+      
+      currentlyProcessingKey = null;
+      
+      // Small delay between processing to avoid API rate limiting
+      if (aiRenameQueue.length > 0) {
+        debugLog(`[AI Queue] Waiting before next item. Remaining: ${aiRenameQueue.length}`);
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    }
+    } catch (error) {
+      console.error("[AI Queue] Error in queue processor:", error);
+      debugLog(`[AI Queue] Queue processor error:`, error);
+    } finally {
+      isProcessingAIQueue = false;
+      currentlyProcessingKey = null;
+      debugLog("[AI Queue] Queue processing complete (flag reset)");
+    }
+  }
+
+  // Setup compact mode observer to handle visibility changes
+  function setupCompactModeObserver() {
+    const mainWindow = document.getElementById('main-window');
+    const zenMainAppWrapper = document.getElementById('zen-main-app-wrapper');
+    
+    if (!mainWindow && !zenMainAppWrapper) {
+      debugLog("[CompactModeObserver] Target elements not found, cannot set up observer");
+      return;
+    }
+    
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'attributes') {
+          const attributeName = mutation.attributeName;
+          if (attributeName === 'zen-compact-mode' || attributeName === 'zen-sidebar-expanded') {
+            debugLog(`[CompactModeObserver] ${attributeName} changed, updating download cards visibility`);
+            updateDownloadCardsVisibility();
+          }
+        }
+      }
+    });
+    
+    // Observe main-window for zen-compact-mode (if it exists)
+    if (mainWindow) {
+      observer.observe(mainWindow, {
+        attributes: true,
+        attributeFilter: ['zen-compact-mode']
+      });
+      debugLog("[CompactModeObserver] Observing main-window for zen-compact-mode");
+    }
+    
+    // Also observe documentElement for zen-compact-mode and zen-sidebar-expanded
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['zen-compact-mode', 'zen-sidebar-expanded']
+    });
+    debugLog("[CompactModeObserver] Observing documentElement for zen-compact-mode and zen-sidebar-expanded");
+    
+    debugLog("[CompactModeObserver] Set up observer for compact mode changes");
+    
+    // Initial check with a small delay to ensure DOM is ready
+    setTimeout(() => {
+      updateDownloadCardsVisibility();
+    }, 100);
+  }
+  
+  // Update download cards container visibility based on compact mode
+  function updateDownloadCardsVisibility() {
+    if (!downloadCardsContainer) return;
+    
+    // Check compact mode on documentElement (same as zen-stuff)
+    const isCompactMode = document.documentElement.getAttribute('zen-compact-mode') === 'true';
+    const isSidebarExpanded = document.documentElement.getAttribute('zen-sidebar-expanded') === 'true';
+    
+    debugLog(`[CompactModeObserver] Checking visibility: isCompactMode=${isCompactMode}, isSidebarExpanded=${isSidebarExpanded}, hasPods=${orderedPodKeys.length > 0}`);
+    
+    if (isCompactMode && !isSidebarExpanded) {
+      // In compact mode with collapsed sidebar, ALWAYS hide the download cards (like media controls)
+      debugLog("[CompactModeObserver] Compact mode with collapsed sidebar - FORCING hide of download cards");
+      downloadCardsContainer.style.display = 'none';
+      downloadCardsContainer.style.opacity = '0';
+      downloadCardsContainer.style.visibility = 'hidden';
+      downloadCardsContainer.style.pointerEvents = 'none';
+      // Also hide tooltip and pods explicitly
+      if (masterTooltipDOMElement) {
+        masterTooltipDOMElement.style.display = 'none';
+        masterTooltipDOMElement.style.opacity = '0';
+        masterTooltipDOMElement.style.visibility = 'hidden';
+        masterTooltipDOMElement.style.pointerEvents = 'none';
+      }
+      if (podsRowContainerElement) {
+        podsRowContainerElement.style.display = 'none';
+        podsRowContainerElement.style.opacity = '0';
+        podsRowContainerElement.style.visibility = 'hidden';
+        podsRowContainerElement.style.pointerEvents = 'none';
+      }
+    } else if (orderedPodKeys.length > 0) {
+      // Show if we have pods and not in collapsed compact mode
+      debugLog("[CompactModeObserver] Showing download cards (not in collapsed compact mode)");
+      downloadCardsContainer.style.display = 'flex';
+      downloadCardsContainer.style.opacity = '1';
+      downloadCardsContainer.style.visibility = 'visible';
+      downloadCardsContainer.style.pointerEvents = 'auto';
+      // Tooltip and pods visibility will be managed by their own logic
+    } else {
+      // No pods, hide container
+      debugLog("[CompactModeObserver] No pods, hiding download cards");
+      downloadCardsContainer.style.display = 'none';
+      downloadCardsContainer.style.opacity = '0';
+      downloadCardsContainer.style.visibility = 'hidden';
+      downloadCardsContainer.style.pointerEvents = 'none';
+    }
+  }
+
   // Function to cancel AI process for a specific download
   async function cancelAIProcessForDownload(downloadKey) {
+    // Also remove from queue if waiting
+    const wasInQueue = removeFromAIRenameQueue(downloadKey);
+    if (wasInQueue) {
+      debugLog(`[AI Cancel] Removed ${downloadKey} from AI rename queue`);
+    }
+    
     const aiProcess = activeAIProcesses.get(downloadKey);
     if (!aiProcess) {
       debugLog(`[AI Cancel] No active AI process found for ${downloadKey}`);
-      return false;
+      return wasInQueue; // Return true if we at least removed from queue
     }
     
     debugLog(`[AI Cancel] Canceling AI process for ${downloadKey}`, {
@@ -3388,7 +3848,7 @@ function initSidebarWidthSync() {
           debugLog('[SidebarWidthSync] #navigator-toolbox resized. Updating sidebar width.');
           updateCurrentZenSidebarWidth();
         }
-      }, 250); // 250ms debounce period
+      }, 25); // 250ms debounce period
     });
     resizeObserver.observe(navigatorToolbox);
     debugLog('[SidebarWidthSync] ResizeObserver started on #navigator-toolbox.');
@@ -3408,15 +3868,9 @@ function applyGlobalWidthToAllTooltips() {
     return;
   }
 
-  if (currentZenSidebarWidth && currentZenSidebarWidth !== "0px" && !isNaN(parseFloat(currentZenSidebarWidth))) {
-    const newWidth = `calc(${currentZenSidebarWidth} - 20px)`; 
-    masterTooltipDOMElement.style.width = newWidth;
-    debugLog(`[TooltipWidth] Applied new width to master tooltip: ${newWidth}`);
-  } else {
-    // Fallback to default width if currentZenSidebarWidth is invalid or not set
-    masterTooltipDOMElement.style.width = '350px'; // Default width
-    debugLog('[TooltipWidth] Applied default width (350px) to master tooltip as currentZenSidebarWidth is invalid or empty.');
-  }
+  // Use 100% width - container handles the padding
+  masterTooltipDOMElement.style.width = '100%';
+  debugLog('[TooltipWidth] Applied 100% width to master tooltip');
 }
 
 // --- Zen Animation Synchronization Logic ---

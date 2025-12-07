@@ -40,8 +40,9 @@
       this.downloadButton = null;
       this.pileContainer = null;
       this.dynamicSizer = null;
-      this.isGridMode = false;
+      // Removed isGridMode - always single column mode
       this.hoverTimeout = null;
+      this.mediaControlsToolbarTimeout = null;
       this.dismissedPods = new Map(); // podKey -> podData
       this.podElements = new Map(); // podKey -> DOM element
       this.pilePositions = new Map(); // podKey -> {x, y, rotation, zIndex}
@@ -402,20 +403,31 @@
     // Create the dynamic sizer element
     state.dynamicSizer = document.createElement("div");
     state.dynamicSizer.id = "zen-dismissed-pile-dynamic-sizer";
+    
+    // Check if we're in compact mode to determine positioning
+    const isCompactMode = document.documentElement.getAttribute('zen-compact-mode') === 'true';
+    const isSidebarExpanded = document.documentElement.getAttribute('zen-sidebar-expanded') === 'true';
+    
+    // Use absolute positioning when integrated into toolbar structure (like media controls)
+    // This allows it to integrate properly with compact mode
+    const positionType = (isCompactMode && !isSidebarExpanded) ? 'absolute' : 'absolute';
+    
     state.dynamicSizer.style.cssText = `
-      position: fixed;
+      position: ${positionType};
       overflow: hidden;
       height: 0px;
-      bottom: 30px;
+      bottom: 35px;
       left: 0px;
-      background: transparent;
-      mask: linear-gradient(to top, transparent 0%, black 5%, black 80%, transparent 100%);
-      -webkit-mask: linear-gradient(to top, transparent 0%, black 5%, black 85%, transparent 100%);
+      right: 0px;
+      background: var(--zen-primary-color, rgba(0, 0, 0, 0.85));
+      backdrop-filter: blur(1.5rem);
+      -webkit-backdrop-filter: blur(1.5rem);
       box-sizing: border-box;
       transition: height ${CONFIG.containerAnimationDuration}ms ease, padding-bottom ${CONFIG.containerAnimationDuration}ms ease, padding-left ${CONFIG.containerAnimationDuration}ms ease, background 0.2s ease;
       display: flex;
-      align-items: flex-end;
-      justify-content: flex-start;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
       padding-bottom: 0px;
       padding-left: 0px;
       z-index: 4;
@@ -428,128 +440,12 @@
     state.pileContainer.style.cssText = `
       position: relative;
       z-index: 1;
+      width: 100%;
+      box-sizing: border-box;
+
     `;
 
-    // Create floating downloads button
-    const downloadsButton = document.createElement("button");
-    downloadsButton.id = "zen-pile-downloads-button";
-    downloadsButton.innerHTML = "Full list";
-    downloadsButton.title = "Open Firefox Downloads";
-    downloadsButton.style.cssText = `
-      width: 50px;
-      height: 20px;
-      border: none;
-      border-radius: 4px;
-      background: var(--zen-primary-color);
-      color: light-dark(rgb(255,255,255), rgb(0,0,0));
-      font-size: 10px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s ease, opacity 0.2s ease;
-      opacity: 0;
-    `;
-
-    // Add hover effect
-    downloadsButton.addEventListener('mouseenter', () => {
-      downloadsButton.style.background = 'color-mix(in srgb, var(--zen-primary-color) 80%, transparent)';
-    });
-    downloadsButton.addEventListener('mouseleave', () => {
-      downloadsButton.style.background = 'var(--zen-primary-color)';
-    });
-
-    // Add click handler to open downloads
-    downloadsButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      try {
-        // Try to open the downloads panel
-        if (window.DownloadsPanel) {
-          window.DownloadsPanel.showDownloadsHistory();
-        } else if (window.PlacesCommandHook) {
-          window.PlacesCommandHook.showPlacesOrganizer('Downloads');
-        } else {
-          // Fallback: open downloads page
-          window.openTrustedLinkIn('about:downloads', 'tab');
-        }
-        debugLog("Opened Firefox downloads");
-      } catch (error) {
-        debugLog("Error opening downloads:", error);
-      }
-    });
-
-    // Create clear all downloads button
-    const clearAllButton = document.createElement("button");
-    clearAllButton.id = "zen-pile-clear-all-button";
-    clearAllButton.innerHTML = "Clear all";
-    clearAllButton.title = "Clear all Firefox Downloads";
-    clearAllButton.style.cssText = `
-      width: 50px;
-      height: 20px;
-      border: none;
-      border-radius: 4px;
-      background: light-dark(rgba(220, 53, 69, 1), rgb(223, 90, 104));
-      color: white;
-      font-size: 10px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s ease, opacity 0.2s ease;
-      opacity: 0;
-    `;
-
-    // Add hover effect for clear button
-    clearAllButton.addEventListener('mouseenter', () => {
-      clearAllButton.style.background = 'light-dark(rgb(223, 90, 104), rgba(220, 53, 69, 1))';
-    });
-    clearAllButton.addEventListener('mouseleave', () => {
-      clearAllButton.style.background = 'light-dark(rgba(220, 53, 69, 1), rgb(223, 90, 104))';
-    });
-
-    // Add click handler to clear all downloads
-    clearAllButton.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      try {
-        // Confirm with user before clearing
-        if (confirm("Clear all downloads from Firefox history? This action cannot be undone.")) {
-          await clearAllDownloads();
-          debugLog("Cleared all Firefox downloads");
-        }
-      } catch (error) {
-        debugLog("Error clearing downloads:", error);
-      }
-    });
-
-    // Create button container for centering
-    const buttonContainer = document.createElement("div");
-    buttonContainer.id = "zen-pile-button-container";
-    buttonContainer.style.cssText = `
-      position: absolute;
-      top: 5px;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 5px;
-      z-index: 10;
-      margin-top: 30px;
-      pointer-events: none;
-    `;
-
-    // Enable pointer events for buttons but not container
-    downloadsButton.style.pointerEvents = 'auto';
-    clearAllButton.style.pointerEvents = 'auto';
-
-    // Add buttons to container
-    buttonContainer.appendChild(downloadsButton);
-    buttonContainer.appendChild(clearAllButton);
-
-    // Append button container to dynamicSizer
-    state.dynamicSizer.appendChild(buttonContainer);
+    // Buttons removed - no longer needed
 
     // Append pileContainer to dynamicSizer
     state.dynamicSizer.appendChild(state.pileContainer);
@@ -557,9 +453,36 @@
     // Setup hover events for background/buttons
     setupPileBackgroundHoverEvents();
 
-    // Always append to document.body for maximum z-index control
-    document.body.appendChild(state.dynamicSizer);
-    debugLog("Created pile container and dynamic sizer, appended to document.body");
+    // Insert into browser DOM structure after media controls toolbar for better integration
+    // Similar to how notifications attach after the media controls toolbar
+    const mediaControlsToolbar = document.getElementById('zen-media-controls-toolbar');
+    const zenMainAppWrapper = document.getElementById('zen-main-app-wrapper');
+    
+    if (mediaControlsToolbar && mediaControlsToolbar.parentNode) {
+      // Insert after media controls toolbar (as sibling)
+      const parent = mediaControlsToolbar.parentNode;
+      parent.insertBefore(state.dynamicSizer, mediaControlsToolbar.nextSibling);
+      
+      // Ensure parent has position: relative for absolute positioning to work correctly
+      const parentStyle = window.getComputedStyle(parent);
+      if (parentStyle.position === 'static') {
+        parent.style.position = 'relative';
+        debugLog("Set parent container to position: relative for absolute positioning");
+      }
+      
+      debugLog("Inserted dismissed pile container after zen-media-controls-toolbar");
+    } else if (zenMainAppWrapper) {
+      // Fallback: insert into zen-main-app-wrapper
+      zenMainAppWrapper.appendChild(state.dynamicSizer);
+      debugLog("Inserted dismissed pile container into zen-main-app-wrapper (fallback)");
+    } else {
+      // Final fallback: append to document.body
+      document.body.appendChild(state.dynamicSizer);
+      debugLog("Inserted dismissed pile container into document.body (final fallback)");
+    }
+    
+    // Set up observer for compact mode changes
+    setupCompactModeObserver();
   }
 
   // Setup event listeners
@@ -656,8 +579,8 @@
       return;
     }
 
-    // Limit pile size
-    if (state.dismissedPods.size >= CONFIG.maxPileSize) {
+    // Limit to 4 most recent pods
+    if (state.dismissedPods.size >= 4) {
       const oldestKey = Array.from(state.dismissedPods.keys())[0];
       removePodFromPile(oldestKey);
     }
@@ -670,14 +593,11 @@
     state.podElements.set(podData.key, podElement);
     state.pileContainer.appendChild(podElement);
 
-    // Generate pile position
-    generatePilePosition(podData.key);
-
-    // Generate grid position
+    // Generate position for single column layout
     generateGridPosition(podData.key);
 
-    // Apply initial pile position
-    applyPilePosition(podData.key, animate);
+    // Apply position immediately (no messy pile mode)
+    applyGridPosition(podData.key, animate ? 0 : 0);
 
     // Update pile visibility
     updatePileVisibility();
@@ -685,9 +605,13 @@
     // Update downloads button visibility
     updateDownloadsButtonVisibility();
 
-    // In always-show mode, show the pile immediately when a pod is added
-    if (getAlwaysShowPile() && shouldPileBeVisible()) {
+    // Show the pile immediately when a pod is added
+    if (shouldPileBeVisible()) {
       showPile();
+      // Update text colors after showing pile
+      setTimeout(() => {
+        updatePodTextColors();
+      }, 50);
     }
 
     debugLog(`Added pod to pile: ${podData.filename}`);
@@ -695,21 +619,50 @@
 
   // Create a DOM element for a dismissed pod
   function createPodElement(podData) {
+    // Create row container that spans full width
+    const row = document.createElement("div");
+    row.className = "dismissed-pod-row";
+    row.dataset.podKey = podData.key;
+    row.title = `${podData.filename}\nClick: Open file\nMiddle-click: Show in file explorer\nRight-click: Context menu`;
+    
+    row.style.cssText = `
+      position: absolute;
+      width: 100%;
+      height: 60px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px;
+      box-sizing: border-box;
+      cursor: pointer;
+      transition: bottom 0.3s ease, opacity 0.3s ease, background-color 0.2s ease;
+      will-change: bottom;
+      left: 0;
+      right: 0;
+      border-radius: 6px;
+    `;
+    
+    // Add hover background color
+    row.addEventListener('mouseenter', () => {
+      row.style.backgroundColor = 'rgba(255, 255, 255, 0.08)';
+    });
+    
+    row.addEventListener('mouseleave', () => {
+      row.style.backgroundColor = 'transparent';
+    });
+
+    // Create pod thumbnail (left side)
     const pod = document.createElement("div");
     pod.className = "dismissed-pod";
-    pod.dataset.podKey = podData.key;
-    pod.title = `${podData.filename}\nClick: Open file\nMiddle-click: Show in file explorer\nRight-click: Context menu`;
-    
     pod.style.cssText = `
-      position: absolute;
       width: 45px;
       height: 45px;
+      min-width: 45px;
       border-radius: 8px;
       overflow: hidden;
-      cursor: pointer;
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      transition: transform ${CONFIG.animationDuration}ms cubic-bezier(0.4, 0, 0.2, 1);
-      will-change: transform;
+      flex-shrink: 0;
     `;
 
     // Create preview content
@@ -750,9 +703,52 @@
     }
 
     pod.appendChild(preview);
+    row.appendChild(pod);
+
+    // Create text container (right side)
+    const textContainer = document.createElement("div");
+    textContainer.className = "dismissed-pod-text";
+    textContainer.style.cssText = `
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      height: 100%;
+    `;
+
+    // Create filename element
+    const filename = document.createElement("div");
+    filename.className = "dismissed-pod-filename";
+    filename.textContent = podData.filename || "Untitled";
+    filename.style.cssText = `
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--zen-text-color, #e0e0e0);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 4px;
+    `;
+
+    // Create file size element
+    const fileSize = document.createElement("div");
+    fileSize.className = "dismissed-pod-filesize";
+    const sizeBytes = podData.fileSize || 0;
+    fileSize.textContent = formatBytes(sizeBytes);
+    fileSize.style.cssText = `
+      font-size: 11px;
+      color: var(--zen-text-color-deemphasized, #a0a0a0);
+      white-space: nowrap;
+    `;
+
+    textContainer.appendChild(filename);
+    textContainer.appendChild(fileSize);
+    row.appendChild(textContainer);
 
     // Add click handler for opening in file explorer
-    pod.addEventListener('click', (e) => {
+    row.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
       debugLog(`Attempting to open file: ${podData.key}`);
@@ -760,7 +756,7 @@
     });
 
     // Add middle-click handler for showing in file explorer
-    pod.addEventListener('mousedown', (e) => {
+    row.addEventListener('mousedown', (e) => {
       if (e.button === 1) { // Middle mouse button
         e.preventDefault();
         e.stopPropagation();
@@ -770,7 +766,7 @@
     });
 
     // Add right-click handler - use native menupopup
-    pod.addEventListener('contextmenu', (e) => {
+    row.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       ensurePodContextMenu();
       podContextMenuPodData = podData;
@@ -779,13 +775,13 @@
         podContextMenu.openPopupAtScreen(e.screenX, e.screenY, true);
       } else {
         // fallback: open at pod
-        podContextMenu.openPopup(pod, 'after_start', 0, 0, true, false, e);
+        podContextMenu.openPopup(row, 'after_start', 0, 0, true, false, e);
       }
     });
 
     // Add drag-and-drop support for dragging to web pages
-    pod.setAttribute('draggable', 'true');
-    pod.addEventListener('dragstart', async (e) => {
+    row.setAttribute('draggable', 'true');
+    row.addEventListener('dragstart', async (e) => {
       // Only allow drag if we have a file path
       if (!podData.targetPath) return;
       // Ensure image (if present) is loaded before allowing drag
@@ -824,7 +820,7 @@
       }
     });
 
-    return pod;
+    return row;
   }
 
   // Get file icon based on content type
@@ -840,6 +836,14 @@
     if (contentType.includes("application/")) return "📦";
     
     return "📄";
+  }
+
+  // Format bytes to human-readable size
+  function formatBytes(b, d = 2) {
+    if (b === 0) return "0 B";
+    const sizes = ["B", "KB", "MB", "GB", "TB"];
+    const i = Math.floor(Math.log(b) / Math.log(1024));
+    return `${parseFloat((b / Math.pow(1024, i)).toFixed(d))} ${sizes[i]}`;
   }
 
   // Generate random pile position for a pod
@@ -870,55 +874,30 @@
     });
   }
 
-  // Generate grid position for a pod
+  // Generate position for a pod (single column layout, bottom-up, 4 most recent)
   function generateGridPosition(podKey) {
-    const pods = Array.from(state.dismissedPods.keys());
-    const index = pods.indexOf(podKey);
-    if (index === -1) return;
-
-    // Calculate available width for grid
-    const sidebarWidth = parseFloat(state.currentZenSidebarWidthForPile) || 300;
-    const availableWidth = sidebarWidth - (CONFIG.minSidePadding * 2);
+    // Get the 4 most recent pods (newest last in the map)
+    const allPods = Array.from(state.dismissedPods.keys());
+    const recentPods = allPods.slice(-4); // Get last 4 pods (most recent)
+    const index = recentPods.indexOf(podKey);
     
-    // Calculate how many pods can fit in a row
-    const podAndSpacingWidth = CONFIG.minPodSize + CONFIG.gridPadding;
-    const maxCols = Math.floor((availableWidth + CONFIG.gridPadding) / podAndSpacingWidth);
-    const cols = Math.max(1, maxCols); // Ensure at least 1 column
-    
-    const maxRows = 2; // Keep maximum 2 rows
-    const col = index % cols;
-    const logicalRow = Math.floor(index / cols);
-    const visualRow = logicalRow % maxRows;
-    
-    // Calculate total grid width
-    const gridWidth = (cols * CONFIG.minPodSize) + ((cols - 1) * CONFIG.gridPadding);
-    
-    // Center the grid by calculating left offset
-    const leftOffset = (sidebarWidth - gridWidth) / 2;
-    
-    let x, y;
-    if (index === 0) {
-      x = leftOffset;
-      y = 0;
-    } else {
-      x = leftOffset + (col * (CONFIG.minPodSize + CONFIG.gridPadding));
-      y = visualRow * -(CONFIG.minPodSize + CONFIG.gridPadding);
+    if (index === -1) {
+      // This pod is not in the 4 most recent, don't position it
+      return;
     }
 
-    state.gridPositions.set(podKey, { x, y, row: logicalRow, col });
+    // Single column layout - newest at bottom (index 0), older stack upward
+    // All pods are in column 0, positioned vertically from bottom using bottom CSS property
+    const x = 0; // All pods start at left edge (full width)
+    const rowIndex = index; // Index in the recent 4 (0 = newest at bottom)
+
+    state.gridPositions.set(podKey, { x, y: 0, row: rowIndex, col: 0 });
     
-    debugLog(`Dynamic Grid position for ${podKey}:`, {
+    debugLog(`Single column position (bottom-up) for ${podKey}:`, {
       index,
-      sidebarWidth,
-      availableWidth,
-      maxCols,
-      cols,
-      leftOffset,
-      col,
-      logicalRow,
-      visualRow,
+      rowIndex,
       x,
-      y
+      totalRecent: recentPods.length
     });
   }
 
@@ -945,16 +924,31 @@
     }
   }
 
-  // Apply grid position to a pod
+  // Apply position to a pod (simple single column, no rotation)
   function applyGridPosition(podKey, delay = 0) {
     const podElement = state.podElements.get(podKey);
     const position = state.gridPositions.get(podKey);
-    if (!podElement || !position) return;
+    if (!podElement || !position) {
+      // If no position, hide the pod (it's not in the 4 most recent)
+      if (podElement) {
+        podElement.style.display = 'none';
+      }
+      return;
+    }
 
     setTimeout(() => {
-      const transform = `translate3d(${position.x}px, ${position.y}px, 0) rotate(0deg)`;
-      podElement.style.transform = transform;
-      // z-index is now set before animation starts in transitionToGrid()
+      // Use bottom positioning for bottom-up layout
+      const rowHeight = 60;
+      const rowSpacing = 8;
+      const baseBottomOffset = 10; // Small base offset for first row
+      const bottomOffset = baseBottomOffset + (position.row * (rowHeight + rowSpacing));
+      podElement.style.bottom = `${bottomOffset}px`;
+      podElement.style.left = '0';
+      podElement.style.right = '0';
+      podElement.style.top = 'auto';
+      podElement.style.transform = `translate3d(0, 0, 0) rotate(0deg)`;
+      podElement.style.display = 'flex'; // Ensure flex layout is maintained
+      podElement.style.zIndex = '1';
     }, delay);
   }
 
@@ -992,70 +986,46 @@
   function updatePileVisibility() {
     if (state.dismissedPods.size === 0) {
       // If pile becomes empty, hide it (will set sizer height to 0)
-      if (state.dynamicSizer.style.height !== '0px') { // only if not already hidden
+      if (state.dynamicSizer && state.dynamicSizer.style.height !== '0px') {
           hidePile(); 
       }
     } else {
-      // If pile has items, ensure it's "shown" (height will be set)
-      // showPile() will be called on hover, this just ensures initial state if pods loaded
-      // updatePilePosition(); // This function will be revised/removed
+      // Show only the 4 most recent pods
+      const allPods = Array.from(state.dismissedPods.keys());
+      const recentPods = allPods.slice(-4); // Get last 4 pods (most recent)
+      
+      // Regenerate positions for all pods
+      allPods.forEach(podKey => {
+        generateGridPosition(podKey);
+        applyGridPosition(podKey, 0);
+      });
       
       // If pile is currently visible, recalculate height dynamically
       if (state.dynamicSizer && state.dynamicSizer.style.height !== '0px') {
         updatePileHeight();
       }
-      
-      // Show only the top few pods in pile mode
-      let visibleCount = 0;
-      const sortedPods = Array.from(state.dismissedPods.keys()).reverse(); // Newest first
-      
-      sortedPods.forEach(podKey => {
-        const podElement = state.podElements.get(podKey);
-        if (!podElement) return;
-        
-        if (visibleCount < CONFIG.pileDisplayCount) {
-          podElement.style.display = 'block';
-          visibleCount++;
-        } else if (!state.isGridMode) {
-          podElement.style.display = 'none';
-        } else {
-          podElement.style.display = 'block'; // Show all in grid mode
-        }
-      });
-      // If it's not already visible (e.g. initial load with pods), and it's supposed to be hovered to show,
-      // this function shouldn't force it open. showPile handles that.
-      // However, if it *is* already open (sizer height > 0) and a pod is added/removed,
-      // we might need to re-evaluate the sizer height if it's dynamic.
-      // For now, showPile/hidePile will manage sizer height.
     }
   }
 
-  // Update pile height dynamically based on current pod count
+  // Update pile height dynamically based on current pod count (max 4)
   function updatePileHeight() {
     if (!state.dynamicSizer || state.dismissedPods.size === 0) return;
     
-    const cols = 3;
-    const podSize = CONFIG.minPodSize;
-    const spacing = CONFIG.gridPadding;
+    const rowHeight = 60; // Height of each row (pod + text)
+    const rowSpacing = 8; // Spacing between rows
     
-    // Calculate dynamic height based on number of rows needed
-    const totalPods = state.dismissedPods.size;
-    const maxPodsToShow = 6; // Show last 6 pods in grid
-    const podsToShow = Math.min(totalPods, maxPodsToShow);
-    const rowsNeeded = Math.ceil(podsToShow / cols); // How many rows we actually need
-    const maxRows = 2; // Maximum rows we support
-    const actualRows = Math.min(rowsNeeded, maxRows);
+    // Always show max 4 pods
+    const podsToShow = Math.min(state.dismissedPods.size, 4);
     
-    // Calculate height: base height + (rows * pod size) + spacing between rows + extra padding
-    const baseHeight = 80; // Base padding
-    const rowHeight = podSize + spacing;
-    const gridHeight = baseHeight + (actualRows * rowHeight);
+    // Calculate height: base height + (rows * row height) + spacing between rows + base bottom offset
+    const baseHeight = 20; // Reduced base padding
+    const baseBottomOffset = 10; // Small base offset for first row (matches applyGridPosition)
+    const totalRowHeight = (podsToShow * rowHeight) + ((podsToShow - 1) * rowSpacing);
+    const gridHeight = baseHeight + totalRowHeight + baseBottomOffset;
     
     debugLog("Updating pile height dynamically", {
-      totalPods,
+      totalPods: state.dismissedPods.size,
       podsToShow,
-      rowsNeeded,
-      actualRows,
       oldHeight: state.dynamicSizer.style.height,
       newHeight: `${gridHeight}px`
     });
@@ -1083,6 +1053,17 @@
       alwaysShowMode: getAlwaysShowPile()
     });
     
+    // Only hide media controls toolbar if there are dismissed pods to show
+    if (state.dismissedPods.size > 0) {
+      clearTimeout(state.mediaControlsToolbarTimeout);
+      const mediaControlsToolbar = document.getElementById('zen-media-controls-toolbar');
+      if (mediaControlsToolbar) {
+        mediaControlsToolbar.style.opacity = '0';
+        mediaControlsToolbar.style.pointerEvents = 'none';
+        debugLog("[DownloadHover] Hid media controls toolbar");
+      }
+    }
+    
     if (state.dismissedPods.size === 0) return;
     
     // In always-show mode, don't handle hover events
@@ -1107,6 +1088,35 @@
   // Download button leave handler
   function handleDownloadButtonLeave() {
     debugLog("[DownloadHover] handleDownloadButtonLeave called");
+    
+    // Show media controls toolbar again when leaving download button area (with delay)
+    clearTimeout(state.mediaControlsToolbarTimeout);
+    
+    // Check if pile is currently visible/animating - add animation duration to delay
+    const isPileVisible = state.dynamicSizer && state.dynamicSizer.style.height !== '0px' && state.dynamicSizer.style.display !== 'none';
+    const delay = isPileVisible ? CONFIG.hoverDebounceMs + CONFIG.containerAnimationDuration + 50 : CONFIG.hoverDebounceMs;
+    
+    state.mediaControlsToolbarTimeout = setTimeout(() => {
+      const mediaControlsToolbar = document.getElementById('zen-media-controls-toolbar');
+      if (mediaControlsToolbar) {
+        // Check if we're still hovering over the pile area
+        const mainDownloadContainer = document.getElementById('userchrome-download-cards-container');
+        const isHoveringDownloadArea = state.downloadButton?.matches(':hover') || mainDownloadContainer?.matches(':hover');
+        const isHoveringPile = state.pileContainer?.matches(':hover') || state.dynamicSizer?.matches(':hover');
+        
+        // Check if pile is still visible/animating
+        const pileStillVisible = state.dynamicSizer && 
+                                state.dynamicSizer.style.height !== '0px' && 
+                                state.dynamicSizer.style.display !== 'none';
+        
+        // Only show toolbar if not hovering over download/pile area, context menu not visible, and pile is hidden
+        if (!isHoveringDownloadArea && !isHoveringPile && !isContextMenuVisible() && !pileStillVisible) {
+          mediaControlsToolbar.style.opacity = '1';
+          mediaControlsToolbar.style.pointerEvents = 'auto';
+          debugLog("[DownloadHover] Showed media controls toolbar");
+        }
+      }
+    }, delay);
     
     // In always-show mode, don't handle hover events
     if (getAlwaysShowPile()) {
@@ -1140,11 +1150,24 @@
   // Dynamic sizer hover handler  
   function handleDynamicSizerHover() {
     debugLog("[SizerHover] handleDynamicSizerHover called");
+    
+    // Hide media controls toolbar when hovering over sizer (only if there are pods)
+    if (state.dismissedPods.size > 0) {
+      clearTimeout(state.mediaControlsToolbarTimeout);
+      const mediaControlsToolbar = document.getElementById('zen-media-controls-toolbar');
+      if (mediaControlsToolbar) {
+        mediaControlsToolbar.style.opacity = '0';
+        mediaControlsToolbar.style.pointerEvents = 'none';
+        debugLog("[SizerHover] Hid media controls toolbar");
+      }
+    }
+    
     if (getAlwaysShowPile()) return;
     clearTimeout(state.hoverTimeout);
     if (state.dismissedPods.size > 0) {
       showPile(); // Ensure pile stays open when hovering the sizer
-      if (state.isGridMode) {
+      // Always show buttons in single column mode
+      {
         showPileBackground();
       }
     }
@@ -1153,6 +1176,35 @@
   // Dynamic sizer leave handler
   function handleDynamicSizerLeave() {
     debugLog("[SizerHover] handleDynamicSizerLeave called");
+    
+    // Show media controls toolbar again when leaving sizer area (with delay)
+    clearTimeout(state.mediaControlsToolbarTimeout);
+    
+    // Check if pile is currently visible/animating - add animation duration to delay
+    const isPileVisible = state.dynamicSizer && state.dynamicSizer.style.height !== '0px' && state.dynamicSizer.style.display !== 'none';
+    const delay = isPileVisible ? CONFIG.hoverDebounceMs + CONFIG.containerAnimationDuration + 50 : CONFIG.hoverDebounceMs;
+    
+    state.mediaControlsToolbarTimeout = setTimeout(() => {
+      const mediaControlsToolbar = document.getElementById('zen-media-controls-toolbar');
+      if (mediaControlsToolbar) {
+        // Check if we're still hovering over the download button or pile area
+        const mainDownloadContainer = document.getElementById('userchrome-download-cards-container');
+        const isHoveringDownloadArea = state.downloadButton?.matches(':hover') || mainDownloadContainer?.matches(':hover');
+        const isHoveringPile = state.pileContainer?.matches(':hover') || state.dynamicSizer?.matches(':hover');
+        
+        // Check if pile is still visible/animating
+        const pileStillVisible = state.dynamicSizer && 
+                                state.dynamicSizer.style.height !== '0px' && 
+                                state.dynamicSizer.style.display !== 'none';
+        
+        // Only show toolbar if not hovering over download/pile area, context menu not visible, and pile is hidden
+        if (!isHoveringDownloadArea && !isHoveringPile && !isContextMenuVisible() && !pileStillVisible) {
+          mediaControlsToolbar.style.opacity = '1';
+          mediaControlsToolbar.style.pointerEvents = 'auto';
+          debugLog("[SizerHover] Showed media controls toolbar");
+        }
+      }
+    }, delay);
     
     clearTimeout(state.hoverTimeout);
     
@@ -1163,17 +1215,7 @@
       return;
     }
     
-    // Always handle grid-to-pile transition when leaving the container
-    // regardless of always-show mode
-    if (state.isGridMode) {
-      setTimeout(() => {
-        // Double-check we're not hovering over pile or sizer and context menu isn't visible
-        if (!state.pileContainer.matches(':hover') && !state.dynamicSizer.matches(':hover') && !isContextMenuVisible()) {
-          debugLog("[SizerHover] Transitioning back to pile mode from grid");
-          transitionToPile();
-        }
-      }, CONFIG.hoverDebounceMs);
-    }
+    // No mode transitions needed
     
     // In always-show mode, don't handle pile visibility, just transitions
     if (getAlwaysShowPile()) {
@@ -1205,34 +1247,57 @@
     }, CONFIG.hoverDebounceMs);
   }
 
-  // Pile hover handler
+  // Pile hover handler (simplified - no mode transitions)
   function handlePileHover() {
-    debugLog("[PileHover] handlePileHover called", {
-      isGridMode: state.isGridMode,
-      alwaysShowMode: getAlwaysShowPile()
-    });
+    debugLog("[PileHover] handlePileHover called");
+    
+    // Hide media controls toolbar when hovering over pile (only if there are pods)
+    if (state.dismissedPods.size > 0) {
+      clearTimeout(state.mediaControlsToolbarTimeout);
+      const mediaControlsToolbar = document.getElementById('zen-media-controls-toolbar');
+      if (mediaControlsToolbar) {
+        mediaControlsToolbar.style.opacity = '0';
+        mediaControlsToolbar.style.pointerEvents = 'none';
+        debugLog("[PileHover] Hid media controls toolbar");
+      }
+    }
     
     clearTimeout(state.hoverTimeout);
-    
-    // In pile mode, show background immediately when hovering pile (works in both modes)
-    if (!state.isGridMode) {
-      debugLog("[PileHover] In pile mode - showing background immediately");
-      showPileBackground();
-    }
-    
-    if (!state.isGridMode) {
-      debugLog("[PileHover] Not in grid mode - transitioning to grid");
-      transitionToGrid();
-    }
+    showPileBackground();
   }
 
-  // Pile leave handler
+  // Pile leave handler (simplified)
   function handlePileLeave() {
-    debugLog("[PileHover] handlePileLeave called", {
-      alwaysShowMode: getAlwaysShowPile(),
-      isGridMode: state.isGridMode,
-      contextMenuVisible: isContextMenuVisible()
-    });
+    debugLog("[PileHover] handlePileLeave called");
+    
+    // Show media controls toolbar again when leaving pile area (with delay)
+    clearTimeout(state.mediaControlsToolbarTimeout);
+    
+    // Check if pile is currently visible/animating - add animation duration to delay
+    const isPileVisible = state.dynamicSizer && state.dynamicSizer.style.height !== '0px' && state.dynamicSizer.style.display !== 'none';
+    const delay = isPileVisible ? CONFIG.hoverDebounceMs + CONFIG.containerAnimationDuration + 50 : CONFIG.hoverDebounceMs;
+    
+    state.mediaControlsToolbarTimeout = setTimeout(() => {
+      const mediaControlsToolbar = document.getElementById('zen-media-controls-toolbar');
+      if (mediaControlsToolbar) {
+        // Check if we're still hovering over the download button area
+        const mainDownloadContainer = document.getElementById('userchrome-download-cards-container');
+        const isHoveringDownloadArea = state.downloadButton?.matches(':hover') || mainDownloadContainer?.matches(':hover');
+        const isHoveringPile = state.pileContainer?.matches(':hover') || state.dynamicSizer?.matches(':hover');
+        
+        // Check if pile is still visible/animating
+        const pileStillVisible = state.dynamicSizer && 
+                                state.dynamicSizer.style.height !== '0px' && 
+                                state.dynamicSizer.style.display !== 'none';
+        
+        // Only show toolbar if not hovering over download/pile area, context menu not visible, and pile is hidden
+        if (!isHoveringDownloadArea && !isHoveringPile && !isContextMenuVisible() && !pileStillVisible) {
+          mediaControlsToolbar.style.opacity = '1';
+          mediaControlsToolbar.style.pointerEvents = 'auto';
+          debugLog("[PileHover] Showed media controls toolbar");
+        }
+      }
+    }, delay);
     
     clearTimeout(state.hoverTimeout);
     
@@ -1243,20 +1308,8 @@
       return;
     }
     
-    // Always handle grid-to-pile transition when leaving the pile
-    if (state.isGridMode) {
-      setTimeout(() => {
-        // Only transition back if we're not hovering over the sizer and context menu isn't visible
-        if (!state.dynamicSizer.matches(':hover') && !isContextMenuVisible()) {
-          debugLog("[PileHover] Transitioning back to pile mode from grid");
-          transitionToPile();
-        }
-      }, CONFIG.hoverDebounceMs);
-    }
-    
-    // In always-show mode, don't hide the pile itself, transitions are handled above
+    // In always-show mode, don't hide the pile
     if (getAlwaysShowPile()) {
-      debugLog("[PileHover] Always-show mode - only handling grid transition");
       return;
     }
     
@@ -1265,19 +1318,10 @@
       const mainDownloadContainer = document.getElementById('userchrome-download-cards-container');
       const isHoveringDownloadArea = state.downloadButton?.matches(':hover') || mainDownloadContainer?.matches(':hover');
       
-      debugLog("[PileHover] Leave timeout - checking hover states", {
-        isHoveringDownloadArea,
-        dynamicSizerHover: state.dynamicSizer.matches(':hover'),
-        contextMenuVisible: isContextMenuVisible()
-      });
-      
-      // Only hide if not hovering download area AND not hovering dynamic sizer AND context menu not visible
       if (!isHoveringDownloadArea && !state.dynamicSizer.matches(':hover')) {
         if (isContextMenuVisible()) {
-          debugLog("[PileHover] Context menu visible at timeout - deferring pile close");
           state.pendingPileClose = true;
         } else {
-          debugLog("[PileHover] Calling hidePile()");
           hidePile();
         }
       }
@@ -1289,86 +1333,81 @@
     debugLog("[ShowPile] showPile called", {
       dismissedPodsSize: state.dismissedPods.size,
       currentHeight: state.dynamicSizer?.style.height,
-      isGridMode: state.isGridMode,
+      // Removed isGridMode
       alwaysShowMode: getAlwaysShowPile()
     });
     
     if (state.dismissedPods.size === 0 || !state.dynamicSizer) return;
+    
+    // Check compact mode state - hide pile if sidebar is collapsed (similar to media controls)
+    const isCompactMode = document.documentElement.getAttribute('zen-compact-mode') === 'true';
+    const isSidebarExpanded = document.documentElement.getAttribute('zen-sidebar-expanded') === 'true';
+    
+    if (isCompactMode && !isSidebarExpanded) {
+      // In compact mode with collapsed sidebar, hide the pile (like media controls)
+      debugLog("[ShowPile] Compact mode with collapsed sidebar - hiding pile");
+      state.dynamicSizer.style.display = 'none';
+      return;
+    }
+    
+    // Show the pile
+    state.dynamicSizer.style.display = 'flex';
     
     // Ensure width is set before calculating positions
     if (typeof updatePileContainerWidth === 'function') {
         updatePileContainerWidth();
     }
 
-    // Calculate exact position based on sidebar location
-    const navigatorToolbox = document.getElementById('navigator-toolbox');
-    if (navigatorToolbox) {
-      const rect = navigatorToolbox.getBoundingClientRect();
-      const isRightSide = document.documentElement.getAttribute('zen-right-side') === 'true';
-      
-      if (isRightSide) {
-        // Position on the right side
-        const containerWidth = parseFloat(state.currentZenSidebarWidthForPile) || 300;
-        state.dynamicSizer.style.left = `${rect.right - containerWidth}px`;
-      } else {
-        // Position on the left side
-        state.dynamicSizer.style.left = `${rect.left}px`;
-      }
-      
-      debugLog("Positioned pile based on sidebar location", {
-        sidebarRect: rect,
-        isRightSide,
-        finalLeft: state.dynamicSizer.style.left
-      });
-    }
+    // For absolute positioning, use left/right with equal margins for symmetric gaps
+    const sidePadding = CONFIG.minSidePadding; // Padding from sidebar edges (5px)
+    
+    // Use left: 0 and right: 0 to span full width, then use margin for symmetric gaps
+    state.dynamicSizer.style.left = `${sidePadding}px`;
+    state.dynamicSizer.style.right = `${sidePadding}px`;
+    state.dynamicSizer.style.width = 'auto'; // Let left/right determine width
+    
+    debugLog("Positioned pile for absolute positioning with symmetric gaps", {
+      sidePadding,
+      position: state.dynamicSizer.style.position,
+      left: state.dynamicSizer.style.left,
+      right: state.dynamicSizer.style.right
+    });
 
-    // Calculate smart left padding so the GRID will be centered when it forms
-    const containerWidth = parseFloat(state.currentZenSidebarWidthForPile) || 300;
-    const cols = 3;
-    const podSize = CONFIG.minPodSize;
-    const spacing = CONFIG.gridPadding;
-    
-    // Calculate total grid dimensions
-    const gridWidth = (cols * podSize) + ((cols - 1) * spacing);
-    
-    // Calculate where the grid should be positioned to be centered
-    const gridCenterX = containerWidth / 2;
-    const gridLeftEdge = gridCenterX - (gridWidth / 2);
-    
-    // The first pod (index 0) will be at the bottom-left of the grid
-    // So position the pile so the first pod ends up at the grid's left edge
-    // Divide by 4 to correct for excessive padding
-    
     // Set pointer-events based on mode and state
     updatePointerEvents();
     
-    state.dynamicSizer.style.paddingBottom = '60px';
-    state.dynamicSizer.style.paddingLeft = `5px`;
+    state.dynamicSizer.style.paddingBottom = '10px';
+    state.dynamicSizer.style.paddingLeft = `0px`; // No left padding for full-width rows
     
-    // Calculate dynamic height based on number of rows needed
+    // Calculate dynamic height for 4 most recent pods
     const totalPods = state.dismissedPods.size;
-    const maxPodsToShow = 6; // Show last 6 pods in grid
-    const podsToShow = Math.min(totalPods, maxPodsToShow);
-    const rowsNeeded = Math.ceil(podsToShow / cols); // How many rows we actually need
-    const maxRows = 2; // Maximum rows we support
-    const actualRows = Math.min(rowsNeeded, maxRows);
+    const podsToShow = Math.min(totalPods, 4); // Always max 4 pods
     
-    // Calculate height: base height + (rows * pod size) + spacing between rows + extra padding
-    const baseHeight = 80; // Base padding
-    const rowHeight = podSize + spacing;
-    const gridHeight = baseHeight + (actualRows * rowHeight);
+    const rowHeight = 60; // Height of each row (pod + text)
+    const rowSpacing = 8; // Spacing between rows
     
-    debugLog("Dynamic height calculation", {
+    // Calculate height: base height + (rows * row height) + spacing between rows + base bottom offset
+    const baseHeight = 20; // Reduced base padding
+    const baseBottomOffset = 5; // Small base offset for first row (matches applyGridPosition)
+    const totalRowHeight = (podsToShow * rowHeight) + ((podsToShow - 1) * rowSpacing);
+    const gridHeight = baseHeight + totalRowHeight + baseBottomOffset;
+    
+    debugLog("Dynamic height calculation (4 most recent)", {
       totalPods,
       podsToShow,
-      rowsNeeded,
-      actualRows,
-      podSize,
-      spacing,
       calculatedHeight: gridHeight
     });
     
-    state.dynamicSizer.style.height = `${gridHeight}px`; 
+    state.dynamicSizer.style.height = `${gridHeight}px`;
+    
+    // Set background to ensure backdrop-filter is properly rendered
+    showPileBackground();
+    
+    // Update positions for all pods (show only 4 most recent)
+    state.dismissedPods.forEach((_, podKey) => {
+      generateGridPosition(podKey);
+      applyGridPosition(podKey, 0);
+    }); 
     
     // Ensure hover events are properly set up for the current mode
     // This is important after the pile was hidden and is being shown again
@@ -1377,21 +1416,17 @@
       debugLog("[ShowPile] Hover events re-setup after pile shown");
     }, 50); // Small delay to ensure DOM is updated
     
-    debugLog("Showing pile positioned for centered grid", {
-      containerWidth,
-      gridWidth,
-      gridCenterX,
-      gridLeftEdge,
-      dynamicHeight: gridHeight,
-      note: "First pod will be at grid's left edge, height adjusts to content"
+    debugLog("Showing pile with single column layout", {
+      totalPods,
+      podsToShow,
+      dynamicHeight: gridHeight
     });
   }
 
   // Hide the pile
   function hidePile() {
     debugLog("[HidePile] hidePile called", {
-      currentHeight: state.dynamicSizer?.style.height,
-      isGridMode: state.isGridMode
+      currentHeight: state.dynamicSizer?.style.height
     });
     
     if (!state.dynamicSizer) return;
@@ -1401,248 +1436,27 @@
     state.dynamicSizer.style.paddingBottom = '0px'; // Remove padding when hiding
     state.dynamicSizer.style.paddingLeft = '0px'; // Remove left padding when hiding
     
+    // Don't hide display in compact mode - let the observer handle it
+    // Only hide display if not in compact mode with collapsed sidebar
+    const isCompactMode = document.documentElement.getAttribute('zen-compact-mode') === 'true';
+    const isSidebarExpanded = document.documentElement.getAttribute('zen-sidebar-expanded') === 'true';
+    if (!(isCompactMode && !isSidebarExpanded)) {
+      state.dynamicSizer.style.display = 'flex'; // Keep flex but collapsed
+    }
+    
     // Hide background and buttons when hiding pile
     hidePileBackground();
     
-    if (state.isGridMode) {
-      transitionToPile(); // Transition back to pile state if in grid
-    }
+    // No mode transitions needed
     
     debugLog("Hiding dismissed downloads pile by collapsing sizer");
   }
 
-  // Transition from pile to grid
-  function transitionToGrid() {
-    if (state.isGridMode) return;
-    
-    state.isGridMode = true;
-    debugLog("Transitioning to grid mode");
-    
-    // --- Initialize visibleGridOrder as a carousel ---
-    const allPods = Array.from(state.dismissedPods.keys()).reverse(); // Most recent first
-    state.carouselStartIndex = 0;
-    if (allPods.length <= 6) {
-      state.visibleGridOrder = allPods.slice();
-    } else {
-      state.visibleGridOrder = [];
-      for (let i = 0; i < 6; i++) {
-        state.visibleGridOrder.push(allPods[(state.carouselStartIndex + i) % allPods.length]);
-      }
-    }
-    state.gridScrollIndex = 0;
-    state.isGridAnimating = false;
-    
-    // Show buttons immediately when transitioning to grid mode
-    const buttonContainer = document.getElementById("zen-pile-button-container");
-    const downloadsButton = document.getElementById("zen-pile-downloads-button");
-    const clearAllButton = document.getElementById("zen-pile-clear-all-button");
-    if (downloadsButton) downloadsButton.style.opacity = '1';
-    if (clearAllButton) clearAllButton.style.opacity = '1';
-    if (buttonContainer) buttonContainer.style.pointerEvents = 'auto';
-    if (downloadsButton) downloadsButton.style.pointerEvents = 'auto';
-    if (clearAllButton) clearAllButton.style.pointerEvents = 'auto';
-    
-    // Update hover events for grid mode
-    setupPileBackgroundHoverEvents();
-    
-    // Update pointer events for grid mode
-    updatePointerEvents();
+  // No longer needed - removed transition to grid mode
 
-    // --- Mouse wheel event for scrolling grid ---
-    if (state.pileContainer._zenGridScrollHandler) {
-      state.pileContainer.removeEventListener('wheel', state.pileContainer._zenGridScrollHandler);
-      delete state.pileContainer._zenGridScrollHandler;
-    }
-    if (allPods.length >= 6) {
-      state.pileContainer._zenGridScrollHandler = function(e) {
-        if (!state.isGridMode) return;
-        if (state.isGridAnimating) return;
-        e.preventDefault();
-        const allPods = Array.from(state.dismissedPods.keys()).reverse(); // Most recent first
-        if (allPods.length < 6) return;
-        let delta = e.deltaY || e.detail || e.wheelDelta;
-        state.isGridAnimating = true;
-        setTimeout(() => { state.isGridAnimating = false; }, 400);
-        if (allPods.length === 6) {
-          // Simple rotation for exactly 6
-          if (delta < 0) {
-            state.visibleGridOrder.push(state.visibleGridOrder.shift());
-            renderGridWindow('forward');
-          } else if (delta > 0) {
-            state.visibleGridOrder.unshift(state.visibleGridOrder.pop());
-            renderGridWindow('backward');
-          }
-        } else {
-          // Carousel window for more than 6
-          if (delta < 0) {
-            state.carouselStartIndex = (state.carouselStartIndex + 1) % allPods.length;
-          } else if (delta > 0) {
-            state.carouselStartIndex = (state.carouselStartIndex - 1 + allPods.length) % allPods.length;
-          }
-          // Update visibleGridOrder to next 6 pods
-          state.visibleGridOrder = [];
-          for (let i = 0; i < 6; i++) {
-            state.visibleGridOrder.push(allPods[(state.carouselStartIndex + i) % allPods.length]);
-          }
-          renderGridWindow(delta < 0 ? 'forward' : 'backward');
-        }
-      };
-      state.pileContainer.addEventListener('wheel', state.pileContainer._zenGridScrollHandler, { passive: false });
-    }
+  // Removed renderGridWindow - no longer needed with simplified single column layout
 
-    renderGridWindow();
-  }
-
-  // --- Helper to render the current grid window ---
-  function renderGridWindow(scrollDir = null) {
-    const allPods = Array.from(state.dismissedPods.keys()).reverse(); // Most recent first
-    const total = allPods.length;
-    if (total === 0) return;
-    // Use visibleGridOrder for carousel
-    if (!state.visibleGridOrder || state.visibleGridOrder.length !== Math.min(6, total)) {
-      if (total <= 6) {
-        state.visibleGridOrder = allPods.slice();
-      } else {
-        state.visibleGridOrder = [];
-        for (let i = 0; i < 6; i++) {
-          state.visibleGridOrder.push(allPods[(state.carouselStartIndex + i) % total]);
-        }
-      }
-    }
-    const gridPods = state.visibleGridOrder;
-    debugLog(`[GridScroll] Carousel order:`, gridPods);
-
-    // Track which pods are entering/leaving for animation
-    if (!state._lastGridPods) state._lastGridPods = [];
-    const lastSet = new Set(state._lastGridPods);
-    const currentSet = new Set(gridPods);
-    const entering = gridPods.filter(k => !lastSet.has(k));
-    const leaving = state._lastGridPods ? state._lastGridPods.filter(k => !currentSet.has(k)) : [];
-
-    // Calculate new grid positions
-    const newPositions = new Map();
-    gridPods.forEach((podKey, index) => {
-      const cols = 3;
-      const maxRows = 2;
-      const col = index % cols;
-      const logicalRow = Math.floor(index / cols);
-      const visualRow = logicalRow % maxRows;
-      const podSize = CONFIG.minPodSize;
-      const spacing = CONFIG.gridPadding;
-      let x, y;
-      if (index === 0) {
-        x = 0;
-        y = 0;
-      } else {
-        x = col * (podSize + spacing);
-        y = -visualRow * (podSize + spacing);
-      }
-      newPositions.set(podKey, { x, y });
-      state.gridPositions.set(podKey, { x, y, row: logicalRow, col });
-    });
-
-    // Animate pods to new positions
-    gridPods.forEach((podKey, idx) => {
-      const podElement = state.podElements.get(podKey);
-      if (!podElement) return;
-      podElement.style.display = 'block';
-      podElement.style.transition = 'transform 0.4s cubic-bezier(0.4,0,0.2,1)';
-      let prev = state._prevGridPositions.get(podKey);
-      let next = newPositions.get(podKey);
-      if (entering.includes(podKey)) {
-        // Animate from top left
-        podElement.style.transform = `translate3d(0px, 0px, 0) rotate(0deg)`;
-        // Force reflow
-        void podElement.offsetWidth;
-        podElement.style.transform = `translate3d(${next.x}px, ${next.y}px, 0) rotate(0deg)`;
-      } else if (prev) {
-        // Animate from previous position
-        podElement.style.transform = `translate3d(${prev.x}px, ${prev.y}px, 0) rotate(0deg)`;
-        // Force reflow
-        void podElement.offsetWidth;
-        podElement.style.transform = `translate3d(${next.x}px, ${next.y}px, 0) rotate(0deg)`;
-      } else {
-        // No previous, just set
-        podElement.style.transform = `translate3d(${next.x}px, ${next.y}px, 0) rotate(0deg)`;
-      }
-    });
-
-    // Hide all non-visible pods in grid mode
-    state.dismissedPods.forEach((_, podKey) => {
-      if (!gridPods.includes(podKey)) {
-        const podElement = state.podElements.get(podKey);
-        if (podElement) podElement.style.display = 'none';
-      }
-    });
-
-    // Animate out leaving pods
-    leaving.forEach((podKey) => {
-      const podElement = state.podElements.get(podKey);
-      if (!podElement) return;
-      podElement.style.transition = 'transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s cubic-bezier(0.4,0,0.2,1)';
-      // Move out to the right or left depending on scrollDir
-      let prev = state._prevGridPositions.get(podKey);
-      let outX = (scrollDir === 'forward') ? 60 : -60;
-      if (prev) {
-        podElement.style.transform = `translate3d(${prev.x}px, ${prev.y}px, 0) rotate(0deg)`;
-        // Force reflow
-        void podElement.offsetWidth;
-        podElement.style.transform = `translate3d(${prev.x + outX}px, ${prev.y}px, 0) rotate(0deg)`;
-      } else {
-        podElement.style.transform = `translate3d(${outX}px, 0px, 0) rotate(0deg)`;
-      }
-      podElement.style.opacity = '0';
-      setTimeout(() => {
-        podElement.style.display = 'none';
-        podElement.style.opacity = '1';
-      }, 400);
-    });
-
-    // Save new positions for next diff
-    state._prevGridPositions = newPositions;
-    // Save for next diff
-    state._lastGridPods = gridPods;
-  }
-
-  // Transition from grid to pile
-  function transitionToPile() {
-    if (!state.isGridMode) return;
-    state.isGridMode = false;
-    debugLog("Transitioning to pile mode");
-    
-    // Hide buttons when transitioning to pile mode
-    const buttonContainer = document.getElementById("zen-pile-button-container");
-    const downloadsButton = document.getElementById("zen-pile-downloads-button");
-    const clearAllButton = document.getElementById("zen-pile-clear-all-button");
-    if (downloadsButton) downloadsButton.style.opacity = '0';
-    if (clearAllButton) clearAllButton.style.opacity = '0';
-    if (buttonContainer) buttonContainer.style.pointerEvents = 'none';
-    if (downloadsButton) downloadsButton.style.pointerEvents = 'none';
-    if (clearAllButton) clearAllButton.style.pointerEvents = 'none';
-    
-    // Remove wheel event
-    if (state.pileContainer._zenGridScrollHandler) {
-      state.pileContainer.removeEventListener('wheel', state.pileContainer._zenGridScrollHandler);
-      delete state.pileContainer._zenGridScrollHandler;
-    }
-    // Update hover events for pile mode
-    setupPileBackgroundHoverEvents();
-    
-    // Update pointer events for pile mode
-    updatePointerEvents();
-
-    // No need to change justify-content - positioning handled by padding
-
-    // Animate pods back to pile positions
-    state.dismissedPods.forEach((_, podKey) => {
-      applyPilePosition(podKey, true);
-    });
-
-    // Hide excess pods after animation
-    setTimeout(() => {
-      updatePileVisibility();
-    }, CONFIG.animationDuration);
-  }
+  // No longer needed - removed transition to pile mode
 
   // Recalculate layout on window resize
   function recalculateLayout() {
@@ -1653,32 +1467,25 @@
       generateGridPosition(podKey);
     });
 
-    // Recalculate fixed position if pile is currently shown
+    // Recalculate position if pile is currently shown (using same logic as showPile)
     if (state.dynamicSizer && state.dynamicSizer.style.height !== '0px') {
-      const navigatorToolbox = document.getElementById('navigator-toolbox');
-      if (navigatorToolbox) {
-        const rect = navigatorToolbox.getBoundingClientRect();
-        const isRightSide = document.documentElement.getAttribute('zen-right-side') === 'true';
-        
-        if (isRightSide) {
-          const containerWidth = parseFloat(state.currentZenSidebarWidthForPile) || 300;
-          state.dynamicSizer.style.left = `${rect.right - containerWidth}px`;
-        } else {
-          state.dynamicSizer.style.left = `${rect.left}px`;
-        }
-        
-        debugLog("Recalculated pile position on resize", {
-          newLeft: state.dynamicSizer.style.left
-        });
-      }
-    }
-
-    // Apply current mode positions
-    if (state.isGridMode) {
-      state.dismissedPods.forEach((_, podKey) => {
-        applyGridPosition(podKey, 0);
+      const sidePadding = CONFIG.minSidePadding; // Padding from sidebar edges (5px)
+      
+      // Use left and right with equal values for symmetric gaps
+      state.dynamicSizer.style.left = `${sidePadding}px`;
+      state.dynamicSizer.style.right = `${sidePadding}px`;
+      state.dynamicSizer.style.width = 'auto'; // Let left/right determine width
+      
+      debugLog("Recalculated pile position on resize with symmetric gaps", {
+        sidePadding
       });
     }
+
+    // Apply positions for all pods (always single column mode now)
+    state.dismissedPods.forEach((_, podKey) => {
+      generateGridPosition(podKey);
+      applyGridPosition(podKey, 0);
+    });
   }
 
   // Utility: Debounce function
@@ -1723,14 +1530,9 @@
       }
     }
 
-    // Update the global variable and set the width (not max-width since we're fixed positioned)
+    // Update the global variable (store raw width, we'll subtract padding when applying)
     state.currentZenSidebarWidthForPile = newWidth;
-    
-    // Subtract 5px to prevent protruding beyond sidebar
-    const numericWidth = parseFloat(newWidth);
-    const adjustedWidth = `${numericWidth + 5}px`;
-    state.dynamicSizer.style.width = adjustedWidth;
-    debugLog('[PileWidthSync] Set dynamicSizer width to:', adjustedWidth, '(original:', newWidth, ')');
+    debugLog('[PileWidthSync] Stored sidebar width:', newWidth);
   }
 
   function initPileSidebarWidthSync() {
@@ -1905,31 +1707,231 @@
     }
   }
 
-  // Show pile background and buttons on hover
+  // Compute the blended background color that matches Zen's lightening effect
+  function computeBlendedBackgroundColor() {
+    // Check if we're in compact mode - use toolbar background color directly
+    const isCompactMode = document.documentElement.getAttribute('zen-compact-mode') === 'true';
+    const isSidebarExpanded = document.documentElement.getAttribute('zen-sidebar-expanded') === 'true';
+    
+    if (isCompactMode && isSidebarExpanded) {
+      // In compact mode with expanded sidebar, use toolbar background color (includes light tint)
+      const navigatorToolbox = document.getElementById('navigator-toolbox');
+      if (navigatorToolbox) {
+        const toolbarBg = window.getComputedStyle(navigatorToolbox).getPropertyValue('--zen-main-browser-background-toolbar').trim();
+        if (toolbarBg) {
+          // Try to get the computed color value
+          const testEl = document.createElement('div');
+          testEl.style.backgroundColor = toolbarBg || 'var(--zen-main-browser-background-toolbar)';
+          testEl.style.position = 'absolute';
+          testEl.style.visibility = 'hidden';
+          document.body.appendChild(testEl);
+          const computedColor = window.getComputedStyle(testEl).backgroundColor;
+          document.body.removeChild(testEl);
+          
+          if (computedColor && computedColor !== 'transparent' && computedColor !== 'rgba(0, 0, 0, 0)') {
+            debugLog('[BackgroundColor] Using toolbar background color for compact mode:', computedColor);
+            return computedColor;
+          }
+          
+          // If computed color isn't available, return the CSS variable
+          return toolbarBg || 'var(--zen-main-browser-background-toolbar)';
+        }
+      }
+    }
+    
+    // For non-compact mode or collapsed sidebar, use the blended color calculation
+    // Get base background color
+    const navigatorToolbox = document.getElementById('navigator-toolbox');
+    let baseColor = null;
+    if (navigatorToolbox) {
+      const baseComputed = window.getComputedStyle(navigatorToolbox);
+      const baseResolved = baseComputed.getPropertyValue('--zen-main-browser-background').trim();
+      
+      // If it's a gradient, we can't easily blend, so return the variable
+      if (baseResolved.includes('gradient') || baseResolved.includes('linear') || baseResolved.includes('radial')) {
+        return 'var(--zen-main-browser-background)';
+      }
+      
+      // Try to get the actual computed color
+      const testEl = document.createElement('div');
+      testEl.style.backgroundColor = 'var(--zen-main-browser-background)';
+      testEl.style.position = 'absolute';
+      testEl.style.visibility = 'hidden';
+      document.body.appendChild(testEl);
+      const computedBase = window.getComputedStyle(testEl).backgroundColor;
+      document.body.removeChild(testEl);
+      
+      if (computedBase && computedBase !== 'transparent' && computedBase !== 'rgba(0, 0, 0, 0)') {
+        baseColor = computedBase;
+      }
+    }
+    
+    // Get wrapper background color
+    const appWrapper = document.getElementById('zen-main-app-wrapper');
+    let wrapperColor = null;
+    if (appWrapper) {
+      const wrapperComputed = window.getComputedStyle(appWrapper);
+      wrapperColor = wrapperComputed.backgroundColor;
+    }
+    
+    // If we don't have both colors, fallback to base
+    if (!baseColor || !wrapperColor || baseColor === 'transparent' || wrapperColor === 'transparent') {
+      return 'var(--zen-main-browser-background)';
+    }
+    
+    // Parse RGB values
+    function parseRGB(colorStr) {
+      if (colorStr.startsWith('rgba(')) {
+        const match = colorStr.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
+        if (match) {
+          return {
+            r: parseInt(match[1]),
+            g: parseInt(match[2]),
+            b: parseInt(match[3]),
+            a: parseFloat(match[4])
+          };
+        }
+      } else if (colorStr.startsWith('rgb(')) {
+        const match = colorStr.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+        if (match) {
+          return {
+            r: parseInt(match[1]),
+            g: parseInt(match[2]),
+            b: parseInt(match[3]),
+            a: 1
+          };
+        }
+      }
+      return null;
+    }
+    
+    const baseRGB = parseRGB(baseColor);
+    const wrapperRGB = parseRGB(wrapperColor);
+    
+    if (!baseRGB || !wrapperRGB) {
+      return 'var(--zen-main-browser-background)';
+    }
+    
+    // Blend the colors to achieve the target: rgb(49, 32, 42)
+    // Formula: blended = base * (1 - ratio) + wrapper * ratio
+    // Solving for ratio to match target rgb(49, 32, 42):
+    // If base is rgb(34, 17, 31) and wrapper is rgb(255, 233, 198):
+    // - R: 34 + (255-34) * ratio = 49 => ratio ≈ 0.068
+    // - G: 17 + (233-17) * ratio = 32 => ratio ≈ 0.069  
+    // - B: 31 + (198-31) * ratio = 42 => ratio ≈ 0.066
+    // Average ratio ≈ 0.067 (about 6.7%)
+    const wrapperRatio = 0.067; // Adjusted to match target rgb(49, 32, 42)
+    
+    const blendedR = Math.round(baseRGB.r * (1 - wrapperRatio) + wrapperRGB.r * wrapperRatio);
+    const blendedG = Math.round(baseRGB.g * (1 - wrapperRatio) + wrapperRGB.g * wrapperRatio);
+    const blendedB = Math.round(baseRGB.b * (1 - wrapperRatio) + wrapperRGB.b * wrapperRatio);
+    
+    // Use the base's opacity if it has one, otherwise fully opaque
+    const finalAlpha = baseRGB.a || 1;
+    
+    if (finalAlpha < 1) {
+      return `rgba(${blendedR}, ${blendedG}, ${blendedB}, ${finalAlpha})`;
+    } else {
+      return `rgb(${blendedR}, ${blendedG}, ${blendedB})`;
+    }
+  }
+
+  // Calculate text color based on background color (using Zen's luminance/contrast logic)
+  function calculateTextColorForBackground(backgroundColor) {
+    // Parse RGB from color string
+    function parseRGB(colorStr) {
+      if (colorStr.startsWith('rgba(')) {
+        const match = colorStr.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
+        if (match) {
+          return [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
+        }
+      } else if (colorStr.startsWith('rgb(')) {
+        const match = colorStr.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+        if (match) {
+          return [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
+        }
+      }
+      return null;
+    }
+    
+    const bgRGB = parseRGB(backgroundColor);
+    if (!bgRGB) {
+      // Fallback to CSS variable if we can't parse
+      return 'var(--zen-text-color, #e0e0e0)';
+    }
+    
+    // Calculate relative luminance (from Zen's luminance function)
+    function luminance([r, g, b]) {
+      const a = [r, g, b].map((v) => {
+        v /= 255;
+        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+      });
+      return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    }
+    
+    // Calculate contrast ratio (from Zen's contrastRatio function)
+    function contrastRatio(rgb1, rgb2) {
+      const lum1 = luminance(rgb1);
+      const lum2 = luminance(rgb2);
+      const brightest = Math.max(lum1, lum2);
+      const darkest = Math.min(lum1, lum2);
+      return (brightest + 0.05) / (darkest + 0.05);
+    }
+    
+    // Test dark text (black) and light text (white)
+    const darkText = [0, 0, 0];
+    const lightText = [255, 255, 255];
+    
+    const darkContrast = contrastRatio(bgRGB, darkText);
+    const lightContrast = contrastRatio(bgRGB, lightText);
+    
+    // Use whichever has better contrast
+    // Also consider: if background is very light, use dark text; if very dark, use light text
+    const bgLuminance = luminance(bgRGB);
+    const useDarkText = darkContrast > lightContrast || bgLuminance > 0.5;
+    
+    if (useDarkText) {
+      return 'rgba(0, 0, 0, 0.8)'; // Dark text with some transparency
+    } else {
+      return 'rgba(255, 255, 255, 0.8)'; // Light text with some transparency
+    }
+  }
+
+  // Update text colors for all pod rows based on current background
+  function updatePodTextColors() {
+    if (!state.dynamicSizer) {
+      return;
+    }
+    
+    const blendedColor = computeBlendedBackgroundColor();
+    const textColor = calculateTextColorForBackground(blendedColor);
+    
+    // Update all pod text elements
+    const textElements = state.pileContainer.querySelectorAll('.dismissed-pod-filename, .dismissed-pod-filesize');
+    textElements.forEach(el => {
+      el.style.color = textColor;
+    });
+    
+    console.log('[ShowPile] Updated text colors to:', textColor, 'for background:', blendedColor);
+  }
+
+  // Show pile background on hover
   function showPileBackground() {
     if (!state.dynamicSizer) {
       return;
     }
-    state.dynamicSizer.style.background = 'color-mix(in srgb, var(--zen-primary-color) 10%, transparent)';
-    const buttonContainer = document.getElementById("zen-pile-button-container");
-    const downloadsButton = document.getElementById("zen-pile-downloads-button");
-    const clearAllButton = document.getElementById("zen-pile-clear-all-button");
-    if (state.isGridMode) {
-      if (downloadsButton) downloadsButton.style.opacity = '1';
-      if (clearAllButton) clearAllButton.style.opacity = '1';
-      if (buttonContainer) buttonContainer.style.pointerEvents = 'auto';
-      if (downloadsButton) downloadsButton.style.pointerEvents = 'auto';
-      if (clearAllButton) clearAllButton.style.pointerEvents = 'auto';
-    } else {
-      if (downloadsButton) downloadsButton.style.opacity = '0';
-      if (clearAllButton) clearAllButton.style.opacity = '0';
-      if (buttonContainer) buttonContainer.style.pointerEvents = 'none';
-      if (downloadsButton) downloadsButton.style.pointerEvents = 'none';
-      if (clearAllButton) clearAllButton.style.pointerEvents = 'none';
-    }
+    
+    const blendedColor = computeBlendedBackgroundColor();
+    state.dynamicSizer.style.backgroundColor = blendedColor;
+    state.dynamicSizer.style.backgroundImage = 'none';
+    
+    // Update text colors to match the new background
+    updatePodTextColors();
+    
+    console.log('[ShowPile] Computed blended background color:', blendedColor);
   }
 
-  // Hide pile background and buttons when not hovering
+  // Hide pile background when not hovering
   function hidePileBackground() {
     if (!state.dynamicSizer) {
       return;
@@ -1938,83 +1940,31 @@
       return;
     }
     state.dynamicSizer.style.background = 'transparent';
-    const buttonContainer = document.getElementById("zen-pile-button-container");
-    const downloadsButton = document.getElementById("zen-pile-downloads-button");
-    const clearAllButton = document.getElementById("zen-pile-clear-all-button");
-    
-    // In grid mode, keep buttons visible even when not hovering
-    if (state.isGridMode) {
-      if (downloadsButton) downloadsButton.style.opacity = '1';
-      if (clearAllButton) clearAllButton.style.opacity = '1';
-      if (buttonContainer) buttonContainer.style.pointerEvents = 'auto';
-      if (downloadsButton) downloadsButton.style.pointerEvents = 'auto';
-      if (clearAllButton) clearAllButton.style.pointerEvents = 'auto';
-    } else {
-      // In pile mode, hide buttons when not hovering
-      if (downloadsButton) downloadsButton.style.opacity = '0';
-      if (clearAllButton) clearAllButton.style.opacity = '0';
-      if (buttonContainer) buttonContainer.style.pointerEvents = 'none';
-      if (downloadsButton) downloadsButton.style.pointerEvents = 'none';
-      if (clearAllButton) clearAllButton.style.pointerEvents = 'none';
-    }
   }
 
-  // Setup hover events for background/buttons based on current mode
+  // Setup hover events for background/buttons (simplified - always single column mode)
   function setupPileBackgroundHoverEvents() {
     if (!state.dynamicSizer || !state.pileContainer) {
-      // debugLog("[PileHover] setupPileBackgroundHoverEvents: Missing elements", {
-      //   dynamicSizer: !!state.dynamicSizer,
-      //   pileContainer: !!state.pileContainer
-      // });
       return;
     }
     
-    // debugLog("[PileHover] setupPileBackgroundHoverEvents called", {
-    //   isGridMode: state.isGridMode,
-    //   containerHoverEventsAttached: state.containerHoverEventsAttached,
-    //   pileHoverEventsAttached: state.pileHoverEventsAttached
-    // });
-    
-    // Set transition flag to prevent hiding during event switching
-    state.isTransitioning = true;
-    
     // Remove existing hover events first
     if (state.containerHoverEventsAttached) {
-      state.dynamicSizer.removeEventListener('mouseenter', showPileBackground); // REMOVE THIS
-      state.dynamicSizer.removeEventListener('mouseleave', hidePileBackground); // REMOVE THIS
+      state.dynamicSizer.removeEventListener('mouseenter', handleDynamicSizerHover);
+      state.dynamicSizer.removeEventListener('mouseleave', handleDynamicSizerLeave);
       state.containerHoverEventsAttached = false;
-      // debugLog("[PileHover] Removed container hover events");
     }
     
     if (state.pileHoverEventsAttached) {
-      state.pileContainer.removeEventListener('mouseenter', showPileBackground); // REMOVE THIS
-      state.pileContainer.removeEventListener('mouseleave', hidePileBackground); // REMOVE THIS
+      state.pileContainer.removeEventListener('mouseenter', handlePileHover);
+      state.pileContainer.removeEventListener('mouseleave', handlePileLeave);
       state.pileHoverEventsAttached = false;
-      // debugLog("[PileHover] Removed pile hover events");
     }
     
-    // Add appropriate hover events based on mode
-    if (state.isGridMode) {
-      // In grid mode: hover over entire container should trigger show/hide pile
-      // The actual showing/hiding of background/buttons is handled by showPile/hidePile
-      state.dynamicSizer.addEventListener('mouseenter', handleDynamicSizerHover); // Changed to handleDynamicSizerHover
-      state.dynamicSizer.addEventListener('mouseleave', handleDynamicSizerLeave); // Changed to handleDynamicSizerLeave
-      state.containerHoverEventsAttached = true;
-      // debugLog("[PileHover] Grid mode: Added hover events to container");
-    } else {
-      // In pile mode: only hover over actual pile should trigger show/hide pile
-      // The actual showing/hiding of background/buttons is handled by showPile/hidePile
-      state.pileContainer.addEventListener('mouseenter', handlePileHover); // Changed to handlePileHover
-      state.pileContainer.addEventListener('mouseleave', handlePileLeave); // Changed to handlePileLeave
-      state.pileHoverEventsAttached = true;
-      // debugLog("[PileHover] Pile mode: Added hover events to pile only");
-    }
-    
-    // Clear transition flag after a brief delay to allow events to settle
-    setTimeout(() => {
-      state.isTransitioning = false;
-      // debugLog("[PileHover] Transition flag cleared - hover events stable");
-    }, 100);
+    // Always use container hover events for single column mode
+    state.dynamicSizer.addEventListener('mouseenter', handleDynamicSizerHover);
+    state.dynamicSizer.addEventListener('mouseleave', handleDynamicSizerLeave);
+    state.containerHoverEventsAttached = true;
   }
 
   // Alt key handlers for always-show mode
@@ -2065,6 +2015,57 @@
     }
   }
 
+  // Setup compact mode observer to handle visibility changes
+  function setupCompactModeObserver() {
+    const mainWindow = document.getElementById('main-window');
+    const zenMainAppWrapper = document.getElementById('zen-main-app-wrapper');
+    const targetElement = zenMainAppWrapper || document.documentElement;
+    
+    if (!targetElement) {
+      debugLog("[CompactModeObserver] Target element not found, cannot set up observer");
+      return;
+    }
+    
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'attributes') {
+          const attributeName = mutation.attributeName;
+          if (attributeName === 'zen-compact-mode' || attributeName === 'zen-sidebar-expanded') {
+            debugLog(`[CompactModeObserver] ${attributeName} changed, updating pile visibility`);
+            // Update pile visibility based on compact mode state
+            if (state.dynamicSizer && state.dismissedPods.size > 0) {
+              const isCompactMode = document.documentElement.getAttribute('zen-compact-mode') === 'true';
+              const isSidebarExpanded = document.documentElement.getAttribute('zen-sidebar-expanded') === 'true';
+              
+              if (isCompactMode && !isSidebarExpanded) {
+                // Hide pile when sidebar is collapsed in compact mode
+                state.dynamicSizer.style.display = 'none';
+              } else if (shouldPileBeVisible()) {
+                // Show pile if it should be visible
+                showPile();
+              }
+            }
+          }
+        }
+      }
+    });
+    
+    observer.observe(targetElement, {
+      attributes: true,
+      attributeFilter: ['zen-compact-mode', 'zen-sidebar-expanded']
+    });
+    
+    // Also observe documentElement for zen-sidebar-expanded
+    if (targetElement !== document.documentElement) {
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['zen-sidebar-expanded']
+      });
+    }
+    
+    debugLog("[CompactModeObserver] Set up observer for compact mode changes");
+  }
+
   // Setup preference change listener
   function setupPreferenceListener() {
     try {
@@ -2113,24 +2114,11 @@
     }
   }
 
-  // Update pointer-events based on current state and mode
+  // Update pointer-events based on current state
   function updatePointerEvents() {
     if (!state.dynamicSizer || !state.pileContainer) return;
     const alwaysShow = getAlwaysShowPile();
-    const isPileVisible = state.dynamicSizer.style.height !== '0px';
-    const buttonContainer = document.getElementById("zen-pile-button-container");
-    const downloadsButton = document.getElementById("zen-pile-downloads-button");
-    const clearAllButton = document.getElementById("zen-pile-clear-all-button");
-    if (state.isGridMode && isPileVisible) {
-      if (buttonContainer) buttonContainer.style.pointerEvents = 'auto';
-      if (downloadsButton) downloadsButton.style.pointerEvents = 'auto';
-      if (clearAllButton) clearAllButton.style.pointerEvents = 'auto';
-    } else {
-      if (buttonContainer) buttonContainer.style.pointerEvents = 'none';
-      if (downloadsButton) downloadsButton.style.pointerEvents = 'none';
-      if (clearAllButton) clearAllButton.style.pointerEvents = 'none';
-    }
-    if (alwaysShow && !state.isGridMode) {
+    if (alwaysShow) {
       state.dynamicSizer.style.pointerEvents = 'none';
       state.pileContainer.style.pointerEvents = 'auto';
     } else {
@@ -2172,7 +2160,8 @@
             removePodFromPile(podContextMenuPodData.key);
             // --- Update carousel/grid after removal ---
             const allPods = Array.from(state.dismissedPods.keys()).reverse(); // Most recent first
-            if (allPods.length < 6) {
+            const MAX_PODS_TO_SHOW = 10;
+            if (allPods.length < MAX_PODS_TO_SHOW) {
               state.carouselStartIndex = 0;
               state.visibleGridOrder = allPods.slice();
             } else {
@@ -2181,11 +2170,18 @@
                 state.carouselStartIndex = 0;
               }
               state.visibleGridOrder = [];
-              for (let i = 0; i < 6; i++) {
-                state.visibleGridOrder.push(allPods[(state.carouselStartIndex + i) % allPods.length]);
+              for (let i = 0; i < MAX_PODS_TO_SHOW; i++) {
+                const podIndex = state.carouselStartIndex + i;
+                if (podIndex < allPods.length) {
+                  state.visibleGridOrder.push(allPods[podIndex]);
+                }
               }
             }
-            renderGridWindow();
+            // Update positions for all pods
+            state.dismissedPods.forEach((_, podKey) => {
+              generateGridPosition(podKey);
+              applyGridPosition(podKey, 0);
+            });
             // Immediately hide all non-visible pods after removal
             state.dismissedPods.forEach((_, podKey) => {
               if (!state.visibleGridOrder.includes(podKey)) {
@@ -2206,10 +2202,10 @@
           const isHoveringSizer = state.dynamicSizer?.matches(':hover');
           const mainDownloadContainer = document.getElementById('userchrome-download-cards-container');
           const isHoveringDownloadArea = state.downloadButton?.matches(':hover') || mainDownloadContainer?.matches(':hover');
+          const isPileVisible = state.dynamicSizer && state.dynamicSizer.style.height !== '0px';
+          
           if (!isHoveringPile && !isHoveringSizer && !isHoveringDownloadArea) {
-            if (state.isGridMode) {
-              transitionToPile();
-            }
+            // No mode transitions needed
             if (!getAlwaysShowPile()) {
               // --- handle pending pile close ---
               if (state.pendingPileClose) {
@@ -2220,6 +2216,34 @@
                 hidePile();
               }
             }
+            
+            // Show media controls toolbar when context menu is dismissed and not hovering over download/pile area
+            // Show it if there are no dismissed pods, or if the pile is hidden
+            clearTimeout(state.mediaControlsToolbarTimeout);
+            
+            // Check if pile is currently visible/animating - add animation duration to delay
+            const isPileVisible = state.dynamicSizer && state.dynamicSizer.style.height !== '0px' && state.dynamicSizer.style.display !== 'none';
+            const delay = isPileVisible ? CONFIG.hoverDebounceMs + CONFIG.containerAnimationDuration + 50 : CONFIG.hoverDebounceMs;
+            
+            state.mediaControlsToolbarTimeout = setTimeout(() => {
+              const mediaControlsToolbar = document.getElementById('zen-media-controls-toolbar');
+              if (mediaControlsToolbar) {
+                // Check again if we're still not hovering and pile is hidden
+                const stillNotHovering = !state.pileContainer?.matches(':hover') && 
+                                        !state.dynamicSizer?.matches(':hover') &&
+                                        !state.downloadButton?.matches(':hover') &&
+                                        !mainDownloadContainer?.matches(':hover');
+                const pileStillHidden = !state.dynamicSizer || 
+                                       state.dynamicSizer.style.height === '0px' || 
+                                       state.dynamicSizer.style.display === 'none';
+                
+                if (stillNotHovering && (state.dismissedPods.size === 0 || pileStillHidden)) {
+                  mediaControlsToolbar.style.opacity = '1';
+                  mediaControlsToolbar.style.pointerEvents = 'auto';
+                  debugLog("[ContextMenu] Showed media controls toolbar after menu dismissal");
+                }
+              }
+            }, delay);
           } else {
             // If still hovering, just clear the flag
             state.pendingPileClose = false;
@@ -2576,6 +2600,14 @@
       const podElement = state.getPodElement(podData.key);
       if (podElement) {
         podElement.title = `${newName}\nClick: Open file\nMiddle-click: Show in file explorer\nRight-click: Context menu`;
+        
+        // Update the displayed filename in the DOM
+        const filenameElement = podElement.querySelector('.dismissed-pod-filename');
+        if (filenameElement) {
+          filenameElement.textContent = newName;
+          debugLog(`[Rename] Updated displayed filename in DOM: ${newName}`);
+        }
+        
         // Force UI refresh if needed (e.g., update label/icon)
         if (podElement.querySelector('.dismissed-pod-preview')) {
           // Optionally update preview/icon if needed
