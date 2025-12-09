@@ -394,7 +394,7 @@
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "name": "Tidy Popup & Extension",
     "version": "2.9.1",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
     "stars": 2,
     "fork": [
@@ -428,5 +428,15 @@
       "firefox"
     ]
   },
-  "collapse-pinned-area": "Zylaah/collapse-pinned-area"
+  "collapse-pinned-area": {
+    "homepage": "Zylaah/collapse-pinned-area",
+    "name": "Collapse Pinned Area",
+    "version": "1.0",
+    "description": "Let's you collapse your pinned folders and tabs area with a chevron icon",
+    "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/collapse-pinned-area/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  }
 }
