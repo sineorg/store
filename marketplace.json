@@ -6,7 +6,7 @@
     "version": "5.7.2",
     "description": "A skin for Firefox and its forks that makes things flow.",
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
-    "stars": 500,
+    "stars": 499,
     "fork": [
       "floorp",
       "firefox",
@@ -48,21 +48,6 @@
     "stars": 142,
     "fork": [
       "zen"
-    ]
-  },
-  "zaps-cool-photon-theme": {
-    "homepage": "zapSNH/zapsCoolPhotonTheme",
-    "image": "https://i.imgur.com/FyzTFKg.png",
-    "name": "zap's cool photon theme",
-    "version": "145.0",
-    "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
-    "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
-    "stars": 121,
-    "fork": [
-      "firefox",
-      "waterfox",
-      "floorp",
-      "mullvad"
     ]
   },
   "Neo-Zen": {
@@ -107,29 +92,6 @@
       "zen"
     ]
   },
-  "settings-shortcuts-search": {
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
-    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/image.png",
-    "name": "Search Keyboard shortcuts",
-    "version": "1.0.0",
-    "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
-    "stars": 68,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-command-palette": {
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
-    "name": "Zen Command Palette",
-    "version": "1.7.3",
-    "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
-    "stars": 68,
-    "fork": [
-      "zen"
-    ]
-  },
   "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
     "homepage": "CosmoCreeper/Zen-Themes/tree/main/SuperPins",
     "image": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/image.png",
@@ -166,18 +128,6 @@
       "zen"
     ]
   },
-  "wireframe-2.0": {
-    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
-    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
-    "name": "Wireframe 2.0",
-    "version": "2.7.3",
-    "description": "A minimal theme for Zen. Unconventional by design.",
-    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
-    "stars": 28,
-    "fork": [
-      "zen"
-    ]
-  },
   "quick-tabs": {
     "homepage": "Darsh-A/Quick-Tabs",
     "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
@@ -190,48 +140,12 @@
       "zen"
     ]
   },
-  "vizen-floaty-ui": {
-    "homepage": "moktavizen/floaty-ui",
-    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
-    "name": "Floaty UI",
-    "version": "1.0.2",
-    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
-    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
-    "stars": 25,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-tidy-downloads": {
-    "homepage": "Vertex-Mods/Zen-Tidy-Downloads",
-    "image": "https://github.com/Vertex-Mods/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
-    "name": "Tidy Downloads",
-    "version": "2.0.0",
-    "description": "Clean up your downloads with AI",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/refs/heads/main/README.md",
-    "stars": 15,
-    "fork": [
-      "zen"
-    ]
-  },
   "customize-collapsed-sidebar": {
     "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
     "name": "Customize Collapsed Sidebar",
     "version": "1.0.5",
     "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
     "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
-    "stars": 12,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-tidy-tabs": {
-    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
-    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
-    "name": "Zen Tidy Tabs",
-    "version": "1.0.0s",
-    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
     "stars": 12,
     "fork": [
       "zen"
@@ -285,17 +199,6 @@
       "zen"
     ]
   },
-  "zen-drop-link": {
-    "homepage": "https://github.com/octaviusz/zen-drop-link",
-    "name": "Zen Drop Link to Split",
-    "version": "0.0.2",
-    "description": "This mod allows you to split tabs by drag and drop links",
-    "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
-    "stars": 7,
-    "fork": [
-      "zen"
-    ]
-  },
   "cfafe94c-5a29-4dae-8489-6be514185474": {
     "homepage": "rasyidrafi/zen-better-sidebar",
     "image": "https://github.com/rasyidrafi/zen-better-sidebar/blob/main/image.png?raw=true",
@@ -303,29 +206,6 @@
     "version": "1.1.8",
     "description": "Enhance default firefox sidebar with a modern look and feel matching Zen UI.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-better-sidebar/refs/heads/main/README.md",
-    "stars": 5,
-    "fork": [
-      "zen"
-    ]
-  },
-  "tab-rename-zen-browser": {
-    "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
-    "name": "Better Tab Rename",
-    "version": "1.0.0",
-    "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
-    "stars": 5,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-live-calendar": {
-    "homepage": "Vertex-Mods/Zen-Live-Calendar",
-    "image": "https://github.com/Vertex-Mods/Zen-Live-Calendar/blob/main/image.png?raw=true",
-    "name": "Live Calendar",
-    "version": "1.0.0",
-    "description": "Brings the live calendar functionality from Arc to Zen, making it feel as native as possible.",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Live-Calendar/refs/heads/main/README.md",
     "stars": 5,
     "fork": [
       "zen"
@@ -422,6 +302,126 @@
     "description": "Let's you collapse your pinned folders and tabs area with a chevron icon",
     "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/collapse-pinned-area/README.md",
     "stars": 1,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zaps-cool-photon-theme": {
+    "homepage": "zapSNH/zapsCoolPhotonTheme",
+    "image": "https://i.imgur.com/FyzTFKg.png",
+    "name": "zap's cool photon theme",
+    "version": "145.0",
+    "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
+    "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
+    "stars": 0,
+    "fork": [
+      "firefox",
+      "waterfox",
+      "floorp",
+      "mullvad"
+    ]
+  },
+  "settings-shortcuts-search": {
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
+    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/image.png",
+    "name": "Search Keyboard shortcuts",
+    "version": "1.0.0",
+    "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-command-palette": {
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
+    "name": "Zen Command Palette",
+    "version": "1.7.3",
+    "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "wireframe-2.0": {
+    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
+    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
+    "name": "Wireframe 2.0",
+    "version": "2.7.3",
+    "description": "A minimal theme for Zen. Unconventional by design.",
+    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "vizen-floaty-ui": {
+    "homepage": "moktavizen/floaty-ui",
+    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
+    "name": "Floaty UI",
+    "version": "1.0.2",
+    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
+    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-tidy-downloads": {
+    "homepage": "Vertex-Mods/Zen-Tidy-Downloads",
+    "image": "https://github.com/Vertex-Mods/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
+    "name": "Tidy Downloads",
+    "version": "2.0.0",
+    "description": "Clean up your downloads with AI",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-tidy-tabs": {
+    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
+    "name": "Zen Tidy Tabs",
+    "version": "1.0.0s",
+    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-drop-link": {
+    "homepage": "https://github.com/octaviusz/zen-drop-link",
+    "name": "Zen Drop Link to Split",
+    "version": "0.0.2",
+    "description": "This mod allows you to split tabs by drag and drop links",
+    "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "tab-rename-zen-browser": {
+    "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
+    "name": "Better Tab Rename",
+    "version": "1.0.0",
+    "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-live-calendar": {
+    "homepage": "Vertex-Mods/Zen-Live-Calendar",
+    "image": "https://github.com/Vertex-Mods/Zen-Live-Calendar/blob/main/image.png?raw=true",
+    "name": "Live Calendar",
+    "version": "1.0.0",
+    "description": "Brings the live calendar functionality from Arc to Zen, making it feel as native as possible.",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Live-Calendar/refs/heads/main/README.md",
+    "stars": 0,
     "fork": [
       "zen"
     ]
