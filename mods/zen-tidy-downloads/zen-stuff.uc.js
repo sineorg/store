@@ -64,6 +64,8 @@
       this.carouselStartIndex = 0;
       // --- add isGridAnimating flag ---
       this.isGridAnimating = false;
+      // --- add workspaceScrollboxStyle for controlling ::after opacity ---
+      this.workspaceScrollboxStyle = null;
     }
 
     // Safe getters with validation
@@ -333,6 +335,9 @@
       return;
     }
 
+      // Wait for SessionStore to be ready
+      await initSessionStore();
+
       await ErrorHandler.withRetry(async () => {
       await findDownloadButton();
         await createPileContainer();
@@ -347,6 +352,254 @@
       ErrorHandler.handleError(error, 'initialization');
       state.retryCount++;
       setTimeout(init, CONFIG.retryDelay);
+    }
+  }
+
+  // Initialize SessionStore and wait for it to be ready
+  async function initSessionStore() {
+    if (!window.SessionStore) {
+      console.warn("[Dismissed Pile] SessionStore not available, retrying...");
+      await new Promise(resolve => setTimeout(resolve, 200));
+      return initSessionStore();
+    }
+
+    try {
+      if (window.SessionStore.promiseInitialized) {
+        await window.SessionStore.promiseInitialized;
+      }
+      debugLog("[SessionStore] SessionStore initialized and ready");
+    } catch (error) {
+      console.error("[Dismissed Pile] Error initializing SessionStore:", error);
+    }
+  }
+
+  // Save dismissed pod to SessionStore
+  function saveDismissedPodToSession(podData) {
+    try {
+      if (!window.SessionStore) {
+        console.warn("[Dismissed Pile] SessionStore not available for saving");
+        return;
+      }
+
+      // Serialize pod data (exclude DOM elements and functions)
+      const serializedData = {
+        key: podData.key,
+        filename: podData.filename,
+        originalFilename: podData.originalFilename,
+        fileSize: podData.fileSize,
+        contentType: podData.contentType,
+        targetPath: podData.targetPath,
+        sourceUrl: podData.sourceUrl,
+        startTime: podData.startTime,
+        endTime: podData.endTime,
+        dismissTime: podData.dismissTime,
+        wasRenamed: podData.wasRenamed,
+        previewData: podData.previewData,
+        dominantColor: podData.dominantColor
+      };
+
+      SessionStore.setCustomWindowValue(
+        window,
+        `zen-stuff-pod-${podData.key}`,
+        JSON.stringify(serializedData)
+      );
+      
+      debugLog(`[SessionStore] Saved pod to session: ${podData.key}`);
+    } catch (error) {
+      console.error("[Dismissed Pile] Error saving pod to SessionStore:", error);
+    }
+  }
+
+  // Remove dismissed pod from SessionStore
+  function removeDismissedPodFromSession(podKey) {
+    try {
+      if (!window.SessionStore) {
+        console.warn("[Dismissed Pile] SessionStore not available for removal");
+        return;
+      }
+
+      SessionStore.deleteCustomWindowValue(window, `zen-stuff-pod-${podKey}`);
+      debugLog(`[SessionStore] Removed pod from session: ${podKey}`);
+    } catch (error) {
+      console.error("[Dismissed Pile] Error removing pod from SessionStore:", error);
+    }
+  }
+
+  // Restore dismissed pods from SessionStore
+  async function restoreDismissedPodsFromSession() {
+    try {
+      if (!window.SessionStore) {
+        console.warn("[Dismissed Pile] SessionStore not available for restoration");
+        return;
+      }
+
+      // Get the list of pod keys from SessionStore
+      const podKeysJson = SessionStore.getCustomWindowValue(window, 'zen-stuff-pod-keys');
+      if (!podKeysJson) {
+        debugLog("[SessionStore] No saved pod keys found");
+        return;
+      }
+
+      const podKeys = JSON.parse(podKeysJson);
+      let restoredCount = 0;
+      const restorationPromises = [];
+
+      for (const podKey of podKeys) {
+        const restorationPromise = (async () => {
+          try {
+            const podDataJson = SessionStore.getCustomWindowValue(window, `zen-stuff-pod-${podKey}`);
+            if (podDataJson) {
+              const podData = JSON.parse(podDataJson);
+              
+              // Verify the file still exists before restoring
+              let actualPath = podData.targetPath;
+              let exists = await FileSystem.fileExists(actualPath);
+              
+              console.log(`[SessionStore] Checking file existence for ${podData.filename}: saved path=${podData.targetPath}, exists=${exists}`);
+              
+              // If file doesn't exist at saved path, try to find it with current filename
+              if (!exists && podData.filename) {
+                try {
+                  const parentDir = await FileSystem.getParentDirectory(podData.targetPath);
+                  console.log(`[SessionStore] Parent directory exists: ${parentDir && parentDir.exists()}`);
+                  
+                  if (parentDir && parentDir.exists()) {
+                    const newFile = parentDir.clone();
+                    newFile.append(podData.filename);
+                    const newPath = newFile.path;
+                    const newExists = newFile.exists();
+                    
+                    console.log(`[SessionStore] Trying new path: ${newPath}, exists=${newExists}`);
+                    
+                    if (newExists) {
+                      actualPath = newPath;
+                      exists = true;
+                      podData.targetPath = actualPath; // Update the saved path
+                      console.log(`[SessionStore] Found file with updated path: ${podData.filename} -> ${actualPath}`);
+                      
+                      // Also save the updated path back to SessionStore
+                      saveDismissedPodToSession(podData);
+                    } else {
+                      console.log(`[SessionStore] File not found with current filename: ${podData.filename}`);
+                    }
+                  }
+                } catch (error) {
+                  console.warn(`[SessionStore] Error checking for file with current filename:`, error);
+                }
+              }
+              
+              if (exists) {
+                console.log(`[SessionStore] File exists, checking if image regeneration needed. ContentType: "${podData.contentType}", filename: ${podData.filename}`);
+                
+                // Always regenerate image preview for image files to ensure correct path
+                const hasImageContentType = podData.contentType && podData.contentType !== "null" && podData.contentType.startsWith('image/');
+                const hasImageExtension = podData.filename && /\.(jpg|jpeg|png|gif|bmp|webp|svg|ico)$/i.test(podData.filename);
+                const isImage = hasImageContentType || hasImageExtension;
+                
+                console.log(`[SessionStore] Image detection - contentType: "${podData.contentType}", hasImageContentType: ${hasImageContentType}, hasImageExtension: ${hasImageExtension}, isImage: ${isImage}`);
+                
+                if (isImage) {
+                  console.log(`[SessionStore] Starting image preview regeneration for: ${podData.filename}`);
+                  try {
+                    const file = await FileSystem.createFileInstance(actualPath);
+                    
+                    // Try multiple approaches to create a working image URL
+                    let fileUrl;
+                    
+                    // Method 1: Use Services.io.newFileURI (most reliable)
+                    if (Services.io && Services.io.newFileURI) {
+                      try {
+                        fileUrl = Services.io.newFileURI(file).spec;
+                        console.log(`[SessionStore] Created file URL using Services.io: ${fileUrl}`);
+                      } catch (ioError) {
+                        console.warn(`[SessionStore] Services.io.newFileURI failed:`, ioError);
+                      }
+                    }
+                    
+                    // Method 2: Manual file URL construction (fallback)
+                    if (!fileUrl) {
+                      const path = actualPath.replace(/\\/g, '/');
+                      fileUrl = 'file:///' + (path.startsWith('/') ? path.substring(1) : path);
+                      console.log(`[SessionStore] Created file URL manually: ${fileUrl}`);
+                    }
+                    
+                    podData.previewData = {
+                      type: 'image',
+                      src: fileUrl
+                    };
+                    console.log(`[SessionStore] Regenerated image preview for: ${podData.filename}, URL: ${fileUrl}`);
+                  } catch (error) {
+                    console.error(`[SessionStore] Error regenerating image preview for ${podData.filename}:`, error);
+                    // Fall back to icon if image preview fails
+                    podData.previewData = null;
+                  }
+                }
+                
+                // Don't call addPodToPile as it would save again, just restore the state
+                state.dismissedPods.set(podData.key, podData);
+                
+                // Create DOM element
+                const podElement = createPodElement(podData);
+                state.podElements.set(podData.key, podElement);
+                state.pileContainer.appendChild(podElement);
+
+                // Generate position for single column layout
+                generateGridPosition(podData.key);
+                applyGridPosition(podData.key, 0);
+
+                restoredCount++;
+                debugLog(`[SessionStore] Restored pod: ${podData.filename}`);
+              } else {
+                // File no longer exists, remove from session
+                removeDismissedPodFromSession(podKey);
+                debugLog(`[SessionStore] File no longer exists, skipping: ${podData.filename}`);
+              }
+            }
+          } catch (error) {
+            console.error(`[Dismissed Pile] Error restoring pod ${podKey}:`, error);
+          }
+        })();
+        
+        restorationPromises.push(restorationPromise);
+      }
+
+      // Wait for all restorations to complete
+      await Promise.all(restorationPromises);
+
+      if (restoredCount > 0) {
+        // Update the pod keys list to remove any that failed to restore
+        updatePodKeysInSession();
+        
+        updatePileVisibility();
+        updateDownloadsButtonVisibility();
+        
+        // Show pile if in always-show mode
+        if (getAlwaysShowPile() && shouldPileBeVisible()) {
+          setTimeout(() => showPile(), 100);
+        }
+      }
+
+      debugLog(`[SessionStore] Restored ${restoredCount} pods from session`);
+    } catch (error) {
+      console.error("[Dismissed Pile] Error restoring pods from SessionStore:", error);
+    }
+  }
+
+  // Update the list of pod keys in SessionStore
+  function updatePodKeysInSession() {
+    try {
+      if (!window.SessionStore) return;
+
+      const podKeys = Array.from(state.dismissedPods.keys());
+      SessionStore.setCustomWindowValue(
+        window,
+        'zen-stuff-pod-keys',
+        JSON.stringify(podKeys)
+      );
+      
+      debugLog(`[SessionStore] Updated pod keys list: ${podKeys.length} pods`);
+    } catch (error) {
+      console.error("[Dismissed Pile] Error updating pod keys in SessionStore:", error);
     }
   }
 
@@ -442,7 +695,8 @@
       z-index: 1;
       width: 100%;
       box-sizing: border-box;
-
+      padding-left: 5px;
+      padding-right: 5px;
     `;
 
     // Buttons removed - no longer needed
@@ -483,6 +737,19 @@
     
     // Set up observer for compact mode changes
     setupCompactModeObserver();
+    
+    // Create style element for controlling workspace-arrowscrollbox::after opacity
+    if (!state.workspaceScrollboxStyle) {
+      state.workspaceScrollboxStyle = document.createElement('style');
+      state.workspaceScrollboxStyle.id = 'zen-stuff-workspace-scrollbox-style';
+      state.workspaceScrollboxStyle.textContent = `
+        arrowscrollbox.workspace-arrowscrollbox::after {
+          opacity: var(--zen-stuff-scrollbox-after-opacity, 1) !important;
+        }
+      `;
+      document.head.appendChild(state.workspaceScrollboxStyle);
+      debugLog("Created arrowscrollbox.workspace-arrowscrollbox::after style control");
+    }
   }
 
   // Setup event listeners
@@ -561,6 +828,9 @@
     });
     debugLog(`Loaded ${existingPods.size} existing dismissed pods`);
     
+    // Restore dismissed pods from SessionStore
+    restoreDismissedPodsFromSession();
+    
     // If always-show mode is enabled and we have pods, show the pile
     if (getAlwaysShowPile() && existingPods.size > 0) {
       setTimeout(() => {
@@ -587,6 +857,12 @@
 
     // Store pod data
     state.dismissedPods.set(podData.key, podData);
+
+    // Save to SessionStore for persistence
+    saveDismissedPodToSession(podData);
+    
+    // Update the list of pod keys in SessionStore
+    updatePodKeysInSession();
 
     // Create DOM element
     const podElement = createPodElement(podData);
@@ -689,10 +965,15 @@
           height: 100%;
           object-fit: cover;
         `;
-        img.onerror = () => {
+        img.onload = () => {
+          console.log(`[PodElement] Image loaded successfully: ${podData.filename}, src: ${podData.previewData.src}`);
+        };
+        img.onerror = (e) => {
+          console.error(`[PodElement] Image failed to load: ${podData.filename}, src: ${podData.previewData.src}`, e);
           preview.innerHTML = getFileIcon(podData.contentType);
         };
         preview.appendChild(img);
+        console.log(`[PodElement] Created image element for: ${podData.filename}, src: ${podData.previewData.src}`);
       } else if (podData.previewData.html) {
         preview.innerHTML = podData.previewData.html;
       } else {
@@ -971,6 +1252,12 @@
     state.podElements.delete(podKey);
     state.pilePositions.delete(podKey);
     state.gridPositions.delete(podKey);
+
+    // Remove from SessionStore
+    removeDismissedPodFromSession(podKey);
+    
+    // Update the list of pod keys in SessionStore
+    updatePodKeysInSession();
 
     // Recalculate grid positions for remaining pods
     state.dismissedPods.forEach((_, key) => generateGridPosition(key));
@@ -1358,16 +1645,12 @@
         updatePileContainerWidth();
     }
 
-    // For absolute positioning, use left/right with equal margins for symmetric gaps
-    const sidePadding = CONFIG.minSidePadding; // Padding from sidebar edges (5px)
+    // Parent container spans full toolbar width
+    state.dynamicSizer.style.left = '0px';
+    state.dynamicSizer.style.right = '0px';
+    // Remove width when using left/right - it's automatically calculated
     
-    // Use left: 0 and right: 0 to span full width, then use margin for symmetric gaps
-    state.dynamicSizer.style.left = `${sidePadding}px`;
-    state.dynamicSizer.style.right = `${sidePadding}px`;
-    state.dynamicSizer.style.width = 'auto'; // Let left/right determine width
-    
-    debugLog("Positioned pile for absolute positioning with symmetric gaps", {
-      sidePadding,
+    debugLog("Positioned pile for full-width container", {
       position: state.dynamicSizer.style.position,
       left: state.dynamicSizer.style.left,
       right: state.dynamicSizer.style.right
@@ -1402,6 +1685,9 @@
     
     // Set background to ensure backdrop-filter is properly rendered
     showPileBackground();
+    
+    // Hide workspace-arrowscrollbox::after when pile is showing
+    hideWorkspaceScrollboxAfter();
     
     // Update positions for all pods (show only 4 most recent)
     state.dismissedPods.forEach((_, podKey) => {
@@ -1447,6 +1733,9 @@
     // Hide background and buttons when hiding pile
     hidePileBackground();
     
+    // Restore workspace-arrowscrollbox::after when pile is hidden
+    showWorkspaceScrollboxAfter();
+    
     // No mode transitions needed
     
     debugLog("Hiding dismissed downloads pile by collapsing sizer");
@@ -1467,18 +1756,14 @@
       generateGridPosition(podKey);
     });
 
-    // Recalculate position if pile is currently shown (using same logic as showPile)
+    // Recalculate position if pile is currently shown - parent container spans full width
     if (state.dynamicSizer && state.dynamicSizer.style.height !== '0px') {
-      const sidePadding = CONFIG.minSidePadding; // Padding from sidebar edges (5px)
+      // Parent container spans full toolbar width
+      state.dynamicSizer.style.left = '0px';
+      state.dynamicSizer.style.right = '0px';
+      // Remove width when using left/right - it's automatically calculated
       
-      // Use left and right with equal values for symmetric gaps
-      state.dynamicSizer.style.left = `${sidePadding}px`;
-      state.dynamicSizer.style.right = `${sidePadding}px`;
-      state.dynamicSizer.style.width = 'auto'; // Let left/right determine width
-      
-      debugLog("Recalculated pile position on resize with symmetric gaps", {
-        sidePadding
-      });
+      debugLog("Recalculated pile position on resize - full width container");
     }
 
     // Apply positions for all pods (always single column mode now)
@@ -1730,6 +2015,13 @@
           
           if (computedColor && computedColor !== 'transparent' && computedColor !== 'rgba(0, 0, 0, 0)') {
             debugLog('[BackgroundColor] Using toolbar background color for compact mode:', computedColor);
+            // Ensure fully opaque - convert rgba to rgb if needed
+            if (computedColor.startsWith('rgba(')) {
+              const match = computedColor.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*[\d.]+\)/);
+              if (match) {
+                return `rgb(${match[1]}, ${match[2]}, ${match[3]})`;
+              }
+            }
             return computedColor;
           }
           
@@ -1826,14 +2118,8 @@
     const blendedG = Math.round(baseRGB.g * (1 - wrapperRatio) + wrapperRGB.g * wrapperRatio);
     const blendedB = Math.round(baseRGB.b * (1 - wrapperRatio) + wrapperRGB.b * wrapperRatio);
     
-    // Use the base's opacity if it has one, otherwise fully opaque
-    const finalAlpha = baseRGB.a || 1;
-    
-    if (finalAlpha < 1) {
-      return `rgba(${blendedR}, ${blendedG}, ${blendedB}, ${finalAlpha})`;
-    } else {
-      return `rgb(${blendedR}, ${blendedG}, ${blendedB})`;
-    }
+    // Always return fully opaque color (no transparency)
+    return `rgb(${blendedR}, ${blendedG}, ${blendedB})`;
   }
 
   // Calculate text color based on background color (using Zen's luminance/contrast logic)
@@ -1940,6 +2226,22 @@
       return;
     }
     state.dynamicSizer.style.background = 'transparent';
+  }
+
+  // Hide arrowscrollbox.workspace-arrowscrollbox::after when pile is showing
+  function hideWorkspaceScrollboxAfter() {
+    if (state.workspaceScrollboxStyle) {
+      document.documentElement.style.setProperty('--zen-stuff-scrollbox-after-opacity', '0');
+      debugLog("Hidden arrowscrollbox.workspace-arrowscrollbox::after");
+    }
+  }
+
+  // Show arrowscrollbox.workspace-arrowscrollbox::after when pile is hidden
+  function showWorkspaceScrollboxAfter() {
+    if (state.workspaceScrollboxStyle) {
+      document.documentElement.style.setProperty('--zen-stuff-scrollbox-after-opacity', '1');
+      debugLog("Shown arrowscrollbox.workspace-arrowscrollbox::after");
+    }
   }
 
   // Setup hover events for background/buttons (simplified - always single column mode)
