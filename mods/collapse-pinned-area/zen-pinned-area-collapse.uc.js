@@ -1,11 +1,9 @@
 // ==UserScript==
 // @name         Zen Workspace Collapse
-// @version      1.1
 // @description  Add chevron icon to collapse/expand pinned folders and tabs in Zen Browser. No persistence.
-// @author       bxth (Modified)
+// @author       Bxth
 // @match        chrome://browser/content/browser.xhtml
 // @match        chrome://browser/content/browser.xul
-// @grant        none
 // ==/UserScript==
 
 (function() {
@@ -13,6 +11,9 @@
 
     // State to track collapsed status per workspace ID (Session only, no persistence)
     const collapsedStates = new Map();
+    
+    // State to track active tabs per workspace ID (for keeping active tab visible when collapsed)
+    const activeTabStates = new Map();
     
     // Helper function to get workspace ID from an element
     function getWorkspaceId(element) {
@@ -42,6 +43,22 @@
     function setWorkspaceCollapsed(workspaceId, collapsed) {
         if (!workspaceId) return;
         collapsedStates.set(workspaceId, collapsed);
+    }
+    
+    // Helper function to get active tab for a workspace
+    function getWorkspaceActiveTab(workspaceId) {
+        if (!workspaceId) return null;
+        return activeTabStates.get(workspaceId) || null;
+    }
+    
+    // Helper function to set active tab for a workspace
+    function setWorkspaceActiveTab(workspaceId, tab) {
+        if (!workspaceId) return;
+        if (tab) {
+            activeTabStates.set(workspaceId, tab);
+        } else {
+            activeTabStates.delete(workspaceId);
+        }
     }
     
     // Function to close all folders on startup (reset state)
@@ -163,9 +180,17 @@
         });
     }
 
-    function animatePinnedItems(items, collapse, animate) {
+    function animatePinnedItems(items, collapse, animate, workspaceId) {
+        // Check if there's an active tab for this workspace
+        const activeTab = getWorkspaceActiveTab(workspaceId);
+        
         items.forEach(item => {
             if (!item) {
+                return;
+            }
+
+            // Skip the active tab when collapsing - keep it visible
+            if (collapse && activeTab && (item === activeTab || item.contains && item.contains(activeTab))) {
                 return;
             }
 
@@ -334,9 +359,26 @@
                    child.tagName !== 'hbox';
         });
 
+        // Handle active tab state when applying collapsed state
+        if (isCollapsed) {
+            // Check if there's a currently selected tab in this workspace
+            const currentTab = gBrowser.selectedTab;
+            if (currentTab && pinnedSection.contains(currentTab)) {
+                setWorkspaceActiveTab(workspaceId, currentTab);
+                pinnedSection.setAttribute('data-zen-has-active', 'true');
+                currentTab.classList.add('zen-active-in-collapsed');
+            }
+        } else {
+            // Clear active tab state when not collapsed
+            setWorkspaceActiveTab(workspaceId, null);
+            pinnedSection.removeAttribute('data-zen-has-active');
+            const allTabs = pinnedSection.querySelectorAll('[is="tabbrowser-tab"], zen-folder');
+            allTabs.forEach(tab => tab.classList.remove('zen-active-in-collapsed'));
+        }
+        
         // Apply collapsed state without animation
         const targets = [...folders, ...directTabs];
-        animatePinnedItems(targets, isCollapsed, false);
+        animatePinnedItems(targets, isCollapsed, false, workspaceId);
         
         // Also update chevron and icon visibility immediately to prevent flashing
         const workspaceIndicator = document.querySelector(`.zen-workspace-tabs-section.zen-current-workspace-indicator[zen-workspace-id="${workspaceId}"]`) ||
@@ -424,10 +466,36 @@
                 workspaceIndicator.removeAttribute('data-zen-collapsed');
             }
         }
+        
+        // Handle active tab state when toggling
+        if (isCollapsed) {
+            // Check if there's a currently selected tab in this workspace
+            const currentTab = gBrowser.selectedTab;
+            if (currentTab && pinnedSection.contains(currentTab)) {
+                setWorkspaceActiveTab(workspaceId, currentTab);
+                pinnedSection.setAttribute('data-zen-has-active', 'true');
+                currentTab.classList.add('zen-active-in-collapsed');
+                
+                // Make sure the active tab stays visible
+                currentTab.style.maxHeight = '';
+                currentTab.style.opacity = '';
+                currentTab.style.overflow = '';
+                currentTab.style.marginTop = '';
+                currentTab.style.marginBottom = '';
+                currentTab.style.paddingTop = '';
+                currentTab.style.paddingBottom = '';
+            }
+        } else {
+            // Clear active tab state when expanding
+            setWorkspaceActiveTab(workspaceId, null);
+            pinnedSection.removeAttribute('data-zen-has-active');
+            const allTabs = pinnedSection.querySelectorAll('[is="tabbrowser-tab"], zen-folder');
+            allTabs.forEach(tab => tab.classList.remove('zen-active-in-collapsed'));
+        }
 
         // Animate folders and direct tabs (but not the separator)
         const targets = [...folders, ...directTabs];
-        animatePinnedItems(targets, isCollapsed, true);
+        animatePinnedItems(targets, isCollapsed, true, workspaceId);
 
         // Ensure separator remains visible
         if (separator) {
@@ -593,6 +661,9 @@
             initialized = true;
         });
 
+        // Block double-click on workspace icons
+        blockWorkspaceIconDoubleClick();
+
         return initialized;
     }
 
@@ -642,6 +713,101 @@
         }
     }
     
+    // Function to handle tab selection and update active tab state
+    function handleTabSelect(event) {
+        const selectedTab = event.target;
+        if (!selectedTab) return;
+        
+        // Check if this tab is in a pinned section
+        const pinnedSection = selectedTab.closest('.zen-workspace-pinned-tabs-section');
+        if (!pinnedSection) return;
+        
+        // Get the workspace ID for this tab
+        const workspaceId = getWorkspaceId(pinnedSection);
+        if (!workspaceId) return;
+        
+        // Update the active tab for this workspace
+        setWorkspaceActiveTab(workspaceId, selectedTab);
+        
+        // If the workspace is currently collapsed, we might need to show this tab
+        const isCollapsed = isWorkspaceCollapsed(workspaceId);
+        if (isCollapsed) {
+            // Make sure the selected tab is visible
+            selectedTab.style.maxHeight = '';
+            selectedTab.style.opacity = '';
+            selectedTab.style.overflow = '';
+            selectedTab.style.marginTop = '';
+            selectedTab.style.marginBottom = '';
+            selectedTab.style.paddingTop = '';
+            selectedTab.style.paddingBottom = '';
+            
+            // Mark the pinned section as having an active tab
+            pinnedSection.setAttribute('data-zen-has-active', 'true');
+            
+            // Remove active class from all other tabs in this workspace
+            const allTabs = pinnedSection.querySelectorAll('[is="tabbrowser-tab"], zen-folder');
+            allTabs.forEach(tab => tab.classList.remove('zen-active-in-collapsed'));
+            
+            // Add active class to the selected tab
+            selectedTab.classList.add('zen-active-in-collapsed');
+            
+            console.log('[Zen Collapse] Made active tab visible in collapsed workspace:', workspaceId);
+        } else {
+            // Remove active indicators when not collapsed
+            pinnedSection.removeAttribute('data-zen-has-active');
+            const allTabs = pinnedSection.querySelectorAll('[is="tabbrowser-tab"], zen-folder');
+            allTabs.forEach(tab => tab.classList.remove('zen-active-in-collapsed'));
+        }
+    }
+    
+    // Function to handle tab close and clean up active tab state
+    function handleTabClose(event) {
+        const closedTab = event.target;
+        if (!closedTab) return;
+        
+        // Check if this was an active tab in any workspace
+        for (const [workspaceId, activeTab] of activeTabStates.entries()) {
+            if (activeTab === closedTab) {
+                // Clear the active tab state for this workspace
+                setWorkspaceActiveTab(workspaceId, null);
+                
+                // Find the pinned section and remove active indicators
+                const pinnedSection = document.querySelector(`.zen-workspace-pinned-tabs-section[zen-workspace-id="${workspaceId}"]`);
+                if (pinnedSection) {
+                    pinnedSection.removeAttribute('data-zen-has-active');
+                    const allTabs = pinnedSection.querySelectorAll('[is="tabbrowser-tab"], zen-folder');
+                    allTabs.forEach(tab => tab.classList.remove('zen-active-in-collapsed'));
+                }
+                
+                console.log('[Zen Collapse] Cleaned up active tab state for closed tab in workspace:', workspaceId);
+                break;
+            }
+        }
+    }
+    
+    // Function to block double-click on workspace icons
+    function blockWorkspaceIconDoubleClick() {
+        const indicators = document.querySelectorAll('.zen-current-workspace-indicator-icon');
+        
+        indicators.forEach(icon => {
+            // Check if we already attached the blocker to this specific element
+            if (icon.dataset.zenDblClickBlocked) return;
+
+            // Add a capturing listener to stop the event before it reaches the bubble phase handler
+            icon.addEventListener('dblclick', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                console.log('[Zen Collapse] Blocked double-click on workspace icon');
+            }, true); // Use capture phase
+
+            icon.dataset.zenDblClickBlocked = "true";
+        });
+        
+        if (indicators.length > 0) {
+            console.log(`[Zen Collapse] Double-click blocker attached to ${indicators.length} icon(s).`);
+        }
+    }
+
     // Initialize when DOM is ready
     function initialize() {
         console.log('[Zen Collapse] Initializing...');
@@ -652,10 +818,19 @@
         // Set up emoji picker interception to show icon when picker is open
         setupEmojiPickerInterception();
         
+        // Block double-click on workspace icons
+        blockWorkspaceIconDoubleClick();
+        
         // Add drag event listeners to prevent animation conflicts
         document.addEventListener('dragstart', handleDragStart, true);
         document.addEventListener('dragend', handleDragEnd, true);
         document.addEventListener('drop', handleDragEnd, true);
+        
+        // Add tab selection listener to track active tabs
+        window.addEventListener('TabSelect', handleTabSelect, true);
+        
+        // Add tab close listener to clean up active tab states
+        window.addEventListener('TabClose', handleTabClose, true);
         
         if (!waitForElements()) {
             // Retry with increasing delays
@@ -912,6 +1087,9 @@
                         workspaceIconBox.appendChild(chevron);
                     }
                 }
+                
+                // Block double-click on workspace icon
+                blockWorkspaceIconDoubleClick();
             }
         }
     }
@@ -925,6 +1103,7 @@
         
         setTimeout(() => {
             initChevron();
+            blockWorkspaceIconDoubleClick();
             // Ensure folders are consistent
             closeAllFoldersOnStartup();
         }, 100);
@@ -937,6 +1116,7 @@
         
         setTimeout(() => {
             initChevron();
+            blockWorkspaceIconDoubleClick();
             updateChevronVisibility();
         }, 100);
     }, true);
@@ -972,7 +1152,10 @@
                         node.matches('.zen-current-workspace-indicator') ||
                         node.querySelector('.zen-current-workspace-indicator')
                     )) {
-                        setTimeout(initChevron, 50);
+                        setTimeout(() => {
+                            initChevron();
+                            blockWorkspaceIconDoubleClick();
+                        }, 50);
                         return;
                     }
                 }
@@ -994,7 +1177,10 @@
         });
         
         if (needsInit) {
-            setTimeout(initChevron, 50);
+            setTimeout(() => {
+                initChevron();
+                blockWorkspaceIconDoubleClick();
+            }, 50);
         }
     });
 
@@ -1074,8 +1260,20 @@
         .zen-current-workspace-indicator-icon {
             position: relative;
         }
+        /* Workspace indicator spacing (moved from chrome.css) */
+        .zen-current-workspace-indicator .zen-current-workspace-indicator-icon {
+            margin-bottom: 4px !important;
+        }
+        .zen-current-workspace-indicator .zen-current-workspace-indicator-name {
+            margin-bottom: 2px !important;
+        }
+        /* Style for active tabs in collapsed workspace */
+        .zen-workspace-pinned-tabs-section[data-zen-has-active="true"] [is="tabbrowser-tab"].zen-active-in-collapsed,
+        .zen-workspace-pinned-tabs-section[data-zen-has-active="true"] zen-folder.zen-active-in-collapsed {
+            border-left: 2px solid var(--zen-primary-color, #0078d4) !important;
+            margin-left: 2px !important;
+        }
     `;
     document.head.appendChild(style);
 
 })();
-
