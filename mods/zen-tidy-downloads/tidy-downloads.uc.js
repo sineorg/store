@@ -235,6 +235,53 @@
         }
         
         return wasPresent;
+      },
+      
+      // Add external file to Zen Stuff
+      addExternalFile: async (podData) => {
+        debugLog(`[API] Add external file requested: ${podData.filename}`);
+        
+        try {
+          // Validate the pod data
+          if (!podData || !podData.key || !podData.filename || !podData.targetPath) {
+            throw new Error('Invalid pod data: missing required fields');
+          }
+          
+          // Verify the file exists
+          const file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsIFile);
+          file.initWithPath(podData.targetPath);
+          
+          if (!file.exists()) {
+            throw new Error('File does not exist at the specified path');
+          }
+          
+          // Update file size if not provided
+          if (!podData.fileSize) {
+            podData.fileSize = file.fileSize;
+          }
+          
+          // Store the pod data
+          dismissedPodsData.set(podData.key, podData);
+          
+          // Fire dismiss event to notify the pile system
+          dismissEventListeners.forEach(callback => {
+            try {
+              callback(podData);
+            } catch (error) {
+              debugLog(`[API] Error in dismiss event listener:`, error);
+            }
+          });
+          
+          // Fire custom event
+          fireCustomEvent('external-file-added-to-stuff', { podData });
+          
+          debugLog(`[API] Successfully added external file: ${podData.filename}`);
+          return true;
+          
+        } catch (error) {
+          debugLog(`[API] Error adding external file:`, error);
+          throw error;
+        }
       }
     };
     
@@ -546,13 +593,8 @@
           .then(async (list) => {
             if (list) {
               debugLog("Downloads API verified");
-              await verifyMistralConnection();
-              console.log("=== MISTRAL VERIFICATION COMPLETE, aiRenamingPossible:", aiRenamingPossible, "===");
-              if (aiRenamingPossible) {
-                debugLog("AI renaming enabled - all systems verified");
-              } else {
-                debugLog("AI renaming disabled - Mistral connection failed");
-              }
+              aiRenamingPossible = true; // Local AI is assumed to be available
+              debugLog("AI renaming enabled - using Local AI");
               await initDownloadManager();
               initSidebarWidthSync(); // <-- ADDED: Call to initialize sidebar width syncing
               debugLog("Initialization complete");
@@ -2756,71 +2798,169 @@
 
       let suggestedName = null;
 
-      if (isImage) {
-        // Check for abort signal before image analysis
-        if (abortController.signal.aborted) {
-          debugLog(`[AI Process] Process aborted before image analysis: ${key}`);
-          renamedFiles.delete(downloadPath);
-          activeAIProcesses.delete(key);
-          throw new DOMException('AI process was aborted', 'AbortError');
-        }
-        
-        processState.phase = 'image-analysis';
-        if (statusElToUpdate) statusElToUpdate.textContent = "Analyzing image...";
-        const imagePrompt = `Create a specific, descriptive filename for this image.
-Rules:
-- Use 2-4 specific words describing the main subject or content
-- Be specific about what's in the image (e.g. "mountain-lake-sunset" not just "landscape")
-- Use hyphens between words
-- No generic words like "image" or "photo"
-- Keep extension "${fileExtension}"
-- Maximum length: ${getPref("extensions.downloads.max_filename_length", 70)} characters
-Respond with ONLY the filename.`;
-
-        suggestedName = await callMistralAPI({
-          prompt: imagePrompt,
-          localPath: downloadPath,
-          fileExtension: fileExtension,
-          abortSignal: abortController.signal
-        });
+      // Check for abort signal before analysis
+      if (abortController.signal.aborted) {
+        debugLog(`[AI Process] Process aborted before analysis: ${key}`);
+        renamedFiles.delete(downloadPath);
+        activeAIProcesses.delete(key);
+        throw new DOMException('AI process was aborted', 'AbortError');
       }
+      
+      processState.phase = 'metadata-analysis';
+      if (statusElToUpdate) statusElToUpdate.textContent = "Generating better name...";
+      
+      const sourceURL = download.source?.url || "unknown";
+      // Find tab title and context
+      let tabTitle = "unknown";
+      let pageHeader = "unknown";
+      let pageDescription = "unknown";
+
+      try {
+        if (typeof gBrowser !== "undefined" && gBrowser.tabs) {
+           let foundTab = null;
+
+           // Strategy 1: Match by exact URL
+           for (const tab of gBrowser.tabs) {
+             if (tab.linkedBrowser?.currentURI?.spec === sourceURL) {
+               foundTab = tab;
+               break;
+             }
+           }
+
+           // Strategy 2: Match by referrer if exact URL fails
+           if (!foundTab && download.source?.referrer) {
+               const referrerSpec = download.source.referrer; 
+               for (const tab of gBrowser.tabs) {
+                   // Check if referrer matches tab URL
+                   if (tab.linkedBrowser?.currentURI?.spec === referrerSpec) {
+                       foundTab = tab;
+                       break;
+                   }
+               }
+           }
+
+           if (foundTab) {
+               tabTitle = foundTab.label || foundTab.title || "unknown";
+
+               // Extract context from the tab content
+               try {
+                   const doc = foundTab.linkedBrowser.contentDocument;
+                   if (doc) {
+                       // Get H1
+                       const h1 = doc.querySelector('h1');
+                       if (h1) {
+                           const h1Text = h1.textContent.trim();
+                           if (h1Text) pageHeader = h1Text;
+                       }
+
+                       // Get Meta Description
+                       const metaDesc = doc.querySelector('meta[name="description"]');
+                       if (metaDesc) {
+                           const descContent = metaDesc.content.trim();
+                           if (descContent) pageDescription = descContent;
+                       }
+                   }
+               } catch (e) {
+                   // Accessing contentDocument might fail for some privileged pages or cross-origin restrictions (though less likely in userChrome)
+                   console.error("Error extracting tab context:", e);
+               }
+           }
+        }
+      } catch (e) {
+         console.error("Error finding tab title:", e);
+      }
+
+      const systemPrompt = `I am downloading a file. Rewrite its filename to be helpful, concise and readable. 2-4 words.
+- IMPORTANT: Return ONLY the new filename. Do not provide explanations, conversational text, or "based on the information provided".
+- Keep informative names mostly the same. For non-informative names, add information from the tab title or website.
+- Remove machine-generated cruft, like IDs, (1), (copy), etc.
+- Clean up messy text, especially dates. Make timestamps concise, human readable, and remove seconds.
+- Clean up text casing and letter spacing to make it easier to read.
+
+Some examples, in the form "original name, tab title, domain -> new name"
+- 'Arc-1.6.0-41215.dmg', 'Arc from The Browser Company', 'arc.net' -> 'Arc 1.6.0 41215.dmg'
+- 'swift-chat-main.zip', 'huggingface/swift-chat: Mac app to demonstrate swift-transformers', 'github.com' -> 'swift-chat main.zip'
+- 'folio_option3_6691488.PDF', 'Your Guest Stay Folio from the LINE LA 08-14-23', 'mail.google.com' -> 'Line LA Folio, Aug 14.pdf'
+- 'image.png', 'Feedback: Card border radius - nateparro2t@gmail.com - Gmail', 'mail.google.com' -> 'Card border radius feedback.png'
+- 'Brooklyn_Bridge_September_2022_008.jpg', 'nyc bridges - Google Images', 'images.google.com' -> 'Brooklyn Bridge Sept 2022.jpg'
+- 'AdobeStock_184679416.jpg', 'ladybug - Google Images', 'images.google.com' -> 'Ladybug.jpg'
+- 'CleanShot 2023-08-17 at 19.51.05@2x.png', 'dogfooding - The Browser Company - Slack', 'app.slack.com' -> 'CleanShot Aug 17 from dogfooding.png'
+- 'Screenshot 2023-09-26 at 11.12.18 PM', 'DM with Nate - Twitter', 'twitter.com' -> 'Sept 26 Screenshot from Nate.png'
+- 'image0.png', 'Nate - Slack', 'files.slack.com' -> 'Slack Image from Nate.png'`;
+      
+      let domain = "unknown";
+      try {
+        domain = new URL(sourceURL).hostname;
+      } catch (e) {}
+
+      // Check if this is an image search result (e.g., Google Images, DuckDuckGo Images)
+      // These sites often have the image preview in a special container, or the title is just the search query.
+      // We can try to extract more specific info.
+      const isSearchEngine = domain.includes('google') || domain.includes('duckduckgo') || domain.includes('bing') || domain.includes('yahoo') || domain.includes('yandex');
+      
+      // Try to extract search query regardless of tab title if it's a search engine domain
+      if (isSearchEngine) {
+             // If the tab title is generic, rely heavily on the page header (which might be the search query)
+             // or try to extract the search query from the URL.
+             try {
+                // Try referrer first, then sourceURL, AND the active tab URL if available
+                const urlStrings = [
+                    download.source?.referrer,
+                    sourceURL,
+                    (typeof gBrowser !== "undefined" && gBrowser.selectedBrowser?.currentURI?.spec) 
+                ].filter(Boolean);
+
+                debugLog("Checking URLs for search query:", urlStrings);
+
+                for (const urlStr of urlStrings) {
+                    try {
+                        const urlObj = new URL(urlStr);
+                        // Common search query parameters: q (Google/DDG/Bing), p (Yahoo), text (Yandex)
+                        const q = urlObj.searchParams.get('q') || 
+                                  urlObj.searchParams.get('p') || 
+                                  urlObj.searchParams.get('text');
+                        
+                        if (q) {
+                            pageHeader = `Search Query: ${q}`; 
+                            // Add search query to tab title if it's generic, so AI definitely sees it
+                            if (tabTitle.toLowerCase().includes('search') || tabTitle.toLowerCase().includes('images') || tabTitle === 'unknown') {
+                                tabTitle = `${q} - Search`;
+                            }
+                            debugLog("Extracted search query for context", { 
+                                fromUrl: urlStr, 
+                                query: q,
+                                newTabTitle: tabTitle
+                            });
+                            break; // Stop once found
+                        }
+                    } catch(e) {}
+                }
+             } catch(e) {
+                debugLog("Failed to extract search query:", e);
+             }
+      }
+
+      const userContent = `Original filename: '${currentFilename}'
+Source domain: '${domain}'
+Source tab title: '${tabTitle}'
+Page Header: '${pageHeader}'
+Page Description: '${pageDescription}'
+
+Instructions:
+1. First, check if the "Original filename" is already descriptive (contains real words, e.g., "viper-gaming-valorant-hd..."). If so, prioritize cleaning it up (remove random strings, IDs, dates) rather than rewriting it completely from the context.
+2. ONLY if the "Original filename" is meaningless gibberish (e.g., "wp13801370.jpg", "OIP.jpg", "image.png"), rename it based on the "Source tab title" or "Page Header".
+3. Return ONLY the new filename.`;
+
+      suggestedName = await callMistralAI({
+        systemPrompt: systemPrompt,
+        userPrompt: userContent,
+        abortSignal: abortController.signal
+      });
 
       if (!suggestedName) {
-        // Check for abort signal before metadata analysis
-        if (abortController.signal.aborted) {
-          debugLog(`[AI Process] Process aborted before metadata analysis: ${key}`);
-          renamedFiles.delete(downloadPath);
-          activeAIProcesses.delete(key);
-          throw new DOMException('AI process was aborted', 'AbortError');
-        }
-        
-        processState.phase = 'metadata-analysis';
-        if (statusElToUpdate) statusElToUpdate.textContent = "Generating better name...";
-        const sourceURL = download.source?.url || "unknown";
-        const metadataPrompt = `Create a specific, descriptive filename for this ${isImage ? "image" : "file"}.
-Original filename: "${currentFilename}"
-Download URL: "${sourceURL}"
-Rules:
-- Use 2-5 specific words about the content or purpose
-- Be more specific than the original name
-- Use hyphens between words
-- Keep extension "${fileExtension}"
-- Maximum length: ${getPref("extensions.downloads.max_filename_length", 70)} characters
-Respond with ONLY the filename.`;
-
-        suggestedName = await callMistralAPI({
-          prompt: metadataPrompt,
-          localPath: null,
-          fileExtension: fileExtension,
-          abortSignal: abortController.signal
-        });
-      }
-
-      if (!suggestedName || suggestedName === "rate-limited") {
         debugLog("No valid name suggestion received from AI");
         if (statusElToUpdate) {
-            statusElToUpdate.textContent = suggestedName === "rate-limited" ? 
-          "⚠️ API rate limit reached" : "Could not generate a better name";
+            statusElToUpdate.textContent = "Could not generate a better name";
         }
         renamedFiles.delete(downloadPath);
         if (podElementToStyle) podElementToStyle.classList.remove("renaming-active");
@@ -2840,9 +2980,17 @@ Respond with ONLY the filename.`;
       processState.phase = 'renaming';
 
       let cleanName = suggestedName
-        .replace(/[^a-zA-Z0-9\-_\.]/g, "")
+        .replace(/[^a-zA-Z0-9\-_\.\s]/g, "") // Allow spaces first
+        .trim()
         .replace(/\s+/g, "-")
+        .replace(/-+/g, "-") // Collapse multiple dashes
         .toLowerCase();
+
+      // Validation: Reject names that are just separators or too short
+      if (/^[\-_.]+$/.test(cleanName) || cleanName.replace(/[\-_.]/g, "").length < 2) {
+         debugLog("AI suggested invalid name (separators only):", cleanName);
+         cleanName = ""; // Force failure in next check
+      }
 
       if (cleanName.length > getPref("extensions.downloads.max_filename_length", 70) - fileExtension.length) {
         cleanName = cleanName.substring(0, getPref("extensions.downloads.max_filename_length", 70) - fileExtension.length);
@@ -3101,139 +3249,66 @@ Respond with ONLY the filename.`;
     }
   }
 
-  // Mistral API function - with better error handling
-  async function callMistralAPI({ prompt, localPath, fileExtension, abortSignal }) {
+  // Mistral AI function
+  async function callMistralAI({ systemPrompt, userPrompt, abortSignal }) {
+    if (abortSignal?.aborted) return null;
+
+    const apiKey = getPref(MISTRAL_API_KEY_PREF, "");
+    if (!apiKey) {
+      console.warn("Mistral API key not found in preferences");
+      return null;
+    }
+
     try {
-      // Get API key
-      let apiKey = "";
-      try {
-        const prefService = Cc["@mozilla.org/preferences-service;1"]
-          .getService(Ci.nsIPrefService);
-        const branch = prefService.getBranch("extensions.downloads.");
-        apiKey = branch.getStringPref("mistral_api_key", "");
-      } catch (e) {
-        debugLog("Failed to get API key from preferences", e);
-        return null;
-      }
-
-      if (!apiKey) {
-        debugLog("No API key found");
-        return null;
-      }
-
-      // Build message content
-      let content = [{ type: "text", text: prompt }];
-
-      // Add image data if provided
-      if (localPath) {
-        try {
-          const imageBase64 = fileToBase64(localPath);
-          if (imageBase64) {
-            const mimeType = getMimeTypeFromExtension(fileExtension);
-            content.push({
-              type: "image_url",
-              image_url: { url: `data:${mimeType};base64,${imageBase64}` },
-            });
-          }
-        } catch (e) {
-          debugLog("Failed to encode image, proceeding without it", e);
-        }
-      }
-
-      const payload = {
-        model: getPref("extensions.downloads.mistral_model", "pixtral-large-latest"),
-        messages: [{ role: "user", content: content }],
-        max_tokens: 100,
-        temperature: 0.2,
-      };
-
-      debugLog("Sending API request to Mistral");
-
-      // Check for abort signal before making request
-      if (abortSignal?.aborted) {
-        throw new DOMException('API request was aborted', 'AbortError');
-      }
-
-      const response = await fetch(getPref("extensions.downloads.mistral_api_url", "https://api.mistral.ai/v1/chat/completions"), {
+      debugLog("Sending request to Mistral AI");
+      const response = await fetch("https://api.mistral.ai/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
+          "Authorization": `Bearer ${apiKey}`
         },
-        body: JSON.stringify(payload),
-        signal: abortSignal // Pass abort signal to fetch
+        body: JSON.stringify({
+          model: "mistral-small-latest",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt }
+          ],
+          temperature: 0.1,
+          max_tokens: 50
+        }),
+        signal: abortSignal
       });
 
       if (!response.ok) {
-        if (response.status === 429) return "rate-limited";
-        debugLog(`API error ${response.status}: ${response.statusText}`);
-        return null;
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
-      debugLog("Raw API response:", data);
+      let name = data.choices[0]?.message?.content?.trim();
+      
+      // Basic cleanup
+      if (name) {
+          name = name.replace(/^["']|["']$/g, ''); // Remove quotes if present
+          
+          // Heuristic: If the response is very long (e.g. > 50 chars) and contains spaces,
+           // it might be a sentence instead of a filename. 
+           // However, some valid filenames can be long. 
+           // Let's filter out known "chatty" prefixes if they exist.
+           const chattyPrefixes = [
+             "based on", "here is", "i have", "the filename", "new filename", "renamed file", "unknown", "file name"
+           ];
+           const lowerName = name.toLowerCase();
+           if (chattyPrefixes.some(prefix => lowerName.startsWith(prefix))) {
+              debugLog("Mistral AI returned conversational text or unknown, rejecting:", name);
+              return null;
+           }
+      }
 
-      return data.choices?.[0]?.message?.content?.trim() || null;
+      debugLog("Mistral AI response:", name);
+      return name || null;
     } catch (error) {
-      console.error("Mistral API error:", error);
-      return null;
-    }
-  }
-
-  function getMimeTypeFromExtension(ext) {
-    switch (ext?.toLowerCase()) {
-      case ".png": return "image/png";
-      case ".gif": return "image/gif";
-      case ".svg": return "image/svg+xml";
-      case ".webp": return "image/webp";
-      case ".bmp": return "image/bmp";
-      case ".avif": return "image/avif";
-      case ".ico": return "image/x-icon";
-      case ".tif": return "image/tiff";
-      case ".tiff": return "image/tiff";
-      case ".jfif": return "image/jpeg";
-      default: return "image/jpeg";
-    }
-  }
-
-  function fileToBase64(path) {
-    try {
-      const file = Cc["@mozilla.org/file/local;1"].createInstance(Ci.nsIFile);
-      file.initWithPath(path);
-      
-      // Check file size
-      if (file.fileSize > getPref("extensions.downloads.max_file_size_for_ai", 52428800)) { // 50MB default
-        debugLog("File too large for base64 conversion");
-        return null;
-      }
-
-      const fstream = Cc["@mozilla.org/network/file-input-stream;1"]
-        .createInstance(Ci.nsIFileInputStream);
-      fstream.init(file, -1, 0, 0);
-      
-      const bstream = Cc["@mozilla.org/binaryinputstream;1"]
-        .createInstance(Ci.nsIBinaryInputStream);
-      bstream.setInputStream(fstream);
-      
-      const bytes = bstream.readBytes(file.fileSize);
-      fstream.close();
-      bstream.close();
-
-      // Convert to base64 in chunks to avoid memory issues
-      const chunks = [];
-      const CHUNK_SIZE = 0x8000;
-      for (let i = 0; i < bytes.length; i += CHUNK_SIZE) {
-        chunks.push(
-          String.fromCharCode.apply(
-            null,
-            bytes.slice(i, i + CHUNK_SIZE).split("").map(c => c.charCodeAt(0))
-          )
-        );
-      }
-      
-      return btoa(chunks.join(""));
-    } catch (e) {
-      debugLog("fileToBase64 error:", e);
+      console.error("Mistral AI error:", error);
       return null;
     }
   }
@@ -3331,55 +3406,7 @@ Respond with ONLY the filename.`;
     }
   }
 
-  // Verify Mistral API connection
-  async function verifyMistralConnection() {
-    try {
-      let apiKey = "";
-      try {
-        const prefService = Cc["@mozilla.org/preferences-service;1"]
-          .getService(Ci.nsIPrefService);
-        const branch = prefService.getBranch("extensions.downloads.");
-        apiKey = branch.getStringPref("mistral_api_key", "");
-      } catch (e) {
-        console.error("Failed to get API key from preferences", e);
-        aiRenamingPossible = false;
-        return;
-      }
 
-      if (!apiKey) {
-        debugLog("No Mistral API key found in preferences. AI renaming disabled.");
-        aiRenamingPossible = false;
-        return;
-      }
-
-      const testResponse = await fetch(getPref("extensions.downloads.mistral_api_url", "https://api.mistral.ai/v1/chat/completions"), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: getPref("extensions.downloads.mistral_model", "pixtral-large-latest"),
-          messages: [
-            { role: "system", content: "You are a helpful assistant." },
-            { role: "user", content: "Hello, this is a test connection. Respond with 'ok'." },
-          ],
-          max_tokens: 5,
-        }),
-      });
-
-      if (testResponse.ok) {
-        debugLog("Mistral API connection successful!");
-        aiRenamingPossible = true;
-      } else {
-        console.error("Mistral API connection failed:", await testResponse.text());
-        aiRenamingPossible = false;
-      }
-    } catch (e) {
-      console.error("Error verifying Mistral API connection:", e);
-      aiRenamingPossible = false;
-    }
-  }
 
   // === AI RENAME QUEUE SYSTEM ===
   
