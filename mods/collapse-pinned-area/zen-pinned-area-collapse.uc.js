@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Zen Workspace Collapse
-// @description  Add chevron icon to collapse/expand pinned folders and tabs in Zen Browser. No persistence.
+// @description  Add chevron icon to collapse/expand pinned folders and tabs in Zen Browser. Acts as top-level folder.
 // @author       Bxth
 // @match        chrome://browser/content/browser.xhtml
 // @match        chrome://browser/content/browser.xul
@@ -40,21 +40,6 @@
     function setWorkspaceCollapsed(workspaceId, collapsed) {
         if (!workspaceId) return;
         collapsedStates.set(workspaceId, collapsed);
-    }
-    
-    // Function to close all folders on startup (reset state)
-    function closeAllFoldersOnStartup() {
-        const folders = document.querySelectorAll('zen-folder');
-        folders.forEach(folder => {
-            if (folder.hasAttribute('open')) {
-                folder.removeAttribute('open');
-                // Try to call collapse method if available
-                if (folder.collapse && typeof folder.collapse === 'function') {
-                    folder.collapse();
-                }
-            }
-        });
-        console.log(`[Zen Collapse] Reset ${folders.length} folders to closed state.`);
     }
 
     // Function to create chevron SVG icon (HTML namespace)
@@ -307,41 +292,165 @@
         });
     }
 
-    // Function to apply collapsed state to folders and tabs (without toggling)
-    function applyCollapsedState(workspaceId, isCollapsed) {
-        if (!workspaceId) return;
+    // Helper to identify the chain of folders containing the active tab
+    function getActiveFolderChain(activeTab, pinnedSection) {
+        if (!activeTab || !pinnedSection) return [];
         
-        // Find the pinned section for this specific workspace
+        const chain = [];
+        let current = activeTab.parentElement;
+        
+        // Traverse up until we reach the pinned section
+        while (current && current !== pinnedSection) {
+            // Check if current element is a zen-folder (or contains one that wraps our path)
+            // The structure is zen-folder > tab-group-container > tab
+            // So we look for zen-folder elements
+            if (current.localName === 'zen-folder') {
+                chain.push(current);
+            }
+            current = current.parentElement;
+        }
+        
+        return chain;
+    }
+
+    // Helper to identify the container (folder or direct tab) of the active tab
+    function getActiveContainer(pinnedSection, activeTab = gBrowser.selectedTab) {
+        if (!activeTab) return null;
+
+        // Check if active tab is inside this pinned section
+        if (!pinnedSection.contains(activeTab)) return null;
+
+        // Find the direct child of pinnedSection that contains the active tab
+        let current = activeTab;
+        while (current && current.parentElement !== pinnedSection) {
+            current = current.parentElement;
+        }
+        
+        // If current is the pinnedSection itself (shouldn't happen) or null, return null
+        if (!current || current === pinnedSection) return null;
+        
+        return current;
+    }
+
+    // Core function to update visibility and state based on collapsed status
+    function updateWorkspaceState(workspaceId, animate = true) {
+        if (!workspaceId) return;
+
+        const isCollapsed = isWorkspaceCollapsed(workspaceId);
+        
         const pinnedSection = document.querySelector(`.zen-workspace-tabs-section.zen-workspace-pinned-tabs-section[zen-workspace-id="${workspaceId}"]`) ||
                              document.querySelector(`zen-workspace#${workspaceId} .zen-workspace-pinned-tabs-section`);
         
-        if (!pinnedSection) {
-            return;
-        }
-
-        // Get folders that belong to this workspace
-        const folders = pinnedSection.querySelectorAll('zen-folder');
+        if (!pinnedSection) return;
         
-        // Get tabs that are direct children of the pinned section (not in folders)
-        const directTabs = Array.from(pinnedSection.children).filter(child => {
-            return (child.tagName === 'tab' || 
-                   child.classList.contains('tabbrowser-tab') ||
-                   child.getAttribute('is') === 'tabbrowser-tab') &&
-                   child.tagName !== 'zen-folder' &&
-                   !child.classList.contains('pinned-tabs-container-separator') &&
-                   child.tagName !== 'hbox';
+        const activeTab = gBrowser.selectedTab;
+
+        // Get direct children (folders and tabs)
+        const children = Array.from(pinnedSection.children).filter(child => {
+             return (child.tagName === 'zen-folder' || 
+                    child.tagName === 'tab' || 
+                    child.classList.contains('tabbrowser-tab') ||
+                    child.getAttribute('is') === 'tabbrowser-tab') &&
+                    !child.classList.contains('pinned-tabs-container-separator') &&
+                    child.tagName !== 'hbox';
         });
 
-        // Apply collapsed state without animation
-        const targets = [...folders, ...directTabs];
-        animatePinnedItems(targets, isCollapsed, false);
+        const activeContainer = getActiveContainer(pinnedSection, activeTab);
+        const folders = pinnedSection.querySelectorAll('zen-folder');
+        const separator = pinnedSection.querySelector('.pinned-tabs-container-separator');
         
-        // Also update chevron and icon visibility immediately to prevent flashing
+        // Get the active tab (if it's in this pinned section)
+        const isActiveTabInPinned = pinnedSection.contains(activeTab);
+        const activeChain = isActiveTabInPinned ? getActiveFolderChain(activeTab, pinnedSection) : [];
+
+        // Phase 1: Update Folder States (collapsed/expanded) and Flattening
+        if (isCollapsed) {
+            folders.forEach(folder => {
+                // If this is the active container, we still collapse it so it shows "collapsed with active tab" style
+                // Save original state if not already saved
+                if (!folder.dataset.originalStateSaved) {
+                    folder.dataset.zenOriginalCollapsed = folder.collapsed;
+                    folder.dataset.originalStateSaved = "true";
+                }
+                // Force collapse
+                if (!folder.collapsed) {
+                    folder.collapsed = true;
+                }
+                
+                // Apply flattening if this folder is in the active chain
+                if (activeChain.includes(folder)) {
+                    folder.classList.add('zen-flatten-folder');
+                } else {
+                    folder.classList.remove('zen-flatten-folder');
+                }
+            });
+        } else {
+            // Restore folder states
+            folders.forEach(folder => {
+                folder.classList.remove('zen-flatten-folder');
+                
+                if (folder.dataset.originalStateSaved) {
+                    const wasCollapsed = folder.dataset.zenOriginalCollapsed === 'true';
+                    if (folder.collapsed !== wasCollapsed) {
+                        folder.collapsed = wasCollapsed;
+                    }
+                    delete folder.dataset.zenOriginalCollapsed;
+                    delete folder.dataset.originalStateSaved;
+                }
+            });
+        }
+
+        // Phase 2: Update Visibility (Hiding/Showing items)
+        const itemsToHide = [];
+        const itemsToShow = [];
+
+        if (isCollapsed) {
+            children.forEach(child => {
+                if (child === activeContainer) {
+                    // Keep active container visible
+                    // Check if it's currently hidden, if so add to show list
+                    if (child.style.maxHeight === '0px' || child.style.display === 'none') {
+                        itemsToShow.push(child);
+                    }
+                } else {
+                    // Hide others
+                    // Check if currently visible, if so add to hide list
+                    if (child.style.maxHeight !== '0px' && child.style.display !== 'none') {
+                        itemsToHide.push(child);
+                    }
+                }
+            });
+        } else {
+            // Show everything
+            children.forEach(child => {
+                 if (child.style.maxHeight === '0px' || child.style.display === 'none') {
+                    itemsToShow.push(child);
+                 }
+            });
+        }
+
+        // Animate changes
+        if (itemsToHide.length > 0) {
+            animatePinnedItems(itemsToHide, true, animate);
+        }
+        if (itemsToShow.length > 0) {
+            animatePinnedItems(itemsToShow, false, animate);
+        }
+        
+        // Ensure separator visibility
+        if (separator) {
+             separator.style.display = '';
+        }
+
+        // Update Indicators (Chevron etc)
+        updateIndicators(workspaceId, isCollapsed);
+    }
+
+    function updateIndicators(workspaceId, isCollapsed) {
         const workspaceIndicator = document.querySelector(`.zen-workspace-tabs-section.zen-current-workspace-indicator[zen-workspace-id="${workspaceId}"]`) ||
                                   document.querySelector(`zen-workspace#${workspaceId} .zen-current-workspace-indicator`);
         
         if (workspaceIndicator) {
-            // Set data attribute immediately for CSS-based hiding
             if (isCollapsed) {
                 workspaceIndicator.setAttribute('data-zen-collapsed', 'true');
             } else {
@@ -356,10 +465,8 @@
                 );
                 
                 if (chevron) {
-                    // Update chevron rotation
                     chevron.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)';
                     
-                    // Update visibility immediately
                     if (isCollapsed) {
                         chevron.style.display = 'block';
                         chevron.style.visibility = 'visible';
@@ -367,8 +474,7 @@
                             child.style.display = 'none';
                         });
                     } else {
-                        // Only hide chevron if not hovering
-                        if (workspaceIndicator && !workspaceIndicator.matches(':hover')) {
+                         if (!workspaceIndicator.matches(':hover')) {
                             chevron.style.display = 'none';
                             originalChildren.forEach(child => {
                                 child.style.display = '';
@@ -381,89 +487,14 @@
     }
 
     // Function to toggle folder visibility for a specific workspace
-    function toggleFolders(workspaceId, chevron, workspaceIconBox) {
+    function toggleFolders(workspaceId) {
         if (!workspaceId) return;
         
-        // Find the pinned section for this specific workspace
-        const pinnedSection = document.querySelector(`.zen-workspace-tabs-section.zen-workspace-pinned-tabs-section[zen-workspace-id="${workspaceId}"]`) ||
-                             document.querySelector(`zen-workspace#${workspaceId} .zen-workspace-pinned-tabs-section`);
-        
-        if (!pinnedSection) {
-            console.log('[Zen Collapse] Pinned section not found for workspace:', workspaceId);
-            return;
-        }
-
-        // Get folders that belong to this workspace
-        const folders = pinnedSection.querySelectorAll('zen-folder');
-        const separator = pinnedSection.querySelector('.pinned-tabs-container-separator');
-        
-        // Get tabs that are direct children of the pinned section (not in folders)
-        const directTabs = Array.from(pinnedSection.children).filter(child => {
-            // Include tab elements (tabbrowser-tab) but exclude folders, separator, and HTML divs
-            return (child.tagName === 'tab' || 
-                   child.classList.contains('tabbrowser-tab') ||
-                   child.getAttribute('is') === 'tabbrowser-tab') &&
-                   child.tagName !== 'zen-folder' &&
-                   !child.classList.contains('pinned-tabs-container-separator') &&
-                   child.tagName !== 'hbox';
-        });
-        
-        // Toggle collapsed state for this workspace
         const wasCollapsed = isWorkspaceCollapsed(workspaceId);
         const isCollapsed = !wasCollapsed;
         setWorkspaceCollapsed(workspaceId, isCollapsed);
         
-        // Update data attribute immediately for CSS-based hiding
-        const workspaceIndicator = workspaceIconBox.closest('.zen-current-workspace-indicator');
-        if (workspaceIndicator) {
-            if (isCollapsed) {
-                workspaceIndicator.setAttribute('data-zen-collapsed', 'true');
-            } else {
-                workspaceIndicator.removeAttribute('data-zen-collapsed');
-            }
-        }
-
-        // Animate folders and direct tabs (but not the separator)
-        const targets = [...folders, ...directTabs];
-        animatePinnedItems(targets, isCollapsed, true);
-
-        // Ensure separator remains visible
-        if (separator) {
-            separator.style.display = '';
-            separator.style.height = '';
-            separator.style.overflow = '';
-        }
-
-        // Rotate chevron based on state
-        // Collapsed: pointing right (0deg), Expanded: pointing down (90deg)
-        if (chevron) {
-            chevron.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)';
-        }
-
-        // Update icon visibility
-        if (workspaceIconBox) {
-            const originalChildren = Array.from(workspaceIconBox.children).filter(
-                child => !child.classList.contains('zen-collapse-chevron')
-            );
-            
-            if (isCollapsed) {
-                if (chevron) chevron.style.display = 'block';
-                originalChildren.forEach(child => {
-                    child.style.display = 'none';
-                });
-            } else {
-                const workspaceIndicator = workspaceIconBox.closest('.zen-current-workspace-indicator');
-                // On expand, hide chevron and show original icon (unless hovering)
-                if (chevron && workspaceIndicator && !workspaceIndicator.matches(':hover')) {
-                    chevron.style.display = 'none';
-                }
-                if (workspaceIndicator && !workspaceIndicator.matches(':hover')) {
-                    originalChildren.forEach(child => {
-                        child.style.display = '';
-                    });
-                }
-            }
-        }
+        updateWorkspaceState(workspaceId, true);
     }
 
     // Function to initialize the chevron icon
@@ -472,7 +503,6 @@
         const workspaceIndicators = document.querySelectorAll('.zen-workspace-tabs-section.zen-current-workspace-indicator');
         
         if (workspaceIndicators.length === 0) {
-            console.log('[Zen Collapse] No workspace indicators found');
             return false;
         }
 
@@ -480,82 +510,48 @@
         
         // Initialize chevron for each workspace
         workspaceIndicators.forEach(workspaceIndicator => {
-            // Get workspace ID from the indicator
             const workspaceId = getWorkspaceId(workspaceIndicator);
-            if (!workspaceId) {
-                console.log('[Zen Collapse] Could not get workspace ID for indicator');
-                return;
-            }
+            if (!workspaceId) return;
 
-            // Find the hbox that contains the icon
             const workspaceIconBox = workspaceIndicator.querySelector('.zen-current-workspace-indicator-icon');
-            
-            if (!workspaceIconBox) {
-                console.log('[Zen Collapse] Workspace icon box not found for workspace:', workspaceId);
-                return;
-            }
+            if (!workspaceIconBox) return;
 
-            // Check if chevron already exists for this workspace
             if (workspaceIconBox.querySelector('.zen-collapse-chevron[data-workspace-id]')) {
                 return;
             }
 
             console.log('[Zen Collapse] Initializing chevron for workspace:', workspaceId);
             const chevron = createChevronIcon();
-            
-            // Store workspace ID on the chevron
             chevron.setAttribute('data-workspace-id', workspaceId);
             
-            // Get collapsed state for this workspace
-            // Default is false (expanded)
             const isCollapsed = isWorkspaceCollapsed(workspaceId);
             
-            // Set data attribute for CSS-based hiding
-            if (isCollapsed) {
-                workspaceIndicator.setAttribute('data-zen-collapsed', 'true');
-            } else {
-                workspaceIndicator.removeAttribute('data-zen-collapsed');
-            }
-            
-            // Set initial rotation (expanded = pointing down = 90deg)
-            chevron.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)';
-            
-            // Store original children visibility
-            const originalChildren = Array.from(workspaceIconBox.children);
-            const originalVisibility = originalChildren.map(child => ({
-                element: child,
-                wasVisible: child.style.display !== 'none' && child.style.visibility !== 'hidden'
-            }));
-
-            // Add a class to the workspace indicator for CSS hover targeting
             workspaceIndicator.classList.add('zen-has-collapse-chevron');
             
-            // Show chevron and hide original icon content on hover of the workspace indicator
             const handleMouseEnter = () => {
-                console.log('[Zen Collapse] Mouse enter for workspace:', workspaceId);
                 const currentCollapsed = isWorkspaceCollapsed(workspaceId);
                 if (!currentCollapsed) {
                     chevron.style.display = 'block';
                     chevron.style.visibility = 'visible';
+                     const originalChildren = Array.from(workspaceIconBox.children).filter(
+                        child => !child.classList.contains('zen-collapse-chevron')
+                    );
                     originalChildren.forEach(child => {
-                        if (!child.classList.contains('zen-collapse-chevron')) {
-                            child.style.display = 'none';
-                        }
+                        child.style.display = 'none';
                     });
                 }
             };
 
             const handleMouseLeave = () => {
-                console.log('[Zen Collapse] Mouse leave for workspace:', workspaceId, 'collapsed:', isWorkspaceCollapsed(workspaceId));
-                // Only hide chevron if not collapsed
                 const currentCollapsed = isWorkspaceCollapsed(workspaceId);
                 if (!currentCollapsed) {
                     chevron.style.display = 'none';
-                    originalVisibility.forEach(({ element, wasVisible }) => {
-                        if (wasVisible && !element.classList.contains('zen-collapse-chevron')) {
-                            element.style.display = '';
-                            element.style.visibility = '';
-                        }
+                     const originalChildren = Array.from(workspaceIconBox.children).filter(
+                        child => !child.classList.contains('zen-collapse-chevron')
+                    );
+                    originalChildren.forEach(child => {
+                        child.style.display = '';
+                        child.style.visibility = '';
                     });
                 }
             };
@@ -563,56 +559,32 @@
             workspaceIndicator.addEventListener('mouseenter', handleMouseEnter, true);
             workspaceIndicator.addEventListener('mouseleave', handleMouseLeave, true);
 
-            // If collapsed, show chevron by default
-            if (isCollapsed) {
-                chevron.style.display = 'block';
-                chevron.style.visibility = 'visible';
-                originalChildren.forEach(child => {
-                    if (!child.classList.contains('zen-collapse-chevron')) {
-                        child.style.display = 'none';
-                    }
-                });
-            }
-
-            // Insert chevron into the icon box
             workspaceIconBox.appendChild(chevron);
-            console.log('[Zen Collapse] Chevron inserted for workspace:', workspaceId);
             
-            // Apply saved collapsed state to folders and tabs
-            applyCollapsedState(workspaceId, isCollapsed);
+            // Initial update
+            updateWorkspaceState(workspaceId, false);
 
-            // Add click handler
             chevron.addEventListener('click', (e) => {
                 e.stopPropagation();
-                console.log('[Zen Collapse] Chevron clicked for workspace:', workspaceId);
-                toggleFolders(workspaceId, chevron, workspaceIconBox);
+                toggleFolders(workspaceId);
             });
 
             initialized = true;
         });
 
-        // Block double-click on workspace icons
         blockWorkspaceIconDoubleClick();
-
         return initialized;
     }
 
     // Function to wait for elements and initialize
     function waitForElements() {
-        // Find all workspace indicators
         const workspaceIndicators = document.querySelectorAll('.zen-workspace-tabs-section.zen-current-workspace-indicator');
         const pinnedSections = document.querySelectorAll('.zen-workspace-tabs-section.zen-workspace-pinned-tabs-section');
         
         if (workspaceIndicators.length > 0 && pinnedSections.length > 0) {
-            console.log('[Zen Collapse] Found', workspaceIndicators.length, 'workspace indicator(s) and', pinnedSections.length, 'pinned section(s)');
             if (initChevron()) {
                 return true;
             }
-        } else {
-            console.log('[Zen Collapse] Waiting for elements...', {
-                indicatorCount: workspaceIndicators.length,
-                pinnedSectionCount: pinnedSections.length
-            });
         }
         return false;
     }
@@ -620,15 +592,10 @@
     // Track if a drag operation is in progress
     let isDragging = false;
     
-    // Function to disable collapse transitions during drag
     function handleDragStart(event) {
-        // Check if we're dragging a folder
         const target = event.target;
         if (target && (target.tagName === 'zen-folder' || target.closest('zen-folder'))) {
             isDragging = true;
-            console.log('[Zen Collapse] Drag started, disabling transitions');
-            
-            // Remove animation classes from all folders/tabs to prevent conflicts
             const allItems = document.querySelectorAll('.zen-collapse-anim-target');
             allItems.forEach(item => {
                 item.classList.remove('zen-collapse-anim-target');
@@ -639,66 +606,58 @@
     function handleDragEnd(event) {
         if (isDragging) {
             isDragging = false;
-            console.log('[Zen Collapse] Drag ended, re-enabling transitions');
         }
     }
     
-    // Function to block double-click on workspace icons
     function blockWorkspaceIconDoubleClick() {
         const indicators = document.querySelectorAll('.zen-current-workspace-indicator-icon');
-        
         indicators.forEach(icon => {
-            // Check if we already attached the blocker to this specific element
             if (icon.dataset.zenDblClickBlocked) return;
-
-            // Add a capturing listener to stop the event before it reaches the bubble phase handler
             icon.addEventListener('dblclick', (e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                console.log('[Zen Collapse] Blocked double-click on workspace icon');
-            }, true); // Use capture phase
-
+            }, true);
             icon.dataset.zenDblClickBlocked = "true";
         });
-        
-        if (indicators.length > 0) {
-            console.log(`[Zen Collapse] Double-click blocker attached to ${indicators.length} icon(s).`);
-        }
     }
 
     // Initialize when DOM is ready
     function initialize() {
         console.log('[Zen Collapse] Initializing...');
         
-        // Reset folders to closed state on startup
-        closeAllFoldersOnStartup();
-        
-        // Set up emoji picker interception to show icon when picker is open
+        // Set up emoji picker interception
         setupEmojiPickerInterception();
         
-        // Block double-click on workspace icons
         blockWorkspaceIconDoubleClick();
         
-        // Add drag event listeners to prevent animation conflicts
         document.addEventListener('dragstart', handleDragStart, true);
         document.addEventListener('dragend', handleDragEnd, true);
         document.addEventListener('drop', handleDragEnd, true);
         
+        // Add TabSelect listener
+        window.addEventListener('TabSelect', onTabSelect);
+
         if (!waitForElements()) {
-            // Retry with increasing delays
             const retries = [100, 500, 1000, 2000];
             let retryIdx = 0;
             const tryInit = () => {
                 if (!waitForElements() && retryIdx < retries.length) {
                     setTimeout(tryInit, retries[retryIdx++]);
-                } else {
-                    console.log('[Zen Collapse] Initialization sequence finished');
-                    closeAllFoldersOnStartup(); // Ensure folders are closed even after delayed init
                 }
             };
             setTimeout(tryInit, 100);
-        } else {
-            closeAllFoldersOnStartup(); // Ensure folders are closed
+        }
+    }
+
+    function onTabSelect(event) {
+        // When tab changes, check if we need to update visibility of the current workspace
+        // (e.g. if we switched to a tab in a collapsed workspace)
+        const activeTab = event.target;
+        const workspaceId = getWorkspaceId(activeTab);
+        
+        if (workspaceId && isWorkspaceCollapsed(workspaceId)) {
+            // Re-run update logic to show the active tab/folder and hide others
+            updateWorkspaceState(workspaceId, true);
         }
     }
 
@@ -708,34 +667,10 @@
         allChevrons.forEach(chevron => {
             const workspaceId = chevron.getAttribute('data-workspace-id');
             const isCollapsed = isWorkspaceCollapsed(workspaceId);
-            const workspaceIconBox = chevron.parentElement;
-            const originalChildren = Array.from(workspaceIconBox.children).filter(
-                child => !child.classList.contains('zen-collapse-chevron')
-            );
-            
-            // Update rotation
-            chevron.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)';
-            
-            // Update visibility
-            if (isCollapsed) {
-                chevron.style.display = 'block';
-                chevron.style.visibility = 'visible';
-                originalChildren.forEach(child => {
-                    child.style.display = 'none';
-                });
-            } else {
-                const workspaceIndicator = workspaceIconBox.closest('.zen-current-workspace-indicator');
-                if (workspaceIndicator && !workspaceIndicator.matches(':hover')) {
-                    chevron.style.display = 'none';
-                    originalChildren.forEach(child => {
-                        child.style.display = '';
-                    });
-                }
-            }
+            updateIndicators(workspaceId, isCollapsed);
         });
     }
 
-    // Function to temporarily show icon and hide chevron when icon picker is open
     function showIconForPicker(workspaceIconBox, workspaceId) {
         if (!workspaceIconBox || !workspaceId) return null;
         
@@ -743,7 +678,7 @@
         if (!chevron) return null;
         
         const isCollapsed = isWorkspaceCollapsed(workspaceId);
-        if (!isCollapsed) return null; // Only need to do this if collapsed
+        if (!isCollapsed) return null;
         
         const workspaceIndicator = workspaceIconBox.closest('.zen-current-workspace-indicator');
         if (!workspaceIndicator) return null;
@@ -752,23 +687,14 @@
             child => !child.classList.contains('zen-collapse-chevron')
         );
         
-        // Store original state
         const state = {
             chevron,
             originalChildren,
-            workspaceIndicator,
-            chevronDisplay: chevron.style.display,
-            chevronVisibility: chevron.style.visibility,
-            childrenDisplay: originalChildren.map(child => ({
-                element: child,
-                display: child.style.display
-            }))
+            workspaceIndicator
         };
         
-        // Add data attribute to indicate picker is open (CSS will hide chevron)
         workspaceIndicator.setAttribute('data-zen-icon-picker-open', 'true');
         
-        // Show icon, hide chevron (using !important to override CSS)
         chevron.style.setProperty('display', 'none', 'important');
         chevron.style.setProperty('visibility', 'hidden', 'important');
         originalChildren.forEach(child => {
@@ -778,18 +704,15 @@
         return state;
     }
     
-    // Function to restore chevron visibility after icon picker closes
     function restoreChevronAfterPicker(state, workspaceId) {
         if (!state || !workspaceId) return;
         
-        // Remove data attribute indicating picker is open
         if (state.workspaceIndicator) {
             state.workspaceIndicator.removeAttribute('data-zen-icon-picker-open');
         }
         
         const isCollapsed = isWorkspaceCollapsed(workspaceId);
         if (!isCollapsed) {
-            // If not collapsed anymore, restore to expanded state (chevron hidden, icon visible)
             state.chevron.style.setProperty('display', 'none', 'important');
             state.chevron.style.setProperty('visibility', 'hidden', 'important');
             state.originalChildren.forEach(child => {
@@ -798,8 +721,6 @@
             return;
         }
         
-        // Restore to collapsed state: chevron visible, icon hidden
-        // Remove inline styles to let CSS handle it
         state.chevron.style.removeProperty('display');
         state.chevron.style.removeProperty('visibility');
         state.originalChildren.forEach(child => {
@@ -807,10 +728,8 @@
         });
     }
     
-    // Intercept gZenEmojiPicker.open() to handle icon visibility during picker
     function setupEmojiPickerInterception() {
         if (typeof gZenEmojiPicker === 'undefined' || !gZenEmojiPicker) {
-            // Wait for gZenEmojiPicker to be available
             setTimeout(setupEmojiPickerInterception, 100);
             return;
         }
@@ -818,12 +737,10 @@
         const originalOpen = gZenEmojiPicker.open.bind(gZenEmojiPicker);
         
         gZenEmojiPicker.open = function(anchor) {
-            // Find the workspace icon box from the anchor
             let workspaceIconBox = null;
             let workspaceId = null;
             
             if (anchor) {
-                // The anchor might be the icon box itself or a child
                 workspaceIconBox = anchor.classList.contains('zen-current-workspace-indicator-icon') 
                     ? anchor 
                     : anchor.closest('.zen-current-workspace-indicator-icon');
@@ -836,13 +753,9 @@
                 }
             }
             
-            // Show icon and hide chevron if collapsed
             const pickerState = showIconForPicker(workspaceIconBox, workspaceId);
-            
-            // Call original open method
             const promise = originalOpen(anchor);
             
-            // Restore chevron when picker closes (promise resolves or rejects)
             promise
                 .then(() => {
                     restoreChevronAfterPicker(pickerState, workspaceId);
@@ -853,119 +766,31 @@
             
             return promise;
         };
-        
-        console.log('[Zen Collapse] Emoji picker interception set up');
     }
 
     // Function to apply state to current workspace immediately
     function applyCurrentWorkspaceState() {
-        // Find the current workspace indicator synchronously
         const currentIndicator = document.querySelector('.zen-workspace-tabs-section.zen-current-workspace-indicator');
         if (currentIndicator) {
             const workspaceId = getWorkspaceId(currentIndicator);
             if (workspaceId) {
-                let isCollapsed = collapsedStates.get(workspaceId) || false;
-                
-                const workspaceIconBox = currentIndicator.querySelector('.zen-current-workspace-indicator-icon');
-                
-                // Set data attribute immediately for CSS-based hiding (synchronous)
-                if (isCollapsed) {
-                    currentIndicator.setAttribute('data-zen-collapsed', 'true');
-                } else {
-                    currentIndicator.removeAttribute('data-zen-collapsed');
-                }
-                
-                // Apply state immediately to prevent flashing (synchronous)
-                applyCollapsedState(workspaceId, isCollapsed);
-                
-                // Create chevron synchronously if needed (no requestAnimationFrame delay)
-                if (workspaceIconBox) {
-                    let chevron = workspaceIconBox.querySelector(`.zen-collapse-chevron[data-workspace-id="${workspaceId}"]`);
-                    
-                    // If chevron doesn't exist yet, create it synchronously
-                    if (!chevron) {
-                        chevron = createChevronIcon();
-                        chevron.setAttribute('data-workspace-id', workspaceId);
-                        chevron.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)'; // Collapsed = pointing right
-                        
-                        // Hide original icon children immediately if collapsed
-                        const originalChildren = Array.from(workspaceIconBox.children).filter(
-                            child => !child.classList.contains('zen-collapse-chevron')
-                        );
-                        
-                        if (isCollapsed) {
-                            chevron.style.display = 'block';
-                            chevron.style.visibility = 'visible';
-                            originalChildren.forEach(child => {
-                                child.style.display = 'none';
-                            });
-                        }
-                        
-                        // Add click handler
-                        chevron.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            toggleFolders(workspaceId, chevron, workspaceIconBox);
-                        });
-                        
-                        // Add hover handlers
-                        currentIndicator.classList.add('zen-has-collapse-chevron');
-                        const handleMouseEnter = () => {
-                            const currentCollapsed = isWorkspaceCollapsed(workspaceId);
-                            if (!currentCollapsed) {
-                                chevron.style.display = 'block';
-                                chevron.style.visibility = 'visible';
-                                originalChildren.forEach(child => {
-                                    if (!child.classList.contains('zen-collapse-chevron')) {
-                                        child.style.display = 'none';
-                                    }
-                                });
-                            }
-                        };
-                        const handleMouseLeave = () => {
-                            const currentCollapsed = isWorkspaceCollapsed(workspaceId);
-                            if (!currentCollapsed) {
-                                chevron.style.display = 'none';
-                                originalChildren.forEach(child => {
-                                    if (!child.classList.contains('zen-collapse-chevron')) {
-                                        child.style.display = '';
-                                    }
-                                });
-                            }
-                        };
-                        currentIndicator.addEventListener('mouseenter', handleMouseEnter, true);
-                        currentIndicator.addEventListener('mouseleave', handleMouseLeave, true);
-                        
-                        // Insert chevron synchronously
-                        workspaceIconBox.appendChild(chevron);
-                    }
-                }
-                
-                // Block double-click on workspace icon
+                // Initialize/Update state
+                updateWorkspaceState(workspaceId, false);
                 blockWorkspaceIconDoubleClick();
             }
         }
     }
 
-    // Listen for workspace attached event
     window.addEventListener('ZenWorkspaceAttached', (event) => {
-        console.log('[Zen Collapse] ZenWorkspaceAttached event fired');
-        
-        // Apply state to current workspace immediately to prevent icon flashing
         applyCurrentWorkspaceState();
-        
         setTimeout(() => {
             initChevron();
             blockWorkspaceIconDoubleClick();
-            // Ensure folders are consistent
-            closeAllFoldersOnStartup();
         }, 100);
     }, true);
     
-    // Listen for workspace changes to update chevron visibility
     window.addEventListener('ZenWorkspacesUIUpdate', () => {
-        // Apply state to current workspace immediately to prevent icon flashing
         applyCurrentWorkspaceState();
-        
         setTimeout(() => {
             initChevron();
             blockWorkspaceIconDoubleClick();
@@ -979,16 +804,11 @@
         initialize();
     }
 
-    // Use MutationObserver to handle dynamically added content
     const observer = new MutationObserver((mutations) => {
-        // Check if workspace indicator was added
         for (const mutation of mutations) {
-            // Watch for movingtab attribute changes to clean up animation classes
             if (mutation.type === 'attributes' && mutation.attributeName === 'movingtab') {
                 const target = mutation.target;
                 if (target.hasAttribute('movingtab')) {
-                    console.log('[Zen Collapse] Tab move detected, cleaning animation classes');
-                    // Remove animation classes during drag to prevent conflicts
                     const allItems = document.querySelectorAll('.zen-collapse-anim-target');
                     allItems.forEach(item => {
                         item.classList.remove('zen-collapse-anim-target');
@@ -998,7 +818,6 @@
             
             for (const node of mutation.addedNodes) {
                 if (node.nodeType === Node.ELEMENT_NODE) {
-                    // Check if it's a workspace element or contains one
                     if (node.matches && (
                         node.matches('zen-workspace') ||
                         node.matches('.zen-current-workspace-indicator') ||
@@ -1014,7 +833,6 @@
             }
         }
         
-        // Also check for existing workspace indicators that don't have chevrons yet
         const workspaceIndicators = document.querySelectorAll('.zen-current-workspace-indicator');
         let needsInit = false;
         workspaceIndicators.forEach(workspaceIndicator => {
@@ -1036,7 +854,6 @@
         }
     });
 
-    // Start observing when document is ready
     if (document.body) {
         observer.observe(document.body, {
             childList: true,
@@ -1057,7 +874,6 @@
         });
     }
 
-    // Also add CSS for smooth transitions
     const style = document.createElement('style');
     style.textContent = `
         /* Only apply transitions when explicitly animating, not during drag operations */
@@ -1072,7 +888,6 @@
                 padding-bottom 0.1s cubic-bezier(0.2, 0.0, 0.2, 1),
                 opacity 0.1s linear;
         }
-        /* Disable transitions during drag to avoid conflicts with Zen's drag animations */
         #tabbrowser-tabs[movingtab] .zen-collapse-anim-target,
         zen-folder[dragging] {
             transition: none !important;
@@ -1090,21 +905,17 @@
         .zen-has-collapse-chevron:hover .zen-current-workspace-indicator-icon > :not(.zen-collapse-chevron) {
             display: none !important;
         }
-        /* Immediately hide original icon when workspace is collapsed (prevents flash) */
         .zen-current-workspace-indicator[data-zen-collapsed="true"] .zen-current-workspace-indicator-icon > :not(.zen-collapse-chevron) {
             display: none !important;
         }
-        /* Show chevron when collapsed */
         .zen-current-workspace-indicator[data-zen-collapsed="true"] .zen-collapse-chevron {
             display: block !important;
             visibility: visible !important;
         }
-        /* Hide chevron when icon picker is open (even if collapsed) */
         .zen-current-workspace-indicator[data-zen-icon-picker-open="true"] .zen-collapse-chevron {
             display: none !important;
             visibility: hidden !important;
         }
-        /* Show icon when picker is open (even if collapsed) */
         .zen-current-workspace-indicator[data-zen-icon-picker-open="true"] .zen-current-workspace-indicator-icon > :not(.zen-collapse-chevron) {
             display: block !important;
             visibility: visible !important;
@@ -1112,15 +923,45 @@
         .zen-current-workspace-indicator-icon {
             position: relative;
         }
-        /* Workspace indicator spacing (moved from chrome.css) */
         .zen-current-workspace-indicator .zen-current-workspace-indicator-icon {
             margin-bottom: 4px !important;
         }
         .zen-current-workspace-indicator .zen-current-workspace-indicator-name {
             margin-bottom: 2px !important;
         }
+
+        /* FLATTENING STYLES */
+        zen-folder.zen-flatten-folder {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: transparent !important;
+            border: none !important;
+            width: 100% !important;
+        }
+        
+        /* Hide the header/label of the folder */
+        zen-folder.zen-flatten-folder > .tab-group-label-container {
+            display: none !important;
+        }
+        
+        /* Reset indentation for the container inside the flattened folder */
+        zen-folder.zen-flatten-folder > .tab-group-container {
+            margin-inline-start: 0 !important;
+            padding-inline-start: 0 !important;
+        }
+        
+        /* Force indentation of items inside to 0 to look top-level */
+        zen-folder.zen-flatten-folder > .tab-group-container > * {
+            --zen-folder-indent: 0px !important;
+            margin-inline-start: 0 !important;
+        }
+        
+        /* Ensure the active tab inside gets 0 indentation */
+        zen-folder.zen-flatten-folder .tabbrowser-tab[selected] {
+            --zen-folder-indent: 0px !important;
+            margin-inline-start: 0 !important;
+        }
     `;
     document.head.appendChild(style);
 
 })();
-
