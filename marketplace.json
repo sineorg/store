@@ -69,7 +69,7 @@
     "homepage": "JustVibingWhileCoding/Neo-Zen",
     "image": "https://github.com/user-attachments/assets/c37e9f4e-1ab1-43ec-945e-2be1592351a4",
     "name": "Neo Zen",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "description": "A sleek, futuristic theme for Zen Browser that blends modern design with mindful simplicity",
     "readme": "https://raw.githubusercontent.com/JustVibingWhileCoding/Neo-Zen/main/README.md",
     "stars": 69,
@@ -137,7 +137,7 @@
     "version": "1.5.8",
     "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
     "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
-    "stars": 44,
+    "stars": 45,
     "fork": [
       "zen"
     ]
