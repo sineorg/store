@@ -363,29 +363,29 @@
         const isActiveTabInPinned = pinnedSection.contains(activeTab);
         const activeChain = isActiveTabInPinned ? getActiveFolderChain(activeTab, pinnedSection) : [];
 
-        // Phase 1: Update Folder States (collapsed/expanded) and Flattening
+        // Phase 1: Update Folder States and Flattening
+        // ONLY modify folder.collapsed for folders in the active chain (containing active tab)
+        // Other folders are just hidden via maxHeight - no need to touch their collapsed state
         if (isCollapsed) {
             folders.forEach(folder => {
-                // If this is the active container, we still collapse it so it shows "collapsed with active tab" style
-                // Save original state if not already saved
-                if (!folder.dataset.originalStateSaved) {
-                    folder.dataset.zenOriginalCollapsed = folder.collapsed;
-                    folder.dataset.originalStateSaved = "true";
-                }
-                // Force collapse
-                if (!folder.collapsed) {
-                    folder.collapsed = true;
-                }
-                
-                // Apply flattening if this folder is in the active chain
+                // Only modify collapsed state for folders in the active chain
                 if (activeChain.includes(folder)) {
+                    // Save original state if not already saved
+                    if (!folder.dataset.originalStateSaved) {
+                        folder.dataset.zenOriginalCollapsed = folder.collapsed;
+                        folder.dataset.originalStateSaved = "true";
+                    }
+                    // Force collapse so only active tab is visible
+                    if (!folder.collapsed) {
+                        folder.collapsed = true;
+                    }
                     folder.classList.add('zen-flatten-folder');
                 } else {
                     folder.classList.remove('zen-flatten-folder');
                 }
             });
         } else {
-            // Restore folder states
+            // Restore folders that were modified (those in active chain stay visible, so no animation conflict)
             folders.forEach(folder => {
                 folder.classList.remove('zen-flatten-folder');
                 
