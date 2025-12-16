@@ -14,18 +14,6 @@
       "librewolf"
     ]
   },
-  "advanced-tab-groups": {
-    "homepage": "Vertex-Mods/Advanced-Tab-Groups",
-    "image": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/image.png",
-    "name": "Advanced Tab Groups (BETA)",
-    "version": "3.2.1b",
-    "description": "Tab Groups for Zen Browser",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
-    "stars": 362,
-    "fork": [
-      "zen"
-    ]
-  },
   "Arc-2.0": {
     "homepage": "https://github.com/YashjitPal/Arc-2.0/",
     "image": "https://github.com/user-attachments/assets/f9a25afb-2503-421a-bed0-6e94f2ab43db",
@@ -33,6 +21,18 @@
     "version": "3.2.9",
     "description": "Arc-like Zen Browser theme.",
     "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/main/README.md",
+    "stars": 363,
+    "fork": [
+      "zen"
+    ]
+  },
+  "advanced-tab-groups": {
+    "homepage": "Vertex-Mods/Advanced-Tab-Groups",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/image.png",
+    "name": "Advanced Tab Groups (BETA)",
+    "version": "3.2.1b",
+    "description": "Tab Groups for Zen Browser",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
     "stars": 362,
     "fork": [
       "zen"
