@@ -6,7 +6,7 @@
     "version": "6.0.1",
     "description": "A skin for Firefox and its forks that makes things flow.",
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
-    "stars": 505,
+    "stars": 507,
     "fork": [
       "floorp",
       "firefox",
@@ -72,7 +72,7 @@
     "version": "2.1.0",
     "description": "A sleek, futuristic theme for Zen Browser that blends modern design with mindful simplicity",
     "readme": "https://raw.githubusercontent.com/JustVibingWhileCoding/Neo-Zen/main/README.md",
-    "stars": 70,
+    "stars": 71,
     "fork": [
       "zen"
     ]
