@@ -38,6 +38,18 @@
       "zen"
     ]
   },
+  "ai-tabgroups-zenbrowser": {
+    "homepage": "Darsh-A/Ai-TabGroups-ZenBrowser",
+    "image": "https://github.com/Darsh-A/Ai-TabGroups-ZenBrowser/blob/main/image.jpg?raw=true",
+    "name": "Tidy Tabs",
+    "version": "5.1.0",
+    "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
+    "stars": 144,
+    "fork": [
+      "zen"
+    ]
+  },
   "zaps-cool-photon-theme": {
     "homepage": "zapSNH/zapsCoolPhotonTheme",
     "image": "https://i.imgur.com/FyzTFKg.png",
@@ -319,6 +331,13 @@
       "zen"
     ]
   },
+  "bada16c1-3b14-483b": {
+    "homepage": "themaster5209/zen-better-new-tab-button",
+    "name": "Better New Tab button",
+    "version": "1.0.6",
+    "description": "A Zen Browser mod that enhances the New Tab button experience",
+    "stars": 4
+  },
   "3c8ebf69-1042-49b1-8f08-9178f9490659": {
     "homepage": "rasyidrafi/zen-always-show-music-bar",
     "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
@@ -407,32 +426,13 @@
       "zen"
     ]
   },
-  "ai-tabgroups-zenbrowser": {
-    "homepage": "Darsh-A/Ai-TabGroups-ZenBrowser",
-    "image": "https://github.com/Darsh-A/Ai-TabGroups-ZenBrowser/blob/main/image.jpg?raw=true",
-    "name": "Tidy Tabs",
-    "version": "5.1.0",
-    "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen"
-    ]
-  },
-  "bada16c1-3b14-483b": {
-    "homepage": "themaster5209/zen-better-new-tab-button",
-    "name": "Better New Tab button",
-    "version": "1.0.6",
-    "description": "A Zen Browser mod that enhances the New Tab button experience",
-    "stars": 0
-  },
   "auto-pip-setting": {
     "homepage": "Zylaah/auto-pip",
     "name": "Auto-PiP-Setting",
     "version": "1.0",
     "description": "Adds auto-picture-in-picture setting in the unified panel",
     "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/auto-pip/README.md",
-    "stars": 0,
+    "stars": 1,
     "fork": [
       "zen"
     ]
