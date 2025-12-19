@@ -49,7 +49,7 @@
         svg.setAttribute('height', '1em');
         svg.setAttribute('viewBox', '0 0 24 24');
         svg.setAttribute('fill', 'currentColor');
-        svg.style.display = 'none';
+        // svg.style.display = 'none'; // REMOVED: Managed by CSS
         svg.style.verticalAlign = 'middle';
         svg.style.cursor = 'pointer';
         svg.style.width = '1em';
@@ -381,7 +381,16 @@
                     }
                     folder.classList.add('zen-flatten-folder');
                 } else {
-                    folder.classList.remove('zen-flatten-folder');
+                    // Restore collapsed state if it was saved, but KEEP zen-flatten-folder
+                    // so the header remains hidden while we animate the folder out.
+                    if (folder.dataset.originalStateSaved) {
+                        const wasCollapsed = folder.dataset.zenOriginalCollapsed === 'true';
+                        if (folder.collapsed !== wasCollapsed) {
+                            folder.collapsed = wasCollapsed;
+                        }
+                        delete folder.dataset.zenOriginalCollapsed;
+                        delete folder.dataset.originalStateSaved;
+                    }
                 }
             });
         } else {
@@ -457,31 +466,23 @@
                 workspaceIndicator.removeAttribute('data-zen-collapsed');
             }
             
+            // Clean up: Ensure we are NOT setting inline display styles anymore
             const workspaceIconBox = workspaceIndicator.querySelector('.zen-current-workspace-indicator-icon');
             if (workspaceIconBox) {
                 const chevron = workspaceIconBox.querySelector(`.zen-collapse-chevron[data-workspace-id="${workspaceId}"]`);
+                if (chevron) {
+                    chevron.style.removeProperty('display');
+                    chevron.style.removeProperty('visibility');
+                    chevron.style.removeProperty('transform'); // Managed by CSS now
+                }
+                
                 const originalChildren = Array.from(workspaceIconBox.children).filter(
                     child => !child.classList.contains('zen-collapse-chevron')
                 );
-                
-                if (chevron) {
-                    chevron.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)';
-                    
-                    if (isCollapsed) {
-                        chevron.style.display = 'block';
-                        chevron.style.visibility = 'visible';
-                        originalChildren.forEach(child => {
-                            child.style.display = 'none';
-                        });
-                    } else {
-                         if (!workspaceIndicator.matches(':hover')) {
-                            chevron.style.display = 'none';
-                            originalChildren.forEach(child => {
-                                child.style.display = '';
-                            });
-                        }
-                    }
-                }
+                originalChildren.forEach(child => {
+                    child.style.removeProperty('display');
+                    child.style.removeProperty('visibility');
+                });
             }
         }
     }
@@ -521,6 +522,30 @@
             }
 
             console.log('[Zen Collapse] Initializing chevron for workspace:', workspaceId);
+            
+            // Check content for text nodes (emoji) or empty state
+            let hasIconContent = false;
+            const childNodes = Array.from(workspaceIconBox.childNodes);
+            
+            childNodes.forEach(node => {
+                if (node.nodeType === Node.ELEMENT_NODE && !node.classList.contains('zen-collapse-chevron')) {
+                    hasIconContent = true;
+                } else if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') {
+                    hasIconContent = true;
+                    // Wrap text node in span for CSS targeting
+                    const span = document.createElement('span');
+                    span.className = 'zen-workspace-icon-text-wrapper';
+                    span.textContent = node.textContent;
+                    workspaceIconBox.replaceChild(span, node);
+                }
+            });
+
+            if (!hasIconContent) {
+                workspaceIconBox.classList.add('zen-workspace-no-icon');
+            } else {
+                workspaceIconBox.classList.remove('zen-workspace-no-icon');
+            }
+
             const chevron = createChevronIcon();
             chevron.setAttribute('data-workspace-id', workspaceId);
             
@@ -528,37 +553,10 @@
             
             workspaceIndicator.classList.add('zen-has-collapse-chevron');
             
-            const handleMouseEnter = () => {
-                const currentCollapsed = isWorkspaceCollapsed(workspaceId);
-                if (!currentCollapsed) {
-                    chevron.style.display = 'block';
-                    chevron.style.visibility = 'visible';
-                     const originalChildren = Array.from(workspaceIconBox.children).filter(
-                        child => !child.classList.contains('zen-collapse-chevron')
-                    );
-                    originalChildren.forEach(child => {
-                        child.style.display = 'none';
-                    });
-                }
-            };
-
-            const handleMouseLeave = () => {
-                const currentCollapsed = isWorkspaceCollapsed(workspaceId);
-                if (!currentCollapsed) {
-                    chevron.style.display = 'none';
-                     const originalChildren = Array.from(workspaceIconBox.children).filter(
-                        child => !child.classList.contains('zen-collapse-chevron')
-                    );
-                    originalChildren.forEach(child => {
-                        child.style.display = '';
-                        child.style.visibility = '';
-                    });
-                }
-            };
-
-            workspaceIndicator.addEventListener('mouseenter', handleMouseEnter, true);
-            workspaceIndicator.addEventListener('mouseleave', handleMouseLeave, true);
-
+            // Mouse event handlers rely on CSS for visibility toggling now
+            // But we keep them for logic that might depend on JS state if needed
+            // For now, we simplify to just rely on the class logic we set up.
+            
             workspaceIconBox.appendChild(chevron);
             
             // Initial update
@@ -896,22 +894,42 @@
             transition: transform 0.2s ease, opacity 0.2s ease;
             pointer-events: auto;
             transform-origin: center;
+            display: none; /* Default hidden */
         }
-        .zen-has-collapse-chevron:hover .zen-collapse-chevron {
+        
+        /* Rotate chevron when collapsed */
+        /* Default state is rotated 90deg (expanded) */
+        .zen-collapse-chevron {
+            transform: rotate(90deg);
+        }
+        
+        /* Only rotate back to 0deg when specifically collapsed */
+        .zen-current-workspace-indicator[data-zen-collapsed="true"] .zen-collapse-chevron {
+            transform: rotate(0deg) !important;
+        }
+        
+        /* GENERAL HOVER BEHAVIOR (When icon exists) */
+        /* IMPORTANT: Only apply this when NOT in no-icon mode */
+        .zen-has-collapse-chevron:hover .zen-current-workspace-indicator-icon:not(.zen-workspace-no-icon) .zen-collapse-chevron {
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
         }
-        .zen-has-collapse-chevron:hover .zen-current-workspace-indicator-icon > :not(.zen-collapse-chevron) {
+        .zen-has-collapse-chevron:hover .zen-current-workspace-indicator-icon:not(.zen-workspace-no-icon) > :not(.zen-collapse-chevron) {
             display: none !important;
         }
-        .zen-current-workspace-indicator[data-zen-collapsed="true"] .zen-current-workspace-indicator-icon > :not(.zen-collapse-chevron) {
+        
+        /* COLLAPSED STATE BEHAVIOR */
+        /* Only hide siblings if we are NOT in no-icon mode */
+        .zen-current-workspace-indicator[data-zen-collapsed="true"] .zen-current-workspace-indicator-icon:not(.zen-workspace-no-icon) > :not(.zen-collapse-chevron) {
             display: none !important;
         }
         .zen-current-workspace-indicator[data-zen-collapsed="true"] .zen-collapse-chevron {
             display: block !important;
             visibility: visible !important;
         }
+        
+        /* ICON PICKER BEHAVIOR */
         .zen-current-workspace-indicator[data-zen-icon-picker-open="true"] .zen-collapse-chevron {
             display: none !important;
             visibility: hidden !important;
@@ -920,8 +938,46 @@
             display: block !important;
             visibility: visible !important;
         }
+
+        /* NO ICON SPECIFIC BEHAVIOR */
+        /* Initially hidden */
+        .zen-workspace-no-icon .zen-collapse-chevron {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        /* On hover OR when collapsed: Show */
+        .zen-current-workspace-indicator:hover .zen-current-workspace-indicator-icon.zen-workspace-no-icon .zen-collapse-chevron,
+        .zen-current-workspace-indicator[data-zen-collapsed="true"] .zen-current-workspace-indicator-icon.zen-workspace-no-icon .zen-collapse-chevron {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1;
+        }
+        
+        /* Override Zen's native hiding of no-icon boxes ONLY when needed (hover or collapsed) */
+        #navigator-toolbox[zen-sidebar-expanded="true"] .zen-current-workspace-indicator:hover .zen-current-workspace-indicator-icon[no-icon="true"],
+        #navigator-toolbox[zen-sidebar-expanded="true"] .zen-current-workspace-indicator[data-zen-collapsed="true"] .zen-current-workspace-indicator-icon[no-icon="true"] {
+            display: flex !important; /* Override the display:none */
+            visibility: visible !important;
+            width: auto !important; 
+            min-width: 0 !important;
+        }
+        
+        /* But keep the original icon content hidden (if any remains) */
+        #navigator-toolbox[zen-sidebar-expanded="true"] .zen-current-workspace-indicator-icon[no-icon="true"] > :not(.zen-collapse-chevron) {
+            display: none !important;
+        }
+        
+        /* Since there are no other children in no-icon case, we don't need to hide siblings */
+
         .zen-current-workspace-indicator-icon {
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 20px; /* Ensure height for animation */
         }
         .zen-current-workspace-indicator .zen-current-workspace-indicator-icon {
             margin-bottom: 4px !important;
@@ -965,3 +1021,4 @@
     document.head.appendChild(style);
 
 })();
+
