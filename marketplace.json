@@ -6,7 +6,7 @@
     "version": "6.0.1",
     "description": "A skin for Firefox and its forks that makes things flow.",
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
-    "stars": 514,
+    "stars": 515,
     "fork": [
       "floorp",
       "firefox",
@@ -34,18 +34,6 @@
     "description": "Tab Groups for Zen Browser",
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
     "stars": 362,
-    "fork": [
-      "zen"
-    ]
-  },
-  "ai-tabgroups-zenbrowser": {
-    "homepage": "Darsh-A/Ai-TabGroups-ZenBrowser",
-    "image": "https://github.com/Darsh-A/Ai-TabGroups-ZenBrowser/blob/main/image.jpg?raw=true",
-    "name": "Tidy Tabs",
-    "version": "5.1.0",
-    "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
-    "stars": 144,
     "fork": [
       "zen"
     ]
@@ -331,13 +319,6 @@
       "zen"
     ]
   },
-  "bada16c1-3b14-483b": {
-    "homepage": "themaster5209/zen-better-new-tab-button",
-    "name": "Better New Tab button",
-    "version": "1.0.6",
-    "description": "A Zen Browser mod that enhances the New Tab button experience",
-    "stars": 4
-  },
   "3c8ebf69-1042-49b1-8f08-9178f9490659": {
     "homepage": "rasyidrafi/zen-always-show-music-bar",
     "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
@@ -415,17 +396,6 @@
       "firefox"
     ]
   },
-  "auto-pip-setting": {
-    "homepage": "Zylaah/auto-pip",
-    "name": "Auto-PiP-Setting",
-    "version": "1.0",
-    "description": "Adds auto-picture-in-picture setting in the unified panel",
-    "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/auto-pip/README.md",
-    "stars": 1,
-    "fork": [
-      "zen"
-    ]
-  },
   "collapse-pinned-area": {
     "homepage": "Zylaah/collapse-pinned-area",
     "name": "Collapse Pinned Area",
@@ -433,6 +403,36 @@
     "description": "Let's you collapse your pinned folders and tabs area with a chevron icon",
     "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/collapse-pinned-area/README.md",
     "stars": 1,
+    "fork": [
+      "zen"
+    ]
+  },
+  "ai-tabgroups-zenbrowser": {
+    "homepage": "Darsh-A/Ai-TabGroups-ZenBrowser",
+    "image": "https://github.com/Darsh-A/Ai-TabGroups-ZenBrowser/blob/main/image.jpg?raw=true",
+    "name": "Tidy Tabs",
+    "version": "5.1.0",
+    "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "bada16c1-3b14-483b": {
+    "homepage": "themaster5209/zen-better-new-tab-button",
+    "name": "Better New Tab button",
+    "version": "1.0.6",
+    "description": "A Zen Browser mod that enhances the New Tab button experience",
+    "stars": 0
+  },
+  "auto-pip-setting": {
+    "homepage": "Zylaah/auto-pip",
+    "name": "Auto-PiP-Setting",
+    "version": "1.0",
+    "description": "Adds auto-picture-in-picture setting in the unified panel",
+    "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/auto-pip/README.md",
+    "stars": 0,
     "fork": [
       "zen"
     ]
