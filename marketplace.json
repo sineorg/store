@@ -96,29 +96,6 @@
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
     "stars": 69
   },
-  "search-engine-select": {
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
-    "name": "Search Engine Select",
-    "version": "1.0.0",
-    "description": "Adds a floating UI to switch search engines on a search results page.",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
-    "stars": 69,
-    "fork": [
-      "zen"
-    ]
-  },
-  "settings-shortcuts-search": {
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
-    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/image.png",
-    "name": "Search Keyboard shortcuts",
-    "version": "1.0.0",
-    "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
-    "stars": 69,
-    "fork": [
-      "zen"
-    ]
-  },
   "zen-command-palette": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
     "name": "Zen Command Palette",
@@ -174,30 +151,6 @@
     "description": "A minimal theme for Zen. Unconventional by design.",
     "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
     "stars": 30,
-    "fork": [
-      "zen"
-    ]
-  },
-  "quick-tabs": {
-    "homepage": "Darsh-A/Quick-Tabs",
-    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
-    "name": "Quick Tabs",
-    "version": "1.1.0",
-    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
-    "stars": 25,
-    "fork": [
-      "zen"
-    ]
-  },
-  "vizen-floaty-ui": {
-    "homepage": "moktavizen/floaty-ui",
-    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
-    "name": "Floaty UI",
-    "version": "1.0.2",
-    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
-    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
-    "stars": 25,
     "fork": [
       "zen"
     ]
@@ -274,17 +227,6 @@
       "firefox"
     ]
   },
-  "reopen-closed-tabs": {
-    "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
-    "name": "Reopen Closed Tabs Menu",
-    "version": "1.0.0",
-    "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
-    "stars": 8,
-    "fork": [
-      "zen"
-    ]
-  },
   "zen-drop-link": {
     "homepage": "https://github.com/octaviusz/zen-drop-link",
     "name": "Zen Drop Link to Split",
@@ -303,17 +245,6 @@
     "version": "1.1.8",
     "description": "Enhance default firefox sidebar with a modern look and feel matching Zen UI.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-better-sidebar/refs/heads/main/README.md",
-    "stars": 5,
-    "fork": [
-      "zen"
-    ]
-  },
-  "tab-rename-zen-browser": {
-    "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
-    "name": "Better Tab Rename",
-    "version": "1.0.0",
-    "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
     "stars": 5,
     "fork": [
       "zen"
@@ -433,6 +364,75 @@
     "description": "Adds auto-picture-in-picture setting in the unified panel",
     "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/auto-pip/README.md",
     "stars": 1,
+    "fork": [
+      "zen"
+    ]
+  },
+  "search-engine-select": {
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
+    "name": "Search Engine Select",
+    "version": "1.0.0",
+    "description": "Adds a floating UI to switch search engines on a search results page.",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "settings-shortcuts-search": {
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
+    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/image.png",
+    "name": "Search Keyboard shortcuts",
+    "version": "1.0.0",
+    "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "quick-tabs": {
+    "homepage": "Darsh-A/Quick-Tabs",
+    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
+    "name": "Quick Tabs",
+    "version": "1.1.0",
+    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "vizen-floaty-ui": {
+    "homepage": "moktavizen/floaty-ui",
+    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
+    "name": "Floaty UI",
+    "version": "1.0.2",
+    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
+    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "reopen-closed-tabs": {
+    "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
+    "name": "Reopen Closed Tabs Menu",
+    "version": "1.0.0",
+    "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "tab-rename-zen-browser": {
+    "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
+    "name": "Better Tab Rename",
+    "version": "1.0.0",
+    "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
+    "stars": 0,
     "fork": [
       "zen"
     ]
