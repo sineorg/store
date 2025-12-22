@@ -130,18 +130,6 @@
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
     "stars": 69
   },
-  "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
-    "homepage": "CosmoCreeper/Zen-Themes/tree/main/SuperPins",
-    "image": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/image.png",
-    "name": "SuperPins",
-    "version": "1.5.8",
-    "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
-    "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
-    "stars": 47,
-    "fork": [
-      "zen"
-    ]
-  },
   "context-menu-icons": {
     "homepage": "Starry-AXQG/Context-Menu-Icons",
     "image": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/.asset/Demo%20Image.jpg",
@@ -245,18 +233,6 @@
     "description": "There will be no gaps in the sides to have a sleek look for every layout",
     "readme": "https://raw.githubusercontent.com/Comp-Tech-Guy/No-Gaps/refs/heads/main/README.md",
     "stars": 11,
-    "fork": [
-      "zen"
-    ]
-  },
-  "c9ee0d97-d2d6-40fd-8f85-549fe000b868": {
-    "homepage": "rasyidrafi/zen-deta-loading-bar",
-    "image": "https://github.com/rasyidrafi/zen-deta-loading-bar/blob/main/image.png?raw=true",
-    "name": "Deta Loading Bar",
-    "version": "2.0.4",
-    "description": "A sleek animated loading bar that appears at the top of the page during loading, similar to Deta Surf browser. Features customizable colors, gradient effects, blur animation, adjustable thickness, and optional box shadows. Integrates with Zen Browser's theme colors or use custom colors and width.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-deta-loading-bar/refs/heads/main/README.md",
-    "stars": 9,
     "fork": [
       "zen"
     ]
@@ -435,6 +411,30 @@
     "fork": [
       "zen",
       "firefox"
+    ]
+  },
+  "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
+    "homepage": "CosmoCreeper/Zen-Themes/tree/main/SuperPins",
+    "image": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/image.png",
+    "name": "SuperPins",
+    "version": "1.5.8",
+    "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
+    "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "c9ee0d97-d2d6-40fd-8f85-549fe000b868": {
+    "homepage": "rasyidrafi/zen-deta-loading-bar",
+    "image": "https://github.com/rasyidrafi/zen-deta-loading-bar/blob/main/image.png?raw=true",
+    "name": "Deta Loading Bar",
+    "version": "2.0.4",
+    "description": "A sleek animated loading bar that appears at the top of the page during loading, similar to Deta Surf browser. Features customizable colors, gradient effects, blur animation, adjustable thickness, and optional box shadows. Integrates with Zen Browser's theme colors or use custom colors and width.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-deta-loading-bar/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
     ]
   },
   "IconTweaker": {
