@@ -26,6 +26,18 @@
       "zen"
     ]
   },
+  "advanced-tab-groups": {
+    "homepage": "Vertex-Mods/Advanced-Tab-Groups",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/image.png",
+    "name": "Advanced Tab Groups (BETA)",
+    "version": "3.2.1b",
+    "description": "Tab Groups for Zen Browser",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
+    "stars": 362,
+    "fork": [
+      "zen"
+    ]
+  },
   "ai-tabgroups-zenbrowser": {
     "homepage": "Darsh-A/Ai-TabGroups-ZenBrowser",
     "image": "https://github.com/Darsh-A/Ai-TabGroups-ZenBrowser/blob/main/image.jpg?raw=true",
@@ -141,6 +153,17 @@
     "fork": [
       "zen",
       "firefox"
+    ]
+  },
+  "quick-search-zen-browser": {
+    "homepage": "Darsh-A/Quick-Search-Zen-Browser",
+    "name": "Quick Search",
+    "version": "2.2.0",
+    "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
+    "stars": 40,
+    "fork": [
+      "zen"
     ]
   },
   "wireframe-2.0": {
@@ -296,6 +319,18 @@
       "zen"
     ]
   },
+  "cfafe94c-5a29-4dae-8489-6be514185474": {
+    "homepage": "rasyidrafi/zen-better-sidebar",
+    "image": "https://github.com/rasyidrafi/zen-better-sidebar/blob/main/image.png?raw=true",
+    "name": "Better Sidebar",
+    "version": "1.1.8",
+    "description": "Enhance default firefox sidebar with a modern look and feel matching Zen UI.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-better-sidebar/refs/heads/main/README.md",
+    "stars": 5,
+    "fork": [
+      "zen"
+    ]
+  },
   "bada16c1-3b14-483b": {
     "homepage": "themaster5209/zen-better-new-tab-button",
     "name": "Better New Tab button",
@@ -310,19 +345,6 @@
     "version": "1.0.4",
     "description": "Make your zen music bar better.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
-    "stars": 3,
-    "fork": [
-      "zen",
-      "firefox"
-    ]
-  },
-  "42b8c4ac-76d5-4521-9917-2e478931ee53": {
-    "homepage": "rasyidrafi/zen-compact-transparent-mode",
-    "image": "https://github.com/rasyidrafi/zen-compact-transparent-mode/blob/main/image.png?raw=true",
-    "name": "Zen Compact Transparent Mode",
-    "version": "2.0.0",
-    "description": "Make popups UI menu transparent with custom settings.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-compact-transparent-mode/refs/heads/main/README.md",
     "stars": 3,
     "fork": [
       "zen",
@@ -402,39 +424,17 @@
       "zen"
     ]
   },
-  "advanced-tab-groups": {
-    "homepage": "Vertex-Mods/Advanced-Tab-Groups",
-    "image": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/image.png",
-    "name": "Advanced Tab Groups (BETA)",
-    "version": "3.2.1b",
-    "description": "Tab Groups for Zen Browser",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
+  "42b8c4ac-76d5-4521-9917-2e478931ee53": {
+    "homepage": "rasyidrafi/zen-compact-transparent-mode",
+    "image": "https://github.com/rasyidrafi/zen-compact-transparent-mode/blob/main/image.png?raw=true",
+    "name": "Zen Compact Transparent Mode",
+    "version": "2.0.0",
+    "description": "Make popups UI menu transparent with custom settings.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-compact-transparent-mode/refs/heads/main/README.md",
     "stars": 0,
     "fork": [
-      "zen"
-    ]
-  },
-  "quick-search-zen-browser": {
-    "homepage": "Darsh-A/Quick-Search-Zen-Browser",
-    "name": "Quick Search",
-    "version": "2.2.0",
-    "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen"
-    ]
-  },
-  "cfafe94c-5a29-4dae-8489-6be514185474": {
-    "homepage": "rasyidrafi/zen-better-sidebar",
-    "image": "https://github.com/rasyidrafi/zen-better-sidebar/blob/main/image.png?raw=true",
-    "name": "Better Sidebar",
-    "version": "1.1.8",
-    "description": "Enhance default firefox sidebar with a modern look and feel matching Zen UI.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-better-sidebar/refs/heads/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen"
+      "zen",
+      "firefox"
     ]
   },
   "IconTweaker": {
