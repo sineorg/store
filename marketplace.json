@@ -173,7 +173,7 @@
     "version": "2.7.5",
     "description": "A minimal theme for Zen. Unconventional by design.",
     "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
-    "stars": 30,
+    "stars": 31,
     "fork": [
       "zen"
     ]
@@ -319,25 +319,24 @@
       "zen"
     ]
   },
+  "cfafe94c-5a29-4dae-8489-6be514185474": {
+    "homepage": "rasyidrafi/zen-better-sidebar",
+    "image": "https://github.com/rasyidrafi/zen-better-sidebar/blob/main/image.png?raw=true",
+    "name": "Better Sidebar",
+    "version": "1.1.8",
+    "description": "Enhance default firefox sidebar with a modern look and feel matching Zen UI.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-better-sidebar/refs/heads/main/README.md",
+    "stars": 5,
+    "fork": [
+      "zen"
+    ]
+  },
   "bada16c1-3b14-483b": {
     "homepage": "themaster5209/zen-better-new-tab-button",
     "name": "Better New Tab button",
     "version": "1.0.6",
     "description": "A Zen Browser mod that enhances the New Tab button experience",
     "stars": 4
-  },
-  "42b8c4ac-76d5-4521-9917-2e478931ee53": {
-    "homepage": "rasyidrafi/zen-compact-transparent-mode",
-    "image": "https://github.com/rasyidrafi/zen-compact-transparent-mode/blob/main/image.png?raw=true",
-    "name": "Zen Compact Transparent Mode",
-    "version": "2.0.0",
-    "description": "Make popups UI menu transparent with custom settings.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-compact-transparent-mode/refs/heads/main/README.md",
-    "stars": 3,
-    "fork": [
-      "zen",
-      "firefox"
-    ]
   },
   "3c8ebf69-1042-49b1-8f08-9178f9490659": {
     "homepage": "rasyidrafi/zen-always-show-music-bar",
@@ -425,16 +424,17 @@
       "firefox"
     ]
   },
-  "cfafe94c-5a29-4dae-8489-6be514185474": {
-    "homepage": "rasyidrafi/zen-better-sidebar",
-    "image": "https://github.com/rasyidrafi/zen-better-sidebar/blob/main/image.png?raw=true",
-    "name": "Better Sidebar",
-    "version": "1.1.8",
-    "description": "Enhance default firefox sidebar with a modern look and feel matching Zen UI.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-better-sidebar/refs/heads/main/README.md",
+  "42b8c4ac-76d5-4521-9917-2e478931ee53": {
+    "homepage": "rasyidrafi/zen-compact-transparent-mode",
+    "image": "https://github.com/rasyidrafi/zen-compact-transparent-mode/blob/main/image.png?raw=true",
+    "name": "Zen Compact Transparent Mode",
+    "version": "2.0.0",
+    "description": "Make popups UI menu transparent with custom settings.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-compact-transparent-mode/refs/heads/main/README.md",
     "stars": 0,
     "fork": [
-      "zen"
+      "zen",
+      "firefox"
     ]
   },
   "IconTweaker": {
