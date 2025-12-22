@@ -26,18 +26,6 @@
       "zen"
     ]
   },
-  "advanced-tab-groups": {
-    "homepage": "Vertex-Mods/Advanced-Tab-Groups",
-    "image": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/image.png",
-    "name": "Advanced Tab Groups (BETA)",
-    "version": "3.2.1b",
-    "description": "Tab Groups for Zen Browser",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
-    "stars": 362,
-    "fork": [
-      "zen"
-    ]
-  },
   "ai-tabgroups-zenbrowser": {
     "homepage": "Darsh-A/Ai-TabGroups-ZenBrowser",
     "image": "https://github.com/Darsh-A/Ai-TabGroups-ZenBrowser/blob/main/image.jpg?raw=true",
@@ -83,17 +71,6 @@
     "version": "2.0.0",
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/README.md",
-    "stars": 69,
-    "fork": [
-      "zen"
-    ]
-  },
-  "search-engine-select": {
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
-    "name": "Search Engine Select",
-    "version": "1.0.0",
-    "description": "Adds a floating UI to switch search engines on a search results page.",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
     "stars": 69,
     "fork": [
       "zen"
@@ -155,17 +132,6 @@
       "firefox"
     ]
   },
-  "quick-search-zen-browser": {
-    "homepage": "Darsh-A/Quick-Search-Zen-Browser",
-    "name": "Quick Search",
-    "version": "2.2.0",
-    "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
-    "stars": 40,
-    "fork": [
-      "zen"
-    ]
-  },
   "wireframe-2.0": {
     "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
     "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
@@ -198,18 +164,6 @@
     "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
     "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
     "stars": 25,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-tidy-downloads": {
-    "homepage": "Vertex-Mods/Zen-Tidy-Downloads",
-    "image": "https://github.com/Vertex-Mods/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
-    "name": "Tidy Downloads",
-    "version": "3.0.0",
-    "description": "Clean up your downloads with AI",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/refs/heads/main/README.md",
-    "stars": 15,
     "fork": [
       "zen"
     ]
@@ -402,17 +356,6 @@
       "zen"
     ]
   },
-  "collapse-pinned-area": {
-    "homepage": "Zylaah/collapse-pinned-area",
-    "name": "Collapse Pinned Area",
-    "version": "1.2.0",
-    "description": "Let's you collapse your pinned folders and tabs area with a chevron icon",
-    "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/collapse-pinned-area/README.md",
-    "stars": 1,
-    "fork": [
-      "zen"
-    ]
-  },
   "auto-pip-setting": {
     "homepage": "Zylaah/auto-pip",
     "name": "Auto-PiP-Setting",
@@ -435,6 +378,63 @@
     "fork": [
       "zen",
       "firefox"
+    ]
+  },
+  "advanced-tab-groups": {
+    "homepage": "Vertex-Mods/Advanced-Tab-Groups",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/image.png",
+    "name": "Advanced Tab Groups (BETA)",
+    "version": "3.2.1b",
+    "description": "Tab Groups for Zen Browser",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "search-engine-select": {
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
+    "name": "Search Engine Select",
+    "version": "1.0.0",
+    "description": "Adds a floating UI to switch search engines on a search results page.",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "quick-search-zen-browser": {
+    "homepage": "Darsh-A/Quick-Search-Zen-Browser",
+    "name": "Quick Search",
+    "version": "2.2.0",
+    "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-tidy-downloads": {
+    "homepage": "Vertex-Mods/Zen-Tidy-Downloads",
+    "image": "https://github.com/Vertex-Mods/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
+    "name": "Tidy Downloads",
+    "version": "3.0.0",
+    "description": "Clean up your downloads with AI",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "collapse-pinned-area": {
+    "homepage": "Zylaah/collapse-pinned-area",
+    "name": "Collapse Pinned Area",
+    "version": "1.2.0",
+    "description": "Let's you collapse your pinned folders and tabs area with a chevron icon",
+    "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/collapse-pinned-area/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
     ]
   },
   "IconTweaker": {
