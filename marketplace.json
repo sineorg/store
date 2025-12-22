@@ -1,4 +1,19 @@
 {
+  "natsumi-browser": {
+    "homepage": "greeeen-dev/natsumi-browser",
+    "image": "https://github.com/greeeen-dev/natsumi-browser/raw/dev/images/main-backgroundless.png",
+    "name": "Natsumi Browser",
+    "version": "6.0.1",
+    "description": "A skin for Firefox and its forks that makes things flow.",
+    "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
+    "stars": 520,
+    "fork": [
+      "floorp",
+      "firefox",
+      "waterfox",
+      "librewolf"
+    ]
+  },
   "Arc-2.0": {
     "homepage": "https://github.com/YashjitPal/Arc-2.0/",
     "image": "https://github.com/user-attachments/assets/f9a25afb-2503-421a-bed0-6e94f2ab43db",
@@ -107,6 +122,14 @@
       "zen"
     ]
   },
+  "floating-sidebar": {
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/floating-sidebar",
+    "name": "Floating Sidebar",
+    "version": "1.0.0",
+    "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
+    "stars": 69
+  },
   "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
     "homepage": "CosmoCreeper/Zen-Themes/tree/main/SuperPins",
     "image": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/image.png",
@@ -155,13 +178,13 @@
       "zen"
     ]
   },
-  "vizen-floaty-ui": {
-    "homepage": "moktavizen/floaty-ui",
-    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
-    "name": "Floaty UI",
-    "version": "1.0.2",
-    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
-    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
+  "quick-tabs": {
+    "homepage": "Darsh-A/Quick-Tabs",
+    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
+    "name": "Quick Tabs",
+    "version": "1.1.0",
+    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
     "stars": 25,
     "fork": [
       "zen"
@@ -237,6 +260,19 @@
       "zen"
     ]
   },
+  "paneru": {
+    "homepage": "TheBigWazz/Paneru",
+    "image": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/image.png",
+    "name": "Paneru",
+    "version": "1.0.1",
+    "description": "A comprehensive theme that separates various elements onto their own panel, respects Firefox theme colors, and supports transparency.",
+    "readme": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/README.md",
+    "stars": 8,
+    "fork": [
+      "floorp",
+      "firefox"
+    ]
+  },
   "zen-drop-link": {
     "homepage": "https://github.com/octaviusz/zen-drop-link",
     "name": "Zen Drop Link to Split",
@@ -271,37 +307,12 @@
       "zen"
     ]
   },
-  "zen-live-calendar": {
-    "homepage": "Vertex-Mods/Zen-Live-Calendar",
-    "image": "https://github.com/Vertex-Mods/Zen-Live-Calendar/blob/main/image.png?raw=true",
-    "name": "Live Calendar",
-    "version": "1.0.0",
-    "description": "Brings the live calendar functionality from Arc to Zen, making it feel as native as possible.",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Live-Calendar/refs/heads/main/README.md",
-    "stars": 5,
-    "fork": [
-      "zen"
-    ]
-  },
   "bada16c1-3b14-483b": {
     "homepage": "themaster5209/zen-better-new-tab-button",
     "name": "Better New Tab button",
     "version": "1.0.6",
     "description": "A Zen Browser mod that enhances the New Tab button experience",
     "stars": 4
-  },
-  "3c8ebf69-1042-49b1-8f08-9178f9490659": {
-    "homepage": "rasyidrafi/zen-always-show-music-bar",
-    "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
-    "name": "Better Music Bar",
-    "version": "1.0.4",
-    "description": "Make your zen music bar better.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
-    "stars": 3,
-    "fork": [
-      "zen",
-      "firefox"
-    ]
   },
   "42b8c4ac-76d5-4521-9917-2e478931ee53": {
     "homepage": "rasyidrafi/zen-compact-transparent-mode",
@@ -376,54 +387,6 @@
       "zen"
     ]
   },
-  "natsumi-browser": {
-    "homepage": "greeeen-dev/natsumi-browser",
-    "image": "https://github.com/greeeen-dev/natsumi-browser/raw/dev/images/main-backgroundless.png",
-    "name": "Natsumi Browser",
-    "version": "6.0.1",
-    "description": "A skin for Firefox and its forks that makes things flow.",
-    "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
-    "stars": 0,
-    "fork": [
-      "floorp",
-      "firefox",
-      "waterfox",
-      "librewolf"
-    ]
-  },
-  "floating-sidebar": {
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/floating-sidebar",
-    "name": "Floating Sidebar",
-    "version": "1.0.0",
-    "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
-    "stars": 0
-  },
-  "quick-tabs": {
-    "homepage": "Darsh-A/Quick-Tabs",
-    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
-    "name": "Quick Tabs",
-    "version": "1.1.0",
-    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen"
-    ]
-  },
-  "paneru": {
-    "homepage": "TheBigWazz/Paneru",
-    "image": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/image.png",
-    "name": "Paneru",
-    "version": "1.0.1",
-    "description": "A comprehensive theme that separates various elements onto their own panel, respects Firefox theme colors, and supports transparency.",
-    "readme": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/README.md",
-    "stars": 0,
-    "fork": [
-      "floorp",
-      "firefox"
-    ]
-  },
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
     "homepage": "rasyidrafi/zen-single-trackpad-animation",
     "image": "https://github.com/rasyidrafi/zen-single-trackpad-animation/blob/main/image.png?raw=true",
@@ -431,6 +394,43 @@
     "version": "2.0.5",
     "description": "Customizable trackpad swipe transitions and the colors for the swipe UI.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/README.md",
+    "stars": 1,
+    "fork": [
+      "zen",
+      "firefox"
+    ]
+  },
+  "vizen-floaty-ui": {
+    "homepage": "moktavizen/floaty-ui",
+    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
+    "name": "Floaty UI",
+    "version": "1.0.2",
+    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
+    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-live-calendar": {
+    "homepage": "Vertex-Mods/Zen-Live-Calendar",
+    "image": "https://github.com/Vertex-Mods/Zen-Live-Calendar/blob/main/image.png?raw=true",
+    "name": "Live Calendar",
+    "version": "1.0.0",
+    "description": "Brings the live calendar functionality from Arc to Zen, making it feel as native as possible.",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Live-Calendar/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "3c8ebf69-1042-49b1-8f08-9178f9490659": {
+    "homepage": "rasyidrafi/zen-always-show-music-bar",
+    "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
+    "name": "Better Music Bar",
+    "version": "1.0.4",
+    "description": "Make your zen music bar better.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
     "stars": 0,
     "fork": [
       "zen",
