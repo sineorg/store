@@ -6,7 +6,7 @@
     "version": "6.0.1",
     "description": "A skin for Firefox and its forks that makes things flow.",
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
-    "stars": 521,
+    "stars": 520,
     "fork": [
       "floorp",
       "firefox",
@@ -249,18 +249,6 @@
       "zen"
     ]
   },
-  "c9ee0d97-d2d6-40fd-8f85-549fe000b868": {
-    "homepage": "rasyidrafi/zen-deta-loading-bar",
-    "image": "https://github.com/rasyidrafi/zen-deta-loading-bar/blob/main/image.png?raw=true",
-    "name": "Deta Loading Bar",
-    "version": "2.0.4",
-    "description": "A sleek animated loading bar that appears at the top of the page during loading, similar to Deta Surf browser. Features customizable colors, gradient effects, blur animation, adjustable thickness, and optional box shadows. Integrates with Zen Browser's theme colors or use custom colors and width.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-deta-loading-bar/refs/heads/main/README.md",
-    "stars": 9,
-    "fork": [
-      "zen"
-    ]
-  },
   "reopen-closed-tabs": {
     "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
     "name": "Reopen Closed Tabs Menu",
@@ -377,19 +365,6 @@
       "firefox"
     ]
   },
-  "e9dae25b-2ddd-4245-8581-a6dcf6d35b82": {
-    "homepage": "rasyidrafi/zen-custom-urlbar",
-    "image": "https://github.com/rasyidrafi/zen-custom-urlbar/blob/main/image.png?raw=true",
-    "name": "Zen Custom URL Bar",
-    "version": "2.0.3",
-    "description": "Customizable URL bar with animations.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-custom-urlbar/refs/heads/main/README.md",
-    "stars": 2,
-    "fork": [
-      "zen",
-      "firefox"
-    ]
-  },
   "Nebula": {
     "homepage": "CosmoCreeper/Nubulu",
     "image": "https://i.ibb.co/Lqk4krw/Screenshot-2025-09-03-232353.png",
@@ -435,6 +410,31 @@
     "stars": 1,
     "fork": [
       "zen"
+    ]
+  },
+  "c9ee0d97-d2d6-40fd-8f85-549fe000b868": {
+    "homepage": "rasyidrafi/zen-deta-loading-bar",
+    "image": "https://github.com/rasyidrafi/zen-deta-loading-bar/blob/main/image.png?raw=true",
+    "name": "Deta Loading Bar",
+    "version": "2.0.4",
+    "description": "A sleek animated loading bar that appears at the top of the page during loading, similar to Deta Surf browser. Features customizable colors, gradient effects, blur animation, adjustable thickness, and optional box shadows. Integrates with Zen Browser's theme colors or use custom colors and width.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-deta-loading-bar/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "e9dae25b-2ddd-4245-8581-a6dcf6d35b82": {
+    "homepage": "rasyidrafi/zen-custom-urlbar",
+    "image": "https://github.com/rasyidrafi/zen-custom-urlbar/blob/main/image.png?raw=true",
+    "name": "Zen Custom URL Bar",
+    "version": "2.0.3",
+    "description": "Customizable URL bar with animations.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-custom-urlbar/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen",
+      "firefox"
     ]
   },
   "IconTweaker": {
