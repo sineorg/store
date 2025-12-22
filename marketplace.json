@@ -296,18 +296,6 @@
       "zen"
     ]
   },
-  "cfafe94c-5a29-4dae-8489-6be514185474": {
-    "homepage": "rasyidrafi/zen-better-sidebar",
-    "image": "https://github.com/rasyidrafi/zen-better-sidebar/blob/main/image.png?raw=true",
-    "name": "Better Sidebar",
-    "version": "1.1.8",
-    "description": "Enhance default firefox sidebar with a modern look and feel matching Zen UI.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-better-sidebar/refs/heads/main/README.md",
-    "stars": 5,
-    "fork": [
-      "zen"
-    ]
-  },
   "tab-rename-zen-browser": {
     "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
     "name": "Better Tab Rename",
@@ -435,6 +423,18 @@
     "fork": [
       "zen",
       "firefox"
+    ]
+  },
+  "cfafe94c-5a29-4dae-8489-6be514185474": {
+    "homepage": "rasyidrafi/zen-better-sidebar",
+    "image": "https://github.com/rasyidrafi/zen-better-sidebar/blob/main/image.png?raw=true",
+    "name": "Better Sidebar",
+    "version": "1.1.8",
+    "description": "Enhance default firefox sidebar with a modern look and feel matching Zen UI.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-better-sidebar/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
     ]
   },
   "IconTweaker": {
