@@ -14,6 +14,18 @@
       "librewolf"
     ]
   },
+  "Arc-2.0": {
+    "homepage": "https://github.com/YashjitPal/Arc-2.0/",
+    "image": "https://github.com/user-attachments/assets/f9a25afb-2503-421a-bed0-6e94f2ab43db",
+    "name": "Arc 2.0",
+    "version": "3.2.9",
+    "description": "Arc-like Zen Browser theme.",
+    "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/main/README.md",
+    "stars": 363,
+    "fork": [
+      "zen"
+    ]
+  },
   "advanced-tab-groups": {
     "homepage": "Vertex-Mods/Advanced-Tab-Groups",
     "image": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/image.png",
@@ -421,18 +433,6 @@
     "description": "Let's you collapse your pinned folders and tabs area with a chevron icon",
     "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/collapse-pinned-area/README.md",
     "stars": 1,
-    "fork": [
-      "zen"
-    ]
-  },
-  "Arc-2.0": {
-    "homepage": "https://github.com/YashjitPal/Arc-2.0/",
-    "image": "https://github.com/user-attachments/assets/f9a25afb-2503-421a-bed0-6e94f2ab43db",
-    "name": "Arc 2.0",
-    "version": "3.2.9",
-    "description": "Arc-like Zen Browser theme.",
-    "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/main/README.md",
-    "stars": 0,
     "fork": [
       "zen"
     ]
