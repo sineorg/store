@@ -21,7 +21,7 @@
     "version": "3.2.9",
     "description": "Arc-like Zen Browser theme.",
     "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/main/README.md",
-    "stars": 363,
+    "stars": 364,
     "fork": [
       "zen"
     ]
@@ -63,6 +63,18 @@
       "waterfox",
       "floorp",
       "mullvad"
+    ]
+  },
+  "Neo-Zen": {
+    "homepage": "JustVibingWhileCoding/Neo-Zen",
+    "image": "https://github.com/user-attachments/assets/c37e9f4e-1ab1-43ec-945e-2be1592351a4",
+    "name": "Neo Zen",
+    "version": "2.1.0",
+    "description": "A sleek, futuristic theme for Zen Browser that blends modern design with mindful simplicity",
+    "readme": "https://raw.githubusercontent.com/JustVibingWhileCoding/Neo-Zen/main/README.md",
+    "stars": 73,
+    "fork": [
+      "zen"
     ]
   },
   "browse-bot": {
@@ -114,6 +126,18 @@
     "description": "Adds a floating UI to switch search engines on a search results page.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
     "stars": 70,
+    "fork": [
+      "zen"
+    ]
+  },
+  "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
+    "homepage": "CosmoCreeper/Zen-Themes/tree/main/SuperPins",
+    "image": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/image.png",
+    "name": "SuperPins",
+    "version": "1.5.8",
+    "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
+    "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
+    "stars": 47,
     "fork": [
       "zen"
     ]
@@ -314,6 +338,32 @@
     "description": "A Zen Browser mod that enhances the New Tab button experience",
     "stars": 4
   },
+  "3c8ebf69-1042-49b1-8f08-9178f9490659": {
+    "homepage": "rasyidrafi/zen-always-show-music-bar",
+    "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
+    "name": "Better Music Bar",
+    "version": "1.0.4",
+    "description": "Make your zen music bar better.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
+    "stars": 3,
+    "fork": [
+      "zen",
+      "firefox"
+    ]
+  },
+  "42b8c4ac-76d5-4521-9917-2e478931ee53": {
+    "homepage": "rasyidrafi/zen-compact-transparent-mode",
+    "image": "https://github.com/rasyidrafi/zen-compact-transparent-mode/blob/main/image.png?raw=true",
+    "name": "Zen Compact Transparent Mode",
+    "version": "2.0.0",
+    "description": "Make popups UI menu transparent with custom settings.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-compact-transparent-mode/refs/heads/main/README.md",
+    "stars": 3,
+    "fork": [
+      "zen",
+      "firefox"
+    ]
+  },
   "Nebula": {
     "homepage": "CosmoCreeper/Nubulu",
     "image": "https://i.ibb.co/Lqk4krw/Screenshot-2025-09-03-232353.png",
@@ -385,56 +435,6 @@
     "stars": 1,
     "fork": [
       "zen"
-    ]
-  },
-  "Neo-Zen": {
-    "homepage": "JustVibingWhileCoding/Neo-Zen",
-    "image": "https://github.com/user-attachments/assets/c37e9f4e-1ab1-43ec-945e-2be1592351a4",
-    "name": "Neo Zen",
-    "version": "2.1.0",
-    "description": "A sleek, futuristic theme for Zen Browser that blends modern design with mindful simplicity",
-    "readme": "https://raw.githubusercontent.com/JustVibingWhileCoding/Neo-Zen/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen"
-    ]
-  },
-  "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
-    "homepage": "CosmoCreeper/Zen-Themes/tree/main/SuperPins",
-    "image": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/image.png",
-    "name": "SuperPins",
-    "version": "1.5.8",
-    "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
-    "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
-    "stars": 0,
-    "fork": [
-      "zen"
-    ]
-  },
-  "3c8ebf69-1042-49b1-8f08-9178f9490659": {
-    "homepage": "rasyidrafi/zen-always-show-music-bar",
-    "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
-    "name": "Better Music Bar",
-    "version": "1.0.4",
-    "description": "Make your zen music bar better.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen",
-      "firefox"
-    ]
-  },
-  "42b8c4ac-76d5-4521-9917-2e478931ee53": {
-    "homepage": "rasyidrafi/zen-compact-transparent-mode",
-    "image": "https://github.com/rasyidrafi/zen-compact-transparent-mode/blob/main/image.png?raw=true",
-    "name": "Zen Compact Transparent Mode",
-    "version": "2.0.0",
-    "description": "Make popups UI menu transparent with custom settings.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-compact-transparent-mode/refs/heads/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen",
-      "firefox"
     ]
   },
   "IconTweaker": {
