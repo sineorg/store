@@ -351,6 +351,19 @@
       "firefox"
     ]
   },
+  "3c8ebf69-1042-49b1-8f08-9178f9490659": {
+    "homepage": "rasyidrafi/zen-always-show-music-bar",
+    "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
+    "name": "Better Music Bar",
+    "version": "1.0.4",
+    "description": "Make your zen music bar better.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
+    "stars": 3,
+    "fork": [
+      "zen",
+      "firefox"
+    ]
+  },
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "homepage": "rasyidrafi/zen-tidy-popup",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
@@ -419,19 +432,6 @@
     "description": "Customizable trackpad swipe transitions and the colors for the swipe UI.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/README.md",
     "stars": 1,
-    "fork": [
-      "zen",
-      "firefox"
-    ]
-  },
-  "3c8ebf69-1042-49b1-8f08-9178f9490659": {
-    "homepage": "rasyidrafi/zen-always-show-music-bar",
-    "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
-    "name": "Better Music Bar",
-    "version": "1.0.4",
-    "description": "Make your zen music bar better.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
-    "stars": 0,
     "fork": [
       "zen",
       "firefox"
