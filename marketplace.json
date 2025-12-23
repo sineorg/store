@@ -431,7 +431,7 @@
     "version": "2.0.5",
     "description": "Customizable trackpad swipe transitions and the colors for the swipe UI.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/README.md",
-    "stars": 0,
+    "stars": 1,
     "fork": [
       "zen",
       "firefox"
