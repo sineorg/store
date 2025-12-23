@@ -88,29 +88,6 @@
       "zen"
     ]
   },
-  "settings-shortcuts-search": {
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
-    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/image.png",
-    "name": "Search Keyboard shortcuts",
-    "version": "1.0.0",
-    "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
-    "stars": 69,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-command-palette": {
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
-    "name": "Zen Command Palette",
-    "version": "1.7.3",
-    "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
-    "stars": 69,
-    "fork": [
-      "zen"
-    ]
-  },
   "floating-sidebar": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/floating-sidebar",
     "name": "Floating Sidebar",
@@ -118,17 +95,6 @@
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
     "stars": 69
-  },
-  "search-engine-select": {
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
-    "name": "Search Engine Select",
-    "version": "1.0.0",
-    "description": "Adds a floating UI to switch search engines on a search results page.",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
-    "stars": 69,
-    "fork": [
-      "zen"
-    ]
   },
   "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
     "homepage": "CosmoCreeper/Zen-Themes/tree/main/SuperPins",
@@ -162,18 +128,6 @@
     "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
     "stars": 40,
-    "fork": [
-      "zen"
-    ]
-  },
-  "wireframe-2.0": {
-    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
-    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
-    "name": "Wireframe 2.0",
-    "version": "2.7.5",
-    "description": "A minimal theme for Zen. Unconventional by design.",
-    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
-    "stars": 31,
     "fork": [
       "zen"
     ]
@@ -292,17 +246,6 @@
     "description": "This mod allows you to split tabs by drag and drop links",
     "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
     "stars": 7,
-    "fork": [
-      "zen"
-    ]
-  },
-  "tab-rename-zen-browser": {
-    "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
-    "name": "Better Tab Rename",
-    "version": "1.0.0",
-    "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
-    "stars": 5,
     "fork": [
       "zen"
     ]
@@ -433,6 +376,63 @@
     "description": "Let's you collapse your pinned folders and tabs area with a chevron icon",
     "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/collapse-pinned-area/README.md",
     "stars": 1,
+    "fork": [
+      "zen"
+    ]
+  },
+  "settings-shortcuts-search": {
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
+    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/image.png",
+    "name": "Search Keyboard shortcuts",
+    "version": "1.0.0",
+    "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-command-palette": {
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
+    "name": "Zen Command Palette",
+    "version": "1.7.3",
+    "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "search-engine-select": {
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
+    "name": "Search Engine Select",
+    "version": "1.0.0",
+    "description": "Adds a floating UI to switch search engines on a search results page.",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "wireframe-2.0": {
+    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
+    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
+    "name": "Wireframe 2.0",
+    "version": "2.7.5",
+    "description": "A minimal theme for Zen. Unconventional by design.",
+    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "tab-rename-zen-browser": {
+    "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
+    "name": "Better Tab Rename",
+    "version": "1.0.0",
+    "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
+    "stars": 0,
     "fork": [
       "zen"
     ]
