@@ -130,6 +130,18 @@
       "zen"
     ]
   },
+  "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
+    "homepage": "CosmoCreeper/Zen-Themes/tree/main/SuperPins",
+    "image": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/image.png",
+    "name": "SuperPins",
+    "version": "1.5.8",
+    "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
+    "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
+    "stars": 47,
+    "fork": [
+      "zen"
+    ]
+  },
   "context-menu-icons": {
     "homepage": "Starry-AXQG/Context-Menu-Icons",
     "image": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/.asset/Demo%20Image.jpg",
@@ -154,6 +166,18 @@
       "zen"
     ]
   },
+  "wireframe-2.0": {
+    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
+    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
+    "name": "Wireframe 2.0",
+    "version": "2.7.5",
+    "description": "A minimal theme for Zen. Unconventional by design.",
+    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
+    "stars": 31,
+    "fork": [
+      "zen"
+    ]
+  },
   "vizen-floaty-ui": {
     "homepage": "moktavizen/floaty-ui",
     "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
@@ -161,6 +185,18 @@
     "version": "1.0.2",
     "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
     "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
+    "stars": 25,
+    "fork": [
+      "zen"
+    ]
+  },
+  "quick-tabs": {
+    "homepage": "Darsh-A/Quick-Tabs",
+    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
+    "name": "Quick Tabs",
+    "version": "1.1.0",
+    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
     "stars": 25,
     "fork": [
       "zen"
@@ -184,6 +220,18 @@
     "version": "1.0.5",
     "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
     "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
+    "stars": 12,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-tidy-tabs": {
+    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
+    "name": "Zen Tidy Tabs",
+    "version": "1.0.0s",
+    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
     "stars": 12,
     "fork": [
       "zen"
@@ -303,19 +351,6 @@
       "firefox"
     ]
   },
-  "3c8ebf69-1042-49b1-8f08-9178f9490659": {
-    "homepage": "rasyidrafi/zen-always-show-music-bar",
-    "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
-    "name": "Better Music Bar",
-    "version": "1.0.4",
-    "description": "Make your zen music bar better.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
-    "stars": 3,
-    "fork": [
-      "zen",
-      "firefox"
-    ]
-  },
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "homepage": "rasyidrafi/zen-tidy-popup",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
@@ -376,42 +411,6 @@
       "zen"
     ]
   },
-  "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
-    "homepage": "CosmoCreeper/Zen-Themes/tree/main/SuperPins",
-    "image": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/image.png",
-    "name": "SuperPins",
-    "version": "1.5.8",
-    "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
-    "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
-    "stars": 0,
-    "fork": [
-      "zen"
-    ]
-  },
-  "quick-tabs": {
-    "homepage": "Darsh-A/Quick-Tabs",
-    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
-    "name": "Quick Tabs",
-    "version": "1.1.0",
-    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-tidy-tabs": {
-    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
-    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
-    "name": "Zen Tidy Tabs",
-    "version": "1.0.0s",
-    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen"
-    ]
-  },
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
     "homepage": "rasyidrafi/zen-single-trackpad-animation",
     "image": "https://github.com/rasyidrafi/zen-single-trackpad-animation/blob/main/image.png?raw=true",
@@ -419,22 +418,23 @@
     "version": "2.0.5",
     "description": "Customizable trackpad swipe transitions and the colors for the swipe UI.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/README.md",
-    "stars": 0,
+    "stars": 1,
     "fork": [
       "zen",
       "firefox"
     ]
   },
-  "wireframe-2.0": {
-    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
-    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
-    "name": "Wireframe 2.0",
-    "version": "2.7.5",
-    "description": "A minimal theme for Zen. Unconventional by design.",
-    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
+  "3c8ebf69-1042-49b1-8f08-9178f9490659": {
+    "homepage": "rasyidrafi/zen-always-show-music-bar",
+    "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
+    "name": "Better Music Bar",
+    "version": "1.0.4",
+    "description": "Make your zen music bar better.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
     "stars": 0,
     "fork": [
-      "zen"
+      "zen",
+      "firefox"
     ]
   },
   "IconTweaker": {
