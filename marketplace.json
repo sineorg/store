@@ -166,18 +166,6 @@
       "zen"
     ]
   },
-  "wireframe-2.0": {
-    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
-    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
-    "name": "Wireframe 2.0",
-    "version": "2.7.5",
-    "description": "A minimal theme for Zen. Unconventional by design.",
-    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
-    "stars": 31,
-    "fork": [
-      "zen"
-    ]
-  },
   "quick-tabs": {
     "homepage": "Darsh-A/Quick-Tabs",
     "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
@@ -185,6 +173,18 @@
     "version": "1.1.0",
     "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
+    "stars": 25,
+    "fork": [
+      "zen"
+    ]
+  },
+  "vizen-floaty-ui": {
+    "homepage": "moktavizen/floaty-ui",
+    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
+    "name": "Floaty UI",
+    "version": "1.0.2",
+    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
+    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
     "stars": 25,
     "fork": [
       "zen"
@@ -378,29 +378,6 @@
       "firefox"
     ]
   },
-  "Nebula": {
-    "homepage": "CosmoCreeper/Nubulu",
-    "image": "https://i.ibb.co/Lqk4krw/Screenshot-2025-09-03-232353.png",
-    "name": "Nebula",
-    "version": "3.3.3",
-    "description": "A beautiful theme made for Zen Browser :))",
-    "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
-    "stars": 2,
-    "fork": [
-      "zen"
-    ]
-  },
-  "auto-pip-setting": {
-    "homepage": "Zylaah/auto-pip",
-    "name": "Auto-PiP-Setting",
-    "version": "1.0",
-    "description": "Adds auto-picture-in-picture setting in the unified panel",
-    "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/auto-pip/README.md",
-    "stars": 1,
-    "fork": [
-      "zen"
-    ]
-  },
   "collapse-pinned-area": {
     "homepage": "Zylaah/collapse-pinned-area",
     "name": "Collapse Pinned Area",
@@ -425,13 +402,36 @@
       "firefox"
     ]
   },
-  "vizen-floaty-ui": {
-    "homepage": "moktavizen/floaty-ui",
-    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
-    "name": "Floaty UI",
-    "version": "1.0.2",
-    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
-    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
+  "wireframe-2.0": {
+    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
+    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
+    "name": "Wireframe 2.0",
+    "version": "2.7.5",
+    "description": "A minimal theme for Zen. Unconventional by design.",
+    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "Nebula": {
+    "homepage": "CosmoCreeper/Nubulu",
+    "image": "https://i.ibb.co/Lqk4krw/Screenshot-2025-09-03-232353.png",
+    "name": "Nebula",
+    "version": "3.3.3",
+    "description": "A beautiful theme made for Zen Browser :))",
+    "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "auto-pip-setting": {
+    "homepage": "Zylaah/auto-pip",
+    "name": "Auto-PiP-Setting",
+    "version": "1.0",
+    "description": "Adds auto-picture-in-picture setting in the unified panel",
+    "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/auto-pip/README.md",
     "stars": 0,
     "fork": [
       "zen"
