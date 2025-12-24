@@ -369,7 +369,7 @@
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "name": "Tidy Popup & Extension",
     "version": "2.9.1",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
     "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
     "stars": 2,
     "fork": [
@@ -437,6 +437,17 @@
       "zen"
     ]
   },
+  "Auto-Tab-Sort-Folders": {
+    "homepage": "Comp-Tech-Guy/Auto-Tab-Sort-Folders",
+    "name": "Auto-Tab-Sort-Folders",
+    "version": "1.0.0",
+    "description": "Sorting Tabs into Folders or Tab groups",
+    "readme": "https://raw.githubusercontent.com/Comp-Tech-Guy/Auto-Tab-Sort-Folders/refs/heads/main/README.md",
+    "stars": 1,
+    "fork": [
+      "zen"
+    ]
+  },
   "IconTweaker": {
     "homepage": "allecsc/Icon-Tweaker",
     "image": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/image.png",
@@ -449,6 +460,5 @@
       "zen",
       "firefox"
     ]
-  },
-  "Auto-Tab-Sort-Folders": "Comp-Tech-Guy/Auto-Tab-Sort-Folders"
+  }
 }
