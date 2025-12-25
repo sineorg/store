@@ -402,6 +402,17 @@
       "zen"
     ]
   },
+  "Auto-Tab-Sort-Folders": {
+    "homepage": "Comp-Tech-Guy/Auto-Tab-Sort-Folders",
+    "name": "Auto-Tab-Sort-Folders",
+    "version": "1.0.0",
+    "description": "Sorting Tabs into Folders or Tab groups (Nothing is working now)",
+    "readme": "https://raw.githubusercontent.com/Comp-Tech-Guy/Auto-Tab-Sort-Folders/refs/heads/main/README.md",
+    "stars": 2,
+    "fork": [
+      "zen"
+    ]
+  },
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
     "homepage": "rasyidrafi/zen-single-trackpad-animation",
     "image": "https://github.com/rasyidrafi/zen-single-trackpad-animation/blob/main/image.png?raw=true",
@@ -432,17 +443,6 @@
     "version": "1.0",
     "description": "Adds auto-picture-in-picture setting in the unified panel",
     "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/auto-pip/README.md",
-    "stars": 1,
-    "fork": [
-      "zen"
-    ]
-  },
-  "Auto-Tab-Sort-Folders": {
-    "homepage": "Comp-Tech-Guy/Auto-Tab-Sort-Folders",
-    "name": "Auto-Tab-Sort-Folders",
-    "version": "1.0.0",
-    "description": "Sorting Tabs into Folders or Tab groups",
-    "readme": "https://raw.githubusercontent.com/Comp-Tech-Guy/Auto-Tab-Sort-Folders/refs/heads/main/README.md",
     "stars": 1,
     "fork": [
       "zen"
