@@ -364,6 +364,17 @@
       "firefox"
     ]
   },
+  "Auto-Tab-Sort-Folders": {
+    "homepage": "Comp-Tech-Guy/Auto-Tab-Sort-Folders",
+    "name": "Auto-Tab-Sort-Folders",
+    "version": "1.0.0",
+    "description": "Sorting Tabs into Folders or Tab groups (Nothing is working now)",
+    "readme": "https://raw.githubusercontent.com/Comp-Tech-Guy/Auto-Tab-Sort-Folders/refs/heads/main/README.md",
+    "stars": 3,
+    "fork": [
+      "zen"
+    ]
+  },
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "homepage": "rasyidrafi/zen-tidy-popup",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
@@ -397,17 +408,6 @@
     "version": "3.3.3",
     "description": "A beautiful theme made for Zen Browser :))",
     "readme": "https://raw.githubusercontent.com/JustADumbPrsn/Zen-Nebula/main/README.md",
-    "stars": 2,
-    "fork": [
-      "zen"
-    ]
-  },
-  "Auto-Tab-Sort-Folders": {
-    "homepage": "Comp-Tech-Guy/Auto-Tab-Sort-Folders",
-    "name": "Auto-Tab-Sort-Folders",
-    "version": "1.0.0",
-    "description": "Sorting Tabs into Folders or Tab groups (Nothing is working now)",
-    "readme": "https://raw.githubusercontent.com/Comp-Tech-Guy/Auto-Tab-Sort-Folders/refs/heads/main/README.md",
     "stars": 2,
     "fork": [
       "zen"
