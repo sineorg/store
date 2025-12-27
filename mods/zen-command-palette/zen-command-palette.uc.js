@@ -3,7 +3,7 @@
 // @description     A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.
 // @author          Bibek Bhusal
 // @version         1.7.3
-// @lastUpdated     2025-10-23
+// @lastUpdated     2025-12-27
 // @ignorecache
 // @homepage        https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette
 // @onlyonce
@@ -997,7 +997,7 @@
 
   let _originalMaxResults = null;
 
-  const Prefs = {
+  const PREFS = {
     KEYS: {
       PREFIX: "zen-command-palette.prefix",
       PREFIX_REQUIRED: "zen-command-palette.prefix-required",
@@ -1106,34 +1106,34 @@
     },
   };
 
-  Prefs.defaultValues = {
-    [Prefs.KEYS.PREFIX_REQUIRED]: false,
-    [Prefs.KEYS.PREFIX]: ":",
-    [Prefs.KEYS.DEBUG_MODE]: false,
-    [Prefs.KEYS.MAX_COMMANDS]: 3,
-    [Prefs.KEYS.MAX_COMMANDS_PREFIX]: 50,
-    [Prefs.KEYS.MIN_QUERY_LENGTH]: 3,
-    [Prefs.KEYS.MIN_SCORE_THRESHOLD]: 150,
-    [Prefs.KEYS.DYNAMIC_ABOUT_PAGES]: false,
-    [Prefs.KEYS.DYNAMIC_SEARCH_ENGINES]: true,
-    [Prefs.KEYS.DYNAMIC_EXTENSIONS]: false,
-    [Prefs.KEYS.DYNAMIC_WORKSPACES]: false,
-    [Prefs.KEYS.DYNAMIC_SINE_MODS]: true,
-    [Prefs.KEYS.DYNAMIC_FOLDERS]: true,
-    [Prefs.KEYS.DYNAMIC_CONTAINER_TABS]: false,
-    [Prefs.KEYS.DYNAMIC_ACTIVE_TABS]: false,
-    [Prefs.KEYS.DYNAMIC_UNLOAD_TABS]: false,
-    [Prefs.KEYS.DYNAMIC_EXTENSION_ENABLE_DISABLE]: false,
-    [Prefs.KEYS.DYNAMIC_EXTENSION_UNINSTALL]: false,
-    [Prefs.KEYS.COMMAND_SETTINGS_FILE]: "chrome/zen-commands-settings.json",
+  PREFS.defaultValues = {
+    [PREFS.KEYS.PREFIX_REQUIRED]: false,
+    [PREFS.KEYS.PREFIX]: ":",
+    [PREFS.KEYS.DEBUG_MODE]: false,
+    [PREFS.KEYS.MAX_COMMANDS]: 3,
+    [PREFS.KEYS.MAX_COMMANDS_PREFIX]: 50,
+    [PREFS.KEYS.MIN_QUERY_LENGTH]: 3,
+    [PREFS.KEYS.MIN_SCORE_THRESHOLD]: 150,
+    [PREFS.KEYS.DYNAMIC_ABOUT_PAGES]: false,
+    [PREFS.KEYS.DYNAMIC_SEARCH_ENGINES]: true,
+    [PREFS.KEYS.DYNAMIC_EXTENSIONS]: false,
+    [PREFS.KEYS.DYNAMIC_WORKSPACES]: false,
+    [PREFS.KEYS.DYNAMIC_SINE_MODS]: true,
+    [PREFS.KEYS.DYNAMIC_FOLDERS]: true,
+    [PREFS.KEYS.DYNAMIC_CONTAINER_TABS]: false,
+    [PREFS.KEYS.DYNAMIC_ACTIVE_TABS]: false,
+    [PREFS.KEYS.DYNAMIC_UNLOAD_TABS]: false,
+    [PREFS.KEYS.DYNAMIC_EXTENSION_ENABLE_DISABLE]: false,
+    [PREFS.KEYS.DYNAMIC_EXTENSION_UNINSTALL]: false,
+    [PREFS.KEYS.COMMAND_SETTINGS_FILE]: "chrome/zen-commands-settings.json",
   };
 
   const debugLog = (...args) => {
-    if (Prefs.debugMode) console.log("zen-command-palette:", ...args);
+    if (PREFS.debugMode) console.log("zen-command-palette:", ...args);
   };
 
   const debugError = (...args) => {
-    if (Prefs.debugMode) console.error("zen-command-palette:", ...args);
+    if (PREFS.debugMode) console.error("zen-command-palette:", ...args);
   };
 
   const DEFAULTS = {
@@ -1148,7 +1148,7 @@
 
   const Storage = {
     _getFilePath() {
-      const relativePath = Prefs.commandSettingsFile;
+      const relativePath = PREFS.commandSettingsFile;
       if (!relativePath) {
         debugError("Settings file path preference is not set.");
         return null;
@@ -1937,7 +1937,7 @@
     _boundCloseOnEscape: null,
     _boundEditorClickHandler: null,
     // BUG: I can't figure out way to control size of icon for menulist, not including icon till fixed, turn this variable to true when fixed
-    _showCommandIconsInSelect: false,
+    _showCommandIconsInSelect: true,
 
     init(mainModule) {
       this._mainModule = mainModule;
@@ -2026,7 +2026,7 @@
         } else {
           value = control.value;
         }
-        Prefs.setPref(prefKey, value);
+        PREFS.setPref(prefKey, value);
       });
 
       const oldSettings = JSON.parse(this._initialSettingsState);
@@ -2161,7 +2161,7 @@
 
       for (const label in dynamicGroups) {
         const group = dynamicGroups[label];
-        if (group.pref && !Prefs.getPref(group.pref)) {
+        if (group.pref && !PREFS.getPref(group.pref)) {
           continue;
         }
         renderGroup(label, group.commands);
@@ -2839,28 +2839,28 @@
           section: "General",
           items: [
             {
-              key: Prefs.KEYS.PREFIX,
+              key: PREFS.KEYS.PREFIX,
               label: "Command Prefix",
               type: "char",
             },
             {
-              key: Prefs.KEYS.PREFIX_REQUIRED,
+              key: PREFS.KEYS.PREFIX_REQUIRED,
               label: "Require prefix to activate",
               type: "bool",
             },
             {
-              key: Prefs.KEYS.MIN_QUERY_LENGTH,
+              key: PREFS.KEYS.MIN_QUERY_LENGTH,
               label: "Min query length (no prefix)",
               type: "number",
             },
-            { key: Prefs.KEYS.MAX_COMMANDS, label: "Max results (no prefix)", type: "number" },
+            { key: PREFS.KEYS.MAX_COMMANDS, label: "Max results (no prefix)", type: "number" },
             {
-              key: Prefs.KEYS.MAX_COMMANDS_PREFIX,
+              key: PREFS.KEYS.MAX_COMMANDS_PREFIX,
               label: "Max results (with prefix)",
               type: "number",
             },
-            { key: Prefs.KEYS.MIN_SCORE_THRESHOLD, label: "Min relevance score", type: "number" },
-            { key: Prefs.KEYS.DEBUG_MODE, label: "Enable debug logging", type: "bool" },
+            { key: PREFS.KEYS.MIN_SCORE_THRESHOLD, label: "Min relevance score", type: "number" },
+            { key: PREFS.KEYS.DEBUG_MODE, label: "Enable debug logging", type: "bool" },
           ],
         },
         {
@@ -2874,7 +2874,7 @@
         sectionEl.className = "settings-section";
         sectionEl.innerHTML = `<h4>${escapeXmlAttribute(prefSection.section)}</h4>`;
         for (const item of prefSection.items) {
-          const currentValue = Prefs.getPref(item.key);
+          const currentValue = PREFS.getPref(item.key);
           const safeId = this._sanitizeForId(`pref-${item.key}`);
           let itemHtml;
 
@@ -3072,67 +3072,67 @@
       },
       {
         func: generateSearchEngineCommands,
-        pref: Prefs.KEYS.DYNAMIC_SEARCH_ENGINES,
+        pref: PREFS.KEYS.DYNAMIC_SEARCH_ENGINES,
         allowIcons: false,
         allowShortcuts: false,
       },
       {
         func: generateSineCommands,
-        pref: Prefs.KEYS.DYNAMIC_SINE_MODS,
+        pref: PREFS.KEYS.DYNAMIC_SINE_MODS,
         allowIcons: false,
         allowShortcuts: false,
       },
       {
         func: generateWorkspaceMoveCommands,
-        pref: Prefs.KEYS.DYNAMIC_WORKSPACES,
+        pref: PREFS.KEYS.DYNAMIC_WORKSPACES,
         allowIcons: true,
         allowShortcuts: true,
       },
       {
         func: generateFolderCommands,
-        pref: Prefs.KEYS.DYNAMIC_FOLDERS,
+        pref: PREFS.KEYS.DYNAMIC_FOLDERS,
         allowIcons: true,
         allowShortcuts: true,
       },
       {
         func: generateActiveTabCommands,
-        pref: Prefs.KEYS.DYNAMIC_ACTIVE_TABS,
+        pref: PREFS.KEYS.DYNAMIC_ACTIVE_TABS,
         allowIcons: false,
         allowShortcuts: false,
       },
       {
         func: generateContainerTabCommands,
-        pref: Prefs.KEYS.DYNAMIC_CONTAINER_TABS,
+        pref: PREFS.KEYS.DYNAMIC_CONTAINER_TABS,
         allowIcons: false,
         allowShortcuts: true,
       },
       {
         func: generateUnloadTabCommands,
-        pref: Prefs.KEYS.DYNAMIC_UNLOAD_TABS,
+        pref: PREFS.KEYS.DYNAMIC_UNLOAD_TABS,
         allowIcons: false,
         allowShortcuts: false,
       },
       {
         func: generateAboutPageCommands,
-        pref: Prefs.KEYS.DYNAMIC_ABOUT_PAGES,
+        pref: PREFS.KEYS.DYNAMIC_ABOUT_PAGES,
         allowIcons: true,
         allowShortcuts: true,
       },
       {
         func: generateExtensionCommands,
-        pref: Prefs.KEYS.DYNAMIC_EXTENSIONS,
+        pref: PREFS.KEYS.DYNAMIC_EXTENSIONS,
         allowIcons: false,
         allowShortcuts: true,
       },
       {
         func: generateExtensionEnableDisableCommands,
-        pref: Prefs.KEYS.DYNAMIC_EXTENSION_ENABLE_DISABLE,
+        pref: PREFS.KEYS.DYNAMIC_EXTENSION_ENABLE_DISABLE,
         allowIcons: false,
         allowShortcuts: false,
       },
       {
         func: generateExtensionUninstallCommands,
-        pref: Prefs.KEYS.DYNAMIC_EXTENSION_UNINSTALL,
+        pref: PREFS.KEYS.DYNAMIC_EXTENSION_UNINSTALL,
         allowIcons: false,
         allowShortcuts: false,
       },
@@ -3302,7 +3302,7 @@
         const commandSets = await Promise.all(
           this._dynamicCommandProviders.map(async (provider) => {
             const shouldLoad =
-              provider.pref === null ? true : provider.pref ? Prefs.getPref(provider.pref) : false;
+              provider.pref === null ? true : provider.pref ? PREFS.getPref(provider.pref) : false;
             if (!shouldLoad) return [];
             try {
               const commands = await provider.func();
@@ -3423,7 +3423,7 @@
           return [];
         }
       } else {
-        if (cleanQuery.length < Prefs.minQueryLength) {
+        if (cleanQuery.length < PREFS.minQueryLength) {
           return [];
         }
       }
@@ -3446,16 +3446,16 @@
           const score = Math.max(labelScore * 1.5, keyScore, tagsScore * 0.5) + recencyBonus;
           return { cmd, score };
         })
-        .filter((item) => item.score >= Prefs.minScoreThreshold)
+        .filter((item) => item.score >= PREFS.minScoreThreshold)
         .filter((item) => this.commandIsVisible(item.cmd));
 
       scoredCommands.sort((a, b) => b.score - a.score);
       const finalCmds = scoredCommands.map((item) => item.cmd);
 
       if (isPrefixMode) {
-        return finalCmds.slice(0, Prefs.maxCommandsPrefix);
+        return finalCmds.slice(0, PREFS.maxCommandsPrefix);
       }
-      return finalCmds.slice(0, Prefs.maxCommands);
+      return finalCmds.slice(0, PREFS.maxCommands);
     },
 
     /**
@@ -3694,7 +3694,7 @@
     destroy() {
       if (this.provider) {
         const { UrlbarProvidersManager } = ChromeUtils.importESModule(
-          "resource:///modules/UrlbarProvidersManager.sys.mjs"
+          "moz-src:///browser/components/urlbar/UrlbarProvidersManager.sys.mjs"
         );
         UrlbarProvidersManager.unregisterProvider(this.provider);
         this.provider = null;
@@ -3744,12 +3744,14 @@
       window.addEventListener("unload", () => this.destroy(), { once: true });
 
       const { UrlbarUtils, UrlbarProvider } = ChromeUtils.importESModule(
-        "resource:///modules/UrlbarUtils.sys.mjs"
+        "moz-src:///browser/components/urlbar/UrlbarUtils.sys.mjs"
       );
       const { UrlbarProvidersManager } = ChromeUtils.importESModule(
-        "resource:///modules/UrlbarProvidersManager.sys.mjs"
+        "moz-src:///browser/components/urlbar/UrlbarProvidersManager.sys.mjs"
       );
-      const { UrlbarResult } = ChromeUtils.importESModule("resource:///modules/UrlbarResult.sys.mjs");
+      const { UrlbarResult } = ChromeUtils.importESModule(
+        "moz-src:///browser/components/urlbar/UrlbarResult.sys.mjs"
+      );
 
       if (typeof UrlbarProvider === "undefined" || typeof UrlbarProvidersManager === "undefined") {
         debugError(
@@ -3789,16 +3791,16 @@
               }
 
               const input = (context.searchString || "").trim();
-              const isPrefixSearch = input.startsWith(Prefs.prefix);
+              const isPrefixSearch = input.startsWith(PREFS.prefix);
 
               if (context.searchMode?.engineName) {
                 return false;
               }
 
               if (isPrefixSearch) return true;
-              if (Prefs.prefixRequired) return false;
+              if (PREFS.prefixRequired) return false;
 
-              if (input.length >= Prefs.minQueryLength) {
+              if (input.length >= PREFS.minQueryLength) {
                 const liveCommands = await self.generateLiveCommands(true, false);
                 return self.filterCommandsByInput(input, liveCommands, false).length > 0;
               }
@@ -3816,20 +3818,20 @@
               const input = (context.searchString || "").trim();
               debugLog(`startQuery for: "${input}"`);
 
-              const isEnteringPrefixMode = !this._isInPrefixMode && input.startsWith(Prefs.prefix);
+              const isEnteringPrefixMode = !this._isInPrefixMode && input.startsWith(PREFS.prefix);
               let query;
 
               if (isEnteringPrefixMode) {
                 this._isInPrefixMode = true;
                 gURLBar.setAttribute("zen-cmd-palette-prefix-mode", "true");
-                query = input.substring(Prefs.prefix.length).trim();
+                query = input.substring(PREFS.prefix.length).trim();
                 gURLBar.value = query;
               } else {
                 query = input;
               }
 
-              if (this._isInPrefixMode) Prefs.setTempMaxRichResults(Prefs.maxCommandsPrefix);
-              else Prefs.resetTempMaxRichResults();
+              if (this._isInPrefixMode) PREFS.setTempMaxRichResults(PREFS.maxCommandsPrefix);
+              else PREFS.resetTempMaxRichResults();
 
               if (context.canceled) return;
 
@@ -3839,7 +3841,7 @@
               const addResult = (cmd, isHeuristic = false) => {
                 if (!cmd) return;
                 const shortcut = self.getShortcutForCommand(cmd.key);
-                const [payload, payloadHighlights] = UrlbarResult.payloadAndSimpleHighlights([], {
+                const { payload, payloadHighlights } = UrlbarResult.payloadAndSimpleHighlights([], {
                   suggestion: cmd.label,
                   title: cmd.label,
                   query: input,
@@ -3848,12 +3850,12 @@
                   shortcutContent: shortcut,
                   dynamicType: DYNAMIC_TYPE_NAME,
                 });
-                const result = new UrlbarResult(
-                  UrlbarUtils.RESULT_TYPE.DYNAMIC,
-                  UrlbarUtils.RESULT_SOURCE.OTHER_LOCAL,
+                const result = new UrlbarResult({
+                  type: UrlbarUtils.RESULT_TYPE.DYNAMIC,
+                  source: UrlbarUtils.RESULT_SOURCE.OTHER_LOCAL,
                   payload,
-                  payloadHighlights
-                );
+                  payloadHighlights,
+                });
                 if (isHeuristic) result.heuristic = true;
                 result._zenCmd = cmd;
                 add(this, result);
@@ -3862,7 +3864,7 @@
 
               if (this._isInPrefixMode && !query) {
                 let count = 0;
-                const maxResults = Prefs.maxCommandsPrefix;
+                const maxResults = PREFS.maxCommandsPrefix;
                 const recentCmds = self._recentCommands
                   .map((key) => liveCommands.find((c) => c.key === key))
                   .filter(Boolean)
@@ -3916,7 +3918,7 @@
           }
 
           dispose() {
-            Prefs.resetTempMaxRichResults();
+            PREFS.resetTempMaxRichResults();
             gURLBar.removeAttribute("zen-cmd-palette-prefix-mode");
             this._isInPrefixMode = false;
             setTimeout(() => {
@@ -4049,7 +4051,7 @@
 
   // Initialization
   function init() {
-    Prefs.setInitialPrefs();
+    PREFS.setInitialPrefs();
     window.ZenCommandPalette = ZenCommandPalette;
     ZenCommandPalette.init();
 
