@@ -448,6 +448,18 @@
       "zen"
     ]
   },
+  "new-icons": {
+    "homepage": "qumeqa/zen-icons",
+    "image": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/photo/cover.png",
+    "name": "New icons",
+    "version": "1.0",
+    "description": "New icons for the toolbar and better locale button",
+    "readme": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/README.md",
+    "stars": 1,
+    "fork": [
+      "zen"
+    ]
+  },
   "IconTweaker": {
     "homepage": "allecsc/Icon-Tweaker",
     "image": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/image.png",
@@ -459,18 +471,6 @@
     "fork": [
       "zen",
       "firefox"
-    ]
-  },
-  "new-icons": {
-    "homepage": "qumeqa/zen-icons",
-    "image": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/photo/cover.png",
-    "name": "New icons",
-    "version": "1.0",
-    "description": "New icons for the toolbar and better locale button",
-    "readme": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/README.md",
-    "stars": 0,
-    "fork": [
-      "zen"
     ]
   }
 }
