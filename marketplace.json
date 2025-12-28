@@ -214,6 +214,18 @@
       "zen"
     ]
   },
+  "zen-tidy-tabs": {
+    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
+    "name": "Zen Tidy Tabs",
+    "version": "1.0.0s",
+    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
+    "stars": 13,
+    "fork": [
+      "zen"
+    ]
+  },
   "customize-collapsed-sidebar": {
     "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
     "name": "Customize Collapsed Sidebar",
@@ -444,18 +456,6 @@
     "description": "Let's you collapse your pinned folders and tabs area with a chevron icon",
     "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/collapse-pinned-area/README.md",
     "stars": 1,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-tidy-tabs": {
-    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
-    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
-    "name": "Zen Tidy Tabs",
-    "version": "1.0.0s",
-    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
-    "stars": 0,
     "fork": [
       "zen"
     ]
