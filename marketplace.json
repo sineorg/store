@@ -54,7 +54,7 @@
     "homepage": "zapSNH/zapsCoolPhotonTheme",
     "image": "https://i.imgur.com/FyzTFKg.png",
     "name": "zap's cool photon theme",
-    "version": "145.1",
+    "version": "147.0",
     "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
     "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
     "stars": 122,
@@ -72,7 +72,7 @@
     "version": "2.1.0",
     "description": "A sleek, futuristic theme for Zen Browser that blends modern design with mindful simplicity",
     "readme": "https://raw.githubusercontent.com/JustVibingWhileCoding/Neo-Zen/main/README.md",
-    "stars": 74,
+    "stars": 75,
     "fork": [
       "zen"
     ]
