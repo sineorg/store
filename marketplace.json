@@ -38,18 +38,6 @@
       "zen"
     ]
   },
-  "ai-tabgroups-zenbrowser": {
-    "homepage": "Darsh-A/Ai-TabGroups-ZenBrowser",
-    "image": "https://github.com/Darsh-A/Ai-TabGroups-ZenBrowser/blob/main/image.jpg?raw=true",
-    "name": "Tidy Tabs",
-    "version": "5.1.0",
-    "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
-    "stars": 148,
-    "fork": [
-      "zen"
-    ]
-  },
   "zaps-cool-photon-theme": {
     "homepage": "zapSNH/zapsCoolPhotonTheme",
     "image": "https://i.imgur.com/FyzTFKg.png",
@@ -65,18 +53,6 @@
       "mullvad"
     ]
   },
-  "Neo-Zen": {
-    "homepage": "JustVibingWhileCoding/Neo-Zen",
-    "image": "https://github.com/user-attachments/assets/c37e9f4e-1ab1-43ec-945e-2be1592351a4",
-    "name": "Neo Zen",
-    "version": "2.1.0",
-    "description": "A sleek, futuristic theme for Zen Browser that blends modern design with mindful simplicity",
-    "readme": "https://raw.githubusercontent.com/JustVibingWhileCoding/Neo-Zen/main/README.md",
-    "stars": 75,
-    "fork": [
-      "zen"
-    ]
-  },
   "browse-bot": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/findbar-ai",
     "name": "Browse Bot",
@@ -87,14 +63,6 @@
     "fork": [
       "zen"
     ]
-  },
-  "floating-sidebar": {
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/floating-sidebar",
-    "name": "Floating Sidebar",
-    "version": "1.0.0",
-    "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
-    "stars": 70
   },
   "settings-shortcuts-search": {
     "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
@@ -142,19 +110,6 @@
       "zen"
     ]
   },
-  "context-menu-icons": {
-    "homepage": "Starry-AXQG/Context-Menu-Icons",
-    "image": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/.asset/Demo%20Image.jpg",
-    "name": "Context Menu Icons",
-    "version": "2.7.0.1",
-    "description": "Improve the context menu by adding icons, fold menu items and more.",
-    "readme": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/README.md",
-    "stars": 42,
-    "fork": [
-      "zen",
-      "firefox"
-    ]
-  },
   "quick-search-zen-browser": {
     "homepage": "Darsh-A/Quick-Search-Zen-Browser",
     "name": "Quick Search",
@@ -162,18 +117,6 @@
     "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
     "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
     "stars": 40,
-    "fork": [
-      "zen"
-    ]
-  },
-  "wireframe-2.0": {
-    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
-    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
-    "name": "Wireframe 2.0",
-    "version": "2.7.5",
-    "description": "A minimal theme for Zen. Unconventional by design.",
-    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
-    "stars": 32,
     "fork": [
       "zen"
     ]
@@ -274,28 +217,6 @@
       "firefox"
     ]
   },
-  "reopen-closed-tabs": {
-    "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
-    "name": "Reopen Closed Tabs Menu",
-    "version": "1.0.0",
-    "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
-    "stars": 8,
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-drop-link": {
-    "homepage": "https://github.com/octaviusz/zen-drop-link",
-    "name": "Zen Drop Link to Split",
-    "version": "0.0.2",
-    "description": "This mod allows you to split tabs by drag and drop links",
-    "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
-    "stars": 7,
-    "fork": [
-      "zen"
-    ]
-  },
   "cfafe94c-5a29-4dae-8489-6be514185474": {
     "homepage": "rasyidrafi/zen-better-sidebar",
     "image": "https://github.com/rasyidrafi/zen-better-sidebar/blob/main/image.png?raw=true",
@@ -364,17 +285,6 @@
       "firefox"
     ]
   },
-  "Auto-Tab-Sort-Folders": {
-    "homepage": "Comp-Tech-Guy/Auto-Tab-Sort-Folders",
-    "name": "Auto-Tab-Sort-Folders",
-    "version": "1.0.0",
-    "description": "Sorting Tabs into Folders or Tab groups (Nothing is working now)",
-    "readme": "https://raw.githubusercontent.com/Comp-Tech-Guy/Auto-Tab-Sort-Folders/refs/heads/main/README.md",
-    "stars": 3,
-    "fork": [
-      "zen"
-    ]
-  },
   "Nebula": {
     "homepage": "CosmoCreeper/Nubulu",
     "image": "https://i.ibb.co/Lqk4krw/Screenshot-2025-09-03-232353.png",
@@ -385,19 +295,6 @@
     "stars": 2,
     "fork": [
       "zen"
-    ]
-  },
-  "f966100a-4fed-4df5-a082-f001c5bd654e": {
-    "homepage": "rasyidrafi/zen-tidy-popup",
-    "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
-    "name": "Tidy Popup & Extension",
-    "version": "2.9.1",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
-    "stars": 2,
-    "fork": [
-      "zen",
-      "firefox"
     ]
   },
   "e9dae25b-2ddd-4245-8581-a6dcf6d35b82": {
@@ -458,6 +355,109 @@
     "stars": 1,
     "fork": [
       "zen"
+    ]
+  },
+  "ai-tabgroups-zenbrowser": {
+    "homepage": "Darsh-A/Ai-TabGroups-ZenBrowser",
+    "image": "https://github.com/Darsh-A/Ai-TabGroups-ZenBrowser/blob/main/image.jpg?raw=true",
+    "name": "Tidy Tabs",
+    "version": "5.1.0",
+    "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "Neo-Zen": {
+    "homepage": "JustVibingWhileCoding/Neo-Zen",
+    "image": "https://github.com/user-attachments/assets/c37e9f4e-1ab1-43ec-945e-2be1592351a4",
+    "name": "Neo Zen",
+    "version": "2.1.0",
+    "description": "A sleek, futuristic theme for Zen Browser that blends modern design with mindful simplicity",
+    "readme": "https://raw.githubusercontent.com/JustVibingWhileCoding/Neo-Zen/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "floating-sidebar": {
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/floating-sidebar",
+    "name": "Floating Sidebar",
+    "version": "1.0.0",
+    "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
+    "stars": 0
+  },
+  "context-menu-icons": {
+    "homepage": "Starry-AXQG/Context-Menu-Icons",
+    "image": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/.asset/Demo%20Image.jpg",
+    "name": "Context Menu Icons",
+    "version": "2.7.0.1",
+    "description": "Improve the context menu by adding icons, fold menu items and more.",
+    "readme": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen",
+      "firefox"
+    ]
+  },
+  "wireframe-2.0": {
+    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
+    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
+    "name": "Wireframe 2.0",
+    "version": "2.7.5",
+    "description": "A minimal theme for Zen. Unconventional by design.",
+    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "reopen-closed-tabs": {
+    "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
+    "name": "Reopen Closed Tabs Menu",
+    "version": "1.0.0",
+    "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-drop-link": {
+    "homepage": "https://github.com/octaviusz/zen-drop-link",
+    "name": "Zen Drop Link to Split",
+    "version": "0.0.2",
+    "description": "This mod allows you to split tabs by drag and drop links",
+    "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "Auto-Tab-Sort-Folders": {
+    "homepage": "Comp-Tech-Guy/Auto-Tab-Sort-Folders",
+    "name": "Auto-Tab-Sort-Folders",
+    "version": "1.0.0",
+    "description": "Sorting Tabs into Folders or Tab groups (Nothing is working now)",
+    "readme": "https://raw.githubusercontent.com/Comp-Tech-Guy/Auto-Tab-Sort-Folders/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "f966100a-4fed-4df5-a082-f001c5bd654e": {
+    "homepage": "rasyidrafi/zen-tidy-popup",
+    "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
+    "name": "Tidy Popup & Extension",
+    "version": "2.9.1",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen",
+      "firefox"
     ]
   },
   "IconTweaker": {
