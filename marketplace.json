@@ -249,6 +249,19 @@
       "zen"
     ]
   },
+  "paneru": {
+    "homepage": "TheBigWazz/Paneru",
+    "image": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/image.png",
+    "name": "Paneru",
+    "version": "1.0.1",
+    "description": "A comprehensive theme that separates various elements onto their own panel, respects Firefox theme colors, and supports transparency.",
+    "readme": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/README.md",
+    "stars": 10,
+    "fork": [
+      "floorp",
+      "firefox"
+    ]
+  },
   "c9ee0d97-d2d6-40fd-8f85-549fe000b868": {
     "homepage": "rasyidrafi/zen-deta-loading-bar",
     "image": "https://github.com/rasyidrafi/zen-deta-loading-bar/blob/main/image.png?raw=true",
@@ -259,19 +272,6 @@
     "stars": 9,
     "fork": [
       "zen"
-    ]
-  },
-  "paneru": {
-    "homepage": "TheBigWazz/Paneru",
-    "image": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/image.png",
-    "name": "Paneru",
-    "version": "1.0.1",
-    "description": "A comprehensive theme that separates various elements onto their own panel, respects Firefox theme colors, and supports transparency.",
-    "readme": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/README.md",
-    "stars": 9,
-    "fork": [
-      "floorp",
-      "firefox"
     ]
   },
   "reopen-closed-tabs": {
