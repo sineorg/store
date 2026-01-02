@@ -26,30 +26,6 @@
       "zen"
     ]
   },
-  "advanced-tab-groups": {
-    "homepage": "Vertex-Mods/Advanced-Tab-Groups",
-    "image": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/image.png",
-    "name": "Advanced Tab Groups (BETA)",
-    "version": "3.2.1b",
-    "description": "Tab Groups for Zen Browser",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
-    "stars": 363,
-    "fork": [
-      "zen"
-    ]
-  },
-  "ai-tabgroups-zenbrowser": {
-    "homepage": "Darsh-A/Ai-TabGroups-ZenBrowser",
-    "image": "https://github.com/Darsh-A/Ai-TabGroups-ZenBrowser/blob/main/image.jpg?raw=true",
-    "name": "Tidy Tabs",
-    "version": "5.1.0",
-    "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
-    "stars": 148,
-    "fork": [
-      "zen"
-    ]
-  },
   "zaps-cool-photon-theme": {
     "homepage": "zapSNH/zapsCoolPhotonTheme",
     "image": "https://i.imgur.com/FyzTFKg.png",
@@ -129,18 +105,6 @@
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
     "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
     "stars": 70
-  },
-  "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
-    "homepage": "CosmoCreeper/Zen-Themes/tree/main/SuperPins",
-    "image": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/image.png",
-    "name": "SuperPins",
-    "version": "1.5.8",
-    "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
-    "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
-    "stars": 49,
-    "fork": [
-      "zen"
-    ]
   },
   "context-menu-icons": {
     "homepage": "Starry-AXQG/Context-Menu-Icons",
@@ -438,17 +402,6 @@
       "firefox"
     ]
   },
-  "auto-pip-setting": {
-    "homepage": "Zylaah/auto-pip",
-    "name": "Auto-PiP-Setting",
-    "version": "1.0",
-    "description": "Adds auto-picture-in-picture setting in the unified panel",
-    "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/auto-pip/README.md",
-    "stars": 1,
-    "fork": [
-      "zen"
-    ]
-  },
   "collapse-pinned-area": {
     "homepage": "Zylaah/collapse-pinned-area",
     "name": "Collapse Pinned Area",
@@ -456,6 +409,53 @@
     "description": "Let's you collapse your pinned folders and tabs area with a chevron icon",
     "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/collapse-pinned-area/README.md",
     "stars": 1,
+    "fork": [
+      "zen"
+    ]
+  },
+  "advanced-tab-groups": {
+    "homepage": "Vertex-Mods/Advanced-Tab-Groups",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/image.png",
+    "name": "Advanced Tab Groups (BETA)",
+    "version": "3.2.1b",
+    "description": "Tab Groups for Zen Browser",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "ai-tabgroups-zenbrowser": {
+    "homepage": "Darsh-A/Ai-TabGroups-ZenBrowser",
+    "image": "https://github.com/Darsh-A/Ai-TabGroups-ZenBrowser/blob/main/image.jpg?raw=true",
+    "name": "Tidy Tabs",
+    "version": "5.1.0",
+    "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Ai-TabGroups-ZenBrowser/refs/heads/main/README.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
+    "homepage": "CosmoCreeper/Zen-Themes/tree/main/SuperPins",
+    "image": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/image.png",
+    "name": "SuperPins",
+    "version": "1.5.8",
+    "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
+    "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
+    "stars": 0,
+    "fork": [
+      "zen"
+    ]
+  },
+  "auto-pip-setting": {
+    "homepage": "Zylaah/auto-pip",
+    "name": "Auto-PiP-Setting",
+    "version": "1.0",
+    "description": "Adds auto-picture-in-picture setting in the unified panel",
+    "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/auto-pip/README.md",
+    "stars": 0,
     "fork": [
       "zen"
     ]
