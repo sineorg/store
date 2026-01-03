@@ -241,6 +241,36 @@
       "zen"
     ]
   },
+  "zaps-cool-photon-theme": {
+    "stars": 122,
+    "id": "zaps-cool-photon-theme",
+    "name": "zap's cool photon theme",
+    "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
+    "homepage": "zapSNH/zapsCoolPhotonTheme",
+    "preferences": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/preferences.json",
+    "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
+    "style": {
+      "content": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/userContent.css",
+      "chrome": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/userChrome.css"
+    },
+    "image": "https://i.imgur.com/FyzTFKg.png",
+    "author": "ZapSNH",
+    "version": "147.0",
+    "tags": [
+      "firefox",
+      "photon",
+      "legacy",
+      "square"
+    ],
+    "createdAt": "2023-08-09",
+    "updatedAt": "2025-12-28",
+    "fork": [
+      "firefox",
+      "waterfox",
+      "floorp",
+      "mullvad"
+    ]
+  },
   "Neo-Zen": {
     "stars": 75,
     "id": "Neo-Zen",
@@ -323,6 +353,86 @@
     "createdAt": "2025-06-23",
     "updatedAt": "2025-07-11"
   },
+  "zen-command-palette": {
+    "stars": 70,
+    "id": "zen-command-palette",
+    "name": "Zen Command Palette",
+    "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
+    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/preferences.json",
+    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/refs/heads/main/command-palette/style.css",
+    "js": true,
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
+    "author": "Bibek Bhusal",
+    "version": "1.7.3",
+    "tags": [
+      "command",
+      "palette",
+      "raycast",
+      "arc",
+      "productivity",
+      "zen browser",
+      "sine",
+      "urlbar"
+    ],
+    "createdAt": "2024-09-07",
+    "updatedAt": "2025-10-14",
+    "fork": [
+      "zen"
+    ]
+  },
+  "settings-shortcuts-search": {
+    "stars": 70,
+    "id": "settings-shortcuts-search",
+    "name": "Search Keyboard shortcuts",
+    "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
+    "js": true,
+    "style": {
+      "content": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/style.css"
+    },
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
+    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/image.png",
+    "author": "Bibek Bhusal",
+    "version": "1.0.0",
+    "tags": [
+      "Search",
+      "sine",
+      "fx-autoconfig",
+      "JavaScript",
+      "Bibek Bhusal"
+    ],
+    "createdAt": "2025-06-23",
+    "updatedAt": "2025-07-11",
+    "fork": [
+      "zen"
+    ]
+  },
+  "search-engine-select": {
+    "stars": 70,
+    "id": "search-engine-select",
+    "name": "Search Engine Select",
+    "description": "Adds a floating UI to switch search engines on a search results page.",
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
+    "js": true,
+    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/preferences.json",
+    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/style.css",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
+    "author": "Bibek Bhusal",
+    "version": "1.0.0",
+    "tags": [
+      "Search",
+      "sine",
+      "fx-autoconfig",
+      "JavaScript",
+      "Bibek Bhusal"
+    ],
+    "createdAt": "2025-06-23",
+    "updatedAt": "2025-10-17",
+    "fork": [
+      "zen"
+    ]
+  },
   "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
     "stars": 49,
     "id": "ad97bb70-0066-4e42-9b5f-173a5e42c6fc",
@@ -368,6 +478,161 @@
     "fork": [
       "zen",
       "firefox"
+    ]
+  },
+  "quick-search-zen-browser": {
+    "stars": 40,
+    "id": "quick-search-zen-browser",
+    "name": "Quick Search",
+    "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
+    "homepage": "Darsh-A/Quick-Search-Zen-Browser",
+    "preferences": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/main/preferences.json",
+    "js": [
+      "quickSearch.uc.js"
+    ],
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
+    "author": "Darsh A",
+    "version": "2.2.0",
+    "tags": [
+      "sine",
+      "Quick Search",
+      "fx-autoconfig",
+      "JavaScript",
+      "Darsh A"
+    ],
+    "createdAt": "2025-05-26",
+    "updatedAt": "2025-6-24",
+    "fork": [
+      "zen"
+    ]
+  },
+  "wireframe-2.0": {
+    "stars": 32,
+    "id": "wireframe-2.0",
+    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
+    "author": "SehajveerSingh2005",
+    "name": "Wireframe 2.0",
+    "description": "A minimal theme for Zen. Unconventional by design.",
+    "version": "2.8.1",
+    "createdAt": "2025-09-10",
+    "updatedAt": "2025-12-29",
+    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
+    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
+    "tags": [
+      "Theme",
+      "Minimal",
+      "Squared",
+      "Wireframe"
+    ],
+    "fork": [
+      "zen"
+    ]
+  },
+  "quick-tabs": {
+    "stars": 26,
+    "id": "quick-tabs",
+    "name": "Quick Tabs",
+    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
+    "homepage": "Darsh-A/Quick-Tabs",
+    "preferences": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/preferences.json",
+    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
+    "js": "https://raw.githubusercontent.com/Darsh-A/Quick-Tabs/refs/heads/main/Quick_Tabs.uc.js",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
+    "author": "Darsh A",
+    "version": "1.1.0",
+    "tags": [
+      "sine",
+      "Quick Tab",
+      "Tab",
+      "Quick",
+      "fx-autoconfig",
+      "JavaScript",
+      "Darsh A"
+    ],
+    "createdAt": "2025-07-17",
+    "updatedAt": "2025-09-18",
+    "fork": [
+      "zen"
+    ]
+  },
+  "vizen-floaty-ui": {
+    "stars": 25,
+    "id": "vizen-floaty-ui",
+    "name": "Floaty UI",
+    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
+    "homepage": "moktavizen/floaty-ui",
+    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
+    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
+    "style": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/chrome.css",
+    "preferences": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/preferences.json",
+    "author": "moktavizen",
+    "version": "1.0.2",
+    "tags": [
+      "compact",
+      "compact mode",
+      "float"
+    ],
+    "createdAt": "2025-06-29",
+    "updatedAt": "2025-06-29",
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-tidy-downloads": {
+    "stars": 15,
+    "id": "zen-tidy-downloads",
+    "name": "Tidy Downloads",
+    "description": "Clean up your downloads with AI",
+    "homepage": "Vertex-Mods/Zen-Tidy-Downloads",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/refs/heads/main/README.md",
+    "image": "https://github.com/Vertex-Mods/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/main/chrome.css",
+    "js": true,
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/main/preferences.json",
+    "author": "Vertex",
+    "version": "3.0.0",
+    "tags": [
+      "sine",
+      "fx-autoconfig",
+      "Downloads",
+      "Tidy Pack"
+    ],
+    "createdAt": "2025-05-24",
+    "updatedAt": "2025-07-15",
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-tidy-tabs": {
+    "stars": 13,
+    "id": "zen-tidy-tabs",
+    "name": "Zen Tidy Tabs",
+    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
+    "js": true,
+    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/userChrome.css",
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/preferences.json",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
+    "author": "Vertex",
+    "version": "1.0.0s",
+    "tags": [
+      "Zen Browser",
+      "Vertical Tabs",
+      "Tab Groups",
+      "Tab Folders",
+      "Tab Sorting",
+      "AI",
+      "Local",
+      "12th"
+    ],
+    "createdAt": "2025-09-20",
+    "updatedAt": "2025-09-20 08:23",
+    "modules": [
+      "Vertex-Mods/Advanced-Tab-Groups"
+    ],
+    "fork": [
+      "zen"
     ]
   },
   "No-Gaps": {
@@ -455,6 +720,57 @@
       "zen"
     ]
   },
+  "reopen-closed-tabs": {
+    "stars": 8,
+    "id": "reopen-closed-tabs",
+    "name": "Reopen Closed Tabs Menu",
+    "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
+    "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main//preferences.json",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/style.css",
+    "js": true,
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
+    "author": "Bibek Bhusal",
+    "version": "1.0.0",
+    "tags": [
+      "tabs",
+      "history",
+      "reopen",
+      "closed tabs",
+      "productivity",
+      "zen browser",
+      "sine"
+    ],
+    "createdAt": "2025-09-22",
+    "updatedAt": "2025-09-26",
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-drop-link": {
+    "stars": 7,
+    "id": "zen-drop-link",
+    "name": "Zen Drop Link to Split",
+    "description": "This mod allows you to split tabs by drag and drop links",
+    "homepage": "https://github.com/octaviusz/zen-drop-link",
+    "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
+    "image": "",
+    "style": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/userChrome.css",
+    "js": true,
+    "preferences": "",
+    "author": "octaviusz",
+    "version": "0.0.2",
+    "tags": [
+      "sine",
+      "fx-autoconfig",
+      "split tabs"
+    ],
+    "createdAt": "2025-06-17",
+    "updatedAt": "2025-06-29",
+    "fork": [
+      "zen"
+    ]
+  },
   "cfafe94c-5a29-4dae-8489-6be514185474": {
     "stars": 5,
     "id": "cfafe94c-5a29-4dae-8489-6be514185474",
@@ -474,6 +790,54 @@
     ],
     "createdAt": "2025-07-29",
     "updatedAt": "2025-08-29",
+    "fork": [
+      "zen"
+    ]
+  },
+  "tab-rename-zen-browser": {
+    "stars": 5,
+    "id": "tab-rename-zen-browser",
+    "name": "Better Tab Rename",
+    "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
+    "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
+    "js": true,
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
+    "author": "Darsh A",
+    "version": "1.0.0",
+    "tags": [
+      "sine",
+      "Tab Rename",
+      "fx-autoconfig",
+      "JavaScript",
+      "Darsh A",
+      "Better"
+    ],
+    "createdAt": "2025-05-26",
+    "updatedAt": "2025-05-26",
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-live-calendar": {
+    "stars": 5,
+    "id": "zen-live-calendar",
+    "name": "Live Calendar",
+    "description": "Brings the live calendar functionality from Arc to Zen, making it feel as native as possible.",
+    "homepage": "Vertex-Mods/Zen-Live-Calendar",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Live-Calendar/refs/heads/main/README.md",
+    "image": "https://github.com/Vertex-Mods/Zen-Live-Calendar/blob/main/image.png?raw=true",
+    "js": true,
+    "author": "Vertex",
+    "version": "1.0.0",
+    "tags": [
+      "Zen",
+      "fx-autoconfig",
+      "Calendar",
+      "Arc",
+      "Live"
+    ],
+    "createdAt": "2025-06-18",
+    "updatedAt": "2025-06-18",
     "fork": [
       "zen"
     ]
@@ -716,370 +1080,6 @@
     ],
     "createdAt": "2025-12-08",
     "updatedAt": "2025-12-09",
-    "fork": [
-      "zen"
-    ]
-  },
-  "zaps-cool-photon-theme": {
-    "stars": 0,
-    "id": "zaps-cool-photon-theme",
-    "name": "zap's cool photon theme",
-    "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
-    "homepage": "zapSNH/zapsCoolPhotonTheme",
-    "preferences": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/preferences.json",
-    "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
-    "style": {
-      "content": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/userContent.css",
-      "chrome": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/userChrome.css"
-    },
-    "image": "https://i.imgur.com/FyzTFKg.png",
-    "author": "ZapSNH",
-    "version": "147.0",
-    "tags": [
-      "firefox",
-      "photon",
-      "legacy",
-      "square"
-    ],
-    "createdAt": "2023-08-09",
-    "updatedAt": "2025-12-28",
-    "fork": [
-      "firefox",
-      "waterfox",
-      "floorp",
-      "mullvad"
-    ]
-  },
-  "zen-command-palette": {
-    "stars": 0,
-    "id": "zen-command-palette",
-    "name": "Zen Command Palette",
-    "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
-    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/preferences.json",
-    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/refs/heads/main/command-palette/style.css",
-    "js": true,
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
-    "author": "Bibek Bhusal",
-    "version": "1.7.3",
-    "tags": [
-      "command",
-      "palette",
-      "raycast",
-      "arc",
-      "productivity",
-      "zen browser",
-      "sine",
-      "urlbar"
-    ],
-    "createdAt": "2024-09-07",
-    "updatedAt": "2025-10-14",
-    "fork": [
-      "zen"
-    ]
-  },
-  "settings-shortcuts-search": {
-    "stars": 0,
-    "id": "settings-shortcuts-search",
-    "name": "Search Keyboard shortcuts",
-    "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
-    "js": true,
-    "style": {
-      "content": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/style.css"
-    },
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
-    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/image.png",
-    "author": "Bibek Bhusal",
-    "version": "1.0.0",
-    "tags": [
-      "Search",
-      "sine",
-      "fx-autoconfig",
-      "JavaScript",
-      "Bibek Bhusal"
-    ],
-    "createdAt": "2025-06-23",
-    "updatedAt": "2025-07-11",
-    "fork": [
-      "zen"
-    ]
-  },
-  "search-engine-select": {
-    "stars": 0,
-    "id": "search-engine-select",
-    "name": "Search Engine Select",
-    "description": "Adds a floating UI to switch search engines on a search results page.",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
-    "js": true,
-    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/preferences.json",
-    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/style.css",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
-    "author": "Bibek Bhusal",
-    "version": "1.0.0",
-    "tags": [
-      "Search",
-      "sine",
-      "fx-autoconfig",
-      "JavaScript",
-      "Bibek Bhusal"
-    ],
-    "createdAt": "2025-06-23",
-    "updatedAt": "2025-10-17",
-    "fork": [
-      "zen"
-    ]
-  },
-  "quick-search-zen-browser": {
-    "stars": 0,
-    "id": "quick-search-zen-browser",
-    "name": "Quick Search",
-    "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
-    "homepage": "Darsh-A/Quick-Search-Zen-Browser",
-    "preferences": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/main/preferences.json",
-    "js": [
-      "quickSearch.uc.js"
-    ],
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
-    "author": "Darsh A",
-    "version": "2.2.0",
-    "tags": [
-      "sine",
-      "Quick Search",
-      "fx-autoconfig",
-      "JavaScript",
-      "Darsh A"
-    ],
-    "createdAt": "2025-05-26",
-    "updatedAt": "2025-6-24",
-    "fork": [
-      "zen"
-    ]
-  },
-  "wireframe-2.0": {
-    "stars": 0,
-    "id": "wireframe-2.0",
-    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
-    "author": "SehajveerSingh2005",
-    "name": "Wireframe 2.0",
-    "description": "A minimal theme for Zen. Unconventional by design.",
-    "version": "2.8.1",
-    "createdAt": "2025-09-10",
-    "updatedAt": "2025-12-29",
-    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
-    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
-    "tags": [
-      "Theme",
-      "Minimal",
-      "Squared",
-      "Wireframe"
-    ],
-    "fork": [
-      "zen"
-    ]
-  },
-  "quick-tabs": {
-    "stars": 0,
-    "id": "quick-tabs",
-    "name": "Quick Tabs",
-    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
-    "homepage": "Darsh-A/Quick-Tabs",
-    "preferences": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/preferences.json",
-    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
-    "js": "https://raw.githubusercontent.com/Darsh-A/Quick-Tabs/refs/heads/main/Quick_Tabs.uc.js",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
-    "author": "Darsh A",
-    "version": "1.1.0",
-    "tags": [
-      "sine",
-      "Quick Tab",
-      "Tab",
-      "Quick",
-      "fx-autoconfig",
-      "JavaScript",
-      "Darsh A"
-    ],
-    "createdAt": "2025-07-17",
-    "updatedAt": "2025-09-18",
-    "fork": [
-      "zen"
-    ]
-  },
-  "vizen-floaty-ui": {
-    "stars": 0,
-    "id": "vizen-floaty-ui",
-    "name": "Floaty UI",
-    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
-    "homepage": "moktavizen/floaty-ui",
-    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
-    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
-    "style": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/chrome.css",
-    "preferences": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/preferences.json",
-    "author": "moktavizen",
-    "version": "1.0.2",
-    "tags": [
-      "compact",
-      "compact mode",
-      "float"
-    ],
-    "createdAt": "2025-06-29",
-    "updatedAt": "2025-06-29",
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-tidy-downloads": {
-    "stars": 0,
-    "id": "zen-tidy-downloads",
-    "name": "Tidy Downloads",
-    "description": "Clean up your downloads with AI",
-    "homepage": "Vertex-Mods/Zen-Tidy-Downloads",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/refs/heads/main/README.md",
-    "image": "https://github.com/Vertex-Mods/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
-    "style": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/main/chrome.css",
-    "js": true,
-    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/main/preferences.json",
-    "author": "Vertex",
-    "version": "3.0.0",
-    "tags": [
-      "sine",
-      "fx-autoconfig",
-      "Downloads",
-      "Tidy Pack"
-    ],
-    "createdAt": "2025-05-24",
-    "updatedAt": "2025-07-15",
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-tidy-tabs": {
-    "stars": 0,
-    "id": "zen-tidy-tabs",
-    "name": "Zen Tidy Tabs",
-    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
-    "js": true,
-    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
-    "style": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/userChrome.css",
-    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/preferences.json",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
-    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
-    "author": "Vertex",
-    "version": "1.0.0s",
-    "tags": [
-      "Zen Browser",
-      "Vertical Tabs",
-      "Tab Groups",
-      "Tab Folders",
-      "Tab Sorting",
-      "AI",
-      "Local",
-      "12th"
-    ],
-    "createdAt": "2025-09-20",
-    "updatedAt": "2025-09-20 08:23",
-    "modules": [
-      "Vertex-Mods/Advanced-Tab-Groups"
-    ],
-    "fork": [
-      "zen"
-    ]
-  },
-  "reopen-closed-tabs": {
-    "stars": 0,
-    "id": "reopen-closed-tabs",
-    "name": "Reopen Closed Tabs Menu",
-    "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
-    "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
-    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main//preferences.json",
-    "style": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/style.css",
-    "js": true,
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
-    "author": "Bibek Bhusal",
-    "version": "1.0.0",
-    "tags": [
-      "tabs",
-      "history",
-      "reopen",
-      "closed tabs",
-      "productivity",
-      "zen browser",
-      "sine"
-    ],
-    "createdAt": "2025-09-22",
-    "updatedAt": "2025-09-26",
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-drop-link": {
-    "stars": 0,
-    "id": "zen-drop-link",
-    "name": "Zen Drop Link to Split",
-    "description": "This mod allows you to split tabs by drag and drop links",
-    "homepage": "https://github.com/octaviusz/zen-drop-link",
-    "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
-    "image": "",
-    "style": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/userChrome.css",
-    "js": true,
-    "preferences": "",
-    "author": "octaviusz",
-    "version": "0.0.2",
-    "tags": [
-      "sine",
-      "fx-autoconfig",
-      "split tabs"
-    ],
-    "createdAt": "2025-06-17",
-    "updatedAt": "2025-06-29",
-    "fork": [
-      "zen"
-    ]
-  },
-  "tab-rename-zen-browser": {
-    "stars": 0,
-    "id": "tab-rename-zen-browser",
-    "name": "Better Tab Rename",
-    "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
-    "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
-    "js": true,
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
-    "author": "Darsh A",
-    "version": "1.0.0",
-    "tags": [
-      "sine",
-      "Tab Rename",
-      "fx-autoconfig",
-      "JavaScript",
-      "Darsh A",
-      "Better"
-    ],
-    "createdAt": "2025-05-26",
-    "updatedAt": "2025-05-26",
-    "fork": [
-      "zen"
-    ]
-  },
-  "zen-live-calendar": {
-    "stars": 0,
-    "id": "zen-live-calendar",
-    "name": "Live Calendar",
-    "description": "Brings the live calendar functionality from Arc to Zen, making it feel as native as possible.",
-    "homepage": "Vertex-Mods/Zen-Live-Calendar",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Live-Calendar/refs/heads/main/README.md",
-    "image": "https://github.com/Vertex-Mods/Zen-Live-Calendar/blob/main/image.png?raw=true",
-    "js": true,
-    "author": "Vertex",
-    "version": "1.0.0",
-    "tags": [
-      "Zen",
-      "fx-autoconfig",
-      "Calendar",
-      "Arc",
-      "Live"
-    ],
-    "createdAt": "2025-06-18",
-    "updatedAt": "2025-06-18",
     "fork": [
       "zen"
     ]
