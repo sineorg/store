@@ -1,193 +1,224 @@
-name: Update marketplace.json to contain latest data
+name: Update Marketplace
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/7 * * * *" # every 7 minutes (GitHub may throttle more frequent runs)
-  push:
-    branches:
-      - 'main'
+    - cron: "0 3 * * *"
 
 permissions:
   contents: write
-  actions: read
+  pull-requests: write
 
 jobs:
-  update-marketplace-json:
+  update:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        fetch-depth: 0
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y jq curl unzip
 
-    - name: Read and update marketplace.json
-      run: |
-        set -euo pipefail
-    
-        sudo apt-get update && sudo apt-get install -y jq curl
-    
-        #######################################
-        # Normalize GitHub URLs
-        #######################################
-        normalize_github_url() {
-          local url="$1"
-          url="${url%/}"
-    
-          if [[ "$url" =~ ^https://github\.com/([^/]+/[^/]+)(/tree/([^/]+)(.*))?$ ]]; then
-            repo="${BASH_REMATCH[1]}"
-            branch="${BASH_REMATCH[3]:-main}"
-            folder="${BASH_REMATCH[4]#/}"
-          elif [[ "$url" =~ ^([^/]+/[^/]+)(/tree/([^/]+)(.*))?$ ]]; then
-            repo="${BASH_REMATCH[1]}"
-            branch="${BASH_REMATCH[3]:-main}"
-            folder="${BASH_REMATCH[4]#/}"
-          else
-            echo "Invalid GitHub URL: $url" >&2
-            return 1
-          fi
-    
-          echo "$repo|$branch|$folder"
-        }
-    
-        #######################################
-        # Fetch GitHub stars
-        #######################################
-        fetch_github_stars() {
-          local repo="$1"
-          local api_url="https://api.github.com/repos/$repo"
-    
-          response=$(curl -s -H "User-Agent: GitHub-Actions" "$api_url" || true)
-    
-          echo "$response" | jq -r '.stargazers_count // 0'
-        }
-    
-        #######################################
-        # Fetch theme.json
-        #######################################
-        fetch_theme_json() {
-          local repo="$1"
-          local branch="$2"
-          local folder="$3"
-    
-          local path="theme.json"
-          [[ -n "$folder" ]] && path="$folder/theme.json"
-    
-          local raw_url="https://raw.githubusercontent.com/$repo/$branch/$path"
-    
-          if ! content=$(curl -s --fail "$raw_url"); then
-            if [[ "$branch" == "main" ]]; then
-              raw_url="https://raw.githubusercontent.com/$repo/master/$path"
-              content=$(curl -s --fail "$raw_url" || true)
+      - name: Read and update marketplace.json
+        run: |
+          set -euo pipefail
+      
+          sudo apt-get update && sudo apt-get install -y jq curl
+      
+          #######################################
+          # Normalize GitHub URLs
+          #######################################
+          normalize_github_url() {
+            local url="$1"
+            url="${url%/}"
+      
+            if [[ "$url" =~ ^https://github\.com/([^/]+/[^/]+)(/tree/([^/]+)(.*))?$ ]]; then
+              repo="${BASH_REMATCH[1]}"
+              branch="${BASH_REMATCH[3]:-main}"
+              folder="${BASH_REMATCH[4]#/}"
+            elif [[ "$url" =~ ^([^/]+/[^/]+)(/tree/([^/]+)(.*))?$ ]]; then
+              repo="${BASH_REMATCH[1]}"
+              branch="${BASH_REMATCH[3]:-main}"
+              folder="${BASH_REMATCH[4]#/}"
+            else
+              echo "Invalid GitHub URL: $url" >&2
+              return 1
             fi
-          fi
+      
+            echo "$repo|$branch|$folder"
+          }
+      
+          #######################################
+          # Fetch GitHub stars
+          #######################################
+          fetch_github_stars() {
+            local repo="$1"
+            local api_url="https://api.github.com/repos/$repo"
+      
+            response=$(curl -s -H "User-Agent: GitHub-Actions" "$api_url" || true)
+      
+            echo "$response" | jq -r '.stargazers_count // 0'
+          }
+      
+          #######################################
+          # Fetch theme.json
+          #######################################
+          fetch_theme_json() {
+            local repo="$1"
+            local branch="$2"
+            local folder="$3"
+      
+            local path="theme.json"
+            [[ -n "$folder" ]] && path="$folder/theme.json"
+      
+            local raw_url="https://raw.githubusercontent.com/$repo/$branch/$path"
+      
+            if ! content=$(curl -s --fail "$raw_url"); then
+              if [[ "$branch" == "main" ]]; then
+                raw_url="https://raw.githubusercontent.com/$repo/master/$path"
+                content=$(curl -s --fail "$raw_url" || true)
+              fi
+            fi
+      
+            echo "$content"
+          }
+      
+          #######################################
+          # Prepare marketplace.json
+          #######################################
+          [[ -f marketplace.json ]] || echo '{}' > marketplace.json
+      
+          marketplace=$(cat marketplace.json)
+          tmp=$(mktemp)
+      
+          #######################################
+          # Convert string entries → objects
+          #######################################
+          echo "$marketplace" | jq '
+            with_entries(
+              if (.value | type) == "string"
+              then .value = { homepage: .value }
+              else .
+              end
+            )
+          ' > "$tmp"
+      
+          marketplace=$(cat "$tmp")
+      
+          #######################################
+          # Process entries
+          #######################################
+          keys=$(echo "$marketplace" | jq -r 'keys[]')
+      
+          for key in $keys; do
+            homepage=$(echo "$marketplace" | jq -r ".\"$key\".homepage // empty")
+            [[ -z "$homepage" ]] && continue
+      
+            normalized=$(normalize_github_url "$homepage") || continue
+            repo=$(cut -d'|' -f1 <<< "$normalized")
+            branch=$(cut -d'|' -f2 <<< "$normalized")
+            folder=$(cut -d'|' -f3 <<< "$normalized")
+      
+            theme_json=$(fetch_theme_json "$repo" "$branch" "$folder")
+            stars=$(fetch_github_stars "$repo")
+      
+            if echo "$theme_json" | jq empty >/dev/null 2>&1; then
+              merged=$(echo "$theme_json" | jq \
+                --arg homepage "$homepage" \
+                --argjson stars "$stars" '
+                  . + { homepage: $homepage, stars: $stars }
+                  | { stars } + del(.stars)
+                ')
+            else
+              merged=$(jq -n \
+                --arg homepage "$homepage" \
+                --argjson stars "$stars" \
+                '{ stars: $stars, homepage: $homepage }')
+            fi
+      
+            jq --arg key "$key" --argjson data "$merged" \
+              '.[$key] = $data' "$tmp" > "$tmp.new" && mv "$tmp.new" "$tmp"
+          done
+      
+          #######################################
+          # Sort by stars (descending)
+          #######################################
+          jq '
+            to_entries
+            | map(.value.stars = (.value.stars // 0))
+            | sort_by(-.value.stars)
+            | from_entries
+          ' "$tmp" > marketplace.json
+      
+          rm "$tmp"
+      
+          echo "marketplace.json updated successfully"
     
-          echo "$content"
-        }
-    
-        #######################################
-        # Prepare marketplace.json
-        #######################################
-        [[ -f marketplace.json ]] || echo '{}' > marketplace.json
-    
-        marketplace=$(cat marketplace.json)
-        tmp=$(mktemp)
-    
-        #######################################
-        # Convert string entries → objects
-        #######################################
-        echo "$marketplace" | jq '
-          with_entries(
-            if (.value | type) == "string"
-            then .value = { homepage: .value }
-            else .
-            end
-          )
-        ' > "$tmp"
-    
-        marketplace=$(cat "$tmp")
-    
-        #######################################
-        # Process entries
-        #######################################
-        keys=$(echo "$marketplace" | jq -r 'keys[]')
-    
-        for key in $keys; do
-          homepage=$(echo "$marketplace" | jq -r ".\"$key\".homepage // empty")
-          [[ -z "$homepage" ]] && continue
-    
-          normalized=$(normalize_github_url "$homepage") || continue
-          repo=$(cut -d'|' -f1 <<< "$normalized")
-          branch=$(cut -d'|' -f2 <<< "$normalized")
-          folder=$(cut -d'|' -f3 <<< "$normalized")
-    
-          theme_json=$(fetch_theme_json "$repo" "$branch" "$folder")
-          stars=$(fetch_github_stars "$repo")
-    
-          if echo "$theme_json" | jq empty >/dev/null 2>&1; then
-            merged=$(echo "$theme_json" | jq \
-              --arg homepage "$homepage" \
-              --argjson stars "$stars" '
-                . + { homepage: $homepage, stars: $stars }
-                | { stars } + del(.stars)
-              ')
-          else
-            merged=$(jq -n \
-              --arg homepage "$homepage" \
-              --argjson stars "$stars" \
-              '{ stars: $stars, homepage: $homepage }')
-          fi
-    
-          jq --arg key "$key" --argjson data "$merged" \
-            '.[$key] = $data' "$tmp" > "$tmp.new" && mv "$tmp.new" "$tmp"
-        done
-    
-        #######################################
-        # Sort by stars (descending)
-        #######################################
-        jq '
-          to_entries
-          | map(.value.stars = (.value.stars // 0))
-          | sort_by(-.value.stars)
-          | from_entries
-        ' "$tmp" > marketplace.json
-    
-        rm "$tmp"
-    
-        echo "marketplace.json updated successfully"
-    
-    - name: Commit and push changes
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        
-        # Show what changes were made
-        echo "Checking for changes in marketplace.json..."
-        git diff marketplace.json || echo "No changes detected"
-        
-        # Check if there are any changes
-        if git diff --quiet marketplace.json; then
-          echo "No changes to marketplace.json"
-          exit 0
-        fi
-        
-        git add marketplace.json
-        git commit -m "Update marketplace.json with latest marketplace data [skip ci]"
-        
-        # Pull any remote changes before pushing
-        git pull --rebase origin main
-        
-        git push
+      - name: Download mod archives
+        run: |
+          set -euo pipefail
 
-    - name: Handle errors
-      if: failure()
-      run: |
-        echo "Workflow failed. Check the logs above for details."
-        exit 1
+          mkdir -p mods
+
+          jq -r 'keys[]' marketplace.json | while read -r modId; do
+            homepage=$(jq -r ".\"$modId\".homepage // empty" marketplace.json)
+            [[ -z "$homepage" ]] && continue
+
+            if [[ "$homepage" =~ github\.com/([^/]+/[^/]+) ]]; then
+              repo="${BASH_REMATCH[1]}"
+            else
+              echo "Skipping non-GitHub homepage for $modId"
+              continue
+            fi
+
+            branch="main"
+            zip_url="https://codeload.github.com/$repo/zip/refs/heads/$branch"
+
+            dest_dir="mods/$modId"
+            dest_zip="$dest_dir/mod.zip"
+
+            mkdir -p "$dest_dir"
+
+            if ! curl -fL "$zip_url" -o "$dest_zip"; then
+              echo "Main branch failed, trying master"
+              zip_url="https://codeload.github.com/$repo/zip/refs/heads/master"
+              curl -fL "$zip_url" -o "$dest_zip"
+            fi
+
+            echo "Downloaded $repo → $dest_zip"
+          done
+
+      - name: Commit changes
+        run: |
+          git config user.name "marketplace-bot"
+          git config user.email "marketplace-bot@users.noreply.github.com"
+
+          git checkout -B bot/update-marketplace
+
+          git add marketplace.json mods/
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "Update marketplace and mod archives"
+
+          git push -f origin bot/update-marketplace
+
+      - name: Create or update pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh pr view bot/update-marketplace >/dev/null 2>&1; then
+            echo "Pull request already exists — updated via push"
+          else
+            gh pr create \
+              --title "Update marketplace and mods" \
+              --body "Automated update of marketplace.json and mod archives." \
+              --base main \
+              --head bot/update-marketplace
+          fi
