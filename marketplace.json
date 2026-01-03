@@ -1,6 +1,6 @@
 {
   "natsumi-browser": {
-    "stars": 533,
+    "stars": 0,
     "id": "natsumi-browser",
     "homepage": "greeeen-dev/natsumi-browser",
     "author": "greeeen-dev",
@@ -166,7 +166,7 @@
     }
   },
   "Arc-2.0": {
-    "stars": 365,
+    "stars": 0,
     "id": "Arc-2.0",
     "homepage": "https://github.com/YashjitPal/Arc-2.0/",
     "author": "YashjitPal",
@@ -190,7 +190,7 @@
     ]
   },
   "advanced-tab-groups": {
-    "stars": 363,
+    "stars": 0,
     "id": "advanced-tab-groups",
     "name": "Advanced Tab Groups (BETA)",
     "description": "Tab Groups for Zen Browser",
@@ -216,7 +216,7 @@
     ]
   },
   "ai-tabgroups-zenbrowser": {
-    "stars": 148,
+    "stars": 0,
     "id": "ai-tabgroups-zenbrowser",
     "name": "Tidy Tabs",
     "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
@@ -242,7 +242,7 @@
     ]
   },
   "zaps-cool-photon-theme": {
-    "stars": 122,
+    "stars": 0,
     "id": "zaps-cool-photon-theme",
     "name": "zap's cool photon theme",
     "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
@@ -272,7 +272,7 @@
     ]
   },
   "Neo-Zen": {
-    "stars": 75,
+    "stars": 0,
     "id": "Neo-Zen",
     "homepage": "JustVibingWhileCoding/Neo-Zen",
     "author": "JustVibingWhileCoding",
@@ -299,7 +299,7 @@
     ]
   },
   "browse-bot": {
-    "stars": 70,
+    "stars": 0,
     "id": "browse-bot",
     "name": "Browse Bot",
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
@@ -332,7 +332,7 @@
     ]
   },
   "floating-sidebar": {
-    "stars": 70,
+    "stars": 0,
     "id": "floating-sidebar",
     "name": "Floating Sidebar",
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
@@ -354,7 +354,7 @@
     "updatedAt": "2025-07-11"
   },
   "zen-command-palette": {
-    "stars": 70,
+    "stars": 0,
     "id": "zen-command-palette",
     "name": "Zen Command Palette",
     "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
@@ -382,7 +382,7 @@
     ]
   },
   "settings-shortcuts-search": {
-    "stars": 70,
+    "stars": 0,
     "id": "settings-shortcuts-search",
     "name": "Search Keyboard shortcuts",
     "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
@@ -409,7 +409,7 @@
     ]
   },
   "search-engine-select": {
-    "stars": 70,
+    "stars": 0,
     "id": "search-engine-select",
     "name": "Search Engine Select",
     "description": "Adds a floating UI to switch search engines on a search results page.",
@@ -434,7 +434,7 @@
     ]
   },
   "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
-    "stars": 49,
+    "stars": 0,
     "id": "ad97bb70-0066-4e42-9b5f-173a5e42c6fc",
     "name": "SuperPins",
     "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
@@ -455,7 +455,7 @@
     ]
   },
   "context-menu-icons": {
-    "stars": 43,
+    "stars": 0,
     "id": "context-menu-icons",
     "js": true,
     "name": "Context Menu Icons",
@@ -481,7 +481,7 @@
     ]
   },
   "quick-search-zen-browser": {
-    "stars": 40,
+    "stars": 0,
     "id": "quick-search-zen-browser",
     "name": "Quick Search",
     "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
@@ -507,7 +507,7 @@
     ]
   },
   "wireframe-2.0": {
-    "stars": 32,
+    "stars": 0,
     "id": "wireframe-2.0",
     "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
     "author": "SehajveerSingh2005",
@@ -529,7 +529,7 @@
     ]
   },
   "quick-tabs": {
-    "stars": 26,
+    "stars": 0,
     "id": "quick-tabs",
     "name": "Quick Tabs",
     "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
@@ -556,7 +556,7 @@
     ]
   },
   "vizen-floaty-ui": {
-    "stars": 25,
+    "stars": 0,
     "id": "vizen-floaty-ui",
     "name": "Floaty UI",
     "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
@@ -579,7 +579,7 @@
     ]
   },
   "zen-tidy-downloads": {
-    "stars": 15,
+    "stars": 0,
     "id": "zen-tidy-downloads",
     "name": "Tidy Downloads",
     "description": "Clean up your downloads with AI",
@@ -604,7 +604,7 @@
     ]
   },
   "zen-tidy-tabs": {
-    "stars": 13,
+    "stars": 0,
     "id": "zen-tidy-tabs",
     "name": "Zen Tidy Tabs",
     "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
@@ -636,7 +636,7 @@
     ]
   },
   "No-Gaps": {
-    "stars": 12,
+    "stars": 0,
     "id": "No-Gaps",
     "homepage": "Comp-Tech-Guy/No-Gaps",
     "author": "CompTechGuy",
@@ -664,7 +664,7 @@
     ]
   },
   "customize-collapsed-sidebar": {
-    "stars": 12,
+    "stars": 0,
     "id": "customize-collapsed-sidebar",
     "name": "Customize Collapsed Sidebar",
     "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
@@ -677,7 +677,7 @@
     ]
   },
   "paneru": {
-    "stars": 10,
+    "stars": 0,
     "id": "paneru",
     "name": "Paneru",
     "description": "A comprehensive theme that separates various elements onto their own panel, respects Firefox theme colors, and supports transparency.",
@@ -698,7 +698,7 @@
     ]
   },
   "c9ee0d97-d2d6-40fd-8f85-549fe000b868": {
-    "stars": 9,
+    "stars": 0,
     "id": "c9ee0d97-d2d6-40fd-8f85-549fe000b868",
     "name": "Deta Loading Bar",
     "description": "A sleek animated loading bar that appears at the top of the page during loading, similar to Deta Surf browser. Features customizable colors, gradient effects, blur animation, adjustable thickness, and optional box shadows. Integrates with Zen Browser's theme colors or use custom colors and width.",
@@ -721,7 +721,7 @@
     ]
   },
   "reopen-closed-tabs": {
-    "stars": 8,
+    "stars": 0,
     "id": "reopen-closed-tabs",
     "name": "Reopen Closed Tabs Menu",
     "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
@@ -748,7 +748,7 @@
     ]
   },
   "zen-drop-link": {
-    "stars": 7,
+    "stars": 0,
     "id": "zen-drop-link",
     "name": "Zen Drop Link to Split",
     "description": "This mod allows you to split tabs by drag and drop links",
@@ -772,7 +772,7 @@
     ]
   },
   "cfafe94c-5a29-4dae-8489-6be514185474": {
-    "stars": 5,
+    "stars": 0,
     "id": "cfafe94c-5a29-4dae-8489-6be514185474",
     "name": "Better Sidebar",
     "description": "Enhance default firefox sidebar with a modern look and feel matching Zen UI.",
@@ -795,7 +795,7 @@
     ]
   },
   "tab-rename-zen-browser": {
-    "stars": 5,
+    "stars": 0,
     "id": "tab-rename-zen-browser",
     "name": "Better Tab Rename",
     "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
@@ -819,7 +819,7 @@
     ]
   },
   "zen-live-calendar": {
-    "stars": 5,
+    "stars": 0,
     "id": "zen-live-calendar",
     "name": "Live Calendar",
     "description": "Brings the live calendar functionality from Arc to Zen, making it feel as native as possible.",
@@ -843,7 +843,7 @@
     ]
   },
   "bada16c1-3b14-483b": {
-    "stars": 4,
+    "stars": 0,
     "id": "bada16c1-3b14-483b",
     "name": "Better New Tab button",
     "version": "1.0.6",
@@ -851,7 +851,7 @@
     "homepage": "themaster5209/zen-better-new-tab-button"
   },
   "42b8c4ac-76d5-4521-9917-2e478931ee53": {
-    "stars": 3,
+    "stars": 0,
     "id": "42b8c4ac-76d5-4521-9917-2e478931ee53",
     "name": "Zen Compact Transparent Mode",
     "description": "Make popups UI menu transparent with custom settings.",
@@ -875,7 +875,7 @@
     ]
   },
   "3c8ebf69-1042-49b1-8f08-9178f9490659": {
-    "stars": 3,
+    "stars": 0,
     "id": "3c8ebf69-1042-49b1-8f08-9178f9490659",
     "name": "Better Music Bar",
     "description": "Make your zen music bar better.",
@@ -899,7 +899,7 @@
     ]
   },
   "Auto-Tab-Sort-Folders": {
-    "stars": 3,
+    "stars": 0,
     "id": "Auto-Tab-Sort-Folders",
     "js": true,
     "homepage": "Comp-Tech-Guy/Auto-Tab-Sort-Folders",
@@ -917,7 +917,7 @@
     ]
   },
   "Nebula": {
-    "stars": 2,
+    "stars": 0,
     "id": "Nebula",
     "js": true,
     "homepage": "CosmoCreeper/Nubulu",
@@ -939,7 +939,7 @@
     ]
   },
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
-    "stars": 2,
+    "stars": 0,
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
     "name": "Tidy Popup & Extension",
     "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
@@ -966,7 +966,7 @@
     ]
   },
   "e9dae25b-2ddd-4245-8581-a6dcf6d35b82": {
-    "stars": 2,
+    "stars": 0,
     "id": "e9dae25b-2ddd-4245-8581-a6dcf6d35b82",
     "name": "Zen Custom URL Bar",
     "description": "Customizable URL bar with animations.",
@@ -991,7 +991,7 @@
     ]
   },
   "new-icons": {
-    "stars": 2,
+    "stars": 0,
     "id": "new-icons",
     "homepage": "qumeqa/zen-icons",
     "author": "qumeqa",
@@ -1017,7 +1017,7 @@
     ]
   },
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
-    "stars": 1,
+    "stars": 0,
     "id": "3699917d-0238-422a-bb4b-9d37344c0c5f",
     "name": "Custom Swipe Animation & Color",
     "description": "Customizable trackpad swipe transitions and the colors for the swipe UI.",
@@ -1042,7 +1042,7 @@
     ]
   },
   "collapse-pinned-area": {
-    "stars": 1,
+    "stars": 0,
     "id": "collapse-pinned-area",
     "name": "Collapse Pinned Area",
     "description": "Let's you collapse your pinned folders and tabs area with a chevron icon",
@@ -1064,7 +1064,7 @@
     ]
   },
   "auto-pip-setting": {
-    "stars": 1,
+    "stars": 0,
     "id": "auto-pip-setting",
     "name": "Auto-PiP-Setting",
     "description": "Adds auto-picture-in-picture setting in the unified panel",
