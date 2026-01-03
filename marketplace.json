@@ -331,58 +331,6 @@
       "zen"
     ]
   },
-  "settings-shortcuts-search": {
-    "stars": 70,
-    "id": "settings-shortcuts-search",
-    "name": "Search Keyboard shortcuts",
-    "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
-    "js": true,
-    "style": {
-      "content": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/style.css"
-    },
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
-    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/image.png",
-    "author": "Bibek Bhusal",
-    "version": "1.0.0",
-    "tags": [
-      "Search",
-      "sine",
-      "fx-autoconfig",
-      "JavaScript",
-      "Bibek Bhusal"
-    ],
-    "createdAt": "2025-06-23",
-    "updatedAt": "2025-07-11",
-    "fork": [
-      "zen"
-    ]
-  },
-  "search-engine-select": {
-    "stars": 70,
-    "id": "search-engine-select",
-    "name": "Search Engine Select",
-    "description": "Adds a floating UI to switch search engines on a search results page.",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
-    "js": true,
-    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/preferences.json",
-    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/style.css",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
-    "author": "Bibek Bhusal",
-    "version": "1.0.0",
-    "tags": [
-      "Search",
-      "sine",
-      "fx-autoconfig",
-      "JavaScript",
-      "Bibek Bhusal"
-    ],
-    "createdAt": "2025-06-23",
-    "updatedAt": "2025-10-17",
-    "fork": [
-      "zen"
-    ]
-  },
   "zen-command-palette": {
     "stars": 70,
     "id": "zen-command-palette",
@@ -524,56 +472,6 @@
       "Squared",
       "Wireframe"
     ],
-    "fork": [
-      "zen"
-    ]
-  },
-  "quick-tabs": {
-    "stars": 26,
-    "id": "quick-tabs",
-    "name": "Quick Tabs",
-    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
-    "homepage": "Darsh-A/Quick-Tabs",
-    "preferences": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/preferences.json",
-    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
-    "js": "https://raw.githubusercontent.com/Darsh-A/Quick-Tabs/refs/heads/main/Quick_Tabs.uc.js",
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
-    "author": "Darsh A",
-    "version": "1.1.0",
-    "tags": [
-      "sine",
-      "Quick Tab",
-      "Tab",
-      "Quick",
-      "fx-autoconfig",
-      "JavaScript",
-      "Darsh A"
-    ],
-    "createdAt": "2025-07-17",
-    "updatedAt": "2025-09-18",
-    "fork": [
-      "zen"
-    ]
-  },
-  "vizen-floaty-ui": {
-    "stars": 25,
-    "id": "vizen-floaty-ui",
-    "name": "Floaty UI",
-    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
-    "homepage": "moktavizen/floaty-ui",
-    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
-    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
-    "style": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/chrome.css",
-    "preferences": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/preferences.json",
-    "author": "moktavizen",
-    "version": "1.0.2",
-    "tags": [
-      "compact",
-      "compact mode",
-      "float"
-    ],
-    "createdAt": "2025-06-29",
-    "updatedAt": "2025-06-29",
     "fork": [
       "zen"
     ]
@@ -720,33 +618,6 @@
       "zen"
     ]
   },
-  "reopen-closed-tabs": {
-    "stars": 8,
-    "id": "reopen-closed-tabs",
-    "name": "Reopen Closed Tabs Menu",
-    "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
-    "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
-    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main//preferences.json",
-    "style": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/style.css",
-    "js": true,
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
-    "author": "Bibek Bhusal",
-    "version": "1.0.0",
-    "tags": [
-      "tabs",
-      "history",
-      "reopen",
-      "closed tabs",
-      "productivity",
-      "zen browser",
-      "sine"
-    ],
-    "createdAt": "2025-09-22",
-    "updatedAt": "2025-09-26",
-    "fork": [
-      "zen"
-    ]
-  },
   "zen-drop-link": {
     "stars": 7,
     "id": "zen-drop-link",
@@ -790,30 +661,6 @@
     ],
     "createdAt": "2025-07-29",
     "updatedAt": "2025-08-29",
-    "fork": [
-      "zen"
-    ]
-  },
-  "tab-rename-zen-browser": {
-    "stars": 5,
-    "id": "tab-rename-zen-browser",
-    "name": "Better Tab Rename",
-    "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
-    "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
-    "js": true,
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
-    "author": "Darsh A",
-    "version": "1.0.0",
-    "tags": [
-      "sine",
-      "Tab Rename",
-      "fx-autoconfig",
-      "JavaScript",
-      "Darsh A",
-      "Better"
-    ],
-    "createdAt": "2025-05-26",
-    "updatedAt": "2025-05-26",
     "fork": [
       "zen"
     ]
@@ -1080,6 +927,159 @@
     ],
     "createdAt": "2025-12-08",
     "updatedAt": "2025-12-09",
+    "fork": [
+      "zen"
+    ]
+  },
+  "settings-shortcuts-search": {
+    "stars": 0,
+    "id": "settings-shortcuts-search",
+    "name": "Search Keyboard shortcuts",
+    "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
+    "js": true,
+    "style": {
+      "content": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/style.css"
+    },
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
+    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/image.png",
+    "author": "Bibek Bhusal",
+    "version": "1.0.0",
+    "tags": [
+      "Search",
+      "sine",
+      "fx-autoconfig",
+      "JavaScript",
+      "Bibek Bhusal"
+    ],
+    "createdAt": "2025-06-23",
+    "updatedAt": "2025-07-11",
+    "fork": [
+      "zen"
+    ]
+  },
+  "search-engine-select": {
+    "stars": 0,
+    "id": "search-engine-select",
+    "name": "Search Engine Select",
+    "description": "Adds a floating UI to switch search engines on a search results page.",
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
+    "js": true,
+    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/preferences.json",
+    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/style.css",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
+    "author": "Bibek Bhusal",
+    "version": "1.0.0",
+    "tags": [
+      "Search",
+      "sine",
+      "fx-autoconfig",
+      "JavaScript",
+      "Bibek Bhusal"
+    ],
+    "createdAt": "2025-06-23",
+    "updatedAt": "2025-10-17",
+    "fork": [
+      "zen"
+    ]
+  },
+  "quick-tabs": {
+    "stars": 0,
+    "id": "quick-tabs",
+    "name": "Quick Tabs",
+    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
+    "homepage": "Darsh-A/Quick-Tabs",
+    "preferences": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/preferences.json",
+    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
+    "js": "https://raw.githubusercontent.com/Darsh-A/Quick-Tabs/refs/heads/main/Quick_Tabs.uc.js",
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
+    "author": "Darsh A",
+    "version": "1.1.0",
+    "tags": [
+      "sine",
+      "Quick Tab",
+      "Tab",
+      "Quick",
+      "fx-autoconfig",
+      "JavaScript",
+      "Darsh A"
+    ],
+    "createdAt": "2025-07-17",
+    "updatedAt": "2025-09-18",
+    "fork": [
+      "zen"
+    ]
+  },
+  "vizen-floaty-ui": {
+    "stars": 0,
+    "id": "vizen-floaty-ui",
+    "name": "Floaty UI",
+    "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
+    "homepage": "moktavizen/floaty-ui",
+    "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
+    "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
+    "style": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/chrome.css",
+    "preferences": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/preferences.json",
+    "author": "moktavizen",
+    "version": "1.0.2",
+    "tags": [
+      "compact",
+      "compact mode",
+      "float"
+    ],
+    "createdAt": "2025-06-29",
+    "updatedAt": "2025-06-29",
+    "fork": [
+      "zen"
+    ]
+  },
+  "reopen-closed-tabs": {
+    "stars": 0,
+    "id": "reopen-closed-tabs",
+    "name": "Reopen Closed Tabs Menu",
+    "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
+    "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main//preferences.json",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/style.css",
+    "js": true,
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
+    "author": "Bibek Bhusal",
+    "version": "1.0.0",
+    "tags": [
+      "tabs",
+      "history",
+      "reopen",
+      "closed tabs",
+      "productivity",
+      "zen browser",
+      "sine"
+    ],
+    "createdAt": "2025-09-22",
+    "updatedAt": "2025-09-26",
+    "fork": [
+      "zen"
+    ]
+  },
+  "tab-rename-zen-browser": {
+    "stars": 0,
+    "id": "tab-rename-zen-browser",
+    "name": "Better Tab Rename",
+    "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
+    "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
+    "js": true,
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
+    "author": "Darsh A",
+    "version": "1.0.0",
+    "tags": [
+      "sine",
+      "Tab Rename",
+      "fx-autoconfig",
+      "JavaScript",
+      "Darsh A",
+      "Better"
+    ],
+    "createdAt": "2025-05-26",
+    "updatedAt": "2025-05-26",
     "fork": [
       "zen"
     ]
