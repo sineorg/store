@@ -163,28 +163,28 @@ jobs:
     
         echo "marketplace.json updated successfully"
     
-        - name: Commit and push changes
-          run: |
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            
-            # Show what changes were made
-            echo "Checking for changes in marketplace.json..."
-            git diff marketplace.json || echo "No changes detected"
-            
-            # Check if there are any changes
-            if git diff --quiet marketplace.json; then
-              echo "No changes to marketplace.json"
-              exit 0
-            fi
-            
-            git add marketplace.json
-            git commit -m "Update marketplace.json with latest marketplace data [skip ci]"
-            
-            # Pull any remote changes before pushing
-            git pull --rebase origin main
-            
-            git push
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Show what changes were made
+        echo "Checking for changes in marketplace.json..."
+        git diff marketplace.json || echo "No changes detected"
+        
+        # Check if there are any changes
+        if git diff --quiet marketplace.json; then
+          echo "No changes to marketplace.json"
+          exit 0
+        fi
+        
+        git add marketplace.json
+        git commit -m "Update marketplace.json with latest marketplace data [skip ci]"
+        
+        # Pull any remote changes before pushing
+        git pull --rebase origin main
+        
+        git push
 
     - name: Handle errors
       if: failure()
