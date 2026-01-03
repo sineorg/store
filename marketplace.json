@@ -603,38 +603,6 @@
       "zen"
     ]
   },
-  "zen-tidy-tabs": {
-    "stars": 13,
-    "id": "zen-tidy-tabs",
-    "name": "Zen Tidy Tabs",
-    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
-    "js": true,
-    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
-    "style": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/userChrome.css",
-    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/preferences.json",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
-    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
-    "author": "Vertex",
-    "version": "1.0.0s",
-    "tags": [
-      "Zen Browser",
-      "Vertical Tabs",
-      "Tab Groups",
-      "Tab Folders",
-      "Tab Sorting",
-      "AI",
-      "Local",
-      "12th"
-    ],
-    "createdAt": "2025-09-20",
-    "updatedAt": "2025-09-20 08:23",
-    "modules": [
-      "Vertex-Mods/Advanced-Tab-Groups"
-    ],
-    "fork": [
-      "zen"
-    ]
-  },
   "No-Gaps": {
     "stars": 12,
     "id": "No-Gaps",
@@ -1080,6 +1048,38 @@
     ],
     "createdAt": "2025-12-08",
     "updatedAt": "2025-12-09",
+    "fork": [
+      "zen"
+    ]
+  },
+  "zen-tidy-tabs": {
+    "stars": 0,
+    "id": "zen-tidy-tabs",
+    "name": "Zen Tidy Tabs",
+    "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
+    "js": true,
+    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/userChrome.css",
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/preferences.json",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
+    "author": "Vertex",
+    "version": "1.0.0s",
+    "tags": [
+      "Zen Browser",
+      "Vertical Tabs",
+      "Tab Groups",
+      "Tab Folders",
+      "Tab Sorting",
+      "AI",
+      "Local",
+      "12th"
+    ],
+    "createdAt": "2025-09-20",
+    "updatedAt": "2025-09-20 08:23",
+    "modules": [
+      "Vertex-Mods/Advanced-Tab-Groups"
+    ],
     "fork": [
       "zen"
     ]
