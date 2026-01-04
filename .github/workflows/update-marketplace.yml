@@ -34,19 +34,22 @@ jobs:
       - name: Select next mod
         id: next
         run: |
-          next_mod=$(jq -r '
-            keys
-            | sort
-            | map(select(. != "_meta"))
-            | . as $keys
-            | (._meta.cursor // "") as $cursor
-            | if $cursor == ""
-              then $keys[0]
-              else
-                ($keys | index($cursor) + 1) as $i
-                | if $i < length then $keys[$i] else empty end
-              end
-          ' marketplace.json)
+          next_mod=$(
+            jq -r '
+              . as $root
+              | keys
+              | sort
+              | map(select(. != "_meta"))
+              | . as $keys
+              | ($root._meta.cursor // "") as $cursor
+              | if $cursor == ""
+                then $keys[0]
+                else
+                  ($keys | index($cursor) + 1) as $i
+                  | if $i < length then $keys[$i] else empty end
+                end
+            ' marketplace.json
+          )
 
           echo "next_mod=$next_mod" >> "$GITHUB_OUTPUT"
 
