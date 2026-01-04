@@ -190,7 +190,7 @@
     ]
   },
   "advanced-tab-groups": {
-    "stars": 363,
+    "stars": 0,
     "id": "advanced-tab-groups",
     "name": "Advanced Tab Groups (BETA)",
     "description": "Tab Groups for Zen Browser",
@@ -1111,6 +1111,6 @@
     ]
   },
   "_meta": {
-    "cursor": "ad97bb70-0066-4e42-9b5f-173a5e42c6fc"
+    "cursor": "advanced-tab-groups"
   }
 }
