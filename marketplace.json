@@ -455,7 +455,7 @@
     ]
   },
   "context-menu-icons": {
-    "stars": 43,
+    "stars": 0,
     "id": "context-menu-icons",
     "js": true,
     "name": "Context Menu Icons",
@@ -1111,6 +1111,6 @@
     ]
   },
   "_meta": {
-    "cursor": "collapse-pinned-area"
+    "cursor": "context-menu-icons"
   }
 }
