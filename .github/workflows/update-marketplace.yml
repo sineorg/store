@@ -153,7 +153,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if gh pr list --head bot/update-marketplace --base cosine --json number --jq 'length > 0'; then
+          if gh pr list --head bot/update-marketplace --state open --base cosine --json number --jq 'length > 0'; then
             echo "PR already exists"
             exit 0
           fi
