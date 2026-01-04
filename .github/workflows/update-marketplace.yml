@@ -131,7 +131,8 @@ jobs:
       
           # Always switch to bot branch
           git checkout -B bot/update-marketplace
-      
+
+          mkdir -p mods
           git add marketplace.json mods/
       
           if git diff --cached --quiet; then
