@@ -1,193 +1,179 @@
-name: Update marketplace.json to contain latest data
+name: Update Marketplace
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: "*/7 * * * *" # every 7 minutes (GitHub may throttle more frequent runs)
-  push:
-    branches:
-      - 'main'
+    - cron: "*/7 * * * *"
+  workflow_dispatch:
 
 permissions:
   contents: write
-  actions: read
+  pull-requests: write
 
 jobs:
-  update-marketplace-json:
+  update:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        fetch-depth: 0
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-
-    - name: Read and update marketplace.json
-      run: |
-        set -euo pipefail
-    
-        sudo apt-get update && sudo apt-get install -y jq curl
-    
-        #######################################
-        # Normalize GitHub URLs
-        #######################################
-        normalize_github_url() {
-          local url="$1"
-          url="${url%/}"
-    
-          if [[ "$url" =~ ^https://github\.com/([^/]+/[^/]+)(/tree/([^/]+)(.*))?$ ]]; then
-            repo="${BASH_REMATCH[1]}"
-            branch="${BASH_REMATCH[3]:-main}"
-            folder="${BASH_REMATCH[4]#/}"
-          elif [[ "$url" =~ ^([^/]+/[^/]+)(/tree/([^/]+)(.*))?$ ]]; then
-            repo="${BASH_REMATCH[1]}"
-            branch="${BASH_REMATCH[3]:-main}"
-            folder="${BASH_REMATCH[4]#/}"
+      - name: Checkout bot branch
+        run: |
+          git fetch origin bot/update-marketplace || true
+      
+          if git show-ref --verify --quiet refs/remotes/origin/bot/update-marketplace; then
+            git checkout bot/update-marketplace
+            git pull --ff-only origin bot/update-marketplace
           else
-            echo "Invalid GitHub URL: $url" >&2
-            return 1
+            git checkout -b bot/update-marketplace
           fi
-    
-          echo "$repo|$branch|$folder"
-        }
-    
-        #######################################
-        # Fetch GitHub stars
-        #######################################
-        fetch_github_stars() {
-          local repo="$1"
-          local api_url="https://api.github.com/repos/$repo"
-    
-          response=$(curl -s -H "User-Agent: GitHub-Actions" "$api_url" || true)
-    
-          echo "$response" | jq -r '.stargazers_count // 0'
-        }
-    
-        #######################################
-        # Fetch theme.json
-        #######################################
-        fetch_theme_json() {
-          local repo="$1"
-          local branch="$2"
-          local folder="$3"
-    
-          local path="theme.json"
-          [[ -n "$folder" ]] && path="$folder/theme.json"
-    
-          local raw_url="https://raw.githubusercontent.com/$repo/$branch/$path"
-    
-          if ! content=$(curl -s --fail "$raw_url"); then
-            if [[ "$branch" == "main" ]]; then
-              raw_url="https://raw.githubusercontent.com/$repo/master/$path"
-              content=$(curl -s --fail "$raw_url" || true)
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y jq curl
+
+      - name: Ensure marketplace.json exists
+        run: |
+          if [[ ! -f marketplace.json ]]; then
+            echo '{}' > marketplace.json
+          fi
+
+      # ─────────────────────────────────────────────
+      # Determine next mod using cursor
+      # ─────────────────────────────────────────────
+      - name: Select next mod
+        id: next
+        run: |
+          next_mod=$(
+            jq -r '
+              . as $root
+              | keys
+              | sort
+              | map(select(. != "_meta"))
+              | . as $keys
+              | ($root._meta.cursor // "") as $cursor
+              | if $cursor == ""
+                then $keys[0]
+                else
+                  ($keys | index($cursor) + 1) as $i
+                  | if $i < length then $keys[$i] else empty end
+                end
+            ' marketplace.json
+          )
+
+          echo "next_mod=$next_mod" >> "$GITHUB_OUTPUT"
+
+          if [[ -z "$next_mod" ]]; then
+            echo "All mods processed"
+          else
+            echo "Next mod: $next_mod"
+          fi
+
+      - name: Stop if complete
+        if: steps.next.outputs.next_mod == ''
+        run: exit 0
+
+      # ─────────────────────────────────────────────
+      # Process exactly ONE mod
+      # ─────────────────────────────────────────────
+      - name: Process mod
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          modId="${{ steps.next.outputs.next_mod }}"
+          echo "Processing mod: $modId"
+
+          homepage=$(jq -r ".\"$modId\".homepage // empty" marketplace.json)
+          if [[ -z "$homepage" ]]; then
+            echo "No homepage for $modId"
+            exit 0
+          fi
+
+          if [[ "$homepage" =~ github\.com/([^/]+/[^/]+) ]]; then
+            repo="${BASH_REMATCH[1]}"
+          else
+            echo "Non-GitHub homepage, skipping ZIP"
+            repo=""
+          fi
+
+          # ─── Fetch stars ──────────────────────────
+          stars=0
+          if [[ -n "$repo" ]]; then
+            stars=$(curl -s \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "User-Agent: marketplace-bot" \
+              "https://api.github.com/repos/$repo" \
+              | jq -r '.stargazers_count // 0')
+          fi
+
+          # ─── Download mod.zip ─────────────────────
+          if [[ -n "$repo" ]]; then
+            mkdir -p "mods/$modId"
+
+            if [[ ! -f "mods/$modId/mod.zip" ]]; then
+              for branch in main master; do
+                zip_url="https://codeload.github.com/$repo/zip/refs/heads/$branch"
+                if curl -L --retry 3 --retry-delay 5 "$zip_url" -o "mods/$modId/mod.zip"; then
+                  break
+                fi
+              done
             fi
           fi
-    
-          echo "$content"
-        }
-    
-        #######################################
-        # Prepare marketplace.json
-        #######################################
-        [[ -f marketplace.json ]] || echo '{}' > marketplace.json
-    
-        marketplace=$(cat marketplace.json)
-        tmp=$(mktemp)
-    
-        #######################################
-        # Convert string entries → objects
-        #######################################
-        echo "$marketplace" | jq '
-          with_entries(
-            if (.value | type) == "string"
-            then .value = { homepage: .value }
-            else .
-            end
-          )
-        ' > "$tmp"
-    
-        marketplace=$(cat "$tmp")
-    
-        #######################################
-        # Process entries
-        #######################################
-        keys=$(echo "$marketplace" | jq -r 'keys[]')
-    
-        for key in $keys; do
-          homepage=$(echo "$marketplace" | jq -r ".\"$key\".homepage // empty")
-          [[ -z "$homepage" ]] && continue
-    
-          normalized=$(normalize_github_url "$homepage") || continue
-          repo=$(cut -d'|' -f1 <<< "$normalized")
-          branch=$(cut -d'|' -f2 <<< "$normalized")
-          folder=$(cut -d'|' -f3 <<< "$normalized")
-    
-          theme_json=$(fetch_theme_json "$repo" "$branch" "$folder")
-          stars=$(fetch_github_stars "$repo")
-    
-          if echo "$theme_json" | jq empty >/dev/null 2>&1; then
-            merged=$(echo "$theme_json" | jq \
-              --arg homepage "$homepage" \
-              --argjson stars "$stars" '
-                . + { homepage: $homepage, stars: $stars }
-                | { stars } + del(.stars)
-              ')
-          else
-            merged=$(jq -n \
-              --arg homepage "$homepage" \
-              --argjson stars "$stars" \
-              '{ stars: $stars, homepage: $homepage }')
-          fi
-    
-          jq --arg key "$key" --argjson data "$merged" \
-            '.[$key] = $data' "$tmp" > "$tmp.new" && mv "$tmp.new" "$tmp"
-        done
-    
-        #######################################
-        # Sort by stars (descending)
-        #######################################
-        jq '
-          to_entries
-          | map(.value.stars = (.value.stars // 0))
-          | sort_by(-.value.stars)
-          | from_entries
-        ' "$tmp" > marketplace.json
-    
-        rm "$tmp"
-    
-        echo "marketplace.json updated successfully"
-    
-    - name: Commit and push changes
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        
-        # Show what changes were made
-        echo "Checking for changes in marketplace.json..."
-        git diff marketplace.json || echo "No changes detected"
-        
-        # Check if there are any changes
-        if git diff --quiet marketplace.json; then
-          echo "No changes to marketplace.json"
-          exit 0
-        fi
-        
-        git add marketplace.json
-        git commit -m "Update marketplace.json with latest marketplace data [skip ci]"
-        
-        # Pull any remote changes before pushing
-        git pull --rebase origin main
-        
-        git push
 
-    - name: Handle errors
-      if: failure()
-      run: |
-        echo "Workflow failed. Check the logs above for details."
-        exit 1
+          # ─── Update marketplace entry ─────────────
+          jq --arg mod "$modId" --argjson stars "$stars" '
+            .[$mod] |= (. + { stars: $stars })
+          ' marketplace.json > tmp.json && mv tmp.json marketplace.json
+
+          # ─── Advance cursor ───────────────────────
+          jq --arg mod "$modId" '
+            ._meta.cursor = $mod
+          ' marketplace.json > tmp.json && mv tmp.json marketplace.json
+
+      - name: Commit and push
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@users.noreply.github.com"
+
+          mkdir -p mods/
+          git add marketplace.json mods/
+      
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          
+          git commit -m "Sync marketplace data"
+          git push origin bot/update-marketplace
+      
+      - name: Create PR if missing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Ensure the branch is pushed first
+          git push -u origin bot/update-marketplace
+          
+          # Check for an open PR from this repo's branch
+          existing_pr=$(gh pr list \
+            --repo $GITHUB_REPOSITORY \
+            --head $GITHUB_REPOSITORY:bot/update-marketplace \
+            --base cosine \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')
+          
+          if [[ -n "$existing_pr" ]]; then
+            echo "PR #$existing_pr already exists — will update via push"
+          else
+            echo "No open PR exists, creating a new one"
+            gh pr create \
+              --repo $GITHUB_REPOSITORY \
+              --title "Sync marketplace data (automated)" \
+              --body "Sync marketplace data for mods." \
+              --base cosine \
+              --head bot/update-marketplace
+          fi
+          
