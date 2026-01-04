@@ -166,7 +166,7 @@
     }
   },
   "Arc-2.0": {
-    "stars": 364,
+    "stars": 365,
     "id": "Arc-2.0",
     "homepage": "https://github.com/YashjitPal/Arc-2.0/",
     "author": "YashjitPal",
@@ -190,7 +190,7 @@
     ]
   },
   "advanced-tab-groups": {
-    "stars": 363,
+    "stars": 0,
     "id": "advanced-tab-groups",
     "name": "Advanced Tab Groups (BETA)",
     "description": "Tab Groups for Zen Browser",
@@ -216,7 +216,7 @@
     ]
   },
   "ai-tabgroups-zenbrowser": {
-    "stars": 148,
+    "stars": 0,
     "id": "ai-tabgroups-zenbrowser",
     "name": "Tidy Tabs",
     "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
@@ -272,7 +272,7 @@
     ]
   },
   "Neo-Zen": {
-    "stars": 75,
+    "stars": 0,
     "id": "Neo-Zen",
     "homepage": "JustVibingWhileCoding/Neo-Zen",
     "author": "JustVibingWhileCoding",
@@ -434,7 +434,7 @@
     "updatedAt": "2025-07-11"
   },
   "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
-    "stars": 49,
+    "stars": 0,
     "id": "ad97bb70-0066-4e42-9b5f-173a5e42c6fc",
     "name": "SuperPins",
     "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
@@ -636,7 +636,7 @@
     ]
   },
   "No-Gaps": {
-    "stars": 12,
+    "stars": 0,
     "id": "No-Gaps",
     "homepage": "Comp-Tech-Guy/No-Gaps",
     "author": "CompTechGuy",
@@ -843,7 +843,7 @@
     ]
   },
   "bada16c1-3b14-483b": {
-    "stars": 4,
+    "stars": 0,
     "id": "bada16c1-3b14-483b",
     "name": "Better New Tab button",
     "version": "1.0.6",
@@ -851,7 +851,7 @@
     "homepage": "themaster5209/zen-better-new-tab-button"
   },
   "42b8c4ac-76d5-4521-9917-2e478931ee53": {
-    "stars": 3,
+    "stars": 0,
     "id": "42b8c4ac-76d5-4521-9917-2e478931ee53",
     "name": "Zen Compact Transparent Mode",
     "description": "Make popups UI menu transparent with custom settings.",
@@ -875,7 +875,7 @@
     ]
   },
   "3c8ebf69-1042-49b1-8f08-9178f9490659": {
-    "stars": 3,
+    "stars": 0,
     "id": "3c8ebf69-1042-49b1-8f08-9178f9490659",
     "name": "Better Music Bar",
     "description": "Make your zen music bar better.",
@@ -899,7 +899,7 @@
     ]
   },
   "Auto-Tab-Sort-Folders": {
-    "stars": 3,
+    "stars": 0,
     "id": "Auto-Tab-Sort-Folders",
     "js": true,
     "homepage": "Comp-Tech-Guy/Auto-Tab-Sort-Folders",
@@ -917,7 +917,7 @@
     ]
   },
   "Nebula": {
-    "stars": 2,
+    "stars": 0,
     "id": "Nebula",
     "js": true,
     "homepage": "CosmoCreeper/Nubulu",
@@ -1017,7 +1017,7 @@
     ]
   },
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
-    "stars": 1,
+    "stars": 0,
     "id": "3699917d-0238-422a-bb4b-9d37344c0c5f",
     "name": "Custom Swipe Animation & Color",
     "description": "Customizable trackpad swipe transitions and the colors for the swipe UI.",
@@ -1064,7 +1064,7 @@
     ]
   },
   "auto-pip-setting": {
-    "stars": 1,
+    "stars": 0,
     "id": "auto-pip-setting",
     "name": "Auto-PiP-Setting",
     "description": "Adds auto-picture-in-picture setting in the unified panel",
@@ -1109,5 +1109,8 @@
       "zen",
       "firefox"
     ]
+  },
+  "_meta": {
+    "cursor": "browse-bot"
   }
 }
