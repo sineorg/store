@@ -21,13 +21,15 @@ jobs:
 
       - name: Checkout bot branch
         run: |
-          git fetch origin bot/update-marketplace || true
-      
-          if git show-ref --verify --quiet refs/remotes/origin/bot/update-marketplace; then
-            git checkout bot/update-marketplace
-            git pull --ff-only origin bot/update-marketplace
+          branch="bot/mod/$modId"
+
+          git fetch origin "$branch" || true
+
+          if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+            git checkout "$branch"
+            git pull --ff-only origin "$branch"
           else
-            git checkout -b bot/update-marketplace
+            git checkout -b "$branch"
           fi
 
       - name: Install dependencies
@@ -136,43 +138,37 @@ jobs:
       - name: Commit and push
         run: |
           git config user.name "GitHub Actions"
-          git config user.email "actions@users.noreply.github.com"
+          git config user.email "actions@github.com"
 
-          mkdir -p mods/
-          git add marketplace.json mods/
-      
+          git add marketplace.json "mods/$modId/"
+
           if git diff --cached --quiet; then
-            echo "No changes to commit"
+            echo "No changes for $modId"
             exit 0
           fi
-          
-          git commit -m "Sync marketplace data"
-          git push origin bot/update-marketplace
+
+          git commit -m "Update mod $modId"
+          git push -u origin "$branch"
       
       - name: Create PR if missing
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Ensure the branch is pushed first
-          git push -u origin bot/update-marketplace
-          
-          # Check for an open PR from this repo's branch
           existing_pr=$(gh pr list \
-            --repo $GITHUB_REPOSITORY \
-            --head $GITHUB_REPOSITORY:bot/update-marketplace \
+            --repo "$GITHUB_REPOSITORY" \
+            --head "$GITHUB_REPOSITORY:$branch" \
             --base cosine \
             --state open \
             --json number \
             --jq '.[0].number // empty')
-          
+
           if [[ -n "$existing_pr" ]]; then
-            echo "PR #$existing_pr already exists — will update via push"
+            echo "PR #$existing_pr already exists for $modId"
           else
-            echo "No open PR exists, creating a new one"
             gh pr create \
-              --repo $GITHUB_REPOSITORY \
-              --title "Sync marketplace data (automated)" \
-              --body "Sync marketplace data for mods." \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "Add / update mod: $modId" \
+              --body "Automated update for mod **$modId**." \
               --base cosine \
-              --head bot/update-marketplace
+              --head "$branch"
           fi
