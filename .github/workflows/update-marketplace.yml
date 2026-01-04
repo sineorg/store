@@ -126,22 +126,30 @@ jobs:
         run: |
           set -e
       
-          git config user.name "marketplace-bot"
-          git config user.email "marketplace-bot@users.noreply.github.com"
+          git config user.name "GitHub Actions"
+          git config user.email "actions@users.noreply.github.com"
       
-          # Always switch to bot branch
-          git checkout -B bot/update-marketplace
-
+          # Fetch bot branch if it exists
+          git fetch origin bot/update-marketplace || true
+      
+          # Create branch if it doesn't exist, otherwise reuse it
+          if git show-ref --verify --quiet refs/remotes/origin/bot/update-marketplace; then
+            git checkout bot/update-marketplace
+            git pull --ff-only origin bot/update-marketplace
+          else
+            git checkout -b bot/update-marketplace
+          fi
+      
           mkdir -p mods
           git add marketplace.json mods/
       
           if git diff --cached --quiet; then
-            echo "No changes to commit (skipping PR creation)"
+            echo "No changes to commit"
             exit 0
           fi
       
           git commit -m "Sync marketplace data"
-          git push -f origin bot/update-marketplace
+          git push origin bot/update-marketplace
       
       - name: Create or update pull request
         env:
