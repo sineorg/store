@@ -171,8 +171,8 @@ jobs:
             echo "No open PR exists, creating a new one"
             gh pr create \
               --repo $GITHUB_REPOSITORY \
-              --title "Incremental marketplace update" \
-              --body "Automated incremental update (one mod per run)." \
+              --title "Sync marketplace data (automated)" \
+              --body "Sync marketplace data for mods." \
               --base cosine \
               --head bot/update-marketplace
           fi
