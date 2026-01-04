@@ -875,7 +875,7 @@
     ]
   },
   "3c8ebf69-1042-49b1-8f08-9178f9490659": {
-    "stars": 3,
+    "stars": 0,
     "id": "3c8ebf69-1042-49b1-8f08-9178f9490659",
     "name": "Better Music Bar",
     "description": "Make your zen music bar better.",
@@ -1111,6 +1111,6 @@
     ]
   },
   "_meta": {
-    "cursor": "3699917d-0238-422a-bb4b-9d37344c0c5f"
+    "cursor": "3c8ebf69-1042-49b1-8f08-9178f9490659"
   }
 }
