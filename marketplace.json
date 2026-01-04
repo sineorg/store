@@ -991,7 +991,7 @@
     ]
   },
   "new-icons": {
-    "stars": 2,
+    "stars": 0,
     "id": "new-icons",
     "homepage": "qumeqa/zen-icons",
     "author": "qumeqa",
@@ -1111,6 +1111,6 @@
     ]
   },
   "_meta": {
-    "cursor": "natsumi-browser"
+    "cursor": "new-icons"
   }
 }
