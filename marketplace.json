@@ -481,7 +481,7 @@
     ]
   },
   "quick-search-zen-browser": {
-    "stars": 40,
+    "stars": 0,
     "id": "quick-search-zen-browser",
     "name": "Quick Search",
     "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
@@ -1111,6 +1111,6 @@
     ]
   },
   "_meta": {
-    "cursor": "paneru"
+    "cursor": "quick-search-zen-browser"
   }
 }
