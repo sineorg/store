@@ -272,7 +272,7 @@
     ]
   },
   "Neo-Zen": {
-    "stars": 75,
+    "stars": 0,
     "id": "Neo-Zen",
     "homepage": "JustVibingWhileCoding/Neo-Zen",
     "author": "JustVibingWhileCoding",
@@ -1111,6 +1111,6 @@
     ]
   },
   "_meta": {
-    "cursor": "Nebula"
+    "cursor": "Neo-Zen"
   }
 }
