@@ -19,19 +19,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Checkout bot branch
-        run: |
-          git fetch origin bot/update-marketplace || true
-      
-          if git show-ref --verify --quiet refs/remotes/origin/bot/update-marketplace; then
-            git checkout bot/update-marketplace
-            git pull --ff-only origin bot/update-marketplace
-          else
-            git checkout -b bot/update-marketplace
-          fi
-
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y jq curl
+        run: sudo apt-get update && sudo apt-get install -y jq curl gh
 
       - name: Ensure marketplace.json exists
         run: |
@@ -40,10 +29,10 @@ jobs:
           fi
 
       # ─────────────────────────────────────────────
-      # Determine next mod using cursor
+      # Pick NEXT mod via cursor
       # ─────────────────────────────────────────────
       - name: Select next mod
-        id: next
+        id: pick
         run: |
           next_mod=$(
             jq -r '
@@ -62,20 +51,32 @@ jobs:
             ' marketplace.json
           )
 
-          echo "next_mod=$next_mod" >> "$GITHUB_OUTPUT"
-
           if [[ -z "$next_mod" ]]; then
             echo "All mods processed"
-          else
-            echo "Next mod: $next_mod"
+            exit 1
           fi
 
-      - name: Stop if complete
-        if: steps.next.outputs.next_mod == ''
-        run: exit 0
+          echo "modId=$next_mod" >> "$GITHUB_OUTPUT"
+          echo "branch=bot/mod/$next_mod" >> "$GITHUB_OUTPUT"
+
+          echo "Selected mod: $next_mod"
+
+      - name: Checkout mod branch
+        run: |
+          modId="${{ steps.pick.outputs.modId }}"
+          branch="${{ steps.pick.outputs.branch }}"
+
+          git fetch origin "$branch" || true
+
+          if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+            git checkout "$branch"
+            git pull --ff-only origin "$branch"
+          else
+            git checkout -b "$branch"
+          fi
 
       # ─────────────────────────────────────────────
-      # Process exactly ONE mod
+      # Process ONE mod
       # ─────────────────────────────────────────────
       - name: Process mod
         env:
@@ -83,8 +84,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          modId="${{ steps.next.outputs.next_mod }}"
+          modId="${{ steps.pick.outputs.modId }}"
           echo "Processing mod: $modId"
+
+          mkdir -p "mods/$modId"
 
           homepage=$(jq -r ".\"$modId\".homepage // empty" marketplace.json)
           if [[ -z "$homepage" ]]; then
@@ -92,11 +95,9 @@ jobs:
             exit 0
           fi
 
+          repo=""
           if [[ "$homepage" =~ github\.com/([^/]+/[^/]+) ]]; then
             repo="${BASH_REMATCH[1]}"
-          else
-            echo "Non-GitHub homepage, skipping ZIP"
-            repo=""
           fi
 
           # ─── Fetch stars ──────────────────────────
@@ -109,18 +110,14 @@ jobs:
               | jq -r '.stargazers_count // 0')
           fi
 
-          # ─── Download mod.zip ─────────────────────
-          if [[ -n "$repo" ]]; then
-            mkdir -p "mods/$modId"
-
-            if [[ ! -f "mods/$modId/mod.zip" ]]; then
-              for branch in main master; do
-                zip_url="https://codeload.github.com/$repo/zip/refs/heads/$branch"
-                if curl -L --retry 3 --retry-delay 5 "$zip_url" -o "mods/$modId/mod.zip"; then
-                  break
-                fi
-              done
-            fi
+          # ─── Download ZIP (once) ──────────────────
+          if [[ -n "$repo" && ! -f "mods/$modId/mod.zip" ]]; then
+            for branch in main master; do
+              zip_url="https://codeload.github.com/$repo/zip/refs/heads/$branch"
+              if curl -L --retry 3 --retry-delay 5 "$zip_url" -o "mods/$modId/mod.zip"; then
+                break
+              fi
+            done
           fi
 
           # ─── Update marketplace entry ─────────────
@@ -133,47 +130,52 @@ jobs:
             ._meta.cursor = $mod
           ' marketplace.json > tmp.json && mv tmp.json marketplace.json
 
+      # ─────────────────────────────────────────────
+      # Commit + push
+      # ─────────────────────────────────────────────
       - name: Commit and push
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@users.noreply.github.com"
+          modId="${{ steps.pick.outputs.modId }}"
+          branch="${{ steps.pick.outputs.branch }}"
 
-          mkdir -p mods/
-          git add marketplace.json mods/
-      
+          git config user.name "marketplace-bot"
+          git config user.email "marketplace-bot@users.noreply.github.com"
+
+          git add marketplace.json "mods/$modId"
+
           if git diff --cached --quiet; then
-            echo "No changes to commit"
+            echo "No changes for $modId"
             exit 0
           fi
-          
-          git commit -m "Sync marketplace data"
-          git push origin bot/update-marketplace
-      
+
+          git commit -m "Update mod $modId"
+          git push -u origin "$branch"
+
+      # ─────────────────────────────────────────────
+      # Create PR if missing
+      # ─────────────────────────────────────────────
       - name: Create PR if missing
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Ensure the branch is pushed first
-          git push -u origin bot/update-marketplace
-          
-          # Check for an open PR from this repo's branch
+          modId="${{ steps.pick.outputs.modId }}"
+          branch="${{ steps.pick.outputs.branch }}"
+
           existing_pr=$(gh pr list \
-            --repo $GITHUB_REPOSITORY \
-            --head $GITHUB_REPOSITORY:bot/update-marketplace \
+            --repo "$GITHUB_REPOSITORY" \
+            --head "$GITHUB_REPOSITORY:$branch" \
             --base cosine \
             --state open \
             --json number \
             --jq '.[0].number // empty')
-          
+
           if [[ -n "$existing_pr" ]]; then
-            echo "PR #$existing_pr already exists — will update via push"
+            echo "PR #$existing_pr already exists for $modId"
           else
-            echo "No open PR exists, creating a new one"
             gh pr create \
-              --repo $GITHUB_REPOSITORY \
-              --title "Sync marketplace data (automated)" \
-              --body "Sync marketplace data for mods." \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "Add / update mod: $modId" \
+              --body "Automated update for mod **$modId**." \
               --base cosine \
-              --head bot/update-marketplace
+              --head "$branch"
           fi
-          
