@@ -153,13 +153,26 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if gh pr list --head bot/update-marketplace --state open --base cosine --json number --jq 'length > 0'; then
-            echo "PR already exists"
-            exit 0
-          fi
-      
-          gh pr create \
-            --title "Incremental marketplace update" \
-            --body "Automated incremental update (one mod per run)." \
+          # Ensure the branch is pushed first
+          git push -u origin bot/update-marketplace
+          
+          # Check for an open PR from this repo's branch
+          existing_pr=$(gh pr list \
+            --repo $GITHUB_REPOSITORY \
+            --head $GITHUB_REPOSITORY:bot/update-marketplace \
             --base cosine \
-            --head bot/update-marketplace
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')
+          
+          if [[ -n "$existing_pr" ]]; then
+            echo "PR #$existing_pr already exists — will update via push"
+          else
+            echo "No open PR exists, creating a new one"
+            gh pr create \
+              --repo $GITHUB_REPOSITORY \
+              --title "Incremental marketplace update" \
+              --body "Automated incremental update (one mod per run)." \
+              --base cosine \
+              --head bot/update-marketplace
+          fi
