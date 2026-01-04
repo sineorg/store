@@ -3,7 +3,7 @@ name: Update Marketplace
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0/60 * * * *"
+    - cron: "*/7 * * * *"
 
 permissions:
   contents: write
