@@ -1,6 +1,6 @@
 {
   "natsumi-browser": {
-    "stars": 531,
+    "stars": 0,
     "id": "natsumi-browser",
     "homepage": "greeeen-dev/natsumi-browser",
     "author": "greeeen-dev",
@@ -1111,6 +1111,6 @@
     ]
   },
   "_meta": {
-    "cursor": "floating-sidebar"
+    "cursor": "natsumi-browser"
   }
 }
