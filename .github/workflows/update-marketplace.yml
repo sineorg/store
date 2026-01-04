@@ -19,6 +19,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Checkout bot branch
+        run: |
+          git fetch origin bot/update-marketplace || true
+      
+          if git show-ref --verify --quiet refs/remotes/origin/bot/update-marketplace; then
+            git checkout bot/update-marketplace
+            git pull --ff-only origin bot/update-marketplace
+          else
+            git checkout -b bot/update-marketplace
+          fi
+
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y jq curl
 
@@ -122,25 +133,11 @@ jobs:
             ._meta.cursor = $mod
           ' marketplace.json > tmp.json && mv tmp.json marketplace.json
 
-      - name: Commit and push changes
+      - name: Commit and push
         run: |
-          set -e
-      
           git config user.name "GitHub Actions"
           git config user.email "actions@users.noreply.github.com"
       
-          # Fetch bot branch if it exists
-          git fetch origin bot/update-marketplace || true
-      
-          # Create branch if it doesn't exist, otherwise reuse it
-          if git show-ref --verify --quiet refs/remotes/origin/bot/update-marketplace; then
-            git checkout bot/update-marketplace
-            git pull --ff-only origin bot/update-marketplace
-          else
-            git checkout -b bot/update-marketplace
-          fi
-      
-          mkdir -p mods
           git add marketplace.json mods/
       
           if git diff --cached --quiet; then
@@ -148,22 +145,17 @@ jobs:
             exit 0
           fi
       
-          git commit -m "Sync marketplace data"
+          git commit -m "Update marketplace (incremental)"
           git push origin bot/update-marketplace
       
-      - name: Create or update pull request
+      - name: Create PR if missing
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          set -e
-      
-          # Check if PR already exists
-          if gh pr list --head bot/update-marketplace --json number --jq 'length > 0'; then
-            echo "PR already exists — updated via push"
+          if gh pr list --head bot/update-marketplace --base cosine --json number --jq 'length > 0'; then
+            echo "PR already exists"
             exit 0
           fi
-      
-          echo "Creating pull request targeting cosine"
       
           gh pr create \
             --title "Incremental marketplace update" \
