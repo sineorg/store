@@ -772,7 +772,7 @@
     ]
   },
   "cfafe94c-5a29-4dae-8489-6be514185474": {
-    "stars": 5,
+    "stars": 0,
     "id": "cfafe94c-5a29-4dae-8489-6be514185474",
     "name": "Better Sidebar",
     "description": "Enhance default firefox sidebar with a modern look and feel matching Zen UI.",
@@ -1111,6 +1111,6 @@
     ]
   },
   "_meta": {
-    "cursor": "c9ee0d97-d2d6-40fd-8f85-549fe000b868"
+    "cursor": "cfafe94c-5a29-4dae-8489-6be514185474"
   }
 }
