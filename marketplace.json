@@ -677,7 +677,7 @@
     ]
   },
   "paneru": {
-    "stars": 10,
+    "stars": 0,
     "id": "paneru",
     "name": "Paneru",
     "description": "A comprehensive theme that separates various elements onto their own panel, respects Firefox theme colors, and supports transparency.",
@@ -1111,6 +1111,6 @@
     ]
   },
   "_meta": {
-    "cursor": "new-icons"
+    "cursor": "paneru"
   }
 }
