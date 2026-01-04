@@ -303,13 +303,13 @@
     "id": "browse-bot",
     "name": "Browse Bot",
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/findbar-ai",
-    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/preferences.json",
-    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/refs/heads/main/findbar-ai/style.css",
+    "homepage": "https://github.com/Vertex-Mods/Browse-Bot",
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/preferences.json",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/style.css",
     "js": true,
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/README.md",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/README.md",
     "author": "Bibek Bhusal",
-    "version": "2.0.0",
+    "version": "2.5.0",
     "tags": [
       "ai",
       "findbar",
@@ -317,7 +317,6 @@
       "gemini",
       "Artificial Intelligence",
       "LLM",
-      "sine",
       "zen browser",
       "chat",
       "BrowseBot",
@@ -326,7 +325,7 @@
       "Claude"
     ],
     "createdAt": "2024-05-22",
-    "updatedAt": "2025-12-27",
+    "updatedAt": "2026-01-03",
     "fork": [
       "zen"
     ]
@@ -336,35 +335,32 @@
     "id": "floating-sidebar",
     "name": "Floating Sidebar",
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/floating-sidebar",
+    "homepage": "https://github.com/Vertex-Mods/Floating-Sidebar",
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Floating-Sidebar/main/preferences.json",
     "js": true,
-    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/style.css",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Floating-Sidebar/main/style.css",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Floating-Sidebar/main/README.md",
     "author": "Bibek Bhusal",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "tags": [
       "Sidebar",
-      "Pin",
-      "sine",
-      "fx-autoconfig",
-      "JavaScript",
-      "Bibek Bhusal"
+      "Pin"
     ],
     "createdAt": "2025-06-23",
-    "updatedAt": "2025-07-11"
+    "updatedAt": "2026-01-02"
   },
   "zen-command-palette": {
     "stars": 70,
     "id": "zen-command-palette",
     "name": "Zen Command Palette",
     "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
-    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/preferences.json",
-    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/refs/heads/main/command-palette/style.css",
+    "homepage": "https://github.com/Vertex-Mods/Zen-Command-Palette",
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/preferences.json",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/style.css",
     "js": true,
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/readme.md",
     "author": "Bibek Bhusal",
-    "version": "1.7.3",
+    "version": "1.8.0",
     "tags": [
       "command",
       "palette",
@@ -372,11 +368,10 @@
       "arc",
       "productivity",
       "zen browser",
-      "sine",
       "urlbar"
     ],
     "createdAt": "2024-09-07",
-    "updatedAt": "2025-10-14",
+    "updatedAt": "2026-01-03",
     "fork": [
       "zen"
     ]
@@ -386,15 +381,15 @@
     "id": "settings-shortcuts-search",
     "name": "Search Keyboard shortcuts",
     "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
+    "homepage": "https://github.com/Vertex-Mods/Search-Keyboard-Shortcuts",
     "js": true,
     "style": {
-      "content": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/style.css"
+      "content": "https://raw.githubusercontent.com/Vertex-Mods/Search-Keyboard-Shortcuts/main/style.css"
     },
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
-    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/image.png",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Search-Keyboard-Shortcuts/main/README.md",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Search-Keyboard-Shortcuts/main/image.png",
     "author": "Bibek Bhusal",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "tags": [
       "Search",
       "sine",
@@ -403,7 +398,7 @@
       "Bibek Bhusal"
     ],
     "createdAt": "2025-06-23",
-    "updatedAt": "2025-07-11",
+    "updatedAt": "2025-12-28",
     "fork": [
       "zen"
     ]
@@ -413,22 +408,20 @@
     "id": "search-engine-select",
     "name": "Search Engine Select",
     "description": "Adds a floating UI to switch search engines on a search results page.",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
+    "homepage": "https://github.com/Vertex-Mods/Search-Engine-Select",
     "js": true,
-    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/preferences.json",
-    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/style.css",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Search-Engine-Select/main/preferences.json",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Search-Engine-Select/main/style.css",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Search-Engine-Select/main/README.md",
     "author": "Bibek Bhusal",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "tags": [
       "Search",
-      "sine",
-      "fx-autoconfig",
-      "JavaScript",
-      "Bibek Bhusal"
+      "Search Engine",
+      "Google"
     ],
     "createdAt": "2025-06-23",
-    "updatedAt": "2025-10-17",
+    "updatedAt": "2026-01-02",
     "fork": [
       "zen"
     ]
