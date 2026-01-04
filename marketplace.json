@@ -216,7 +216,7 @@
     ]
   },
   "ai-tabgroups-zenbrowser": {
-    "stars": 148,
+    "stars": 0,
     "id": "ai-tabgroups-zenbrowser",
     "name": "Tidy Tabs",
     "description": "The script sorts the temporary tabs into tabgroups using ai for a more cleaner organized browsing experience. Inspired by Arc Max Tidy feature. ",
@@ -1111,6 +1111,6 @@
     ]
   },
   "_meta": {
-    "cursor": "advanced-tab-groups"
+    "cursor": "ai-tabgroups-zenbrowser"
   }
 }
