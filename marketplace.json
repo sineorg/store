@@ -843,7 +843,7 @@
     ]
   },
   "bada16c1-3b14-483b": {
-    "stars": 4,
+    "stars": 0,
     "id": "bada16c1-3b14-483b",
     "name": "Better New Tab button",
     "version": "1.0.6",
@@ -1111,6 +1111,6 @@
     ]
   },
   "_meta": {
-    "cursor": "auto-pip-setting"
+    "cursor": "bada16c1-3b14-483b"
   }
 }
