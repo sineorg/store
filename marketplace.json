@@ -556,7 +556,7 @@
     ]
   },
   "vizen-floaty-ui": {
-    "stars": 25,
+    "stars": 0,
     "id": "vizen-floaty-ui",
     "name": "Floaty UI",
     "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
@@ -1111,6 +1111,6 @@
     ]
   },
   "_meta": {
-    "cursor": "tab-rename-zen-browser"
+    "cursor": "vizen-floaty-ui"
   }
 }
