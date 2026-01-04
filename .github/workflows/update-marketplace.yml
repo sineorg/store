@@ -137,15 +137,16 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@users.noreply.github.com"
-      
+
+          mkdir -p mods/
           git add marketplace.json mods/
       
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
           fi
-      
-          git commit -m "Update marketplace (incremental)"
+          
+          git commit -m "Sync marketplace data"
           git push origin bot/update-marketplace
       
       - name: Create PR if missing
