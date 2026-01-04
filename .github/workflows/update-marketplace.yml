@@ -21,7 +21,7 @@ jobs:
 
       - name: Checkout bot branch
         run: |
-          branch="bot/mod/$modId"
+          branch="sync-$modId"
 
           git fetch origin "$branch" || true
 
