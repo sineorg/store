@@ -899,7 +899,7 @@
     ]
   },
   "Auto-Tab-Sort-Folders": {
-    "stars": 3,
+    "stars": 0,
     "id": "Auto-Tab-Sort-Folders",
     "js": true,
     "homepage": "Comp-Tech-Guy/Auto-Tab-Sort-Folders",
@@ -1111,6 +1111,6 @@
     ]
   },
   "_meta": {
-    "cursor": "Arc-2.0"
+    "cursor": "Auto-Tab-Sort-Folders"
   }
 }
