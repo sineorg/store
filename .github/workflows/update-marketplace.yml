@@ -122,36 +122,42 @@ jobs:
             ._meta.cursor = $mod
           ' marketplace.json > tmp.json && mv tmp.json marketplace.json
 
-      # ─────────────────────────────────────────────
-      # Commit + update PR
-      # ─────────────────────────────────────────────
-      - name: Commit changes
+      - name: Commit and push changes
         run: |
+          set -e
+      
           git config user.name "marketplace-bot"
           git config user.email "marketplace-bot@users.noreply.github.com"
-
+      
+          # Always switch to bot branch
           git checkout -B bot/update-marketplace
-
+      
           git add marketplace.json mods/
-
+      
           if git diff --cached --quiet; then
-            echo "No changes to commit"
+            echo "No changes to commit (skipping PR creation)"
             exit 0
           fi
-
-          git commit -m "Update mod: ${{ steps.next.outputs.next_mod }}"
+      
+          git commit -m "Incremental marketplace update"
           git push -f origin bot/update-marketplace
-
+      
       - name: Create or update pull request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if gh pr view bot/update-marketplace >/dev/null 2>&1; then
-            echo "PR already exists — updated"
-          else
-            gh pr create \
-              --title "Incremental marketplace update" \
-              --body "Automated incremental update (one mod per run)." \
-              --base main \
-              --head bot/update-marketplace
+          set -e
+      
+          # Check if PR already exists
+          if gh pr list --head bot/update-marketplace --json number --jq 'length > 0'; then
+            echo "PR already exists — updated via push"
+            exit 0
           fi
+      
+          echo "Creating pull request targeting cosine"
+      
+          gh pr create \
+            --title "Incremental marketplace update" \
+            --body "Automated incremental update (one mod per run)." \
+            --base cosine \
+            --head bot/update-marketplace
