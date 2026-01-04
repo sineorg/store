@@ -795,7 +795,7 @@
     ]
   },
   "tab-rename-zen-browser": {
-    "stars": 5,
+    "stars": 0,
     "id": "tab-rename-zen-browser",
     "name": "Better Tab Rename",
     "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
@@ -1111,6 +1111,6 @@
     ]
   },
   "_meta": {
-    "cursor": "settings-shortcuts-search"
+    "cursor": "tab-rename-zen-browser"
   }
 }
