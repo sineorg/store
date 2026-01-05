@@ -1064,7 +1064,7 @@
     ]
   },
   "auto-pip-setting": {
-    "stars": 1,
+    "stars": 0,
     "id": "auto-pip-setting",
     "name": "Auto-PiP-Setting",
     "description": "Adds auto-picture-in-picture setting in the unified panel",
