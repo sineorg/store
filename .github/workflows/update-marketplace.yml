@@ -75,31 +75,6 @@ jobs:
             git checkout -b "$branch"
           fi
 
-      - name: Commit cursor progress
-        run: |
-          modId="${{ steps.pick.outputs.modId }}"
-
-          git config user.name "marketplace-bot"
-          git config user.email "marketplace-bot@users.noreply.github.com"
-
-          # Ensure we're on the workflow branch
-          git checkout cosine
-
-          # Advance cursor ONLY
-          jq --arg mod "$modId" '
-            ._meta.cursor = $mod
-          ' marketplace.json > tmp.json && mv tmp.json marketplace.json
-
-          git add marketplace.json
-
-          if git diff --cached --quiet; then
-            echo "Cursor already up to date"
-            exit 0
-          fi
-
-          git commit -m "Advance marketplace cursor to $modId"
-          git push origin cosine
-
       # ─────────────────────────────────────────────
       # Process ONE mod
       # ─────────────────────────────────────────────
@@ -148,6 +123,11 @@ jobs:
           # ─── Update marketplace entry ─────────────
           jq --arg mod "$modId" --argjson stars "$stars" '
             .[$mod] |= (. + { stars: $stars })
+          ' marketplace.json > tmp.json && mv tmp.json marketplace.json
+
+          # ─── Advance cursor ───────────────────────
+          jq --arg mod "$modId" '
+            ._meta.cursor = $mod
           ' marketplace.json > tmp.json && mv tmp.json marketplace.json
 
       # ─────────────────────────────────────────────
