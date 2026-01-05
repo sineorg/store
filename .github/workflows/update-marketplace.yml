@@ -65,11 +65,8 @@ jobs:
         run: |
           modId="${{ steps.pick.outputs.modId }}"
       
-          git config user.name "marketplace-bot"
-          git config user.email "marketplace-bot@users.noreply.github.com"
-      
-          # Ensure we're on the workflow branch
-          git checkout cosine
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
       
           # Advance cursor ONLY
           jq --arg mod "$modId" '
@@ -84,7 +81,7 @@ jobs:
           fi
       
           git commit -m "Advance marketplace cursor to $modId"
-          git push origin cosine
+          git push origin main
 
       - name: Checkout mod branch
         run: |
