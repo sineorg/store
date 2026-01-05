@@ -939,7 +939,7 @@
     ]
   },
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
-    "stars": 2,
+    "stars": 0,
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
     "name": "Tidy Popup & Extension",
     "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
