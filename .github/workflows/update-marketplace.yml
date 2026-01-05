@@ -164,7 +164,6 @@ jobs:
           existing_pr=$(gh pr list \
             --repo "$GITHUB_REPOSITORY" \
             --head "$GITHUB_REPOSITORY:$branch" \
-            --base cosine \
             --state open \
             --json number \
             --jq '.[0].number // empty')
@@ -176,6 +175,6 @@ jobs:
               --repo "$GITHUB_REPOSITORY" \
               --title "Add / update mod: $modId" \
               --body "Automated update for mod **$modId**." \
-              --base cosine \
+              --base main \
               --head "$branch"
           fi
