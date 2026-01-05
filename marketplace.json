@@ -1017,7 +1017,7 @@
     ]
   },
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
-    "stars": 1,
+    "stars": 0,
     "id": "3699917d-0238-422a-bb4b-9d37344c0c5f",
     "name": "Custom Swipe Animation & Color",
     "description": "Customizable trackpad swipe transitions and the colors for the swipe UI.",
@@ -1109,5 +1109,8 @@
       "zen",
       "firefox"
     ]
+  },
+  "_meta": {
+    "cursor": "3699917d-0238-422a-bb4b-9d37344c0c5f"
   }
 }
