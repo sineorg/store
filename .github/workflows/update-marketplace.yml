@@ -118,7 +118,13 @@ jobs:
           fi
 
           repo=""
+          
           if [[ "$homepage" =~ github\.com/([^/]+/[^/]+) ]]; then
+            # Matches https://github.com/user/repo (and similar)
+            repo="${BASH_REMATCH[1]}"
+          
+          elif [[ "$homepage" =~ ^([^/]+/[^/]+)$ ]]; then
+            # Matches plain user/repo
             repo="${BASH_REMATCH[1]}"
           fi
 
@@ -133,7 +139,7 @@ jobs:
           fi
 
           # ─── Download ZIP (once) ──────────────────
-          if [[ -n "$repo" && ! -f "mods/$modId/mod.zip" ]]; then
+          if [[ -n "$repo" ]]; then
             for branch in main master; do
               zip_url="https://codeload.github.com/$repo/zip/refs/heads/$branch"
               if curl -L --retry 3 --retry-delay 5 "$zip_url" -o "mods/$modId/mod.zip"; then
