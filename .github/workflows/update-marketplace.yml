@@ -1,4 +1,4 @@
-name: Update Marketplace
+name: Update marketplace
 
 on:
   schedule:
@@ -81,16 +81,19 @@ jobs:
           git push origin main
 
       - name: Checkout mod branch
+        id: branch
         run: |
           modId="${{ steps.pick.outputs.modId }}"
-          branch="${{ steps.pick.outputs.branch }}"
+          branch="bot/mod/$modId"
 
           git fetch origin "$branch" || true
 
           if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
             git checkout "$branch"
             git pull --ff-only origin "$branch"
           else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
             git checkout -b "$branch"
           fi
 
@@ -178,19 +181,14 @@ jobs:
 
       # ─────────────────────────────────────────────
       # Create PR if missing
-      # ─────────────────────────────────────────────
+      # ────────────────────────────────────────────
       - name: Create PR if missing
+        if: steps.branch.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           modId="${{ steps.pick.outputs.modId }}"
-          branch="${{ steps.pick.outputs.branch }}"
-
-          # If branch already existed remotely, skip PR creation
-          if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
-            echo "Branch $branch already exists — skipping PR creation"
-            exit 0
-          fi
+          branch="bot/mod/$modId"
 
           gh pr create \
             --repo "$GITHUB_REPOSITORY" \
