@@ -186,20 +186,15 @@ jobs:
           modId="${{ steps.pick.outputs.modId }}"
           branch="${{ steps.pick.outputs.branch }}"
 
-          existing_pr=$(gh pr list \
-            --repo "$GITHUB_REPOSITORY" \
-            --head "$GITHUB_REPOSITORY:$branch" \
-            --state open \
-            --json number \
-            --jq '.[0].number // empty')
-
-          if [[ -n "$existing_pr" ]]; then
-            echo "PR #$existing_pr already exists for $modId"
-          else
-            gh pr create \
-              --repo "$GITHUB_REPOSITORY" \
-              --title "Add / update mod: $modId" \
-              --body "Automated update for mod **$modId**." \
-              --base main \
-              --head "$branch"
+          # If branch already existed remotely, skip PR creation
+          if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+            echo "Branch $branch already exists — skipping PR creation"
+            exit 0
           fi
+
+          gh pr create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Add / update mod: $modId" \
+            --body "Automated update for mod **$modId**." \
+            --base main \
+            --head "$branch"
