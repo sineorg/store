@@ -117,47 +117,73 @@ jobs:
             exit 0
           fi
 
+          # Normalize homepage → GitHub URL
+          if [[ "$homepage" =~ ^https?:// ]]; then
+            :
+          elif [[ "$homepage" =~ ^github\.com/ ]]; then
+            homepage="https://$homepage"
+          else
+            homepage="https://github.com/$homepage"
+          fi
+
+          # Extract user/repo
           repo=""
-          
           if [[ "$homepage" =~ github\.com/([^/]+/[^/]+) ]]; then
-            # Matches https://github.com/user/repo (and similar)
-            repo="${BASH_REMATCH[1]}"
-          
-          elif [[ "$homepage" =~ ^([^/]+/[^/]+)$ ]]; then
-            # Matches plain user/repo
             repo="${BASH_REMATCH[1]}"
           fi
 
-          # ─── Fetch stars ──────────────────────────
-          stars=0
-          if [[ -n "$repo" ]]; then
-            stars=$(curl -s \
-              -H "Authorization: Bearer $GITHUB_TOKEN" \
-              -H "User-Agent: marketplace-bot" \
-              "https://api.github.com/repos/$repo" \
-              | jq -r '.stargazers_count // 0')
+          if [[ -z "$repo" ]]; then
+            echo "Could not resolve GitHub repo for $modId"
+            exit 0
           fi
 
-          # ─── Download ZIP (once) ──────────────────
-          if [[ -n "$repo" ]]; then
-            for branch in main master; do
-              zip_url="https://codeload.github.com/$repo/zip/refs/heads/$branch"
-              if curl -L --retry 3 --retry-delay 5 "$zip_url" -o "mods/$modId/mod.zip"; then
-                break
-              fi
-            done
+          # ─── Fetch theme.json ─────────────────────────
+          theme_json=""
+          for branch in main master; do
+            url="https://raw.githubusercontent.com/$repo/$branch/theme.json"
+            if theme_json=$(curl -fsSL "$url"); then
+              break
+            else
+              theme_json=""
+            fi
+          done
+
+          if [[ -z "$theme_json" ]]; then
+            echo "No theme.json found for $modId"
+            exit 0
           fi
 
-          # ─── Update marketplace entry ─────────────
-          jq --arg mod "$modId" --argjson stars "$stars" '
-            .[$mod] |= (. + { stars: $stars })
-          ' marketplace.json > tmp.json && mv tmp.json marketplace.json
+          # Validate JSON
+          echo "$theme_json" | jq . >/dev/null
 
-          # ─── Advance cursor ───────────────────────
-          jq --arg mod "$modId" '
-            ._meta.cursor = $mod
-          ' marketplace.json > tmp.json && mv tmp.json marketplace.json
+          # ─── Fetch stars ─────────────────────────────
+          stars=$(curl -s \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "User-Agent: marketplace-bot" \
+            "https://api.github.com/repos/$repo" \
+            | jq -r '.stargazers_count // 0')
 
+          # ─── Download ZIP (once per run) ─────────────
+          for branch in main master; do
+            zip_url="https://codeload.github.com/$repo/zip/refs/heads/$branch"
+            if curl -fsSL "$zip_url" -o "mods/$modId/mod.zip"; then
+              break
+            fi
+          done
+
+          # ─── Update marketplace entry ────────────────
+          jq \
+            --arg mod "$modId" \
+            --argjson stars "$stars" \
+            --argjson theme "$theme_json" '
+              .[$mod] =
+                ($theme + {
+                  stars: $stars,
+                  id: $mod,
+                  homepage: $theme.homepage // null
+                })
+            ' marketplace.json > tmp.json && mv tmp.json marketplace.json
+      
       # ─────────────────────────────────────────────
       # Commit + push
       # ─────────────────────────────────────────────
