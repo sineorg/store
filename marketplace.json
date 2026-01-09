@@ -190,14 +190,21 @@
     ]
   },
   "advanced-tab-groups": {
-    "stars": 363,
     "id": "advanced-tab-groups",
     "name": "Advanced Tab Groups (BETA)",
     "description": "Tab Groups for Zen Browser",
-    "js": true,
-    "homepage": "Vertex-Mods/Advanced-Tab-Groups",
+    "scripts": {
+      "advanced-tab-groups.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "homepage": "https://github.com/Vertex-Mods/Advanced-Tab-Groups",
     "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/preferences.json",
-    "style": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/userChrome.css",
+    "style": {
+      "chrome": "userChrome.css"
+    },
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/README.md",
     "image": "https://raw.githubusercontent.com/Vertex-Mods/Advanced-Tab-Groups/main/image.png",
     "author": "Vertex",
@@ -213,7 +220,8 @@
     "updatedAt": "2025-09-24",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 362
   },
   "zaps-cool-photon-theme": {
     "id": "zaps-cool-photon-theme",
