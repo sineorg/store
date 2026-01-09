@@ -162,9 +162,10 @@ jobs:
       # Commit + push
       # ─────────────────────────────────────────────
       - name: Commit and push
+        id: commit
         run: |
           modId="${{ steps.pick.outputs.modId }}"
-          branch="${{ steps.pick.outputs.branch }}"
+          branch="bot/mod/$modId"
 
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
@@ -172,6 +173,7 @@ jobs:
           git add marketplace.json "mods/$modId"
 
           if git diff --cached --quiet; then
+            echo "committed=false" >> "$GITHUB_OUTPUT"
             echo "No changes for $modId"
             exit 0
           fi
@@ -179,11 +181,13 @@ jobs:
           git commit -m "Update mod $modId"
           git push -u origin "$branch"
 
+          echo "committed=true" >> "$GITHUB_OUTPUT"
+
       # ─────────────────────────────────────────────
       # Create PR if missing
       # ────────────────────────────────────────────
       - name: Create PR if missing
-        if: steps.branch.outputs.exists == 'false'
+        if: steps.branch.outputs.exists == 'false' && steps.commit.outputs.committed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
