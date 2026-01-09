@@ -958,9 +958,8 @@
     ]
   },
   "new-icons": {
-    "stars": 2,
     "id": "new-icons",
-    "homepage": "qumeqa/zen-icons",
+    "homepage": "https://github.com/qumeqa/zen-icons",
     "author": "qumeqa",
     "name": "New icons",
     "description": "New icons for the toolbar and better locale button",
@@ -981,7 +980,8 @@
     ],
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 2
   },
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
     "stars": 1,
