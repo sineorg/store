@@ -722,7 +722,6 @@
     ]
   },
   "zen-drop-link": {
-    "stars": 7,
     "id": "zen-drop-link",
     "name": "Zen Drop Link to Split",
     "description": "This mod allows you to split tabs by drag and drop links",
@@ -743,7 +742,8 @@
     "updatedAt": "2025-06-29",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 7
   },
   "cfafe94c-5a29-4dae-8489-6be514185474": {
     "stars": 5,
