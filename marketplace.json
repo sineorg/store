@@ -1009,12 +1009,11 @@
     ]
   },
   "collapse-pinned-area": {
-    "stars": 1,
     "id": "collapse-pinned-area",
     "name": "Collapse Pinned Area",
     "description": "Let's you collapse your pinned folders and tabs area with a chevron icon",
     "js": true,
-    "homepage": "Zylaah/collapse-pinned-area",
+    "homepage": "https://github.com/Zylaah/zen-mods",
     "style": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/collapse-pinned-area/chrome.css",
     "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/collapse-pinned-area/README.md",
     "author": "Bxth",
@@ -1028,7 +1027,8 @@
     "updatedAt": "2025-12-11",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 1
   },
   "auto-pip-setting": {
     "stars": 1,
