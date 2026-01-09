@@ -180,7 +180,7 @@ jobs:
                 ($theme + {
                   stars: $stars,
                   id: $mod,
-                  homepage: $theme.homepage // null
+                  homepage: ($theme.homepage // null)
                 })
             ' marketplace.json > tmp.json && mv tmp.json marketplace.json
       
