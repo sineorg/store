@@ -42,19 +42,16 @@ jobs:
               | map(select(. != "_meta"))
               | . as $keys
               | ($root._meta.cursor // "") as $cursor
-              | if $cursor == ""
-                then $keys[0]
+              | if ($keys | length) == 0 then empty
+                elif $cursor == "" then $keys[0]
                 else
-                  ($keys | index($cursor) + 1) as $i
-                  | if $i < length then $keys[$i] else empty end
+                  ($keys | index($cursor)) as $i
+                  | if $i == null then $keys[0]
+                    else $keys[($i + 1) % ($keys | length)]
+                    end
                 end
             ' marketplace.json
           )
-
-          if [[ -z "$next_mod" ]]; then
-            echo "All mods processed"
-            exit 1
-          fi
 
           echo "modId=$next_mod" >> "$GITHUB_OUTPUT"
           echo "branch=bot/mod/$next_mod" >> "$GITHUB_OUTPUT"
