@@ -166,7 +166,6 @@
     "stars": 535
   },
   "Arc-2.0": {
-    "stars": 369,
     "id": "Arc-2.0",
     "homepage": "https://github.com/YashjitPal/Arc-2.0/",
     "author": "YashjitPal",
@@ -187,7 +186,8 @@
     ],
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 368
   },
   "advanced-tab-groups": {
     "id": "advanced-tab-groups",
