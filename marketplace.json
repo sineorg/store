@@ -768,30 +768,6 @@
       "zen"
     ]
   },
-  "tab-rename-zen-browser": {
-    "stars": 5,
-    "id": "tab-rename-zen-browser",
-    "name": "Better Tab Rename",
-    "description": "Adds a right click menu option to rename tabs (instead of the present double click one so that you dont have to load the tab anymore). Also adds non-pinned tabs renaming functionality ",
-    "homepage": "Darsh-A/Tab-Rename_Zen-Browser",
-    "js": true,
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Tab-Rename_Zen-Browser/refs/heads/main/README.md",
-    "author": "Darsh A",
-    "version": "1.0.0",
-    "tags": [
-      "sine",
-      "Tab Rename",
-      "fx-autoconfig",
-      "JavaScript",
-      "Darsh A",
-      "Better"
-    ],
-    "createdAt": "2025-05-26",
-    "updatedAt": "2025-05-26",
-    "fork": [
-      "zen"
-    ]
-  },
   "zen-live-calendar": {
     "stars": 5,
     "id": "zen-live-calendar",
