@@ -610,9 +610,8 @@
     ]
   },
   "No-Gaps": {
-    "stars": 12,
     "id": "No-Gaps",
-    "homepage": "Comp-Tech-Guy/No-Gaps",
+    "homepage": "https://github.com/Comp-Tech-Guy/No-Gaps",
     "author": "CompTechGuy",
     "name": "No-Gaps",
     "description": "There will be no gaps in the sides to have a sleek look for every layout",
@@ -635,7 +634,8 @@
     ],
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 12
   },
   "customize-collapsed-sidebar": {
     "stars": 12,
