@@ -777,11 +777,10 @@
     "stars": 5
   },
   "zen-live-calendar": {
-    "stars": 5,
     "id": "zen-live-calendar",
     "name": "Live Calendar",
     "description": "Brings the live calendar functionality from Arc to Zen, making it feel as native as possible.",
-    "homepage": "Vertex-Mods/Zen-Live-Calendar",
+    "homepage": "https://github.com/Vertex-Mods/Zen-Live-Calendar",
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Live-Calendar/refs/heads/main/README.md",
     "image": "https://github.com/Vertex-Mods/Zen-Live-Calendar/blob/main/image.png?raw=true",
     "js": true,
@@ -798,7 +797,8 @@
     "updatedAt": "2025-06-18",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 6
   },
   "bada16c1-3b14-483b": {
     "stars": 4,
