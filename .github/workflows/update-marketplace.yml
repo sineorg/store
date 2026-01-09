@@ -190,9 +190,12 @@ jobs:
           modId="${{ steps.pick.outputs.modId }}"
           branch="bot/mod/$modId"
 
+          homepage=$(jq -r ".\"$modId\".homepage // empty" marketplace.json)
+          body="Automated update for [$modId]($homepage)."
+
           gh pr create \
             --repo "$GITHUB_REPOSITORY" \
             --title "Add / update mod: $modId" \
-            --body "Automated update for mod **$modId**." \
+            --body "$body" \
             --base main \
             --head "$branch"
