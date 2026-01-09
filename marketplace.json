@@ -216,11 +216,10 @@
     ]
   },
   "zaps-cool-photon-theme": {
-    "stars": 122,
     "id": "zaps-cool-photon-theme",
     "name": "zap's cool photon theme",
     "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
-    "homepage": "zapSNH/zapsCoolPhotonTheme",
+    "homepage": "https://github.com/zapSNH/zapsCoolPhotonTheme",
     "preferences": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/preferences.json",
     "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
     "style": {
@@ -243,7 +242,8 @@
       "waterfox",
       "floorp",
       "mullvad"
-    ]
+    ],
+    "stars": 122
   },
   "Neo-Zen": {
     "id": "Neo-Zen",
