@@ -809,11 +809,10 @@
     "homepage": "themaster5209/zen-better-new-tab-button"
   },
   "42b8c4ac-76d5-4521-9917-2e478931ee53": {
-    "stars": 3,
     "id": "42b8c4ac-76d5-4521-9917-2e478931ee53",
     "name": "Zen Compact Transparent Mode",
     "description": "Make popups UI menu transparent with custom settings.",
-    "homepage": "rasyidrafi/zen-compact-transparent-mode",
+    "homepage": "https://github.com/rasyidrafi/zen-compact-transparent-mode",
     "image": "https://github.com/rasyidrafi/zen-compact-transparent-mode/blob/main/image.png?raw=true",
     "style": {
       "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-compact-transparent-mode/refs/heads/main/chrome.css"
@@ -830,7 +829,8 @@
     "fork": [
       "zen",
       "firefox"
-    ]
+    ],
+    "stars": 3
   },
   "3c8ebf69-1042-49b1-8f08-9178f9490659": {
     "stars": 3,
