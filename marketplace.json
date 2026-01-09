@@ -873,10 +873,20 @@
     ]
   },
   "Nebula": {
-    "stars": 2,
     "id": "Nebula",
-    "js": true,
-    "homepage": "CosmoCreeper/Nubulu",
+    "scripts": {
+      "JS/Nebula.uc.js": {
+        "name": "Core script",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "style": {
+      "chrome": "userChrome.css",
+      "content": "userContent.css"
+    },
+    "homepage": "https://github.com/JustADumbPrsn/Zen-Nebula",
     "author": "JustADumbPrsn",
     "name": "Nebula",
     "description": "A beautiful theme made for Zen Browser :))",
@@ -892,7 +902,8 @@
     ],
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 2
   },
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "stars": 2,
