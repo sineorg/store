@@ -246,9 +246,8 @@
     ]
   },
   "Neo-Zen": {
-    "stars": 75,
     "id": "Neo-Zen",
-    "homepage": "JustVibingWhileCoding/Neo-Zen",
+    "homepage": "https://github.com/JustVibingWhileCoding/Neo-Zen",
     "author": "JustVibingWhileCoding",
     "name": "Neo Zen",
     "description": "A sleek, futuristic theme for Zen Browser that blends modern design with mindful simplicity",
@@ -270,7 +269,8 @@
     ],
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 75
   },
   "browse-bot": {
     "stars": 70,
