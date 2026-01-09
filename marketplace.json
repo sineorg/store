@@ -817,12 +817,12 @@
     ]
   },
   "bada16c1-3b14-483b": {
-    "stars": 4,
     "id": "bada16c1-3b14-483b",
     "name": "Better New Tab button",
     "version": "1.0.6",
     "description": "A Zen Browser mod that enhances the New Tab button experience",
-    "homepage": "themaster5209/zen-better-new-tab-button"
+    "stars": 4,
+    "homepage": null
   },
   "42b8c4ac-76d5-4521-9917-2e478931ee53": {
     "stars": 3,
