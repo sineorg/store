@@ -968,11 +968,10 @@
     "stars": 2
   },
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
-    "stars": 1,
     "id": "3699917d-0238-422a-bb4b-9d37344c0c5f",
     "name": "Custom Swipe Animation & Color",
     "description": "Customizable trackpad swipe transitions and the colors for the swipe UI.",
-    "homepage": "rasyidrafi/zen-single-trackpad-animation",
+    "homepage": "https://github.com/rasyidrafi/zen-single-trackpad-animation",
     "image": "https://github.com/rasyidrafi/zen-single-trackpad-animation/blob/main/image.png?raw=true",
     "style": {
       "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/chrome.css"
@@ -990,7 +989,8 @@
     "fork": [
       "zen",
       "firefox"
-    ]
+    ],
+    "stars": 1
   },
   "collapse-pinned-area": {
     "stars": 1,
