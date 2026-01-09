@@ -191,6 +191,9 @@ jobs:
           branch="bot/mod/$modId"
 
           homepage=$(jq -r ".\"$modId\".homepage // empty" marketplace.json)
+          if [[ -n "$homepage" && ! "$homepage" =~ ^https?:// ]]; then
+            homepage="https://github.com/$homepage"
+          fi
           body="Automated update for [$modId]($homepage)."
 
           gh pr create \
