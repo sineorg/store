@@ -871,18 +871,7 @@
   },
   "Nebula": {
     "id": "Nebula",
-    "scripts": {
-      "JS/Nebula.uc.js": {
-        "name": "Core script",
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      }
-    },
-    "style": {
-      "chrome": "userChrome.css",
-      "content": "userContent.css"
-    },
+    "js": true,
     "homepage": "https://github.com/JustADumbPrsn/Zen-Nebula",
     "author": "JustADumbPrsn",
     "name": "Nebula",
@@ -900,7 +889,7 @@
     "fork": [
       "zen"
     ],
-    "stars": 2
+    "stars": 1225
   },
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
