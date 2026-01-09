@@ -1,8 +1,7 @@
 {
   "natsumi-browser": {
-    "stars": 534,
     "id": "natsumi-browser",
-    "homepage": "greeeen-dev/natsumi-browser",
+    "homepage": "https://github.com/greeeen-dev/natsumi-browser",
     "author": "greeeen-dev",
     "name": "Natsumi Browser",
     "description": "A skin for Firefox and its forks that makes things flow.",
@@ -163,7 +162,8 @@
           ]
         }
       }
-    }
+    },
+    "stars": 535
   },
   "Arc-2.0": {
     "stars": 369,
