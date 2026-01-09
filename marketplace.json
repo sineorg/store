@@ -1036,11 +1036,10 @@
     ]
   },
   "IconTweaker": {
-    "stars": 0,
     "id": "IconTweaker",
     "name": "Icon Tweaker",
     "description": "Tab icon resizer for Essentials, Pinned, Normal and Workspaces.",
-    "homepage": "allecsc/Icon-Tweaker",
+    "homepage": "https://github.com/allecsc/Icon-Tweaker",
     "preferences": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/preferences.json",
     "style": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/chrome.css",
     "readme": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/README.md",
@@ -1059,7 +1058,8 @@
     "fork": [
       "zen",
       "firefox"
-    ]
+    ],
+    "stars": 0
   },
   "_meta": {
     "cursor": "IconTweaker"
