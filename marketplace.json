@@ -746,11 +746,10 @@
     ]
   },
   "cfafe94c-5a29-4dae-8489-6be514185474": {
-    "stars": 5,
     "id": "cfafe94c-5a29-4dae-8489-6be514185474",
     "name": "Better Sidebar",
     "description": "Enhance default firefox sidebar with a modern look and feel matching Zen UI.",
-    "homepage": "rasyidrafi/zen-better-sidebar",
+    "homepage": "https://github.com/rasyidrafi/zen-better-sidebar/",
     "image": "https://github.com/rasyidrafi/zen-better-sidebar/blob/main/image.png?raw=true",
     "style": {
       "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-better-sidebar/refs/heads/main/chrome.css"
@@ -766,7 +765,8 @@
     "updatedAt": "2025-08-29",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 5
   },
   "zen-live-calendar": {
     "stars": 5,
