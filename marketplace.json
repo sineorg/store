@@ -561,16 +561,28 @@
     "stars": 25
   },
   "zen-tidy-downloads": {
-    "stars": 15,
     "id": "zen-tidy-downloads",
     "name": "Tidy Downloads",
     "description": "Clean up your downloads with AI",
-    "homepage": "Vertex-Mods/Zen-Tidy-Downloads",
+    "homepage": "https://github.com/Vertex-Mods/Zen-Tidy-Downloads",
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/refs/heads/main/README.md",
     "image": "https://github.com/Vertex-Mods/Zen-Tidy-Downloads/blob/main/image.png?raw=true",
-    "style": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/main/chrome.css",
-    "js": true,
-    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Downloads/main/preferences.json",
+    "style": {
+      "chrome": "chrome.css"
+    },
+    "scripts": {
+      "tidy-downloads.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      },
+      "zen-stuff.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "preferences": "preferences.json",
     "author": "Vertex",
     "version": "3.0.0",
     "tags": [
@@ -583,7 +595,8 @@
     "updatedAt": "2025-07-15",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 15
   },
   "zen-tidy-tabs": {
     "stars": 13,
