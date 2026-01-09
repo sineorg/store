@@ -481,15 +481,14 @@
     ]
   },
   "wireframe-2.0": {
-    "stars": 32,
     "id": "wireframe-2.0",
-    "homepage": "SehajveerSingh2005/zen-wireframe-2.0",
+    "homepage": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0",
     "author": "SehajveerSingh2005",
     "name": "Wireframe 2.0",
     "description": "A minimal theme for Zen. Unconventional by design.",
-    "version": "2.8.1",
+    "version": "2.8.2",
     "createdAt": "2025-09-10",
-    "updatedAt": "2025-12-29",
+    "updatedAt": "2026-01-09",
     "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
     "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
     "tags": [
@@ -500,7 +499,8 @@
     ],
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 32
   },
   "quick-tabs": {
     "stars": 26,
