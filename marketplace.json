@@ -695,31 +695,30 @@
     ]
   },
   "reopen-closed-tabs": {
-    "stars": 8,
     "id": "reopen-closed-tabs",
     "name": "Reopen Closed Tabs Menu",
     "description": "A popup menu to view and restore recently closed tabs. Includes a toolbar button and keyboard shortcut.",
-    "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu",
-    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main//preferences.json",
-    "style": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/style.css",
-    "js": true,
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/refs/heads/main/readme.md",
     "author": "Bibek Bhusal",
-    "version": "1.0.0",
+    "version": "1.1.0",
+    "updatedAt": "2026-01-04",
     "tags": [
       "tabs",
       "history",
       "reopen",
       "closed tabs",
       "productivity",
-      "zen browser",
-      "sine"
+      "zen browser"
     ],
-    "createdAt": "2025-09-22",
-    "updatedAt": "2025-09-26",
     "fork": [
       "zen"
-    ]
+    ],
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/main/preferences.json",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/main/style.css",
+    "js": true,
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/main/README.md",
+    "createdAt": "2025-09-22",
+    "stars": 8,
+    "homepage": null
   },
   "zen-drop-link": {
     "stars": 7,
