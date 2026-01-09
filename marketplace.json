@@ -530,11 +530,10 @@
     ]
   },
   "vizen-floaty-ui": {
-    "stars": 25,
     "id": "vizen-floaty-ui",
     "name": "Floaty UI",
     "description": "Compact Mode, but it floats. Supports Zen Color Picker and background blur.",
-    "homepage": "moktavizen/floaty-ui",
+    "homepage": "https://github.com/moktavizen/floaty-ui",
     "readme": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/README.md",
     "image": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/media/preview-store.png",
     "style": "https://raw.githubusercontent.com/moktavizen/floaty-ui/refs/heads/main/chrome.css",
@@ -550,7 +549,8 @@
     "updatedAt": "2025-06-29",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 25
   },
   "zen-tidy-downloads": {
     "stars": 15,
