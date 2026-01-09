@@ -586,12 +586,11 @@
     ]
   },
   "zen-tidy-tabs": {
-    "stars": 13,
     "id": "zen-tidy-tabs",
     "name": "Zen Tidy Tabs",
     "description": "Sort your tabs using Firefox's local AI but make it look awesome!",
     "js": true,
-    "homepage": "Vertex-Mods/Zen-Tidy-Tabs",
+    "homepage": "https://github.com/Vertex-Mods/Zen-Tidy-Tabs",
     "style": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/userChrome.css",
     "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/preferences.json",
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
@@ -615,7 +614,8 @@
     ],
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 13
   },
   "No-Gaps": {
     "id": "No-Gaps",
