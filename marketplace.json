@@ -281,7 +281,6 @@
     "stars": 76
   },
   "browse-bot": {
-    "stars": 70,
     "id": "browse-bot",
     "name": "Browse Bot",
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
@@ -308,10 +307,11 @@
       "Claude"
     ],
     "createdAt": "2024-05-22",
-    "updatedAt": "2025-12-27",
+    "updatedAt": "2026-01-09",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 70
   },
   "floating-sidebar": {
     "stars": 70,
