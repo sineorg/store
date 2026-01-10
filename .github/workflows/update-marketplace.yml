@@ -134,34 +134,40 @@ jobs:
             homepage="https://github.com/$homepage"
           fi
 
-          # Extract user/repo
           repo=""
-          if [[ "$homepage" =~ github\.com/([^/]+/[^/]+) ]]; then
+          branch="main"
+          subpath=""
+          
+          if [[ "$homepage" =~ github\.com/([^/]+/[^/]+)(/tree/([^/]+)(/(.*))?)? ]]; then
             repo="${BASH_REMATCH[1]}"
+            branch="${BASH_REMATCH[3]:-main}"
+            subpath="${BASH_REMATCH[5]}"
           fi
-
+          
           if [[ -z "$repo" ]]; then
             echo "Could not resolve GitHub repo for $modId"
             exit 0
           fi
-
-          # ─── Fetch theme.json ─────────────────────────
+          
           theme_json=""
-          for branch in main master; do
-            url="https://raw.githubusercontent.com/$repo/$branch/theme.json"
-            if theme_json=$(curl -fsSL "$url"); then
-              break
-            else
-              theme_json=""
-            fi
-          done
-
+          
+          if [[ -n "$subpath" ]]; then
+            url="https://raw.githubusercontent.com/$repo/$branch/$subpath/theme.json"
+            theme_json=$(curl -fsSL "$url" || true)
+          else
+            for b in "$branch" main master; do
+              url="https://raw.githubusercontent.com/$repo/$b/theme.json"
+              if theme_json=$(curl -fsSL "$url"); then
+                break
+              fi
+            done
+          fi
+          
           if [[ -z "$theme_json" ]]; then
             echo "No theme.json found for $modId"
             exit 0
           fi
-
-          # Validate JSON
+          
           echo "$theme_json" | jq . >/dev/null
 
           # ─── Fetch stars ─────────────────────────────
