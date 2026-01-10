@@ -364,7 +364,6 @@
     ]
   },
   "settings-shortcuts-search": {
-    "stars": 70,
     "id": "settings-shortcuts-search",
     "name": "Search Keyboard shortcuts",
     "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
@@ -388,7 +387,8 @@
     "updatedAt": "2025-07-11",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 70
   },
   "search-engine-select": {
     "stars": 70,
