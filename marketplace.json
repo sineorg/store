@@ -679,7 +679,6 @@
     "stars": 12
   },
   "customize-collapsed-sidebar": {
-    "stars": 12,
     "id": "customize-collapsed-sidebar",
     "name": "Customize Collapsed Sidebar",
     "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
@@ -689,7 +688,8 @@
     "version": "1.0.5",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 12
   },
   "paneru": {
     "id": "paneru",
