@@ -672,11 +672,10 @@
     ]
   },
   "paneru": {
-    "stars": 10,
     "id": "paneru",
     "name": "Paneru",
     "description": "A comprehensive theme that separates various elements onto their own panel, respects Firefox theme colors, and supports transparency.",
-    "homepage": "TheBigWazz/Paneru",
+    "homepage": "https://github.com/TheBigWazz/Paneru",
     "style": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/userChrome.css",
     "content": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/userContent.css",
     "readme": "https://raw.githubusercontent.com/TheBigWazz/Paneru/main/README.md",
@@ -690,7 +689,8 @@
     "tags": [
       "ui",
       "customization"
-    ]
+    ],
+    "stars": 10
   },
   "c9ee0d97-d2d6-40fd-8f85-549fe000b868": {
     "id": "c9ee0d97-d2d6-40fd-8f85-549fe000b868",
