@@ -314,7 +314,6 @@
     ]
   },
   "floating-sidebar": {
-    "stars": 70,
     "id": "floating-sidebar",
     "name": "Floating Sidebar",
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
@@ -333,7 +332,8 @@
       "Bibek Bhusal"
     ],
     "createdAt": "2025-06-23",
-    "updatedAt": "2025-07-11"
+    "updatedAt": "2025-07-11",
+    "stars": 70
   },
   "zen-command-palette": {
     "stars": 70,
