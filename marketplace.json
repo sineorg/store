@@ -523,11 +523,10 @@
     "stars": 32
   },
   "quick-tabs": {
-    "stars": 26,
     "id": "quick-tabs",
     "name": "Quick Tabs",
     "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
-    "homepage": "Darsh-A/Quick-Tabs",
+    "homepage": "https://github.com/Darsh-A/Quick-Tab",
     "preferences": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/preferences.json",
     "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
     "js": "https://raw.githubusercontent.com/Darsh-A/Quick-Tabs/refs/heads/main/Quick_Tabs.uc.js",
@@ -547,7 +546,8 @@
     "updatedAt": "2025-09-18",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 26
   },
   "vizen-floaty-ui": {
     "id": "vizen-floaty-ui",
