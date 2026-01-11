@@ -1003,7 +1003,7 @@
     "description": "New icons for the toolbar and better locale button",
     "version": "1.0",
     "style": {
-      "chrome": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/userChrome.css"
+      "chrome": "userChrome.css"
     },
     "readme": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/README.md",
     "image": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/photo/cover.png",
