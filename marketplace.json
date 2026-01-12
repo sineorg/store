@@ -284,24 +284,9 @@
     "id": "browse-bot",
     "name": "Browse Bot",
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
-    "homepage": "https://github.com/Vertex-Mods/Browse-Bot",
-    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/preferences.json",
-    "style": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/style.css",
-    "scripts": {
-      "browse-bot.uc.mjs": {
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      },
-      "vercel-ai-sdk.uc.js": {
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      }
-    },
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/README.md",
     "author": "Bibek Bhusal",
-    "version": "2.5.2b",
+    "version": "2.5.1",
+    "updatedAt": "2026-01-04",
     "tags": [
       "ai",
       "findbar",
@@ -316,12 +301,16 @@
       "ChatGPT",
       "Claude"
     ],
-    "createdAt": "2024-05-22",
-    "updatedAt": "2026-01-11",
     "fork": [
       "zen"
     ],
-    "stars": 71
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/preferences.json",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/style.css",
+    "js": true,
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/README.md",
+    "createdAt": "2024-05-22",
+    "stars": 1,
+    "homepage": null
   },
   "floating-sidebar": {
     "stars": 70,
