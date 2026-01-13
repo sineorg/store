@@ -359,7 +359,7 @@ jobs:
           import os
 
           def get_repo_info(homepage):
-              pattern = r'github\.com/([^/]+)/([^/]+)(?:/tree/([^/]+(?:/[^/]+)*))?(?:/(.+))?$'
+              pattern = r'github\.com/([^/]+)/([^/]+)(?:/tree/([^/]+)(?:/(.*))?)?$'
               match = re.search(pattern, homepage)
           
               if not match:
