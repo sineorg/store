@@ -66,7 +66,7 @@ jobs:
 
           echo "Selected mod: $next_mod"
 
-      - name: Commit cursor progress
+      - name: Commit cursor progress and sort
         run: |
           modId="${{ steps.pick.outputs.modId }}"
       
@@ -77,6 +77,16 @@ jobs:
           jq --arg mod "$modId" '
             ._meta.cursor = $mod
           ' marketplace.json > tmp.json && mv tmp.json marketplace.json
+
+          jq '
+              ._meta as $meta
+              | del(._meta)
+              | to_entries
+              | sort_by(.value.stars // 0)
+              | reverse
+              | from_entries
+              | if $meta then . + { "_meta": $meta } else . end
+            ' marketplace.json > tmp.json && mv tmp.json marketplace.json
       
           git add marketplace.json
       
@@ -196,16 +206,6 @@ jobs:
                   id: $mod,
                   homepage: ($theme.homepage // null)
                 })
-            ' marketplace.json > tmp.json && mv tmp.json marketplace.json
-
-          jq '
-              ._meta as $meta
-              | del(._meta)
-              | to_entries
-              | sort_by(.value.stars // 0)
-              | reverse
-              | from_entries
-              | if $meta then . + { "_meta": $meta } else . end
             ' marketplace.json > tmp.json && mv tmp.json marketplace.json
 
       
