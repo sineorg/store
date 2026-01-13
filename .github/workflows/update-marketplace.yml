@@ -197,6 +197,17 @@ jobs:
                   homepage: ($theme.homepage // null)
                 })
             ' marketplace.json > tmp.json && mv tmp.json marketplace.json
+
+          jq '
+              ._meta as $meta
+              | del(._meta)
+              | to_entries
+              | sort_by(.value.stars // 0)
+              | reverse
+              | from_entries
+              | if $meta then . + { "_meta": $meta } else . end
+            ' marketplace.json > tmp.json && mv tmp.json marketplace.json
+
       
       # ─────────────────────────────────────────────
       # Commit + push
