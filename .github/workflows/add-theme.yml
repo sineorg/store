@@ -49,11 +49,12 @@ jobs:
       - name: Export parsed payload into variables
         id: export
         run: |
-          echo "THEME_HOMEPAGE=${{ fromJson(steps.issue-parser.outputs.jsonString)['homepage'] }}" >> $GITHUB_ENV
+          homepage="${{ fromJson(steps.issue-parser.outputs.jsonString)['homepage'] }}"
+        
+          echo "THEME_HOMEPAGE=$homepage" >> $GITHUB_ENV
           echo "THEME_AUTHOR=${{ github.event.issue.user.login }}" >> $GITHUB_ENV
           echo "THEME_NAME=$(echo '${{ github.event.issue.title }}' | sed 's/^\[add-theme\]://' | xargs)" >> $GITHUB_ENV
 
-          homepage="$THEME_HOMEPAGE"
           pattern='^https?://(www\.)?github\.com/([^/]+)/([^/]+)(/tree/([^/]+)(/(.*))?)?$'
           
           if [[ ! "$homepage" =~ $pattern ]]; then
