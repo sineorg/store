@@ -54,26 +54,25 @@ jobs:
           echo "THEME_NAME=$(echo '${{ github.event.issue.title }}' | sed 's/^\[add-theme\]://' | xargs)" >> $GITHUB_ENV
 
           homepage="${{ env.THEME_HOMEPAGE }}"
-          pattern='github\.com/([^/]+)/([^/]+)(/tree/([^/]+)(/(.*))?)?$'
+          pattern='^https?://(www\.)?github\.com/([^/]+)/([^/]+)(/tree/([^/]+)(/(.*))?)?$'
           
           if [[ ! "$homepage" =~ $pattern ]]; then
             echo "Error: Invalid GitHub repository URL" >&2
             exit 1
           fi
           
-          owner="${BASH_REMATCH[1]}"
-          repo="${BASH_REMATCH[2]}"
-          branch="${BASH_REMATCH[4]:-main}"
-          folder="${BASH_REMATCH[6]:-}"
+          owner="${BASH_REMATCH[2]}"
+          repo="${BASH_REMATCH[3]}"
+          branch="${BASH_REMATCH[5]:-main}"
+          folder="${BASH_REMATCH[7]:-}"
           
           raw_url="https://raw.githubusercontent.com/$owner/$repo/$branch"
-          
-          if [[ -n "$folder" ]]; then
-            raw_url="$raw_url/$folder"
-          fi
+          [[ -n "$folder" ]] && raw_url="$raw_url/$folder"
           
           theme_json_url="$raw_url/theme.json"
           
+          echo "$theme_json_url"
+
           echo "THEME_JSON=$theme_json_url" >> $GITHUB_ENV
 
       - name: Create existing theme check script
