@@ -54,7 +54,6 @@ jobs:
           echo "THEME_NAME=$(echo '${{ github.event.issue.title }}' | sed 's/^\[add-theme\]://' | xargs)" >> $GITHUB_ENV
 
       - name: Create existing theme check script
-        if: env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true'
         run: |
           cat << 'EOF' > check_existing.py
           import json
@@ -119,7 +118,6 @@ jobs:
           EOF
 
       - name: Run existing theme check
-        if: env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true'
         run: |
           python check_existing.py > existing_output.txt 2> error.log
           if [ $? -ne 0 ]; then
@@ -127,7 +125,6 @@ jobs:
           fi
 
       - name: Capture existing theme output
-        if: env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true'
         run: |
           EXISTING_OUTPUT=$(cat existing_output.txt 2>/dev/null | grep -v "DEBUG:" || echo "No output available")
           ERROR_LOG=$(cat error.log 2>/dev/null | grep -v "DEBUG:" || echo "No error details available")
@@ -142,7 +139,6 @@ jobs:
           fi
 
       - name: Close issue for existing theme
-        if: env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && (env.EXISTING_FOUND == 'true' || env.EXISTING_CHECK_FAILED == 'true')
         uses: peter-evans/close-issue@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -156,7 +152,6 @@ jobs:
             This may be because the theme is already included in the marketplace. Please check the marketplace in marketplace.json, verify your homepage URL is in the format 'https://github.com/owner/repo', and ensure your theme.json contains a valid 'id' property. If you believe this is an error, contact the maintainers or review the workflow logs.
 
       - name: Create update script
-        if: env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true' && env.JS_DOWNLOAD_FAILED != 'true'
         run: |
           cat << 'EOF' > update_marketplace.py
           import json
@@ -276,13 +271,13 @@ jobs:
             Please verify your homepage URL is in the format 'https://github.com/owner/repo' and your theme.json contains a valid 'id' property. If you believe this is an error, contact the maintainers or review the workflow logs.
 
       - name: Setup Git
-        if: success() && env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: success() && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create Pull Request
-        if: success() && env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: success() && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           add-paths: |
