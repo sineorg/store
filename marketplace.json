@@ -1051,12 +1051,17 @@
     "stars": 2
   },
   "auto-pip-setting": {
-    "stars": 1,
     "id": "auto-pip-setting",
     "name": "Auto-PiP-Setting",
     "description": "Adds auto-picture-in-picture setting in the unified panel",
-    "js": true,
-    "homepage": "Zylaah/zen-mods/tree/main/auto-pip",
+    "scripts": {
+      "zen-auto-pip-setting.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "homepage": "https://github.com/Zylaah/zen-mods/tree/main/auto-pip",
     "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/auto-pip/README.md",
     "author": "Bxth",
     "version": "1.0",
@@ -1069,7 +1074,8 @@
     "updatedAt": "2025-12-09",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 4
   },
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
     "id": "3699917d-0238-422a-bb4b-9d37344c0c5f",
