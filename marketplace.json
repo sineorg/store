@@ -314,27 +314,85 @@
     ],
     "stars": 78
   },
-  "search-engine-select": {
+  "browse-bot": {
     "stars": 70,
-    "id": "search-engine-select",
-    "name": "Search Engine Select",
-    "description": "Adds a floating UI to switch search engines on a search results page.",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
+    "id": "browse-bot",
+    "name": "Browse Bot",
+    "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/findbar-ai",
+    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/preferences.json",
+    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/refs/heads/main/findbar-ai/style.css",
     "js": true,
-    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/preferences.json",
-    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/style.css",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/README.md",
+    "author": "Bibek Bhusal",
+    "version": "2.0.0",
+    "tags": [
+      "ai",
+      "findbar",
+      "Arc",
+      "gemini",
+      "Artificial Intelligence",
+      "LLM",
+      "sine",
+      "zen browser",
+      "chat",
+      "BrowseBot",
+      "Mistral",
+      "ChatGPT",
+      "Claude"
+    ],
+    "createdAt": "2024-05-22",
+    "updatedAt": "2025-12-27",
+    "fork": [
+      "zen"
+    ]
+  },
+  "floating-sidebar": {
+    "stars": 70,
+    "id": "floating-sidebar",
+    "name": "Floating Sidebar",
+    "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/floating-sidebar",
+    "js": true,
+    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/style.css",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
     "author": "Bibek Bhusal",
     "version": "1.0.0",
     "tags": [
-      "Search",
+      "Sidebar",
+      "Pin",
       "sine",
       "fx-autoconfig",
       "JavaScript",
       "Bibek Bhusal"
     ],
     "createdAt": "2025-06-23",
-    "updatedAt": "2025-10-17",
+    "updatedAt": "2025-07-11"
+  },
+  "zen-command-palette": {
+    "stars": 70,
+    "id": "zen-command-palette",
+    "name": "Zen Command Palette",
+    "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
+    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/preferences.json",
+    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/refs/heads/main/command-palette/style.css",
+    "js": true,
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
+    "author": "Bibek Bhusal",
+    "version": "1.7.3",
+    "tags": [
+      "command",
+      "palette",
+      "raycast",
+      "arc",
+      "productivity",
+      "zen browser",
+      "sine",
+      "urlbar"
+    ],
+    "createdAt": "2024-09-07",
+    "updatedAt": "2025-10-14",
     "fork": [
       "zen"
     ]
@@ -366,85 +424,27 @@
       "zen"
     ]
   },
-  "zen-command-palette": {
+  "search-engine-select": {
     "stars": 70,
-    "id": "zen-command-palette",
-    "name": "Zen Command Palette",
-    "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/command-palette",
-    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/preferences.json",
-    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/refs/heads/main/command-palette/style.css",
+    "id": "search-engine-select",
+    "name": "Search Engine Select",
+    "description": "Adds a floating UI to switch search engines on a search results page.",
+    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/search-engine-select",
     "js": true,
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/command-palette/README.md",
-    "author": "Bibek Bhusal",
-    "version": "1.7.3",
-    "tags": [
-      "command",
-      "palette",
-      "raycast",
-      "arc",
-      "productivity",
-      "zen browser",
-      "sine",
-      "urlbar"
-    ],
-    "createdAt": "2024-09-07",
-    "updatedAt": "2025-10-14",
-    "fork": [
-      "zen"
-    ]
-  },
-  "floating-sidebar": {
-    "stars": 70,
-    "id": "floating-sidebar",
-    "name": "Floating Sidebar",
-    "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/floating-sidebar",
-    "js": true,
-    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/style.css",
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/floating-sidebar/readme.md",
+    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/preferences.json",
+    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/style.css",
+    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/search-engine-select/readme.md",
     "author": "Bibek Bhusal",
     "version": "1.0.0",
     "tags": [
-      "Sidebar",
-      "Pin",
+      "Search",
       "sine",
       "fx-autoconfig",
       "JavaScript",
       "Bibek Bhusal"
     ],
     "createdAt": "2025-06-23",
-    "updatedAt": "2025-07-11"
-  },
-  "browse-bot": {
-    "stars": 70,
-    "id": "browse-bot",
-    "name": "Browse Bot",
-    "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/findbar-ai",
-    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/preferences.json",
-    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/refs/heads/main/findbar-ai/style.css",
-    "js": true,
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/README.md",
-    "author": "Bibek Bhusal",
-    "version": "2.0.0",
-    "tags": [
-      "ai",
-      "findbar",
-      "Arc",
-      "gemini",
-      "Artificial Intelligence",
-      "LLM",
-      "sine",
-      "zen browser",
-      "chat",
-      "BrowseBot",
-      "Mistral",
-      "ChatGPT",
-      "Claude"
-    ],
-    "createdAt": "2024-05-22",
-    "updatedAt": "2025-12-27",
+    "updatedAt": "2025-10-17",
     "fork": [
       "zen"
     ]
@@ -684,19 +684,6 @@
     ],
     "stars": 13
   },
-  "customize-collapsed-sidebar": {
-    "id": "customize-collapsed-sidebar",
-    "name": "Customize Collapsed Sidebar",
-    "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
-    "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
-    "style": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/chrome.css",
-    "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
-    "version": "1.0.5",
-    "fork": [
-      "zen"
-    ],
-    "stars": 12
-  },
   "No-Gaps": {
     "id": "No-Gaps",
     "homepage": "https://github.com/Comp-Tech-Guy/No-Gaps",
@@ -720,6 +707,19 @@
       "Minimal",
       "Neat"
     ],
+    "fork": [
+      "zen"
+    ],
+    "stars": 12
+  },
+  "customize-collapsed-sidebar": {
+    "id": "customize-collapsed-sidebar",
+    "name": "Customize Collapsed Sidebar",
+    "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
+    "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
+    "style": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/chrome.css",
+    "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
+    "version": "1.0.5",
     "fork": [
       "zen"
     ],
@@ -884,17 +884,6 @@
     ],
     "stars": 5
   },
-  "bada16c1-3b14-483b": {
-    "id": "bada16c1-3b14-483b",
-    "homepage": "https://github.com/themaster5209/zen-better-new-tab-button",
-    "name": "Better New Tab button",
-    "version": "1.0.6",
-    "description": "A Zen Browser mod that enhances the New Tab button experience",
-    "style": {
-      "chrome": "userChrome.css"
-    },
-    "stars": 4
-  },
   "collapse-pinned-area": {
     "id": "collapse-pinned-area",
     "name": "Collapse Pinned Area",
@@ -924,29 +913,16 @@
     ],
     "stars": 4
   },
-  "3c8ebf69-1042-49b1-8f08-9178f9490659": {
-    "id": "3c8ebf69-1042-49b1-8f08-9178f9490659",
-    "name": "Better Music Bar",
-    "description": "Make your zen music bar better.",
-    "homepage": "https://github.com/rasyidrafi/zen-always-show-music-bar",
-    "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
+  "bada16c1-3b14-483b": {
+    "id": "bada16c1-3b14-483b",
+    "homepage": "https://github.com/themaster5209/zen-better-new-tab-button",
+    "name": "Better New Tab button",
+    "version": "1.0.6",
+    "description": "A Zen Browser mod that enhances the New Tab button experience",
     "style": {
-      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/chrome.css"
+      "chrome": "userChrome.css"
     },
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
-    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/preferences.json",
-    "author": "rasyidrafi",
-    "version": "1.0.4",
-    "tags": [
-      "UI"
-    ],
-    "createdAt": "2025-07-29",
-    "updatedAt": "2025-08-04",
-    "fork": [
-      "zen",
-      "firefox"
-    ],
-    "stars": 3
+    "stars": 4
   },
   "42b8c4ac-76d5-4521-9917-2e478931ee53": {
     "id": "42b8c4ac-76d5-4521-9917-2e478931ee53",
@@ -972,56 +948,29 @@
     ],
     "stars": 3
   },
-  "new-icons": {
-    "id": "new-icons",
-    "homepage": "https://github.com/qumeqa/zen-icons",
-    "author": "qumeqa",
-    "name": "New icons",
-    "description": "New icons for the toolbar and better locale button",
-    "version": "1.0",
+  "3c8ebf69-1042-49b1-8f08-9178f9490659": {
+    "id": "3c8ebf69-1042-49b1-8f08-9178f9490659",
+    "name": "Better Music Bar",
+    "description": "Make your zen music bar better.",
+    "homepage": "https://github.com/rasyidrafi/zen-always-show-music-bar",
+    "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
     "style": {
-      "chrome": "userChrome.css"
+      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/chrome.css"
     },
-    "readme": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/README.md",
-    "image": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/photo/cover.png",
-    "tags": [
-      "Icons",
-      "New icons",
-      "Toolbar",
-      "Toolbar icons",
-      "Icon pack",
-      "Icon set",
-      "Locale button"
-    ],
-    "fork": [
-      "zen"
-    ],
-    "stars": 2
-  },
-  "e9dae25b-2ddd-4245-8581-a6dcf6d35b82": {
-    "id": "e9dae25b-2ddd-4245-8581-a6dcf6d35b82",
-    "name": "Zen Custom URL Bar",
-    "description": "Customizable URL bar with animations.",
-    "homepage": "https://github.com/rasyidrafi/zen-custom-urlbar",
-    "image": "https://github.com/rasyidrafi/zen-custom-urlbar/blob/main/image.png?raw=true",
-    "style": {
-      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-custom-urlbar/refs/heads/main/chrome.css"
-    },
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-custom-urlbar/refs/heads/main/README.md",
-    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-custom-urlbar/refs/heads/main/preferences.json",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
+    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/preferences.json",
     "author": "rasyidrafi",
-    "version": "2.0.3",
+    "version": "1.0.4",
     "tags": [
-      "Animation",
       "UI"
     ],
     "createdAt": "2025-07-29",
-    "updatedAt": "2025-11-13",
+    "updatedAt": "2025-08-04",
     "fork": [
       "zen",
       "firefox"
     ],
-    "stars": 2
+    "stars": 3
   },
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
@@ -1050,26 +999,56 @@
     ],
     "stars": 2
   },
-  "auto-pip-setting": {
-    "stars": 1,
-    "id": "auto-pip-setting",
-    "name": "Auto-PiP-Setting",
-    "description": "Adds auto-picture-in-picture setting in the unified panel",
-    "js": true,
-    "homepage": "Zylaah/zen-mods/tree/main/auto-pip",
-    "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/auto-pip/README.md",
-    "author": "Bxth",
-    "version": "1.0",
+  "e9dae25b-2ddd-4245-8581-a6dcf6d35b82": {
+    "id": "e9dae25b-2ddd-4245-8581-a6dcf6d35b82",
+    "name": "Zen Custom URL Bar",
+    "description": "Customizable URL bar with animations.",
+    "homepage": "https://github.com/rasyidrafi/zen-custom-urlbar",
+    "image": "https://github.com/rasyidrafi/zen-custom-urlbar/blob/main/image.png?raw=true",
+    "style": {
+      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-custom-urlbar/refs/heads/main/chrome.css"
+    },
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-custom-urlbar/refs/heads/main/README.md",
+    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-custom-urlbar/refs/heads/main/preferences.json",
+    "author": "rasyidrafi",
+    "version": "2.0.3",
     "tags": [
-      "Zen Browser",
-      "Auto-PiP",
-      "Unified Panel"
+      "Animation",
+      "UI"
     ],
-    "createdAt": "2025-12-08",
-    "updatedAt": "2025-12-09",
+    "createdAt": "2025-07-29",
+    "updatedAt": "2025-11-13",
+    "fork": [
+      "zen",
+      "firefox"
+    ],
+    "stars": 2
+  },
+  "new-icons": {
+    "id": "new-icons",
+    "homepage": "https://github.com/qumeqa/zen-icons",
+    "author": "qumeqa",
+    "name": "New icons",
+    "description": "New icons for the toolbar and better locale button",
+    "version": "1.0",
+    "style": {
+      "chrome": "userChrome.css"
+    },
+    "readme": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/README.md",
+    "image": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/photo/cover.png",
+    "tags": [
+      "Icons",
+      "New icons",
+      "Toolbar",
+      "Toolbar icons",
+      "Icon pack",
+      "Icon set",
+      "Locale button"
+    ],
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 2
   },
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
     "id": "3699917d-0238-422a-bb4b-9d37344c0c5f",
@@ -1095,6 +1074,27 @@
       "firefox"
     ],
     "stars": 1
+  },
+  "auto-pip-setting": {
+    "stars": 1,
+    "id": "auto-pip-setting",
+    "name": "Auto-PiP-Setting",
+    "description": "Adds auto-picture-in-picture setting in the unified panel",
+    "js": true,
+    "homepage": "Zylaah/zen-mods/tree/main/auto-pip",
+    "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/auto-pip/README.md",
+    "author": "Bxth",
+    "version": "1.0",
+    "tags": [
+      "Zen Browser",
+      "Auto-PiP",
+      "Unified Panel"
+    ],
+    "createdAt": "2025-12-08",
+    "updatedAt": "2025-12-09",
+    "fork": [
+      "zen"
+    ]
   },
   "IconTweaker": {
     "id": "IconTweaker",
@@ -1123,6 +1123,6 @@
     "stars": 0
   },
   "_meta": {
-    "cursor": "quick-search-zen-browser"
+    "cursor": "quick-tabs"
   }
 }
