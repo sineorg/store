@@ -304,7 +304,7 @@ jobs:
           base: main
 
       - name: Debug Comment Issue
-        if: success() env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: success() && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         run: |
           echo "DEBUG: Preparing to comment on issue"
           echo "DEBUG: THEME_NAME=${{ env.THEME_NAME }}"
