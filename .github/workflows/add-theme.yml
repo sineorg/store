@@ -52,58 +52,6 @@ jobs:
           echo "THEME_HOMEPAGE=${{ fromJson(steps.issue-parser.outputs.jsonString)['homepage'] }}" >> $GITHUB_ENV
           echo "THEME_AUTHOR=${{ github.event.issue.user.login }}" >> $GITHUB_ENV
           echo "THEME_NAME=$(echo '${{ github.event.issue.title }}' | sed 's/^\[add-theme\]://' | xargs)" >> $GITHUB_ENV
-          echo "THEME_JS_FILES=${{ fromJson(steps.issue-parser.outputs.jsonString)['js'] }}" >> $GITHUB_ENV
-
-      - name: Create ownership check script
-        run: |
-          cat << 'EOF' > check_ownership.py
-          import re
-          import sys
-
-          def check_ownership(homepage, issue_creator):
-              pattern = r'github\.com/([^/]+)/([^/]+)'
-              match = re.search(pattern, homepage)
-              if not match:
-                  print("Error: Invalid GitHub repository URL", file=sys.stderr)
-                  sys.exit(1)
-              owner, _ = match.groups()
-              
-              if owner.lower() != issue_creator.lower():
-                  print(f"Error: You must be the owner of the repository ({owner}) to add a theme.", file=sys.stderr)
-                  sys.exit(2)
-
-          if __name__ == "__main__":
-              check_ownership("${{ env.THEME_HOMEPAGE }}", "${{ env.THEME_AUTHOR }}")
-          EOF
-
-      - name: Run ownership check
-        id: ownership-check
-        run: |
-          python check_ownership.py > ownership_output.txt 2> error.log
-          if [ $? -ne 0 ]; then
-            echo "OWNERSHIP_FAILED=true" >> $GITHUB_ENV
-          fi
-
-      - name: Capture ownership output
-        if: env.OWNERSHIP_FAILED == 'true'
-        run: |
-          echo "OWNERSHIP_MESSAGE=$(cat ownership_output.txt 2>/dev/null || echo 'No output available')" >> $GITHUB_ENV
-          ERROR_LOG=$(cat error.log 2>/dev/null || echo "No error details available")
-          echo "ERROR_OUTPUT=Error in ownership check: $ERROR_LOG" >> $GITHUB_ENV
-
-      - name: Close issue for ownership failure
-        if: env.OWNERSHIP_FAILED == 'true'
-        uses: peter-evans/close-issue@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          comment: |
-            # Theme submission not authorized
-
-            There was an issue processing your theme submission:
-
-            > ${{ env.OWNERSHIP_MESSAGE || env.ERROR_OUTPUT }}
-
-            Please ensure you own the repository specified in the homepage URL. If you believe this is an error, contact the maintainers or review the workflow logs.
 
       - name: Create duplicate check script
         if: env.OWNERSHIP_FAILED != 'true'
