@@ -53,6 +53,29 @@ jobs:
           echo "THEME_AUTHOR=${{ github.event.issue.user.login }}" >> $GITHUB_ENV
           echo "THEME_NAME=$(echo '${{ github.event.issue.title }}' | sed 's/^\[add-theme\]://' | xargs)" >> $GITHUB_ENV
 
+          homepage="${{ env.THEME_HOMEPAGE }}"
+          pattern='github\.com/([^/]+)/([^/]+)(/tree/([^/]+)(/(.*))?)?$'
+          
+          if [[ ! "$homepage" =~ $pattern ]]; then
+            echo "Error: Invalid GitHub repository URL" >&2
+            exit 1
+          fi
+          
+          owner="${BASH_REMATCH[1]}"
+          repo="${BASH_REMATCH[2]}"
+          branch="${BASH_REMATCH[4]:-main}"
+          folder="${BASH_REMATCH[6]:-}"
+          
+          raw_url="https://raw.githubusercontent.com/$owner/$repo/$branch"
+          
+          if [[ -n "$folder" ]]; then
+            raw_url="$raw_url/$folder"
+          fi
+          
+          theme_json_url="$raw_url/theme.json"
+          
+          echo "THEME_JSON=$theme_json_url" >> $GITHUB_ENV
+
       - name: Create existing theme check script
         run: |
           cat << 'EOF' > check_existing.py
@@ -62,14 +85,8 @@ jobs:
           import sys
 
           def get_theme_id(homepage):
-              pattern = r'github\.com/([^/]+)/([^/]+)'
-              match = re.search(pattern, homepage)
-              if not match:
-                  print("Error: Invalid GitHub repository URL", file=sys.stderr)
-                  raise ValueError("Invalid GitHub repository URL")
-              owner, repo = match.groups()
-              
-              theme_json_url = f"https://raw.githubusercontent.com/{owner}/{repo}/main/theme.json"
+              theme_json_url = "${{ env.THEME_JSON }}"
+
               try:
                   with urllib.request.urlopen(theme_json_url) as response:
                       theme_data = json.loads(response.read().decode())
@@ -161,22 +178,7 @@ jobs:
           import os
 
           def get_repo_info(homepage):
-              pattern = r'github\.com/([^/]+)/([^/]+)(?:/tree/([^/]+)(?:/(.*))?)?$'
-              match = re.search(pattern, homepage)
-          
-              if not match:
-                  print("Error: Invalid GitHub repository URL", file=sys.stderr)
-                  raise ValueError("Invalid GitHub repository URL")
-          
-              owner, repo, branch, folder = match.groups()
-              branch = branch or "main"
-              folder = folder or ""  # empty string if no folder
-          
-              # Build raw URL
-              raw_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{folder}"
-              if raw_url.endswith("/"):
-                  raw_url = raw_url[:-1]
-              theme_json_url = f"{raw_url}/theme.json"
+              theme_json_url = "${{ env.THEME_JSON }}"
           
               try:
                   with urllib.request.urlopen(theme_json_url) as response:
