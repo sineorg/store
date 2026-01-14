@@ -157,6 +157,7 @@ jobs:
 
       - name: Close issue for existing theme
         uses: peter-evans/close-issue@v3
+        if: env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           comment: |
@@ -239,7 +240,7 @@ jobs:
           EOF
 
       - name: Run update script
-        if: env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true' && env.JS_DOWNLOAD_FAILED != 'true'
+        if: env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         run: |
           python update_marketplace.py > update_output.txt 2> error.log
           if [ $? -ne 0 ]; then
@@ -247,7 +248,7 @@ jobs:
           fi
 
       - name: Export error output
-        if: failure() && env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: failure() && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         run: |
           if [ -f error.log ]; then
             cat error.log
@@ -259,7 +260,7 @@ jobs:
           fi
 
       - name: Show error message
-        if: failure() && env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: failure() && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         uses: peter-evans/close-issue@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -303,7 +304,7 @@ jobs:
           base: main
 
       - name: Debug Comment Issue
-        if: success() && env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: success() env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         run: |
           echo "DEBUG: Preparing to comment on issue"
           echo "DEBUG: THEME_NAME=${{ env.THEME_NAME }}"
@@ -316,12 +317,12 @@ jobs:
           echo "* It has been created in the branch [add-theme-${{ github.event.issue.number }}](https://github.com/${{ github.repository }}/tree/add-theme-${{ github.event.issue.number }})."
 
       - name: Comment on Issue
-        if: success() && env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: success() && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         run: |
           curl -s -X POST \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            -d "{\"body\": \"# Thank you for your contribution! :tada:\n\nYour theme \\\"${{ env.THEME_NAME }}\\\" has been successfully submitted. The maintainers will review it and get back to you soon.\n\nHere are some details about your submission:\n* Your theme has been requested into a new pull request.\n* It has been created in the branch [add-theme-${{ github.event.issue.number }}](https://github.com/${{ github.repository }}/tree/add-theme-${{ github.event.issue.number }}).\n* JS files (if any) have been downloaded and placed in the mods directory.\"}" \
+            -d "{\"body\": \"# Thank you for your contribution! :tada:\n\nYour theme \\\"${{ env.THEME_NAME }}\\\" has been successfully submitted. The maintainers will review it and get back to you soon.\n\nHere are some details about your submission:\n* Your theme has been requested into a new pull request.\n* It has been created in the branch [add-theme-${{ github.event.issue.number }}](https://github.com/${{ github.repository }}/tree/add-theme-${{ github.event.issue.number }}).\"}" \
             https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments > comment_response.txt
           if [ $? -eq 0 ]; then
             echo "DEBUG: Comment posted successfully"
@@ -349,7 +350,7 @@ jobs:
           fi
 
       - name: Close Issue
-        if: success() && env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: success() && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         uses: peter-evans/close-issue@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
