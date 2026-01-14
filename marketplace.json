@@ -692,7 +692,7 @@
     "description": "There will be no gaps in the sides to have a sleek look for every layout",
     "version": "2.5.2",
     "style": {
-      "chrome": "https://raw.githubusercontent.com/Comp-Tech-Guy/No-Gaps/refs/heads/main/style.css"
+      "chrome": "style.css"
     },
     "readme": "https://raw.githubusercontent.com/Comp-Tech-Guy/No-Gaps/refs/heads/main/README.md",
     "image": "https://github.com/Comp-Tech-Guy/No-Gaps/blob/main/images/CompactMode.png?raw=true",
