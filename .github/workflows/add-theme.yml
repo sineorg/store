@@ -157,7 +157,7 @@ jobs:
 
       - name: Close issue for existing theme
         uses: peter-evans/close-issue@v3
-        if: env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: env.EXISTING_FOUND == 'true' && env.EXISTING_CHECK_FAILED == 'true'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           comment: |
