@@ -265,5 +265,6 @@ jobs:
             --base main \
             --head "$branch"
 
-  call-workflow-2-in-local-repo:
+  call-update:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     uses: ./.github/workflows/update-marketplace.yml
