@@ -1,6 +1,7 @@
 name: Update marketplace
 
 on:
+  workflow_call:
   schedule:
     - cron: "*/7 * * * *"
   workflow_dispatch:
@@ -8,7 +9,6 @@ on:
       mod_id:
         description: "Custom mod id to process"
         required: false
-  workflow_call:
 
 permissions:
   contents: write
@@ -266,5 +266,4 @@ jobs:
             --head "$branch"
 
   call-update:
-    if: ${{ github.event_name == 'workflow_dispatch' }}
     uses: ./.github/workflows/update-marketplace.yml
