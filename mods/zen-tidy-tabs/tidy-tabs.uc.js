@@ -4,14 +4,15 @@
 // @description    sorts tab and arrange them into tab groups
 // ==/UserScript==
 
+const UC_API = ChromeUtils.importESModule("chrome://userchromejs/content/uc_api.sys.mjs");
+
 (() => {
   const CONFIG = {
     SIMILARITY_THRESHOLD: 0.45,
     GROUP_SIMILARITY_THRESHOLD: 0.75,
-    MIN_TABS_FOR_SORT: 6,
+    MIN_TABS_FOR_SORT: 6, // This is the ammount of tabs for the button to show, not the ammount of tabs you need in a group
     DEBOUNCE_DELAY: 250,
     ANIMATION_DURATION: 800,
-    CLEAR_ANIMATION_DURATION: 600,
     MAX_INIT_CHECKS: 50,
     INIT_CHECK_INTERVAL: 100,
     CONSOLIDATION_DISTANCE_THRESHOLD: 2,
@@ -20,9 +21,8 @@
 
   // --- Globals & State ---
   let isSorting = false;
-  let isClearing = false;
   let sortButtonListenerAdded = false;
-  let clearButtonListenerAdded = false;
+  let isPlayingFailureAnimation = false;
   let sortAnimationId = null;
   let eventListenersAdded = false;
 
@@ -654,6 +654,11 @@
 
   // Animation cleanup utility
   const cleanupAnimation = () => {
+    // Don't cleanup if failure animation is playing
+    if (isPlayingFailureAnimation) {
+      return;
+    }
+
     if (sortAnimationId !== null) {
       cancelAnimationFrame(sortAnimationId);
       sortAnimationId = null;
@@ -669,6 +674,88 @@
       } catch (resetError) {
         console.error("Error resetting animation:", resetError);
       }
+    }
+  };
+
+  // Spiky failure animation utility
+  const startFailureAnimation = () => {
+    if (sortAnimationId !== null) {
+      cancelAnimationFrame(sortAnimationId);
+    }
+
+    isPlayingFailureAnimation = true;
+
+    try {
+      const activeSeparator = document.querySelector(
+        ".pinned-tabs-container-separator:not(.has-no-sortable-tabs)"
+      );
+      const pathElement = activeSeparator?.querySelector("#separator-path");
+
+      if (pathElement) {
+        const maxAmplitude = 8; // Much higher amplitude for spiky effect
+        const frequency = 20; // Higher frequency for more spikes
+        const segments = 100; // More segments for sharper spikes
+        const pulseDuration = 400; // Duration of each pulse
+        const totalPulses = 3; // Number of pulses
+        let currentPulse = 0;
+        let t = 0;
+        let startTime = performance.now();
+        let pulseStartTime = startTime;
+
+        function animateFailureLoop(timestamp) {
+          if (sortAnimationId === null) return;
+
+          const elapsedSincePulseStart = timestamp - pulseStartTime;
+          const pulseProgress = elapsedSincePulseStart / pulseDuration;
+
+          if (pulseProgress >= 1) {
+            currentPulse++;
+            if (currentPulse >= totalPulses) {
+              // Animation complete, reset to straight line
+              pathElement.setAttribute("d", "M 0 1 L 100 1");
+              sortAnimationId = null;
+              isPlayingFailureAnimation = false;
+              return;
+            }
+            // Start next pulse
+            pulseStartTime = timestamp;
+          }
+
+          // Create spiky wave with sharp peaks and valleys
+          const currentProgress = Math.min(pulseProgress, 1);
+          const intensity = Math.sin(currentProgress * Math.PI); // Pulse intensity (0 to 1 to 0)
+          const currentAmplitude = maxAmplitude * intensity;
+
+          t += 1.2; // Faster animation speed
+
+          const points = [];
+          for (let i = 0; i <= segments; i++) {
+            const x = (i / segments) * 100;
+            // Create sharp spikes using a combination of sine waves
+            const baseWave = Math.sin(
+              (x / (100 / frequency)) * 2 * Math.PI + t * 0.15
+            );
+            const sharpWave =
+              Math.sign(baseWave) * Math.pow(Math.abs(baseWave), 0.3); // Sharp peaks
+            const y = 1 + currentAmplitude * sharpWave;
+            points.push(`${x.toFixed(2)},${y.toFixed(2)}`);
+          }
+
+          if (pathElement?.isConnected) {
+            const pathData = "M" + points.join(" L");
+            pathElement.setAttribute("d", pathData);
+            sortAnimationId = requestAnimationFrame(animateFailureLoop);
+          } else {
+            sortAnimationId = null;
+            isPlayingFailureAnimation = false;
+          }
+        }
+
+        sortAnimationId = requestAnimationFrame(animateFailureLoop);
+      }
+    } catch (error) {
+      console.error("Error in failure animation:", error);
+      isPlayingFailureAnimation = false;
     }
   };
 
@@ -742,13 +829,27 @@
         return !isInGroupInCorrectWorkspace;
       });
 
+      console.log(
+        "[TabSort] Debug - Initial tabs to sort count:",
+        initialTabsToSort.length
+      );
       if (initialTabsToSort.length === 0) {
+        console.log("[TabSort] Debug - No tabs to sort, returning early");
         return;
       }
 
       // --- AI Grouping ---
-
+      console.log(
+        "[TabSort] Debug - Starting AI grouping for",
+        initialTabsToSort.length,
+        "tabs"
+      );
       const aiTabTopics = await askAIForMultipleTopics(initialTabsToSort);
+      console.log(
+        "[TabSort] Debug - AI returned",
+        aiTabTopics.length,
+        "tab-topic pairs"
+      );
       // --- End AI Grouping ---
 
       // --- Create Final Groups ---
@@ -831,7 +932,41 @@
 
       // --- End Consolidation ---
 
+      // Check if sorting failed (no groups created from sortable tabs)
+      // Count groups with more than 1 tab (single tab groups are not considered successful sorting)
+      const multiTabGroups = Object.values(finalGroups).filter(
+        (tabs) => tabs.length > 1
+      );
+      const sortingFailed =
+        multiTabGroups.length === 0 && initialTabsToSort.length > 1;
+
+      console.log(
+        "[TabSort] Debug - Initial tabs to sort:",
+        initialTabsToSort.length
+      );
+      console.log("[TabSort] Debug - Final groups:", Object.keys(finalGroups));
+      console.log("[TabSort] Debug - Multi-tab groups:", multiTabGroups.length);
+      console.log(
+        "[TabSort] Debug - multiTabGroups.length === 0:",
+        multiTabGroups.length === 0
+      );
+      console.log(
+        "[TabSort] Debug - initialTabsToSort.length > 1:",
+        initialTabsToSort.length > 1
+      );
+      console.log("[TabSort] Debug - Sorting failed:", sortingFailed);
+
+      if (sortingFailed) {
+        console.log("[TabSort] Triggering failure animation");
+        // Trigger failure animation
+        startFailureAnimation();
+        return;
+      }
+
       if (Object.keys(finalGroups).length === 0) {
+        console.log(
+          "[TabSort] Debug - No final groups, returning early (this should not happen after failure detection)"
+        );
         return;
       }
 
@@ -986,95 +1121,144 @@
           }
         }
       } // End loop through final groups
+
+      // --- Reorder tabs: groups first, then ungrouped tabs ---
+      try {
+        const workspaceElement = gZenWorkspaces?.activeWorkspaceElement;
+        
+        if (workspaceElement?.tabsContainer) {
+          const tabsContainer = workspaceElement.tabsContainer;
+          const allChildren = Array.from(tabsContainer.children);
+          
+          // Separate groups and ungrouped tabs
+          // Since we're in the workspace's tabsContainer, all direct children belong to this workspace
+          const groups = [];
+          const ungroupedTabs = [];
+          const otherElements = []; // For any other elements (like periphery hbox)
+          
+          for (const child of allChildren) {
+            const tagName = child.tagName?.toLowerCase();
+            if (tagName === "tab-group") {
+              // All tab-groups in this container belong to the workspace
+              groups.push(child);
+            } else if (tagName === "tab") {
+              // Check if tab is valid (not empty, not glance)
+              if (
+                !child.hasAttribute("zen-empty-tab") &&
+                !child.hasAttribute("zen-glance-tab")
+              ) {
+                ungroupedTabs.push(child);
+              } else {
+                otherElements.push(child);
+              }
+            } else {
+              // Other elements (like hbox periphery)
+              otherElements.push(child);
+            }
+          }
+          
+          console.log("[TabSort] Reorder - groups:", groups.length, "ungrouped:", ungroupedTabs.length);
+          
+          // Only reorder if we have both groups AND ungrouped tabs
+          if (groups.length > 0 && ungroupedTabs.length > 0) {
+            console.log("[TabSort] Reorder - Moving ungrouped tabs below groups...");
+            
+            // Move each ungrouped tab to after the last group
+            const lastGroup = groups[groups.length - 1];
+            let insertAfterElement = lastGroup;
+            
+            ungroupedTabs.forEach((tab) => {
+              if (tab.isConnected && insertAfterElement?.isConnected) {
+                // Insert tab after the reference element
+                const nextSibling = insertAfterElement.nextSibling;
+                if (nextSibling) {
+                  tabsContainer.insertBefore(tab, nextSibling);
+                } else {
+                  tabsContainer.appendChild(tab);
+                }
+                insertAfterElement = tab;
+              }
+            });
+            
+            console.log("[TabSort] Reorder - Complete!");
+          }
+        }
+      } catch (reorderError) {
+        console.error("Error reordering tabs (groups first):", reorderError);
+        // Don't fail the whole sort if reordering fails
+      }
     } catch (error) {
       console.error("Error during overall sorting process:", error);
     } finally {
-      isSorting = false;
+      // If failure animation is playing, delay the cleanup
+      if (isPlayingFailureAnimation) {
+        // Wait for failure animation to complete (3 pulses * 400ms each + buffer)
+        setTimeout(() => {
+          isSorting = false;
+          cleanupAnimation();
 
-      // Cleanup animation
-      cleanupAnimation();
+          // Remove separator pulse indicator
+          if (separatorsToSort.length > 0) {
+            batchDOMUpdates([
+              () =>
+                separatorsToSort.forEach((sep) => {
+                  if (sep?.isConnected) {
+                    sep.classList.remove("separator-is-sorting");
+                  }
+                }),
+            ]);
+          }
 
-      // Remove separator pulse indicator
-      if (separatorsToSort.length > 0) {
-        batchDOMUpdates([
-          () =>
-            separatorsToSort.forEach((sep) => {
-              if (sep?.isConnected) {
-                sep.classList.remove("separator-is-sorting");
-              }
-            }),
-        ]);
-      }
-
-      // Remove tab loading indicators and update button visibility
-      setTimeout(() => {
-        batchDOMUpdates([
-          () => {
-            if (typeof gBrowser !== "undefined" && gBrowser.tabs) {
-              Array.from(gBrowser.tabs).forEach((tab) => {
-                if (tab?.isConnected) {
-                  tab.classList.remove("tab-is-sorting");
+          // Remove tab loading indicators and update button visibility
+          setTimeout(() => {
+            batchDOMUpdates([
+              () => {
+                if (typeof gBrowser !== "undefined" && gBrowser.tabs) {
+                  Array.from(gBrowser.tabs).forEach((tab) => {
+                    if (tab?.isConnected) {
+                      tab.classList.remove("tab-is-sorting");
+                    }
+                  });
                 }
-              });
-            }
-          },
-        ]);
-        updateButtonsVisibilityState();
-      }, 500);
-    }
-  };
+              },
+            ]);
+            updateButtonsVisibilityState();
+          }, 500);
+        }, 1500); // 3 pulses * 400ms + 300ms buffer
+      } else {
+        isSorting = false;
 
-  // --- New function to clear ungrouped tabs ---
-  const clearUngroupedTabs = () => {
-    if (isClearing) return;
-    isClearing = true;
+        // Cleanup animation
+        cleanupAnimation();
 
-    try {
-      const currentWorkspaceId = window.gZenWorkspaces?.activeWorkspace;
-      if (!currentWorkspaceId) {
-        console.error("Cannot get current workspace ID.");
-        return;
-      }
+        // Remove separator pulse indicator
+        if (separatorsToSort.length > 0) {
+          batchDOMUpdates([
+            () =>
+              separatorsToSort.forEach((sep) => {
+                if (sep?.isConnected) {
+                  sep.classList.remove("separator-is-sorting");
+                }
+              }),
+          ]);
+        }
 
-      // Get tabs using optimized filtering
-      const tabsToClose = getFilteredTabs(currentWorkspaceId, {
-        includeGrouped: false,
-        includeSelected: false,
-        includePinned: false,
-        includeEmpty: false,
-        includeGlance: false,
-      });
-
-      if (tabsToClose.length === 0) return;
-
-      // Close the tabs in reverse order to avoid index shifting issues
-      const reversedTabs = [...tabsToClose].reverse();
-
-      batchDOMUpdates([
-        () => {
-          reversedTabs.forEach((tab) => {
-            try {
-              if (
-                tab?.isConnected &&
-                typeof gBrowser?.removeTab === "function"
-              ) {
-                gBrowser.removeTab(tab);
+        // Remove tab loading indicators and update button visibility
+        setTimeout(() => {
+          batchDOMUpdates([
+            () => {
+              if (typeof gBrowser !== "undefined" && gBrowser.tabs) {
+                Array.from(gBrowser.tabs).forEach((tab) => {
+                  if (tab?.isConnected) {
+                    tab.classList.remove("tab-is-sorting");
+                  }
+                });
               }
-            } catch (e) {
-              console.error("Error closing tab:", e);
-            }
-          });
-        },
-      ]);
-    } catch (error) {
-      console.error("Error during tab clearing process:", error);
-    } finally {
-      isClearing = false;
-
-      // Update button visibility immediately after clearing is complete
-      setTimeout(() => {
-        updateButtonsVisibilityState();
-      }, 50);
+            },
+          ]);
+          updateButtonsVisibilityState();
+        }, 500);
+      }
     }
   };
 
@@ -1108,8 +1292,10 @@
       }
       // --- End SVG ---
 
-      // --- Create and Append Sort Button ---
+      // --- Create and Append Sort Button (positioned before native clear button) ---
       if (!separator.querySelector("#sort-button")) {
+        // Find the native clear button to position sort button before it
+        const nativeClearButton = separator.querySelector(".zen-workspace-close-unpinned-tabs-button");
         const buttonFragment = window.MozXULElement.parseXULToFragment(`
                         <toolbarbutton
                             id="sort-button"
@@ -1119,8 +1305,8 @@
                             <hbox class="toolbarbutton-box" align="center">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 28 28" class="broom-icon">
                                     <g>
-                                        <path d="M19.9132 21.3765C19.8875 21.0162 19.6455 20.7069 19.3007 20.5993L7.21755 16.8291C6.87269 16.7215 6.49768 16.8384 6.27165 17.1202C5.73893 17.7845 4.72031 19.025 3.78544 19.9965C2.4425 21.392 3.01177 22.4772 4.66526 22.9931C4.82548 23.0431 5.78822 21.7398 6.20045 21.7398C6.51906 21.8392 6.8758 23.6828 7.26122 23.8031C7.87402 23.9943 8.55929 24.2081 9.27891 24.4326C9.59033 24.5298 10.2101 23.0557 10.5313 23.1559C10.7774 23.2327 10.7236 24.8834 10.9723 24.961C11.8322 25.2293 12.699 25.4997 13.5152 25.7544C13.868 25.8645 14.8344 24.3299 15.1637 24.4326C15.496 24.5363 15.191 26.2773 15.4898 26.3705C16.7587 26.7664 17.6824 27.0546 17.895 27.1209C19.5487 27.6369 20.6333 27.068 20.3226 25.1563C20.1063 23.8255 19.9737 22.2258 19.9132 21.3765Z" fill="currentColor" stroke="none"/>
-                                        <path d="M16.719 1.7134C17.4929-0.767192 20.7999 0.264626 20.026 2.74523C19.2521 5.22583 18.1514 8.75696 17.9629 9.36C17.7045 10.1867 16.1569 15.1482 15.899 15.9749L19.2063 17.0068C20.8597 17.5227 20.205 19.974 18.4514 19.4268L8.52918 16.331C6.87208 15.8139 7.62682 13.3938 9.28426 13.911L12.5916 14.9429C12.8495 14.1163 14.3976 9.15491 14.6555 8.32807C14.9135 7.50122 15.9451 4.19399 16.719 1.7134Z" fill="currentColor" stroke="none"/>
+                                        <path d="M19.9132 21.3765C19.8875 21.0162 19.6455 20.7069 19.3007 20.5993L7.21755 16.8291C6.87269 16.7215 6.49768 16.8384 6.27165 17.1202C5.73893 17.7845 4.72031 19.025 3.78544 19.9965C2.4425 21.392 3.01177 22.4772 4.66526 22.9931C4.82548 23.0431 5.78822 21.7398 6.20045 21.7398C6.51906 21.8392 6.8758 23.6828 7.26122 23.8031C7.87402 23.9943 8.55929 24.2081 9.27891 24.4326C9.59033 24.5298 10.2101 23.0557 10.5313 23.1559C10.7774 23.2327 10.7236 24.8834 10.9723 24.961C11.8322 25.2293 12.699 25.4997 13.5152 25.7544C13.868 25.8645 14.8344 24.3299 15.1637 24.4326C15.496 24.5363 15.191 26.2773 15.4898 26.3705C16.7587 26.7664 17.6824 27.0546 17.895 27.1209C19.5487 27.6369 20.6333 27.068 20.3226 25.1563C20.1063 23.8255 19.9737 22.2258 19.9132 21.3765Z" stroke="none"/>
+                                        <path d="M16.719 1.7134C17.4929-0.767192 20.7999 0.264626 20.026 2.74523C19.2521 5.22583 18.1514 8.75696 17.9629 9.36C17.7045 10.1867 16.1569 15.1482 15.899 15.9749L19.2063 17.0068C20.8597 17.5227 20.205 19.974 18.4514 19.4268L8.52918 16.331C6.87208 15.8139 7.62682 13.3938 9.28426 13.911L12.5916 14.9429C12.8495 14.1163 14.3976 9.15491 14.6555 8.32807C14.9135 7.50122 15.9451 4.19399 16.719 1.7134Z" stroke="none"/>
                                     </g>
                                 </svg>
                             </hbox>
@@ -1128,33 +1314,15 @@
                     `);
         const buttonNode = buttonFragment.firstChild.cloneNode(true);
 
-        separator.appendChild(buttonNode);
+        // Insert before native clear button if it exists, otherwise append
+        if (nativeClearButton) {
+          separator.insertBefore(buttonNode, nativeClearButton);
+        } else {
+          separator.appendChild(buttonNode);
+        }
       } else {
       }
       // --- End Sort Button ---
-
-      // --- Create and Append Clear Button ---
-      if (!separator.querySelector("#clear-button")) {
-        const clearButtonFragment = window.MozXULElement.parseXULToFragment(`
-                        <toolbarbutton
-                            id="clear-button"
-                            class="clear-button-with-icon"
-                            command="cmd_zenClearTabs"
-                            tooltiptext="Close All Ungrouped Tabs (Except Selected)">
-                            <hbox class="toolbarbutton-box" align="center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" class="arrow-icon">
-                                    <path d="M12 2v18m-7-6l7 8 7-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                                <label class="toolbarbutton-text" value="Clear" crop="right"/>
-                            </hbox>
-                        </toolbarbutton>
-                    `);
-        const clearButtonNode = clearButtonFragment.firstChild.cloneNode(true);
-
-        separator.appendChild(clearButtonNode);
-      } else {
-      }
-      // --- End Clear Button ---
     } catch (e) {}
   }
 
@@ -1185,16 +1353,6 @@
           `<command id="cmd_zenSortTabs"/>`
         ).firstChild;
         zenCommands.appendChild(command);
-      } catch (e) {}
-    }
-
-    // Add Clear command
-    if (!zenCommands.querySelector("#cmd_zenClearTabs")) {
-      try {
-        const clearCommand = window.MozXULElement.parseXULToFragment(
-          `<command id="cmd_zenClearTabs"/>`
-        ).firstChild;
-        zenCommands.appendChild(clearCommand);
       } catch (e) {}
     }
 
@@ -1287,31 +1445,6 @@
           }
         });
         sortButtonListenerAdded = true;
-      } catch (e) {}
-    }
-
-    // Add Clear button listener
-    if (!clearButtonListenerAdded) {
-      try {
-        zenCommands.addEventListener("command", (event) => {
-          if (event.target.id === "cmd_zenClearTabs") {
-            // Add animation class to clear button
-            const clearButton = document.querySelector("#clear-button");
-            if (clearButton) {
-              clearButton.classList.add("clearing");
-              // Remove class after animation completes
-              setTimeout(() => {
-                if (clearButton?.isConnected) {
-                  clearButton.classList.remove("clearing");
-                }
-              }, CONFIG.CLEAR_ANIMATION_DURATION);
-            }
-
-            // Call the actual clearing function
-            clearUngroupedTabs();
-          }
-        });
-        clearButtonListenerAdded = true;
       } catch (e) {}
     }
   }
@@ -1434,16 +1567,6 @@
             }
           }
 
-          // Handle Clear button visibility
-          const clearButton = separator.querySelector("#clear-button");
-          if (clearButton) {
-            if (ungroupedNonSelected > 0) {
-              clearButton.classList.remove("hidden-button");
-            } else {
-              clearButton.classList.add("hidden-button");
-            }
-          }
-
           // Always keep the separator visible
           separator.classList.remove("has-no-sortable-tabs");
         });
@@ -1525,7 +1648,6 @@
 
       // Reset state
       isSorting = false;
-      isClearing = false;
       eventListenersAdded = false;
 
       console.log("Tab sort script cleanup completed");
@@ -1557,6 +1679,7 @@
           setupgZenWorkspacesHooks();
           updateButtonsVisibilityState();
           addTabEventListeners();
+
           return true;
         }
       } catch (e) {
