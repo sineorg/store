@@ -1122,9 +1122,6 @@
     ],
     "stars": 0
   },
-  "_meta": {
-    "cursor": "context-menu-icons"
-  },
   "zen-auto-expand-sidebar": {
     "id": "zen-auto-expand-sidebar",
     "name": "Zen Auto Expand Sidebar",
