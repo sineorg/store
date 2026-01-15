@@ -264,3 +264,6 @@ jobs:
             --body "$body" \
             --base main \
             --head "$branch"
+
+  call-workflow-2-in-local-repo:
+    uses: ./.github/workflows/update-marketplace.yml
