@@ -49,12 +49,34 @@ jobs:
       - name: Export parsed payload into variables
         id: export
         run: |
-          echo "THEME_HOMEPAGE=${{ fromJson(steps.issue-parser.outputs.jsonString)['homepage'] }}" >> $GITHUB_ENV
+          homepage="${{ fromJson(steps.issue-parser.outputs.jsonString)['homepage'] }}"
+        
+          echo "THEME_HOMEPAGE=$homepage" >> $GITHUB_ENV
           echo "THEME_AUTHOR=${{ github.event.issue.user.login }}" >> $GITHUB_ENV
           echo "THEME_NAME=$(echo '${{ github.event.issue.title }}' | sed 's/^\[add-theme\]://' | xargs)" >> $GITHUB_ENV
 
+          pattern='^https?://(www\.)?github\.com/([^/]+)/([^/]+)(/tree/([^/]+)(/(.*))?)?$'
+          
+          if [[ ! "$homepage" =~ $pattern ]]; then
+            echo "Error: Invalid GitHub repository URL" >&2
+            exit 1
+          fi
+          
+          owner="${BASH_REMATCH[2]}"
+          repo="${BASH_REMATCH[3]}"
+          branch="${BASH_REMATCH[5]:-main}"
+          folder="${BASH_REMATCH[7]:-}"
+          
+          raw_url="https://raw.githubusercontent.com/$owner/$repo/$branch"
+          [[ -n "$folder" ]] && raw_url="$raw_url/$folder"
+          
+          theme_json_url="$raw_url/theme.json"
+          
+          echo "$theme_json_url"
+
+          echo "THEME_JSON=$theme_json_url" >> $GITHUB_ENV
+
       - name: Create existing theme check script
-        if: env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true'
         run: |
           cat << 'EOF' > check_existing.py
           import json
@@ -63,14 +85,8 @@ jobs:
           import sys
 
           def get_theme_id(homepage):
-              pattern = r'github\.com/([^/]+)/([^/]+)'
-              match = re.search(pattern, homepage)
-              if not match:
-                  print("Error: Invalid GitHub repository URL", file=sys.stderr)
-                  raise ValueError("Invalid GitHub repository URL")
-              owner, repo = match.groups()
-              
-              theme_json_url = f"https://raw.githubusercontent.com/{owner}/{repo}/main/theme.json"
+              theme_json_url = "${{ env.THEME_JSON }}"
+
               try:
                   with urllib.request.urlopen(theme_json_url) as response:
                       theme_data = json.loads(response.read().decode())
@@ -119,7 +135,6 @@ jobs:
           EOF
 
       - name: Run existing theme check
-        if: env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true'
         run: |
           python check_existing.py > existing_output.txt 2> error.log
           if [ $? -ne 0 ]; then
@@ -127,7 +142,6 @@ jobs:
           fi
 
       - name: Capture existing theme output
-        if: env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true'
         run: |
           EXISTING_OUTPUT=$(cat existing_output.txt 2>/dev/null | grep -v "DEBUG:" || echo "No output available")
           ERROR_LOG=$(cat error.log 2>/dev/null | grep -v "DEBUG:" || echo "No error details available")
@@ -142,8 +156,8 @@ jobs:
           fi
 
       - name: Close issue for existing theme
-        if: env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && (env.EXISTING_FOUND == 'true' || env.EXISTING_CHECK_FAILED == 'true')
         uses: peter-evans/close-issue@v3
+        if: env.EXISTING_FOUND == 'true' && env.EXISTING_CHECK_FAILED == 'true'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           comment: |
@@ -156,7 +170,6 @@ jobs:
             This may be because the theme is already included in the marketplace. Please check the marketplace in marketplace.json, verify your homepage URL is in the format 'https://github.com/owner/repo', and ensure your theme.json contains a valid 'id' property. If you believe this is an error, contact the maintainers or review the workflow logs.
 
       - name: Create update script
-        if: env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true' && env.JS_DOWNLOAD_FAILED != 'true'
         run: |
           cat << 'EOF' > update_marketplace.py
           import json
@@ -166,22 +179,7 @@ jobs:
           import os
 
           def get_repo_info(homepage):
-              pattern = r'github\.com/([^/]+)/([^/]+)(?:/tree/([^/]+)(?:/(.*))?)?$'
-              match = re.search(pattern, homepage)
-          
-              if not match:
-                  print("Error: Invalid GitHub repository URL", file=sys.stderr)
-                  raise ValueError("Invalid GitHub repository URL")
-          
-              owner, repo, branch, folder = match.groups()
-              branch = branch or "main"
-              folder = folder or ""  # empty string if no folder
-          
-              # Build raw URL
-              raw_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{folder}"
-              if raw_url.endswith("/"):
-                  raw_url = raw_url[:-1]
-              theme_json_url = f"{raw_url}/theme.json"
+              theme_json_url = "${{ env.THEME_JSON }}"
           
               try:
                   with urllib.request.urlopen(theme_json_url) as response:
@@ -242,7 +240,7 @@ jobs:
           EOF
 
       - name: Run update script
-        if: env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true' && env.JS_DOWNLOAD_FAILED != 'true'
+        if: env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         run: |
           python update_marketplace.py > update_output.txt 2> error.log
           if [ $? -ne 0 ]; then
@@ -250,7 +248,7 @@ jobs:
           fi
 
       - name: Export error output
-        if: failure() && env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: failure() && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         run: |
           if [ -f error.log ]; then
             cat error.log
@@ -262,7 +260,7 @@ jobs:
           fi
 
       - name: Show error message
-        if: failure() && env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: failure() && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         uses: peter-evans/close-issue@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -276,13 +274,13 @@ jobs:
             Please verify your homepage URL is in the format 'https://github.com/owner/repo' and your theme.json contains a valid 'id' property. If you believe this is an error, contact the maintainers or review the workflow logs.
 
       - name: Setup Git
-        if: success() && env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: success() && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create Pull Request
-        if: success() && env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: success() && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           add-paths: |
@@ -306,7 +304,7 @@ jobs:
           base: main
 
       - name: Debug Comment Issue
-        if: success() && env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: success() && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         run: |
           echo "DEBUG: Preparing to comment on issue"
           echo "DEBUG: THEME_NAME=${{ env.THEME_NAME }}"
@@ -319,12 +317,12 @@ jobs:
           echo "* It has been created in the branch [add-theme-${{ github.event.issue.number }}](https://github.com/${{ github.repository }}/tree/add-theme-${{ github.event.issue.number }})."
 
       - name: Comment on Issue
-        if: success() && env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: success() && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         run: |
           curl -s -X POST \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            -d "{\"body\": \"# Thank you for your contribution! :tada:\n\nYour theme \\\"${{ env.THEME_NAME }}\\\" has been successfully submitted. The maintainers will review it and get back to you soon.\n\nHere are some details about your submission:\n* Your theme has been requested into a new pull request.\n* It has been created in the branch [add-theme-${{ github.event.issue.number }}](https://github.com/${{ github.repository }}/tree/add-theme-${{ github.event.issue.number }}).\n* JS files (if any) have been downloaded and placed in the mods directory.\"}" \
+            -d "{\"body\": \"# Thank you for your contribution! :tada:\n\nYour theme \\\"${{ env.THEME_NAME }}\\\" has been successfully submitted. The maintainers will review it and get back to you soon.\n\nHere are some details about your submission:\n* Your theme has been requested into a new pull request.\n* It has been created in the branch [add-theme-${{ github.event.issue.number }}](https://github.com/${{ github.repository }}/tree/add-theme-${{ github.event.issue.number }}).\"}" \
             https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments > comment_response.txt
           if [ $? -eq 0 ]; then
             echo "DEBUG: Comment posted successfully"
@@ -352,7 +350,7 @@ jobs:
           fi
 
       - name: Close Issue
-        if: success() && env.OWNERSHIP_FAILED != 'true' && env.DUPLICATE_FOUND != 'true' && env.DUPLICATE_CHECK_FAILED != 'true' && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
+        if: success() && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
         uses: peter-evans/close-issue@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
