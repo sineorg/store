@@ -264,6 +264,3 @@ jobs:
             --body "$body" \
             --base main \
             --head "$branch"
-
-  call-update:
-    uses: ./.github/workflows/update-marketplace.yml
