@@ -32,6 +32,12 @@ jobs:
             echo '{}' > marketplace.json
           fi
 
+      - name: Ensure meta.json exists
+        run: |
+          if [[ ! -f meta.json ]]; then
+            echo '{}' > meta.json
+          fi
+
       # ─────────────────────────────────────────────
       # Pick NEXT mod via cursor
       # ─────────────────────────────────────────────
@@ -40,30 +46,35 @@ jobs:
         run: |
           next_mod=$(
             jq -r '
-              . as $root
-              | keys
+              keys
               | sort
-              | map(select(. != "_meta"))
               | . as $keys
-              | ($root._meta.cursor // "") as $cursor
               | if ($keys | length) == 0 then empty
-                elif $cursor == "" then $keys[0]
                 else
-                  ($keys | index($cursor)) as $i
-                  | if $i == null then $keys[0]
-                    else $keys[($i + 1) % ($keys | length)]
-                    end
+                  $keys
                 end
-            ' marketplace.json
+            ' marketplace.json \
+            | jq -R . \
+            | jq -s '
+                . as $keys
+                | (input | .cursor // "") as $cursor
+                | if $cursor == "" then $keys[0]
+                  else
+                    ($keys | index($cursor)) as $i
+                    | if $i == null then $keys[0]
+                      else $keys[($i + 1) % ($keys | length)]
+                      end
+                  end
+              ' meta.json
           )
-
+      
           if [ "${{ github.event.inputs.mod_id }}" ]; then
             next_mod="${{ github.event.inputs.mod_id }}"
           fi
-
+      
           echo "modId=$next_mod" >> "$GITHUB_OUTPUT"
           echo "branch=bot/mod/$next_mod" >> "$GITHUB_OUTPUT"
-
+      
           echo "Selected mod: $next_mod"
 
       - name: Commit cursor progress and sort
@@ -73,22 +84,20 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
       
-          # Advance cursor ONLY
+          # Advance cursor
           jq --arg mod "$modId" '
-            ._meta.cursor = $mod
-          ' marketplace.json > tmp.json && mv tmp.json marketplace.json
-
-          jq '
-              ._meta as $meta
-              | del(._meta)
-              | to_entries
-              | sort_by(.value.stars // 0)
-              | reverse
-              | from_entries
-              | if $meta then . + { "_meta": $meta } else . end
-            ' marketplace.json > tmp.json && mv tmp.json marketplace.json
+            .cursor = $mod
+          ' meta.json > tmp.json && mv tmp.json meta.json
       
-          git add marketplace.json
+          # Sort marketplace by stars
+          jq '
+            to_entries
+            | sort_by(.value.stars // 0)
+            | reverse
+            | from_entries
+          ' marketplace.json > tmp.json && mv tmp.json marketplace.json
+      
+          git add marketplace.json meta.json
       
           if git diff --cached --quiet; then
             echo "Cursor already up to date"
