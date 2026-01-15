@@ -46,29 +46,26 @@ jobs:
         run: |
           next_mod=$(
             jq -r '
-              keys
-              | sort
-              | . as $keys
-              | if ($keys | length) == 0 then empty
+              # Load inputs
+              (input | .cursor // "") as $cursor
+              | (keys | sort) as $keys
+      
+              | if ($keys | length) == 0 then
+                  empty
+                elif $cursor == "" then
+                  $keys[0]
                 else
-                  $keys
+                  ($keys | index($cursor)) as $i
+                  | if $i == null then
+                      $keys[0]
+                    else
+                      $keys[($i + 1) % ($keys | length)]
+                    end
                 end
-            ' marketplace.json \
-            | jq -R . \
-            | jq -s '
-                . as $keys
-                | (input | .cursor // "") as $cursor
-                | if $cursor == "" then $keys[0]
-                  else
-                    ($keys | index($cursor)) as $i
-                    | if $i == null then $keys[0]
-                      else $keys[($i + 1) % ($keys | length)]
-                      end
-                  end
-              ' meta.json
+            ' marketplace.json meta.json
           )
       
-          if [ "${{ github.event.inputs.mod_id }}" ]; then
+          if [ -n "${{ github.event.inputs.mod_id }}" ]; then
             next_mod="${{ github.event.inputs.mod_id }}"
           fi
       
