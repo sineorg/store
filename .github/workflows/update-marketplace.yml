@@ -264,7 +264,3 @@ jobs:
             --body "$body" \
             --base main \
             --head "$branch"
-
-  call-update:
-    if: ${{ github.event_name == 'workflow_dispatch' }}
-    uses: ./.github/workflows/update-marketplace.yml
