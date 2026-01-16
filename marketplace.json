@@ -513,10 +513,14 @@
     "name": "Quick Search",
     "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
     "homepage": "https://github.com/Darsh-A/Quick-Search-Zen-Browser",
-    "preferences": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/main/preferences.json",
-    "js": [
-      "quickSearch.uc.js"
-    ],
+    "preferences": "preferences.json",
+    "scripts": {
+        "quickSearch.uc.js": {
+            "include": [
+                "chrome://browser/content/browser.xhtml"
+            ]
+        }
+    },
     "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/refs/heads/main/README.md",
     "author": "Darsh A",
     "version": "2.2.0",
@@ -560,10 +564,16 @@
     "id": "quick-tabs",
     "name": "Quick Tabs",
     "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
-    "homepage": "https://github.com/Darsh-A/Quick-Tab",
-    "preferences": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/preferences.json",
+    "homepage": "https://github.com/Darsh-A/Quick-Tabs",
+    "preferences": "preferences.json",
     "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
-    "js": "https://raw.githubusercontent.com/Darsh-A/Quick-Tabs/refs/heads/main/Quick_Tabs.uc.js",
+    "scripts": {
+        "Quick_Tabs.uc.js": {
+            "include": [
+                "chrome://browser/content/browser.xhtml"
+            ]
+        }
+    },
     "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
     "author": "Darsh A",
     "version": "1.1.0",
