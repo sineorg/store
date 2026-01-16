@@ -509,11 +509,10 @@
     "stars": 43
   },
   "quick-search-zen-browser": {
-    "stars": 40,
     "id": "quick-search-zen-browser",
     "name": "Quick Search",
     "description": "This is a quick search script for zen browser. Allows an user to quickly search a query in a small pop up container thus removing the need to swtich to a whole different tab ",
-    "homepage": "Darsh-A/Quick-Search-Zen-Browser",
+    "homepage": "https://github.com/Darsh-A/Quick-Search-Zen-Browser",
     "preferences": "https://raw.githubusercontent.com/Darsh-A/Quick-Search-Zen-Browser/main/preferences.json",
     "js": [
       "quickSearch.uc.js"
@@ -532,7 +531,8 @@
     "updatedAt": "2025-6-24",
     "fork": [
       "zen"
-    ]
+    ],
+    "stars": 40
   },
   "wireframe-2.0": {
     "id": "wireframe-2.0",
