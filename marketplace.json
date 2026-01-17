@@ -1053,7 +1053,7 @@
     "author": "qumeqa",
     "name": "New icons",
     "description": "New icons for the toolbar and better locale button",
-    "version": "1.0",
+    "version": "1.1",
     "style": {
       "chrome": "userChrome.css"
     },
