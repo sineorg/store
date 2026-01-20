@@ -417,17 +417,12 @@
     "updatedAt": "2025-07-11"
   },
   "browse-bot": {
-    "stars": 70,
     "id": "browse-bot",
     "name": "Browse Bot",
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/findbar-ai",
-    "preferences": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/preferences.json",
-    "style": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/refs/heads/main/findbar-ai/style.css",
-    "js": true,
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/findbar-ai/README.md",
     "author": "Bibek Bhusal",
-    "version": "2.0.0",
+    "version": "2.5.1",
+    "updatedAt": "2026-01-04",
     "tags": [
       "ai",
       "findbar",
@@ -435,7 +430,6 @@
       "gemini",
       "Artificial Intelligence",
       "LLM",
-      "sine",
       "zen browser",
       "chat",
       "BrowseBot",
@@ -443,11 +437,16 @@
       "ChatGPT",
       "Claude"
     ],
-    "createdAt": "2024-05-22",
-    "updatedAt": "2025-12-27",
     "fork": [
       "zen"
-    ]
+    ],
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/preferences.json",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/style.css",
+    "js": true,
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/README.md",
+    "createdAt": "2024-05-22",
+    "stars": 1,
+    "homepage": null
   },
   "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
     "id": "ad97bb70-0066-4e42-9b5f-173a5e42c6fc",
