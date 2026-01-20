@@ -340,19 +340,12 @@
     ]
   },
   "settings-shortcuts-search": {
-    "stars": 70,
     "id": "settings-shortcuts-search",
     "name": "Search Keyboard shortcuts",
     "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
-    "homepage": "https://github.com/BibekBhusal0/zen-custom-js/tree/main/settings-shortcuts-search",
-    "js": true,
-    "style": {
-      "content": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/style.css"
-    },
-    "readme": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/readme.md",
-    "image": "https://raw.githubusercontent.com/BibekBhusal0/zen-custom-js/main/settings-shortcuts-search/image.png",
     "author": "Bibek Bhusal",
-    "version": "1.0.0",
+    "version": "1.1.0",
+    "updatedAt": "2026-01-04",
     "tags": [
       "Search",
       "sine",
@@ -360,11 +353,18 @@
       "JavaScript",
       "Bibek Bhusal"
     ],
-    "createdAt": "2025-06-23",
-    "updatedAt": "2025-07-11",
     "fork": [
       "zen"
-    ]
+    ],
+    "style": {
+      "content": "https://raw.githubusercontent.com/Vertex-Mods/Search-Keyboard-Shortcuts/main/style.css"
+    },
+    "js": true,
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Search-Keyboard-Shortcuts/main/README.md",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Search-Keyboard-Shortcuts/main/image.png",
+    "createdAt": "2025-06-23",
+    "stars": 0,
+    "homepage": null
   },
   "zen-command-palette": {
     "stars": 70,
