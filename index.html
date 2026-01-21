@@ -1,28 +1,56 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Sine - Store</title>
-        <link rel="stylesheet" href="src/styles.css"/>
-        <script type="module" src="src/script.js" defer></script>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Sine Store</title>
+        <link rel="stylesheet" href="src/style/main.css" />
+        <link rel="stylesheet" href="src/style/styles.css" />
+        <script type="module" src="src/js/script.js" defer></script>
+        <link rel="shortcut icon" href="assets/icon.png" type="image/x-icon" />
     </head>
+
     <body>
         <header>
-            <img class="logo" src="assets/sine.png"/>
-            <h1>sine</h1>
-            <input class="action" type="text" placeholder="Type to search..."/>
-            <button class="action"></button>
+            <a class="sine" href="#">
+                <img class="logo" src="assets/sine.png" />
+                <h3>Sine</h3>
+            </a>
+            <input class="search" type="text" placeholder="Type to search..." />
         </header>
 
-        <div class="warning">
-            You must have Sine installed to be able to install mods through the store.
-            <br/>
-            Regardless, you may still explore our large selection of trusted and verified mods.
-            <br/>
-            :)
+        <div class="container">
+            <div class="warning">
+                <h1>Welcome to Sine Store</h1>
+                <p class="g">
+                    You must have Sine installed to be able to install mods
+                    through the store. <br />Regardless, you may still explore
+                    our large selection of trusted and verified mods. <br />:)
+                </p>
+                <img src="assets/bg.png" />
+            </div>
         </div>
 
-        <div class="theme-container"></div>
+        <div class="container">
+            <div class="sort-dropdown">
+                <button class="sort-button" id="sortButton">
+                    <span id="currentSort">Popularity</span>
+                </button>
+                <div class="sort-menu" id="sortMenu">
+                    <button class="sort-option selected" data-sort="stars">
+                        Popularity
+                    </button>
+                    <button class="sort-option" data-sort="updated">
+                        Last Updated
+                    </button>
+                    <button class="sort-option" data-sort="added">
+                        Date Added
+                    </button>
+                </div>
+            </div>
+
+            <div class="theme-container"></div>
+            <div class="theme-container"></div>
+        </div>
     </body>
 </html>
