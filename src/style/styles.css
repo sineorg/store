@@ -122,7 +122,7 @@ button:hover,
     padding-bottom: calc(var(--p) * 2);
 }
 
-.warning {
+.greeting {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -132,6 +132,10 @@ button:hover,
     padding: var(--p);
     border-radius: var(--bor-r);
     overflow: hidden;
+
+    #sineOnly {
+        display: none;
+    }
 
     img {
         position: absolute;
