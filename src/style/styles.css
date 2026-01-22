@@ -12,10 +12,10 @@ header {
     padding-bottom: 4rem;
     background: linear-gradient(
         0deg,
-        rgba(21, 21, 21, 0) 0%,
-        rgba(21, 21, 21, 0.6) 40%,
-        rgba(21, 21, 21, 0.8) 70%,
-        rgba(21, 21, 21, 1) 95%
+        rgba(16, 16, 16, 0) 0%,
+        rgba(16, 16, 16, 0.6) 40%,
+        rgba(16, 16, 16, 0.8) 70%,
+        rgba(16, 16, 16, 1) 95%
     );
     user-select: none;
     z-index: 100;
@@ -292,7 +292,7 @@ subnote,
     width: 100%;
     padding: var(--p);
     position: relative;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    /* box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); */
     animation: slideUp 0.45s ease;
 }
 
@@ -308,17 +308,27 @@ subnote,
 .theme-modal-close {
     position: absolute;
     top: 0;
-    right: -3rem;
+    right: -2.75rem;
     background: none;
     border: none;
     font-size: 3rem;
     cursor: pointer;
     color: var(--text-dg);
-    line-height: 0.9;
+    line-height: 0.7;
+    height: max-content;
     padding: 0;
 
     &:hover {
         background: transparent;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: -0.625rem;
+        left: -0.9375rem;
+        right: -0.9375rem;
+        bottom: -0.625rem;
     }
 }
 
