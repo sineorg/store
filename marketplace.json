@@ -345,33 +345,6 @@
     ],
     "stars": 73
   },
-  "zen-command-palette": {
-    "id": "zen-command-palette",
-    "name": "Zen Command Palette",
-    "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
-    "author": "Bibek Bhusal",
-    "version": "1.8.0",
-    "updatedAt": "2026-01-04",
-    "tags": [
-      "command",
-      "palette",
-      "raycast",
-      "arc",
-      "productivity",
-      "zen browser",
-      "urlbar"
-    ],
-    "fork": [
-      "zen"
-    ],
-    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/preferences.json",
-    "style": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/style.css",
-    "js": true,
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/readme.md",
-    "createdAt": "2024-09-07",
-    "stars": 1,
-    "homepage": null
-  },
   "floating-sidebar": {
     "stars": 70,
     "id": "floating-sidebar",
@@ -528,39 +501,6 @@
     ],
     "stars": 25
   },
-  "quick-tabs": {
-    "id": "quick-tabs",
-    "name": "Quick Tabs",
-    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
-    "homepage": "https://github.com/Darsh-A/Quick-Tab",
-    "preferences": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/preferences.json",
-    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
-    "scripts": {
-      "Quick_Tabs.uc.js": {
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      }
-    },
-    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
-    "author": "Darsh A",
-    "version": "1.1.0",
-    "tags": [
-      "sine",
-      "Quick Tab",
-      "Tab",
-      "Quick",
-      "fx-autoconfig",
-      "JavaScript",
-      "Darsh A"
-    ],
-    "createdAt": "2025-07-17",
-    "updatedAt": "2025-09-18",
-    "fork": [
-      "zen"
-    ],
-    "stars": 0
-  },
   "zen-tidy-downloads": {
     "id": "zen-tidy-downloads",
     "name": "Tidy Downloads",
@@ -639,19 +579,6 @@
     ],
     "stars": 13
   },
-  "customize-collapsed-sidebar": {
-    "id": "customize-collapsed-sidebar",
-    "name": "Customize Collapsed Sidebar",
-    "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
-    "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
-    "style": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/chrome.css",
-    "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
-    "version": "1.0.5",
-    "fork": [
-      "zen"
-    ],
-    "stars": 12
-  },
   "No-Gaps": {
     "id": "No-Gaps",
     "homepage": "https://github.com/Comp-Tech-Guy/No-Gaps",
@@ -675,6 +602,19 @@
       "Minimal",
       "Neat"
     ],
+    "fork": [
+      "zen"
+    ],
+    "stars": 12
+  },
+  "customize-collapsed-sidebar": {
+    "id": "customize-collapsed-sidebar",
+    "name": "Customize Collapsed Sidebar",
+    "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
+    "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
+    "style": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/chrome.css",
+    "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
+    "version": "1.0.5",
     "fork": [
       "zen"
     ],
@@ -815,25 +755,6 @@
     ],
     "stars": 6
   },
-  "zen-auto-expand-sidebar": {
-    "id": "zen-auto-expand-sidebar",
-    "name": "Zen Auto Expand Sidebar",
-    "description": "Expand the sidebar on hover, with many configurations avaliable",
-    "homepage": "https://github.com/StormAnon/zen-auto-expand-sidebar/tree/sine",
-    "style": "https://raw.githubusercontent.com/StormAnon/zen-auto-expand-sidebar/sine/chrome.css",
-    "readme": "https://raw.githubusercontent.com/StormAnon/zen-auto-expand-sidebar/sine/README.md",
-    "image": "https://raw.githubusercontent.com/StormAnon/zen-auto-expand-sidebar/sine/image.png",
-    "author": "StormAnon",
-    "version": "1.0.0",
-    "fork": [
-      "zen"
-    ],
-    "tags": [
-      "ui",
-      "customization"
-    ],
-    "stars": 5
-  },
   "cfafe94c-5a29-4dae-8489-6be514185474": {
     "id": "cfafe94c-5a29-4dae-8489-6be514185474",
     "name": "Better Sidebar",
@@ -857,43 +778,24 @@
     ],
     "stars": 5
   },
-  "auto-pip-setting": {
-    "id": "auto-pip-setting",
-    "name": "Auto-PiP-Setting",
-    "description": "Adds auto-picture-in-picture setting in the unified panel",
-    "scripts": {
-      "zen-auto-pip-setting.uc.js": {
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      }
-    },
-    "homepage": "https://github.com/Zylaah/zen-mods/tree/main/auto-pip",
-    "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/auto-pip/README.md",
-    "author": "Bxth",
-    "version": "1.0",
-    "tags": [
-      "Zen Browser",
-      "Auto-PiP",
-      "Unified Panel"
-    ],
-    "createdAt": "2025-12-08",
-    "updatedAt": "2025-12-09",
+  "zen-auto-expand-sidebar": {
+    "id": "zen-auto-expand-sidebar",
+    "name": "Zen Auto Expand Sidebar",
+    "description": "Expand the sidebar on hover, with many configurations avaliable",
+    "homepage": "https://github.com/StormAnon/zen-auto-expand-sidebar/tree/sine",
+    "style": "https://raw.githubusercontent.com/StormAnon/zen-auto-expand-sidebar/sine/chrome.css",
+    "readme": "https://raw.githubusercontent.com/StormAnon/zen-auto-expand-sidebar/sine/README.md",
+    "image": "https://raw.githubusercontent.com/StormAnon/zen-auto-expand-sidebar/sine/image.png",
+    "author": "StormAnon",
+    "version": "1.0.0",
     "fork": [
       "zen"
     ],
-    "stars": 4
-  },
-  "bada16c1-3b14-483b": {
-    "id": "bada16c1-3b14-483b",
-    "homepage": "https://github.com/themaster5209/zen-better-new-tab-button",
-    "name": "Better New Tab button",
-    "version": "1.0.6",
-    "description": "A Zen Browser mod that enhances the New Tab button experience",
-    "style": {
-      "chrome": "userChrome.css"
-    },
-    "stars": 4
+    "tags": [
+      "ui",
+      "customization"
+    ],
+    "stars": 5
   },
   "collapse-pinned-area": {
     "id": "collapse-pinned-area",
@@ -924,29 +826,43 @@
     ],
     "stars": 4
   },
-  "3c8ebf69-1042-49b1-8f08-9178f9490659": {
-    "id": "3c8ebf69-1042-49b1-8f08-9178f9490659",
-    "name": "Better Music Bar",
-    "description": "Make your zen music bar better.",
-    "homepage": "https://github.com/rasyidrafi/zen-always-show-music-bar",
-    "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
+  "bada16c1-3b14-483b": {
+    "id": "bada16c1-3b14-483b",
+    "homepage": "https://github.com/themaster5209/zen-better-new-tab-button",
+    "name": "Better New Tab button",
+    "version": "1.0.6",
+    "description": "A Zen Browser mod that enhances the New Tab button experience",
     "style": {
-      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/chrome.css"
+      "chrome": "userChrome.css"
     },
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
-    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/preferences.json",
-    "author": "rasyidrafi",
-    "version": "1.0.4",
+    "stars": 4
+  },
+  "auto-pip-setting": {
+    "id": "auto-pip-setting",
+    "name": "Auto-PiP-Setting",
+    "description": "Adds auto-picture-in-picture setting in the unified panel",
+    "scripts": {
+      "zen-auto-pip-setting.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "homepage": "https://github.com/Zylaah/zen-mods/tree/main/auto-pip",
+    "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/auto-pip/README.md",
+    "author": "Bxth",
+    "version": "1.0",
     "tags": [
-      "UI"
+      "Zen Browser",
+      "Auto-PiP",
+      "Unified Panel"
     ],
-    "createdAt": "2025-07-29",
-    "updatedAt": "2025-08-04",
+    "createdAt": "2025-12-08",
+    "updatedAt": "2025-12-09",
     "fork": [
-      "zen",
-      "firefox"
+      "zen"
     ],
-    "stars": 3
+    "stars": 4
   },
   "42b8c4ac-76d5-4521-9917-2e478931ee53": {
     "id": "42b8c4ac-76d5-4521-9917-2e478931ee53",
@@ -972,29 +888,54 @@
     ],
     "stars": 3
   },
-  "new-icons": {
-    "id": "new-icons",
-    "homepage": "https://github.com/qumeqa/zen-icons",
-    "author": "qumeqa",
-    "name": "New icons",
-    "description": "New icons for the toolbar and better locale button",
-    "version": "1.1",
+  "3c8ebf69-1042-49b1-8f08-9178f9490659": {
+    "id": "3c8ebf69-1042-49b1-8f08-9178f9490659",
+    "name": "Better Music Bar",
+    "description": "Make your zen music bar better.",
+    "homepage": "https://github.com/rasyidrafi/zen-always-show-music-bar",
+    "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
     "style": {
-      "chrome": "userChrome.css"
+      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/chrome.css"
     },
-    "readme": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/README.md",
-    "image": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/photo/cover.png",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
+    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/preferences.json",
+    "author": "rasyidrafi",
+    "version": "1.0.4",
     "tags": [
-      "Icons",
-      "New icons",
-      "Toolbar",
-      "Toolbar icons",
-      "Icon pack",
-      "Icon set",
-      "Locale button"
+      "UI"
     ],
+    "createdAt": "2025-07-29",
+    "updatedAt": "2025-08-04",
     "fork": [
-      "zen"
+      "zen",
+      "firefox"
+    ],
+    "stars": 3
+  },
+  "f966100a-4fed-4df5-a082-f001c5bd654e": {
+    "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
+    "name": "Tidy Popup & Extension",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
+    "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
+    "style": {
+      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/chrome.css"
+    },
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
+    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/preferences.json",
+    "author": "rasyidrafi",
+    "version": "2.9.1",
+    "tags": [
+      "Customization",
+      "Popup",
+      "Theme",
+      "UI"
+    ],
+    "createdAt": "2025-01-27",
+    "updatedAt": "2025-11-12",
+    "fork": [
+      "zen",
+      "firefox"
     ],
     "stars": 2
   },
@@ -1023,32 +964,56 @@
     ],
     "stars": 2
   },
-  "f966100a-4fed-4df5-a082-f001c5bd654e": {
-    "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
-    "name": "Tidy Popup & Extension",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
-    "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
-    "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
+  "new-icons": {
+    "id": "new-icons",
+    "homepage": "https://github.com/qumeqa/zen-icons",
+    "author": "qumeqa",
+    "name": "New icons",
+    "description": "New icons for the toolbar and better locale button",
+    "version": "1.1",
     "style": {
-      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/chrome.css"
+      "chrome": "userChrome.css"
     },
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
-    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/preferences.json",
-    "author": "rasyidrafi",
-    "version": "2.9.1",
+    "readme": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/README.md",
+    "image": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/photo/cover.png",
     "tags": [
-      "Customization",
-      "Popup",
-      "Theme",
+      "Icons",
+      "New icons",
+      "Toolbar",
+      "Toolbar icons",
+      "Icon pack",
+      "Icon set",
+      "Locale button"
+    ],
+    "fork": [
+      "zen"
+    ],
+    "stars": 2
+  },
+  "3699917d-0238-422a-bb4b-9d37344c0c5f": {
+    "id": "3699917d-0238-422a-bb4b-9d37344c0c5f",
+    "name": "Custom Swipe Animation & Color",
+    "description": "Customizable trackpad swipe transitions and the colors for the swipe UI.",
+    "homepage": "https://github.com/rasyidrafi/zen-single-trackpad-animation",
+    "image": "https://github.com/rasyidrafi/zen-single-trackpad-animation/blob/main/image.png?raw=true",
+    "style": {
+      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/chrome.css"
+    },
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/README.md",
+    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/preferences.json",
+    "author": "rasyidrafi",
+    "version": "2.0.5",
+    "tags": [
+      "Animation",
       "UI"
     ],
-    "createdAt": "2025-01-27",
-    "updatedAt": "2025-11-12",
+    "createdAt": "2025-07-29",
+    "updatedAt": "2025-08-01",
     "fork": [
       "zen",
       "firefox"
     ],
-    "stars": 2
+    "stars": 1
   },
   "browse-bot": {
     "id": "browse-bot",
@@ -1082,30 +1047,58 @@
     "stars": 1,
     "homepage": null
   },
-  "3699917d-0238-422a-bb4b-9d37344c0c5f": {
-    "id": "3699917d-0238-422a-bb4b-9d37344c0c5f",
-    "name": "Custom Swipe Animation & Color",
-    "description": "Customizable trackpad swipe transitions and the colors for the swipe UI.",
-    "homepage": "https://github.com/rasyidrafi/zen-single-trackpad-animation",
-    "image": "https://github.com/rasyidrafi/zen-single-trackpad-animation/blob/main/image.png?raw=true",
-    "style": {
-      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/chrome.css"
-    },
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/README.md",
-    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/preferences.json",
-    "author": "rasyidrafi",
-    "version": "2.0.5",
+  "zen-command-palette": {
+    "id": "zen-command-palette",
+    "name": "Zen Command Palette",
+    "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
+    "author": "Bibek Bhusal",
+    "version": "1.8.0",
+    "updatedAt": "2026-01-04",
     "tags": [
-      "Animation",
-      "UI"
+      "command",
+      "palette",
+      "raycast",
+      "arc",
+      "productivity",
+      "zen browser",
+      "urlbar"
     ],
-    "createdAt": "2025-07-29",
-    "updatedAt": "2025-08-01",
+    "fork": [
+      "zen"
+    ],
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/preferences.json",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/style.css",
+    "js": true,
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/readme.md",
+    "createdAt": "2024-09-07",
+    "stars": 1,
+    "homepage": null
+  },
+  "IconTweaker": {
+    "id": "IconTweaker",
+    "name": "Icon Tweaker",
+    "description": "Tab icon resizer for Essentials, Pinned, Normal and Workspaces.",
+    "homepage": "https://github.com/allecsc/Icon-Tweaker",
+    "preferences": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/preferences.json",
+    "style": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/chrome.css",
+    "readme": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/README.md",
+    "image": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/image.png",
+    "author": "celalalt",
+    "version": "1.2",
+    "tags": [
+      "sine",
+      "tabs",
+      "icons",
+      "customization",
+      "resize"
+    ],
+    "createdAt": "2025-05-31",
+    "updatedAt": "2025-06-16",
     "fork": [
       "zen",
       "firefox"
     ],
-    "stars": 1
+    "stars": 0
   },
   "settings-shortcuts-search": {
     "id": "settings-shortcuts-search",
@@ -1134,29 +1127,36 @@
     "stars": 0,
     "homepage": null
   },
-  "IconTweaker": {
-    "id": "IconTweaker",
-    "name": "Icon Tweaker",
-    "description": "Tab icon resizer for Essentials, Pinned, Normal and Workspaces.",
-    "homepage": "https://github.com/allecsc/Icon-Tweaker",
-    "preferences": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/preferences.json",
-    "style": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/chrome.css",
-    "readme": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/README.md",
-    "image": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/image.png",
-    "author": "celalalt",
-    "version": "1.2",
+  "quick-tabs": {
+    "id": "quick-tabs",
+    "name": "Quick Tabs",
+    "description": "A Quick and easy way to browse tabs without leaving focus of whats important.",
+    "homepage": "https://github.com/Darsh-A/Quick-Tab",
+    "preferences": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/preferences.json",
+    "image": "https://github.com/Darsh-A/Quick-Tab/blob/main/image.png?raw=true",
+    "scripts": {
+      "Quick_Tabs.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "readme": "https://raw.githubusercontent.com/Darsh-A/Quick-Tab/refs/heads/main/README.md",
+    "author": "Darsh A",
+    "version": "1.1.0",
     "tags": [
       "sine",
-      "tabs",
-      "icons",
-      "customization",
-      "resize"
+      "Quick Tab",
+      "Tab",
+      "Quick",
+      "fx-autoconfig",
+      "JavaScript",
+      "Darsh A"
     ],
-    "createdAt": "2025-05-31",
-    "updatedAt": "2025-06-16",
+    "createdAt": "2025-07-17",
+    "updatedAt": "2025-09-18",
     "fork": [
-      "zen",
-      "firefox"
+      "zen"
     ],
     "stars": 0
   }
