@@ -10,6 +10,7 @@ let themes = await fetch(
     "https://sineorg.github.io/store/marketplace.json",
 ).then((res) => res.json());
 let sortBy = "stars";
+let filteredThemes = themes;
 
 // Utilities
 const getValidTimestamp = (dateString) => {
@@ -191,7 +192,7 @@ const enrichThemesWithGitHub = async (themesArray) => {
 const sortAndDisplay = async (sortType) => {
     themeContainer.innerHTML = '<div class="loading">Loading...</div>';
 
-    let themesArray = Object.entries(themes).map(([id, theme]) => ({
+    let themesArray = Object.entries(filteredThemes).map(([id, theme]) => ({
         id,
         ...theme,
     }));
@@ -208,6 +209,12 @@ const sortAndDisplay = async (sortType) => {
     themesArray.sort(sortFunctions[sortType] || sortFunctions.stars);
 
     themeContainer.innerHTML = "";
+    
+    if (themesArray.length === 0) {
+        themeContainer.innerHTML = '<div class="loading">No themes found</div>';
+        return;
+    }
+    
     themesArray.forEach((theme) => displayTheme(theme.id, theme));
 };
 
@@ -246,14 +253,30 @@ document.querySelectorAll(".sort-option").forEach((option) => {
 
 // Search
 if (searchInput) {
-    searchInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-            const query = e.target.value.trim();
-            if (query) {
-                params.set("theme", query);
-                window.location.search = params.toString();
-            }
+    searchInput.addEventListener("input", (e) => {
+        const query = e.target.value.trim().toLowerCase();
+        
+        if (!query) {
+            filteredThemes = themes;
+            sortAndDisplay(sortBy);
+            return;
         }
+        
+        filteredThemes = {};
+        Object.entries(themes).forEach(([id, theme]) => {
+            const searchableText = [
+                theme.name || "",
+                theme.description || "",
+                theme.author || "",
+                ...(theme.tags || [])
+            ].join(" ").toLowerCase();
+            
+            if (searchableText.includes(query)) {
+                filteredThemes[id] = theme;
+            }
+        });
+        
+        sortAndDisplay(sortBy);
     });
 }
 
