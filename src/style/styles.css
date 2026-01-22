@@ -31,6 +31,7 @@ header {
     align-items: center;
     gap: 0.25rem;
     border-radius: var(--bor-r);
+    corner-shape: var(--super);
     padding-left: 1rem;
     padding-right: 1.5rem;
     height: 3rem;
@@ -131,6 +132,7 @@ button:hover,
     margin-top: calc(5rem + (var(--p) * 2));
     padding: var(--p);
     border-radius: var(--bor-r);
+    corner-shape: var(--super);
     overflow: hidden;
 
     #sineOnly {
@@ -165,6 +167,7 @@ button:hover,
     padding: 1.5rem;
     background: var(--bg-dg);
     border-radius: var(--bor-r);
+    corner-shape: var(--super);
 
     .title {
         position: relative;
@@ -189,6 +192,7 @@ button:hover,
         aspect-ratio: 16 / 9;
         object-fit: contain;
         border-radius: 0.5rem;
+        corner-shape: var(--super);
         background: var(--bg);
     }
 }
@@ -238,6 +242,7 @@ subnote,
     background: var(--btn);
     border: var(--bor);
     border-radius: var(--bor-r);
+    corner-shape: var(--super);
     padding: 0.75rem 0;
     width: 16rem;
     display: none;
@@ -292,6 +297,7 @@ subnote,
     gap: 0.25rem;
     background: var(--bg-dg);
     border-radius: var(--bor-r);
+    corner-shape: var(--super);
     max-width: 50rem;
     width: 100%;
     padding: var(--p);
@@ -329,10 +335,10 @@ subnote,
     &::after {
         content: '';
         position: absolute;
-        top: -0.625rem;
-        left: -0.9375rem;
-        right: -0.9375rem;
-        bottom: -0.625rem;
+        top: -0.5rem;
+        left: -0.75rem;
+        right: -0.75rem;
+        bottom: -0.5rem;
     }
 }
 
@@ -341,6 +347,7 @@ subnote,
     aspect-ratio: 16 / 9;
     object-fit: contain;
     border-radius: 0.5rem;
+    corner-shape: var(--super);
     background: var(--bg);
 }
 

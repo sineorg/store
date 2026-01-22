@@ -66,24 +66,11 @@
     --scroll-track: #101010;
 
     --bor: 1px solid #505050;
-
-    --5: 0.3125rem;
-    --10: 0.625rem;
-    --15: 0.9375rem;
-    --20: 1.25rem;
-    --25: 1.5625rem;
-    --30: 1.875rem;
-    --35: 2.1875rem;
-    --40: 2.5rem;
-
     --p: 2rem;
 
     --bor-r: 1.5rem;
 
     --super: superellipse(1.4);
-    --tr:
-        opacity 0.3s ease, visibility 0.3s ease, color 0.3s ease,
-        background 0.3s ease, transform 0.3s ease;
 }
 
 html {
