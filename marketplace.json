@@ -318,28 +318,20 @@
     "id": "floating-sidebar",
     "name": "Floating Sidebar",
     "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
-    "homepage": "https://github.com/Vertex-Mods/Floating-Sidebar",
-    "preferences": "preferences.json",
-    "scripts": {
-      "floating-sidebar.uc.js": {
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      }
-    },
-    "style": {
-      "chrome": "style.css"
-    },
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Floating-Sidebar/main/README.md",
     "author": "Bibek Bhusal",
-    "version": "1.1.2b",
+    "version": "1.1.0",
+    "updatedAt": "2026-01-04",
     "tags": [
       "Sidebar",
       "Pin"
     ],
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Floating-Sidebar/main/preferences.json",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Floating-Sidebar/main/style.css",
+    "js": true,
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Floating-Sidebar/main/README.md",
     "createdAt": "2025-06-23",
-    "updatedAt": "2026-01-16",
-    "stars": 74
+    "stars": 0,
+    "homepage": null
   },
   "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
     "id": "ad97bb70-0066-4e42-9b5f-173a5e42c6fc",
