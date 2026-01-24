@@ -809,35 +809,6 @@
     },
     "stars": 4
   },
-  "collapse-pinned-area": {
-    "id": "collapse-pinned-area",
-    "name": "Collapse Pinned Area",
-    "description": "Let's you collapse your pinned folders and tabs area with a chevron icon",
-    "scripts": {
-      "zen-pinned-area-collapse.uc.js": {
-        "include": [
-          "chrome://browser/content/browser.xhtml",
-          "chrome://browser/content/browser.xul"
-        ]
-      }
-    },
-    "homepage": "https://github.com/Zylaah/zen-mods/tree/main/collapse-pinned-area",
-    "style": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/collapse-pinned-area/chrome.css",
-    "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/collapse-pinned-area/README.md",
-    "author": "Bxth",
-    "version": "1.0",
-    "tags": [
-      "Zen Browser",
-      "Pinned-area",
-      "Collapse"
-    ],
-    "createdAt": "2025-12-08",
-    "updatedAt": "2025-12-09",
-    "fork": [
-      "zen"
-    ],
-    "stars": 4
-  },
   "3c8ebf69-1042-49b1-8f08-9178f9490659": {
     "id": "3c8ebf69-1042-49b1-8f08-9178f9490659",
     "name": "Better Music Bar",
