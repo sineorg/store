@@ -637,7 +637,7 @@
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/main/README.md",
     "createdAt": "2025-09-22",
     "stars": 8,
-    "homepage": null
+    "homepage": "Vertex-Mods/Reopen-Closed-Tabs-Menu"
   },
   "zen-drop-link": {
     "id": "zen-drop-link",
@@ -992,7 +992,7 @@
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/README.md",
     "createdAt": "2024-05-22",
     "stars": 1,
-    "homepage": null
+    "homepage": "Vertex-Mods/Browse-Bot"
   },
   "zen-command-palette": {
     "id": "zen-command-palette",
@@ -1019,7 +1019,7 @@
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/readme.md",
     "createdAt": "2024-09-07",
     "stars": 1,
-    "homepage": null
+    "homepage": "Vertex-Mods/Zen-Command-Palette"
   },
   "IconTweaker": {
     "id": "IconTweaker",
@@ -1072,7 +1072,7 @@
     "image": "https://raw.githubusercontent.com/Vertex-Mods/Search-Keyboard-Shortcuts/main/image.png",
     "createdAt": "2025-06-23",
     "stars": 0,
-    "homepage": null
+    "homepage": "Vertex-Mods/Search-Keyboard-Shortcuts"
   },
   "quick-tabs": {
     "id": "quick-tabs",
@@ -1128,7 +1128,7 @@
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Search-Engine-Select/main/README.md",
     "createdAt": "2025-06-23",
     "stars": 0,
-    "homepage": null
+    "homepage": "Vertex-Mods/Search-Engine-Select"
   },
   "floating-sidebar": {
     "id": "floating-sidebar",
@@ -1147,6 +1147,6 @@
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Floating-Sidebar/main/README.md",
     "createdAt": "2025-06-23",
     "stars": 0,
-    "homepage": null
+    "homepage": "Vertex-Mods/Floating-Sidebar"
   }
 }
