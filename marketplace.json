@@ -505,8 +505,9 @@
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
     "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
     "author": "Vertex",
-    "version": "1.0.0s",
+    "version": "1.1.0s",
     "tags": [
+      "Vortex",
       "Zen Browser",
       "Vertical Tabs",
       "Tab Groups",
