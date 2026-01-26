@@ -184,6 +184,13 @@ jobs:
             --argjson stars "$stars" \
             '.[$mod].stars = $stars' \
             marketplace.json > tmp.json && mv tmp.json marketplace.json
+
+          theme_json=$(jq -c ".\"$modId\"" marketplace.json)
+          {
+            echo "theme_json<<EOF"
+            echo "$theme_json"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
       
           # Sort marketplace by stars
           jq '
