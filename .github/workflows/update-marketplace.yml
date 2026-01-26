@@ -160,7 +160,7 @@ jobs:
           echo "homepage=$homepage" >> $GITHUB_ENV
           echo "theme_json=$theme_json" >> $GITHUB_ENV
 
-      - name: Commit cursor progress and sort
+      - name: Update stars for mod and sort
         run: |
           modId="${{ steps.pick.outputs.modId }}"
 
