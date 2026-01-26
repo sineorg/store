@@ -318,7 +318,7 @@
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
     "name": "Tidy Popup & Extension",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
     "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "style": {
@@ -1163,5 +1163,24 @@
       "firefox"
     ],
     "stars": 0
+  },
+  "unloaded-tabs": {
+    "id": "unloaded-tabs",
+    "homepage": "https://github.com/qumeqa/unloaded-tabs",
+    "author": "qumeqa",
+    "name": "Unloaded Tabs",
+    "description": "Makes unloaded tabs colorless and semi-transparent, so you can easily distinguish them from loaded tabs",
+    "version": "1.0",
+    "style": {
+      "chrome": "userChrome.css"
+    },
+    "readme": "https://raw.githubusercontent.com/qumeqa/unloaded-tabs/refs/heads/main/README.md",
+    "image": "https://raw.githubusercontent.com/qumeqa/unloaded-tabs/refs/heads/main/cover.png",
+    "tags": [
+      "Tabs"
+    ],
+    "fork": [
+      "zen"
+    ]
   }
 }
