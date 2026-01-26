@@ -178,6 +178,9 @@ jobs:
             "https://api.github.com/repos/$repo" \
             | jq -r '.stargazers_count // 0')
 
+          echo "stars = $stars"
+          echo "repo = $repo"
+
           # Update marketplace entry
           jq \
             --arg mod "$modId" \
