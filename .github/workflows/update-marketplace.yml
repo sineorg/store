@@ -75,7 +75,7 @@ jobs:
       
           echo "Selected mod: $next_mod"
 
-      - name: Commit cursor progress and sort
+      - name: Commit cursor progress
         run: |
           modId="${{ steps.pick.outputs.modId }}"
       
@@ -168,6 +168,8 @@ jobs:
 
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
+
+          echo "repo = $repo"
 
           # Fetch stars for current mod
           stars=$(curl -s \
