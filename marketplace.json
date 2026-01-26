@@ -257,36 +257,6 @@
     ],
     "stars": 364
   },
-  "zaps-cool-photon-theme": {
-    "id": "zaps-cool-photon-theme",
-    "name": "zap's cool photon theme",
-    "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
-    "homepage": "https://github.com/zapSNH/zapsCoolPhotonTheme",
-    "preferences": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/preferences.json",
-    "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
-    "style": {
-      "content": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/userContent.css",
-      "chrome": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/userChrome.css"
-    },
-    "image": "https://i.imgur.com/FyzTFKg.png",
-    "author": "ZapSNH",
-    "version": "147.0",
-    "tags": [
-      "firefox",
-      "photon",
-      "legacy",
-      "square"
-    ],
-    "createdAt": "2023-08-09",
-    "updatedAt": "2025-12-28",
-    "fork": [
-      "firefox",
-      "waterfox",
-      "floorp",
-      "mullvad"
-    ],
-    "stars": 124
-  },
   "Neo-Zen": {
     "id": "Neo-Zen",
     "homepage": "https://github.com/JustVibingWhileCoding/Neo-Zen",
@@ -527,19 +497,6 @@
     ],
     "stars": 14
   },
-  "customize-collapsed-sidebar": {
-    "id": "customize-collapsed-sidebar",
-    "name": "Customize Collapsed Sidebar",
-    "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
-    "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
-    "style": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/chrome.css",
-    "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
-    "version": "1.0.5",
-    "fork": [
-      "zen"
-    ],
-    "stars": 12
-  },
   "No-Gaps": {
     "id": "No-Gaps",
     "homepage": "https://github.com/Comp-Tech-Guy/No-Gaps",
@@ -563,6 +520,19 @@
       "Minimal",
       "Neat"
     ],
+    "fork": [
+      "zen"
+    ],
+    "stars": 12
+  },
+  "customize-collapsed-sidebar": {
+    "id": "customize-collapsed-sidebar",
+    "name": "Customize Collapsed Sidebar",
+    "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
+    "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
+    "style": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/chrome.css",
+    "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
+    "version": "1.0.5",
     "fork": [
       "zen"
     ],
@@ -640,36 +610,6 @@
     "stars": 8,
     "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu"
   },
-  "zen-drop-link": {
-    "id": "zen-drop-link",
-    "name": "Zen Drop Link to Split",
-    "description": "This mod allows you to split tabs by drag and drop links",
-    "homepage": "https://github.com/octaviusz/zen-drop-link",
-    "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
-    "style": {
-      "chrome": "userChrome.css"
-    },
-    "scripts": {
-      "file.uc.js": {
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      }
-    },
-    "author": "octaviusz",
-    "version": "0.0.2",
-    "tags": [
-      "sine",
-      "fx-autoconfig",
-      "split tabs"
-    ],
-    "createdAt": "2025-06-17",
-    "updatedAt": "2025-06-29",
-    "fork": [
-      "zen"
-    ],
-    "stars": 6
-  },
   "zen-live-calendar": {
     "id": "zen-live-calendar",
     "name": "Live Calendar",
@@ -703,24 +643,35 @@
     ],
     "stars": 6
   },
-  "zen-auto-expand-sidebar": {
-    "id": "zen-auto-expand-sidebar",
-    "name": "Zen Auto Expand Sidebar",
-    "description": "Expand the sidebar on hover, with many configurations avaliable",
-    "homepage": "https://github.com/StormAnon/zen-auto-expand-sidebar/tree/sine",
-    "style": "https://raw.githubusercontent.com/StormAnon/zen-auto-expand-sidebar/sine/chrome.css",
-    "readme": "https://raw.githubusercontent.com/StormAnon/zen-auto-expand-sidebar/sine/README.md",
-    "image": "https://raw.githubusercontent.com/StormAnon/zen-auto-expand-sidebar/sine/image.png",
-    "author": "StormAnon",
-    "version": "1.0.0",
+  "zen-drop-link": {
+    "id": "zen-drop-link",
+    "name": "Zen Drop Link to Split",
+    "description": "This mod allows you to split tabs by drag and drop links",
+    "homepage": "https://github.com/octaviusz/zen-drop-link",
+    "readme": "https://raw.githubusercontent.com/octaviusz/zen-drop-link/refs/heads/main/README.md",
+    "style": {
+      "chrome": "userChrome.css"
+    },
+    "scripts": {
+      "file.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "author": "octaviusz",
+    "version": "0.0.2",
+    "tags": [
+      "sine",
+      "fx-autoconfig",
+      "split tabs"
+    ],
+    "createdAt": "2025-06-17",
+    "updatedAt": "2025-06-29",
     "fork": [
       "zen"
     ],
-    "tags": [
-      "ui",
-      "customization"
-    ],
-    "stars": 5
+    "stars": 6
   },
   "cfafe94c-5a29-4dae-8489-6be514185474": {
     "id": "cfafe94c-5a29-4dae-8489-6be514185474",
@@ -744,6 +695,36 @@
       "zen"
     ],
     "stars": 5
+  },
+  "zen-auto-expand-sidebar": {
+    "id": "zen-auto-expand-sidebar",
+    "name": "Zen Auto Expand Sidebar",
+    "description": "Expand the sidebar on hover, with many configurations avaliable",
+    "homepage": "https://github.com/StormAnon/zen-auto-expand-sidebar/tree/sine",
+    "style": "https://raw.githubusercontent.com/StormAnon/zen-auto-expand-sidebar/sine/chrome.css",
+    "readme": "https://raw.githubusercontent.com/StormAnon/zen-auto-expand-sidebar/sine/README.md",
+    "image": "https://raw.githubusercontent.com/StormAnon/zen-auto-expand-sidebar/sine/image.png",
+    "author": "StormAnon",
+    "version": "1.0.0",
+    "fork": [
+      "zen"
+    ],
+    "tags": [
+      "ui",
+      "customization"
+    ],
+    "stars": 5
+  },
+  "bada16c1-3b14-483b": {
+    "id": "bada16c1-3b14-483b",
+    "homepage": "https://github.com/themaster5209/zen-better-new-tab-button",
+    "name": "Better New Tab button",
+    "version": "1.0.6",
+    "description": "A Zen Browser mod that enhances the New Tab button experience",
+    "style": {
+      "chrome": "userChrome.css"
+    },
+    "stars": 4
   },
   "auto-pip-setting": {
     "id": "auto-pip-setting",
@@ -772,38 +753,29 @@
     ],
     "stars": 4
   },
-  "bada16c1-3b14-483b": {
-    "id": "bada16c1-3b14-483b",
-    "homepage": "https://github.com/themaster5209/zen-better-new-tab-button",
-    "name": "Better New Tab button",
-    "version": "1.0.6",
-    "description": "A Zen Browser mod that enhances the New Tab button experience",
+  "new-icons": {
+    "id": "new-icons",
+    "homepage": "https://github.com/qumeqa/zen-icons",
+    "author": "qumeqa",
+    "name": "New icons",
+    "description": "New icons for the toolbar and better locale button",
+    "version": "1.1",
     "style": {
       "chrome": "userChrome.css"
     },
-    "stars": 4
-  },
-  "3c8ebf69-1042-49b1-8f08-9178f9490659": {
-    "id": "3c8ebf69-1042-49b1-8f08-9178f9490659",
-    "name": "Better Music Bar",
-    "description": "Make your zen music bar better.",
-    "homepage": "https://github.com/rasyidrafi/zen-always-show-music-bar",
-    "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
-    "style": {
-      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/chrome.css"
-    },
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
-    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/preferences.json",
-    "author": "rasyidrafi",
-    "version": "1.0.4",
+    "readme": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/README.md",
+    "image": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/photo/cover.png",
     "tags": [
-      "UI"
+      "Icons",
+      "New icons",
+      "Toolbar",
+      "Toolbar icons",
+      "Icon pack",
+      "Icon set",
+      "Locale button"
     ],
-    "createdAt": "2025-07-29",
-    "updatedAt": "2025-08-04",
     "fork": [
-      "zen",
-      "firefox"
+      "zen"
     ],
     "stars": 3
   },
@@ -831,31 +803,56 @@
     ],
     "stars": 3
   },
-  "new-icons": {
-    "id": "new-icons",
-    "homepage": "https://github.com/qumeqa/zen-icons",
-    "author": "qumeqa",
-    "name": "New icons",
-    "description": "New icons for the toolbar and better locale button",
-    "version": "1.1",
+  "3c8ebf69-1042-49b1-8f08-9178f9490659": {
+    "id": "3c8ebf69-1042-49b1-8f08-9178f9490659",
+    "name": "Better Music Bar",
+    "description": "Make your zen music bar better.",
+    "homepage": "https://github.com/rasyidrafi/zen-always-show-music-bar",
+    "image": "https://github.com/rasyidrafi/zen-always-show-music-bar/blob/main/image.png?raw=true",
     "style": {
-      "chrome": "userChrome.css"
+      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/chrome.css"
     },
-    "readme": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/README.md",
-    "image": "https://raw.githubusercontent.com/qumeqa/zen-icons/refs/heads/main/photo/cover.png",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/README.md",
+    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-always-show-music-bar/refs/heads/main/preferences.json",
+    "author": "rasyidrafi",
+    "version": "1.0.4",
     "tags": [
-      "Icons",
-      "New icons",
-      "Toolbar",
-      "Toolbar icons",
-      "Icon pack",
-      "Icon set",
-      "Locale button"
+      "UI"
     ],
+    "createdAt": "2025-07-29",
+    "updatedAt": "2025-08-04",
     "fork": [
-      "zen"
+      "zen",
+      "firefox"
     ],
     "stars": 3
+  },
+  "f966100a-4fed-4df5-a082-f001c5bd654e": {
+    "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
+    "name": "Tidy Popup & Extension",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
+    "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
+    "style": {
+      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/chrome.css"
+    },
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
+    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/preferences.json",
+    "author": "rasyidrafi",
+    "version": "2.9.1",
+    "tags": [
+      "Customization",
+      "Popup",
+      "Theme",
+      "UI"
+    ],
+    "createdAt": "2025-01-27",
+    "updatedAt": "2025-11-12",
+    "fork": [
+      "zen",
+      "firefox"
+    ],
+    "stars": 2
   },
   "e9dae25b-2ddd-4245-8581-a6dcf6d35b82": {
     "id": "e9dae25b-2ddd-4245-8581-a6dcf6d35b82",
@@ -882,59 +879,30 @@
     ],
     "stars": 2
   },
-  "f966100a-4fed-4df5-a082-f001c5bd654e": {
-    "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
-    "name": "Tidy Popup & Extension",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
-    "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
-    "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
+  "3699917d-0238-422a-bb4b-9d37344c0c5f": {
+    "id": "3699917d-0238-422a-bb4b-9d37344c0c5f",
+    "name": "Custom Swipe Animation & Color",
+    "description": "Customizable trackpad swipe transitions and the colors for the swipe UI.",
+    "homepage": "https://github.com/rasyidrafi/zen-single-trackpad-animation",
+    "image": "https://github.com/rasyidrafi/zen-single-trackpad-animation/blob/main/image.png?raw=true",
     "style": {
-      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/chrome.css"
+      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/chrome.css"
     },
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
-    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/preferences.json",
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/README.md",
+    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/preferences.json",
     "author": "rasyidrafi",
-    "version": "2.9.1",
+    "version": "2.0.5",
     "tags": [
-      "Customization",
-      "Popup",
-      "Theme",
+      "Animation",
       "UI"
     ],
-    "createdAt": "2025-01-27",
-    "updatedAt": "2025-11-12",
+    "createdAt": "2025-07-29",
+    "updatedAt": "2025-08-01",
     "fork": [
       "zen",
       "firefox"
     ],
-    "stars": 2
-  },
-  "zen-command-palette": {
-    "id": "zen-command-palette",
-    "name": "Zen Command Palette",
-    "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
-    "author": "Bibek Bhusal",
-    "version": "1.8.0",
-    "updatedAt": "2026-01-04",
-    "tags": [
-      "command",
-      "palette",
-      "raycast",
-      "arc",
-      "productivity",
-      "zen browser",
-      "urlbar"
-    ],
-    "fork": [
-      "zen"
-    ],
-    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/preferences.json",
-    "style": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/style.css",
-    "js": true,
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/readme.md",
-    "createdAt": "2024-09-07",
-    "stars": 1,
-    "homepage": "https://github.com/Vertex-Mods/Zen-Command-Palette"
+    "stars": 1
   },
   "browse-bot": {
     "id": "browse-bot",
@@ -968,72 +936,106 @@
     "stars": 1,
     "homepage": "https://github.com/Vertex-Mods/Browse-Bot"
   },
-  "3699917d-0238-422a-bb4b-9d37344c0c5f": {
-    "id": "3699917d-0238-422a-bb4b-9d37344c0c5f",
-    "name": "Custom Swipe Animation & Color",
-    "description": "Customizable trackpad swipe transitions and the colors for the swipe UI.",
-    "homepage": "https://github.com/rasyidrafi/zen-single-trackpad-animation",
-    "image": "https://github.com/rasyidrafi/zen-single-trackpad-animation/blob/main/image.png?raw=true",
-    "style": {
-      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/chrome.css"
-    },
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/README.md",
-    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-single-trackpad-animation/refs/heads/main/preferences.json",
-    "author": "rasyidrafi",
-    "version": "2.0.5",
+  "zen-command-palette": {
+    "id": "zen-command-palette",
+    "name": "Zen Command Palette",
+    "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
+    "author": "Bibek Bhusal",
+    "version": "1.8.0",
+    "updatedAt": "2026-01-04",
     "tags": [
-      "Animation",
-      "UI"
+      "command",
+      "palette",
+      "raycast",
+      "arc",
+      "productivity",
+      "zen browser",
+      "urlbar"
     ],
-    "createdAt": "2025-07-29",
-    "updatedAt": "2025-08-01",
+    "fork": [
+      "zen"
+    ],
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/preferences.json",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/style.css",
+    "js": true,
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/readme.md",
+    "createdAt": "2024-09-07",
+    "stars": 1,
+    "homepage": "https://github.com/Vertex-Mods/Zen-Command-Palette"
+  },
+  "floating-findbar": {
+    "id": "floating-findbar",
+    "homepage": "https://github.com/qumeqa/floating-findbar",
+    "author": "qumeqa",
+    "name": "Floating Findbar",
+    "description": "A floating findbar for Zen",
+    "version": "1.0",
+    "style": {
+      "chrome": "userChrome.css"
+    },
+    "readme": "https://raw.githubusercontent.com/qumeqa/floating-findbar/refs/heads/main/README.md",
+    "image": "https://raw.githubusercontent.com/qumeqa/floating-findbar/refs/heads/main/cover.png",
+    "tags": [
+      "Float",
+      "Floating",
+      "Findbar"
+    ],
+    "fork": [
+      "zen"
+    ]
+  },
+  "IconTweaker": {
+    "id": "IconTweaker",
+    "name": "Icon Tweaker",
+    "description": "Tab icon resizer for Essentials, Pinned, Normal and Workspaces.",
+    "homepage": "https://github.com/allecsc/Icon-Tweaker",
+    "preferences": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/preferences.json",
+    "style": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/chrome.css",
+    "readme": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/README.md",
+    "image": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/image.png",
+    "author": "celalalt",
+    "version": "1.2",
+    "tags": [
+      "sine",
+      "tabs",
+      "icons",
+      "customization",
+      "resize"
+    ],
+    "createdAt": "2025-05-31",
+    "updatedAt": "2025-06-16",
     "fork": [
       "zen",
       "firefox"
     ],
-    "stars": 1
+    "stars": 0
   },
-  "floating-sidebar": {
-    "id": "floating-sidebar",
-    "name": "Floating Sidebar",
-    "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
-    "author": "Bibek Bhusal",
-    "version": "1.1.0",
-    "updatedAt": "2026-01-04",
-    "tags": [
-      "Sidebar",
-      "Pin"
-    ],
-    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Floating-Sidebar/main/preferences.json",
-    "style": "https://raw.githubusercontent.com/Vertex-Mods/Floating-Sidebar/main/style.css",
-    "js": true,
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Floating-Sidebar/main/README.md",
-    "createdAt": "2025-06-23",
-    "stars": 0,
-    "homepage": "https://github.com/Vertex-Mods/Floating-Sidebar"
-  },
-  "search-engine-select": {
-    "id": "search-engine-select",
-    "name": "Search Engine Select",
-    "description": "Adds a floating UI to switch search engines on a search results page.",
+  "settings-shortcuts-search": {
+    "id": "settings-shortcuts-search",
+    "name": "Search Keyboard shortcuts",
+    "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
     "author": "Bibek Bhusal",
     "version": "1.1.0",
     "updatedAt": "2026-01-04",
     "tags": [
       "Search",
-      "Search Engine",
-      "Google"
+      "sine",
+      "fx-autoconfig",
+      "JavaScript",
+      "Bibek Bhusal"
     ],
     "fork": [
       "zen"
     ],
-    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Search-Engine-Select/main/preferences.json",
-    "style": "https://raw.githubusercontent.com/Vertex-Mods/Search-Engine-Select/main/style.css",
+    "style": {
+      "content": "https://raw.githubusercontent.com/Vertex-Mods/Search-Keyboard-Shortcuts/main/style.css"
+    },
     "js": true,
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Search-Engine-Select/main/README.md",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Search-Keyboard-Shortcuts/main/README.md",
+    "image": "https://raw.githubusercontent.com/Vertex-Mods/Search-Keyboard-Shortcuts/main/image.png",
     "createdAt": "2025-06-23",
     "stars": 0,
-    "homepage": "https://github.com/Vertex-Mods/Search-Engine-Select"
+    "homepage": "https://github.com/Vertex-Mods/Search-Keyboard-Shortcuts"
   },
   "quick-tabs": {
     "id": "quick-tabs",
@@ -1068,78 +1070,76 @@
     ],
     "stars": 0
   },
-  "settings-shortcuts-search": {
-    "id": "settings-shortcuts-search",
-    "name": "Search Keyboard shortcuts",
-    "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
+  "search-engine-select": {
+    "id": "search-engine-select",
+    "name": "Search Engine Select",
+    "description": "Adds a floating UI to switch search engines on a search results page.",
     "author": "Bibek Bhusal",
     "version": "1.1.0",
     "updatedAt": "2026-01-04",
     "tags": [
       "Search",
-      "sine",
-      "fx-autoconfig",
-      "JavaScript",
-      "Bibek Bhusal"
+      "Search Engine",
+      "Google"
     ],
     "fork": [
       "zen"
     ],
-    "style": {
-      "content": "https://raw.githubusercontent.com/Vertex-Mods/Search-Keyboard-Shortcuts/main/style.css"
-    },
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Search-Engine-Select/main/preferences.json",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Search-Engine-Select/main/style.css",
     "js": true,
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Search-Keyboard-Shortcuts/main/README.md",
-    "image": "https://raw.githubusercontent.com/Vertex-Mods/Search-Keyboard-Shortcuts/main/image.png",
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Search-Engine-Select/main/README.md",
     "createdAt": "2025-06-23",
     "stars": 0,
-    "homepage": "https://github.com/Vertex-Mods/Search-Keyboard-Shortcuts"
+    "homepage": "https://github.com/Vertex-Mods/Search-Engine-Select"
   },
-  "IconTweaker": {
-    "id": "IconTweaker",
-    "name": "Icon Tweaker",
-    "description": "Tab icon resizer for Essentials, Pinned, Normal and Workspaces.",
-    "homepage": "https://github.com/allecsc/Icon-Tweaker",
-    "preferences": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/preferences.json",
-    "style": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/chrome.css",
-    "readme": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/README.md",
-    "image": "https://raw.githubusercontent.com/allecsc/Icon-Tweaker/refs/heads/main/image.png",
-    "author": "celalalt",
-    "version": "1.2",
+  "floating-sidebar": {
+    "id": "floating-sidebar",
+    "name": "Floating Sidebar",
+    "description": "Lightweight script to, make firefox Sidebar Floating also option to pin/unpin the sidebar.",
+    "author": "Bibek Bhusal",
+    "version": "1.1.0",
+    "updatedAt": "2026-01-04",
     "tags": [
-      "sine",
-      "tabs",
-      "icons",
-      "customization",
-      "resize"
+      "Sidebar",
+      "Pin"
     ],
-    "createdAt": "2025-05-31",
-    "updatedAt": "2025-06-16",
+    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Floating-Sidebar/main/preferences.json",
+    "style": "https://raw.githubusercontent.com/Vertex-Mods/Floating-Sidebar/main/style.css",
+    "js": true,
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Floating-Sidebar/main/README.md",
+    "createdAt": "2025-06-23",
+    "stars": 0,
+    "homepage": "https://github.com/Vertex-Mods/Floating-Sidebar"
+  },
+  "zaps-cool-photon-theme": {
+    "id": "zaps-cool-photon-theme",
+    "name": "zap's cool photon theme",
+    "description": "a cool photon theme for firefox-based browsers [but NOT zen >:(]",
+    "homepage": "https://github.com/zapSNH/zapsCoolPhotonTheme",
+    "preferences": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/preferences.json",
+    "readme": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/README.md",
+    "style": {
+      "content": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/userContent.css",
+      "chrome": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/userChrome.css"
+    },
+    "image": "https://i.imgur.com/FyzTFKg.png",
+    "author": "ZapSNH",
+    "version": "147.0",
+    "tags": [
+      "firefox",
+      "photon",
+      "legacy",
+      "square"
+    ],
+    "createdAt": "2023-08-09",
+    "updatedAt": "2025-12-28",
     "fork": [
-      "zen",
-      "firefox"
+      "firefox",
+      "waterfox",
+      "floorp",
+      "mullvad"
     ],
     "stars": 0
-  },
-  "floating-findbar": {
-    "id": "floating-findbar",
-    "homepage": "https://github.com/qumeqa/floating-findbar",
-    "author": "qumeqa",
-    "name": "Floating Findbar",
-    "description": "A floating findbar for Zen",
-    "version": "1.0",
-    "style": {
-      "chrome": "userChrome.css"
-    },
-    "readme": "https://raw.githubusercontent.com/qumeqa/floating-findbar/refs/heads/main/README.md",
-    "image": "https://raw.githubusercontent.com/qumeqa/floating-findbar/refs/heads/main/cover.png",
-    "tags": [
-      "Float",
-      "Floating",
-      "Findbar"
-    ],
-    "fork": [
-      "zen"
-    ]
   }
 }
