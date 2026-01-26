@@ -68,7 +68,7 @@ jobs:
           fi
       
           echo "modId=$next_mod" >> "$GITHUB_OUTPUT"
-          echo "branch=bot/mod/$next_mod" >> "$GITHUB_OUTPUT"
+          echo "branch=mod/$next_mod" >> "$GITHUB_OUTPUT"
       
           echo "Selected mod: $next_mod"
 
@@ -158,7 +158,11 @@ jobs:
           echo "branch=$branch" >> $GITHUB_ENV
           echo "subpath=$subpath" >> $GITHUB_ENV
           echo "homepage=$homepage" >> $GITHUB_ENV
-          echo "theme_json=$theme_json" >> $GITHUB_ENV
+          {
+            echo "theme_json<<EOF"
+            echo "$theme_json"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
 
       - name: Update stars for mod and sort
         run: |
@@ -203,7 +207,7 @@ jobs:
         id: branch
         run: |
           modId="${{ steps.pick.outputs.modId }}"
-          gitBranch="bot/mod/$modId"
+          gitBranch="mod/$modId"
 
           git fetch origin "$gitBranch" || true
 
@@ -250,7 +254,7 @@ jobs:
         id: commit
         run: |
           modId="${{ steps.pick.outputs.modId }}"
-          branch="bot/mod/$modId"
+          branch="mod/$modId"
 
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
@@ -274,7 +278,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           modId="${{ steps.pick.outputs.modId }}"
-          branch="bot/mod/$modId"
+          branch="mod/$modId"
 
           homepage=$(jq -r ".\"$modId\".homepage // empty" marketplace.json)
           if [[ -n "$homepage" && ! "$homepage" =~ ^https?:// ]]; then
