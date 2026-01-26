@@ -103,7 +103,7 @@
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
     "name": "Tidy Popup & Extension",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
     "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "style": {
@@ -1183,5 +1183,26 @@
     "createdAt": "2025-09-22",
     "stars": 0,
     "homepage": "https://github.com/Vertex-Mods/Reopen-Closed-Tabs-Menu"
+  },
+  "compact-settings": {
+    "id": "compact-settings",
+    "homepage": "https://github.com/Vertex-Mods/Compact-Settings",
+    "name": "Compact Settings",
+    "description": "Make settings and addons sidebar compact",
+    "author": "Bibek Bhusal",
+    "version": "1.0.0",
+    "updatedAt": "2026-01-26",
+    "tags": [
+      "Settings",
+      "Compact",
+      "Addon",
+      "Sidebar",
+      "Grid"
+    ],
+    "style": {
+      "content": "userContent.css"
+    },
+    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Compact-Settings/main/README.md",
+    "createdAt": "2024-01-26"
   }
 }
