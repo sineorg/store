@@ -87,15 +87,7 @@ jobs:
             .cursor = $mod
           ' meta.json > tmp.json && mv tmp.json meta.json
       
-          # Sort marketplace by stars
-          jq '
-            to_entries
-            | sort_by(.value.stars // 0)
-            | reverse
-            | from_entries
-          ' marketplace.json > tmp.json && mv tmp.json marketplace.json
-      
-          git add marketplace.json meta.json
+          git add meta.json
       
           if git diff --cached --quiet; then
             echo "Cursor already up to date"
@@ -105,21 +97,125 @@ jobs:
           git commit -m "Advance marketplace cursor to $modId"
           git push origin main
 
+      - name: Resolve GitHub repo and theme info
+        id: resolve_theme
+        shell: bash
+        run: |
+          modId="${{ steps.pick.outputs.modId }}"
+      
+          # Get homepage from marketplace.json
+          homepage=$(jq -r ".\"$modId\".homepage // empty" marketplace.json)
+          if [[ -z "$homepage" ]]; then
+            echo "No homepage for $modId"
+            exit 0
+          fi
+      
+          # Normalize homepage → GitHub URL
+          if [[ "$homepage" =~ ^https?:// ]]; then
+            :
+          elif [[ "$homepage" =~ ^github\.com/ ]]; then
+            homepage="https://$homepage"
+          else
+            homepage="https://github.com/$homepage"
+          fi
+      
+          repo=""
+          branch="main"
+          subpath=""
+      
+          if [[ "$homepage" =~ github\.com/([^/]+/[^/]+)(/tree/([^/]+)(/(.*))?)? ]]; then
+            repo="${BASH_REMATCH[1]}"
+            branch="${BASH_REMATCH[3]:-main}"
+            subpath="${BASH_REMATCH[5]}"
+          fi
+      
+          if [[ -z "$repo" ]]; then
+            echo "Could not resolve GitHub repo for $modId"
+            exit 0
+          fi
+      
+          theme_json=""
+      
+          if [[ -n "$subpath" ]]; then
+            url="https://raw.githubusercontent.com/$repo/$branch/$subpath/theme.json"
+            theme_json=$(curl -fsSL "$url" || true)
+          else
+            for b in "$branch" main master; do
+              url="https://raw.githubusercontent.com/$repo/$b/theme.json"
+              if theme_json=$(curl -fsSL "$url"); then
+                break
+              fi
+            done
+          fi
+      
+          if [[ -z "$theme_json" ]]; then
+            echo "No theme.json found for $modId"
+            exit 0
+          fi
+      
+          # Validate theme_json
+          echo "$theme_json" | jq . >/dev/null
+      
+          # Export variables to GitHub Actions environment
+          echo "repo=$repo" >> $GITHUB_ENV
+          echo "branch=$branch" >> $GITHUB_ENV
+          echo "subpath=$subpath" >> $GITHUB_ENV
+          echo "homepage=$homepage" >> $GITHUB_ENV
+
+      - name: Commit cursor progress and sort
+        run: |
+          modId="${{ steps.pick.outputs.modId }}"
+
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+          # Fetch stars for current mod
+          stars=$(curl -s \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "User-Agent: marketplace-bot" \
+            "https://api.github.com/repos/$repo" \
+            | jq -r '.stargazers_count // 0')
+
+          # Update marketplace entry
+          jq \
+            --arg mod "$modId" \
+            --argjson stars "$stars" \
+            '.[$mod].stars = $stars' \
+            marketplace.json > tmp.json && mv tmp.json marketplace.json
+      
+          # Sort marketplace by stars
+          jq '
+            to_entries
+            | sort_by(.value.stars // 0)
+            | reverse
+            | from_entries
+          ' marketplace.json > tmp.json && mv tmp.json marketplace.json
+      
+          git add marketplace.json
+      
+          if git diff --cached --quiet; then
+            echo "Cursor already up to date"
+            exit 0
+          fi
+      
+          git commit -m "Update stars for $modId"
+          git push origin main
+
       - name: Checkout mod branch
         id: branch
         run: |
           modId="${{ steps.pick.outputs.modId }}"
-          branch="bot/mod/$modId"
+          gitBranch="bot/mod/$modId"
 
-          git fetch origin "$branch" || true
+          git fetch origin "$gitBranch" || true
 
-          if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+          if git show-ref --verify --quiet "refs/remotes/origin/$gitBranch"; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
-            git checkout "$branch"
-            git pull --ff-only origin "$branch"
+            git checkout "$gitBranch"
+            git pull --ff-only origin "$gitBranch"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
-            git checkout -b "$branch"
+            git checkout -b "$gitBranch"
           fi
 
       # ─────────────────────────────────────────────
@@ -135,57 +231,6 @@ jobs:
           echo "Processing mod: $modId"
 
           mkdir -p "mods/$modId"
-
-          homepage=$(jq -r ".\"$modId\".homepage // empty" marketplace.json)
-          if [[ -z "$homepage" ]]; then
-            echo "No homepage for $modId"
-            exit 0
-          fi
-
-          # Normalize homepage → GitHub URL
-          if [[ "$homepage" =~ ^https?:// ]]; then
-            :
-          elif [[ "$homepage" =~ ^github\.com/ ]]; then
-            homepage="https://$homepage"
-          else
-            homepage="https://github.com/$homepage"
-          fi
-
-          repo=""
-          branch="main"
-          subpath=""
-          
-          if [[ "$homepage" =~ github\.com/([^/]+/[^/]+)(/tree/([^/]+)(/(.*))?)? ]]; then
-            repo="${BASH_REMATCH[1]}"
-            branch="${BASH_REMATCH[3]:-main}"
-            subpath="${BASH_REMATCH[5]}"
-          fi
-          
-          if [[ -z "$repo" ]]; then
-            echo "Could not resolve GitHub repo for $modId"
-            exit 0
-          fi
-          
-          theme_json=""
-          
-          if [[ -n "$subpath" ]]; then
-            url="https://raw.githubusercontent.com/$repo/$branch/$subpath/theme.json"
-            theme_json=$(curl -fsSL "$url" || true)
-          else
-            for b in "$branch" main master; do
-              url="https://raw.githubusercontent.com/$repo/$b/theme.json"
-              if theme_json=$(curl -fsSL "$url"); then
-                break
-              fi
-            done
-          fi
-          
-          if [[ -z "$theme_json" ]]; then
-            echo "No theme.json found for $modId"
-            exit 0
-          fi
-          
-          echo "$theme_json" | jq . >/dev/null
 
           # ─── Fetch stars ─────────────────────────────
           stars=$(curl -s \
