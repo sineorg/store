@@ -39,9 +39,6 @@ jobs:
             echo '{}' > meta.json
           fi
 
-      # ─────────────────────────────────────────────
-      # Pick NEXT mod via cursor
-      # ─────────────────────────────────────────────
       - name: Select next mod
         id: pick
         run: |
@@ -161,6 +158,7 @@ jobs:
           echo "branch=$branch" >> $GITHUB_ENV
           echo "subpath=$subpath" >> $GITHUB_ENV
           echo "homepage=$homepage" >> $GITHUB_ENV
+          echo "theme_json=$theme_json" >> $GITHUB_ENV
 
       - name: Commit cursor progress and sort
         run: |
@@ -168,8 +166,6 @@ jobs:
 
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-
-          echo "repo = $repo"
 
           # Fetch stars for current mod
           stars=$(curl -s \
@@ -220,9 +216,6 @@ jobs:
             git checkout -b "$gitBranch"
           fi
 
-      # ─────────────────────────────────────────────
-      # Process ONE mod
-      # ─────────────────────────────────────────────
       - name: Process mod
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -233,13 +226,6 @@ jobs:
           echo "Processing mod: $modId"
 
           mkdir -p "mods/$modId"
-
-          # ─── Fetch stars ─────────────────────────────
-          stars=$(curl -s \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -H "User-Agent: marketplace-bot" \
-            "https://api.github.com/repos/$repo" \
-            | jq -r '.stargazers_count // 0')
 
           # ─── Download ZIP (once per run) ─────────────
           for branch in main master; do
@@ -252,20 +238,14 @@ jobs:
           # ─── Update marketplace entry ────────────────
           jq \
             --arg mod "$modId" \
-            --argjson stars "$stars" \
             --argjson theme "$theme_json" '
               .[$mod] =
                 ($theme + {
-                  stars: $stars,
                   id: $mod,
                   homepage: ($theme.homepage // null)
                 })
             ' marketplace.json > tmp.json && mv tmp.json marketplace.json
 
-      
-      # ─────────────────────────────────────────────
-      # Commit + push
-      # ─────────────────────────────────────────────
       - name: Commit and push
         id: commit
         run: |
@@ -288,9 +268,6 @@ jobs:
 
           echo "committed=true" >> "$GITHUB_OUTPUT"
 
-      # ─────────────────────────────────────────────
-      # Create PR if missing
-      # ────────────────────────────────────────────
       - name: Create PR if missing
         if: steps.branch.outputs.exists == 'false' && steps.commit.outputs.committed == 'true'
         env:
