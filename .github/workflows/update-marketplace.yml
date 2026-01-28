@@ -165,6 +165,8 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Update stars for mod and sort
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           modId="${{ steps.pick.outputs.modId }}"
 
@@ -231,8 +233,6 @@ jobs:
           fi
 
       - name: Process mod
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
 
