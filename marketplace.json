@@ -629,7 +629,7 @@
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
     "name": "Tidy Popup & Extension",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
     "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "style": {
@@ -1225,5 +1225,33 @@
       "firefox"
     ],
     "stars": 0
+  },
+  "BetterZenGradientPicker": {
+    "id": "BetterZenGradientPicker",
+    "homepage": "https://github.com/JustAdumbPrsn/BetterZenGradientPicker/",
+    "author": "JustADumbPrsn",
+    "name": "BetterZenGradientPicker",
+    "description": "A complete overhaul to the gradient picker",
+    "version": "1.0 Zen 1.18b",
+    "createdAt": "2026-01-28",
+    "updatedAt": "2025-01-28",
+    "readme": "https://github.com/JustAdumbPrsn/BetterZenGradientPicker/blob/main/README.md",
+    "image": "https://private-user-images.githubusercontent.com/73780892/541634058-c7363c97-534d-43b3-8ebb-0219d4e17867.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Njk2MDg5NjYsIm5iZiI6MTc2OTYwODY2NiwicGF0aCI6Ii83Mzc4MDg5Mi81NDE2MzQwNTgtYzczNjNjOTctNTM0ZC00M2IzLThlYmItMDIxOWQ0ZTE3ODY3LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAxMjglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMTI4VDEzNTc0NlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWE2ZmM3OWU1NTdkZWE3ZTRhNTgzYjRmN2JkZjgzMzIzNDBjN2JlNzc4MjlhZDhlN2NjMDhjNmEzOGYyMjllM2EmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.tAbw-PMXBLeGXP9d4r3Qt8dtUg-QVmZZikpRq-1Ihus",
+    "js": true,
+    "scripts": {
+      "BetterZenGradientPicker.uc.js": {
+        "name": "Zen Library Downloads",
+        "description": "Downloads Module",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "tags": [
+      "Javascript"
+    ],
+    "fork": [
+      "zen"
+    ]
   }
 }
