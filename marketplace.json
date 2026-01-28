@@ -1083,7 +1083,7 @@
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
     "name": "Tidy Popup & Extension",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
     "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "style": {
@@ -1206,5 +1206,23 @@
       "zen"
     ],
     "stars": 0
+  },
+  "firefox-smooth-vertical-tabs-animation": {
+    "id": "firefox-smooth-vertical-tabs-animation",
+    "name": "Smooth Vertical Tabs Animation",
+    "description": "Fixes missing animation on unhover",
+    "homepage": "https://github.com/StormAnon/firefox-smooth-vertical-tabs-animation",
+    "style": "https://github.com/StormAnon/firefox-smooth-vertical-tabs-animation/blob/main/userChrome.css",
+    "readme": "https://github.com/StormAnon/firefox-smooth-vertical-tabs-animation/blob/main/README.md",
+    "image": "https://github.com/StormAnon/firefox-smooth-vertical-tabs-animation/blob/main/image.png",
+    "author": "StormAnon",
+    "version": "1.0.0",
+    "fork": [
+      "firefox"
+    ],
+    "tags": [
+      "ui",
+      "customization"
+    ]
   }
 }
