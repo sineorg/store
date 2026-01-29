@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           BetterZenGradientPicker
-// @version        1.0
+// @version        1.2
 // @description    A Sine mod which aims to overhaul Zen's gradient picker with tons of new features :))
 // @author         JustAdumbPrsn
 // @include        main
@@ -17,6 +17,7 @@ const ZenPickerMods = {
         this.modules.push(new OpacityModule());
         this.modules.push(new HarmonyModule());
         this.modules.push(new RotationModule());
+        this.modules.push(new PaletteModule());
         this.modules.push(new FavoritesModule());
         this.waitForZen();
     },
@@ -550,6 +551,7 @@ class RotationModule {
             #zen-rotation-dial-handler-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 10 !important; }
             #zen-rotation-dial-handler-container.zen-programmatic-change { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
             #zen-rotation-dial-handler { width: 6px; height: 12px; background: light-dark(#666, #ccc); position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); border-radius: 2px; cursor: pointer; pointer-events: all !important; transition: height 0.1s, background 0.2s; }
+            #zen-rotation-dial-wrapper[disabled] { opacity: 0.4; pointer-events: none !important; }
             #zen-rotation-dial-wrapper[disabled] #zen-rotation-dial-handler { pointer-events: none !important; cursor: default; }
             #zen-rotation-dial-handler:hover { height: 14px; background: light-dark(#888, #eee); }
 
@@ -740,7 +742,7 @@ class RotationModule {
         document.removeEventListener("mousemove", this._boundMouseMove);
         document.removeEventListener("mouseup", this._boundMouseUp);
         this.applyRotation();
-        setTimeout(() => { this._hadRecentDrag = false; }, 50);
+        setTimeout(() => { this._hadRecentDrag = false; }, 200);
     }
 
     get activeWorkspace() {
@@ -911,6 +913,217 @@ class RotationModule {
 
             return layers.join(", ");
         };
+    }
+}
+
+/**
+ * PaletteModule - Cycles between 5 palette behaviors
+ */
+class PaletteModule {
+    static MODES = [
+        { id: "full", label: "Full", type: undefined, lightness: 50 },
+        { id: "pastel", label: "Pastel", type: "explicit-lightness", lightness: 85 },
+        { id: "vibrant", label: "Vibrant", type: "explicit-lightness", lightness: 50 },
+        { id: "dark", label: "Dark", type: "explicit-lightness", lightness: 25 },
+        { id: "deep-dark", label: "Deep Dark", type: "explicit-lightness", lightness: 15 },
+        { id: "bw", label: "B&W", type: "explicit-black-white", lightness: 50 }
+    ];
+
+    init(picker) {
+        if (picker._paletteModPatched) return;
+        this.picker = picker;
+        this._selectedMode = null; // Forces mode when set
+        this.injectUI();
+        this.patchPicker(picker);
+        picker._paletteModPatched = true;
+    }
+
+    injectUI() {
+        const actions = document.getElementById("PanelUI-zen-gradient-generator-color-actions");
+        if (!actions || document.getElementById("zen-picker-palette-cycle")) return;
+
+        const btn = document.createElement("button");
+        btn.id = "zen-picker-palette-cycle";
+        btn.className = "subviewbutton";
+
+        ["mousedown", "click", "mouseup", "command"].forEach(type => {
+            btn.addEventListener(type, (e) => {
+                e.stopPropagation();
+                if (type === "click" || type === "command") {
+                    e.preventDefault();
+                    if (!btn.disabled) this.cyclePalette();
+                }
+            }, true);
+        });
+
+        btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+ <path d="M2 12C2 17.5228 6.47715 22 12 22C13.6569 22 15 20.6569 15 19V18.5C15 18.0356 15 17.8034 15.0257 17.6084C15.2029 16.2622 16.2622 15.2029 17.6084 15.0257C17.8034 15 18.0356 15 18.5 15H19C20.6569 15 22 13.6569 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+ <path d="M7 13C7.55228 13 8 12.5523 8 12C8 11.4477 7.55228 11 7 11C6.44772 11 6 11.4477 6 12C6 12.5523 6.44772 13 7 13Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+ <path d="M16 9C16.5523 9 17 8.55228 17 8C17 7.44772 16.5523 7 16 7C15.4477 7 15 7.44772 15 8C15 8.55228 15.4477 9 16 9Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+ <path d="M10 8C10.5523 8 11 7.55228 11 7C11 6.44772 10.5523 6 10 6C9.44772 6 9 6.44772 9 7C9 7.55228 9.44772 8 10 8Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+ </svg>`;
+
+        const heart = document.getElementById("zen-picker-favorite-save");
+        if (heart) actions.insertBefore(btn, heart);
+        else actions.appendChild(btn);
+
+        let style = document.getElementById("zen-picker-mods-palette-css");
+        if (!style) {
+            style = document.createElement("style");
+            style.id = "zen-picker-mods-palette-css";
+            document.head.appendChild(style);
+        }
+        style.textContent = `
+            #zen-picker-palette-cycle {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                list-style-image: none !important;
+            }
+            #zen-picker-palette-cycle svg {
+                transform: translate(-1px, -1px);
+            }
+            #zen-picker-palette-cycle[disabled] {
+                opacity: 0.3 !important;
+                pointer-events: none !important;
+            }
+        `;
+        this.updateUI();
+    }
+
+    patchPicker(picker) {
+        const self = this;
+
+        // 1. Authoritative Update & Sync
+        const origUpdate = picker.updateCurrentWorkspace.bind(picker);
+        picker.updateCurrentWorkspace = function (skipSave = true) {
+            // A. Detect workspace change and reset palette override
+            const currentWsId = gZenWorkspaces?.activeWorkspace?.uuid;
+            if (currentWsId && self._lastWorkspaceId && currentWsId !== self._lastWorkspaceId) {
+                self._selectedMode = null;
+            }
+            self._lastWorkspaceId = currentWsId;
+
+            // B. Default back to Full if no dots (User request)
+            if (this.dots.length === 0 && self._selectedMode) {
+                self._selectedMode = null;
+            }
+
+            // C. Capture the native logic's result first (sets up the base state)
+            const res = origUpdate.apply(this, [skipSave]);
+
+            // D. Refresh our own tool UI (Heart/Palette icons)
+            self.updateUI();
+            if (this._favoritesMod) this._favoritesMod.updateButtonState();
+
+            return res;
+        };
+
+        // 2. Authoritative Position Color: Force mode during drags
+        const origGetColor = picker.getColorFromPosition.bind(picker);
+        picker.getColorFromPosition = function (x, y, type) {
+            if (self._selectedMode) {
+                type = self._selectedMode.type;
+            }
+            return origGetColor(x, y, type);
+        };
+
+        // 3. Authoritative Background: Force mode during background generation
+        const origGetGradient = picker.getGradient.bind(picker);
+        picker.getGradient = function (colors, forToolbar = false) {
+            if (self._selectedMode && colors.length > 0) {
+                const mode = self._selectedMode;
+                colors.forEach(c => {
+                    c.type = mode.type;
+                    if (mode.lightness !== undefined) c.lightness = mode.lightness;
+                });
+            }
+            return origGetGradient(colors, forToolbar);
+        };
+
+        // 4. Release override if user clicks a native preset box
+        document.getElementById("PanelUI-zen-gradient-generator-color-pages")
+            ?.addEventListener("click", (e) => {
+                if (e.target.tagName.toLowerCase() === "box") {
+                    self._selectedMode = null;
+                    self.updateUI();
+                }
+            }, true);
+
+        // 5. Reset override when workspace changes
+        const origOnWorkspaceChange = picker.onWorkspaceChange?.bind(picker);
+        if (origOnWorkspaceChange) {
+            picker.onWorkspaceChange = function (...args) {
+                self._selectedMode = null;
+                return origOnWorkspaceChange.apply(this, args);
+            };
+        }
+    }
+
+    getCurrentModeIndex() {
+        if (this._selectedMode) {
+            return PaletteModule.MODES.findIndex(m => m.id === this._selectedMode.id);
+        }
+
+        const firstDot = this.picker.dots[0];
+        if (!firstDot) return 0;
+
+        const type = firstDot.type;
+        const lightness = firstDot.lightness;
+
+        if (type === "explicit-black-white") return 5;
+        if (type === "explicit-lightness") {
+            if (lightness >= 80) return 1; // Pastel
+            if (lightness <= 20) return 4; // Deep Dark
+            if (lightness <= 45) return 3; // Dark
+            return 2; // Vibrant
+        }
+        return 0; // Full
+    }
+
+    cyclePalette() {
+        const currentIdx = this.getCurrentModeIndex();
+        const nextIdx = (currentIdx + 1) % PaletteModule.MODES.length;
+        this.applyMode(PaletteModule.MODES[nextIdx]);
+    }
+
+    applyMode(mode) {
+        this._selectedMode = mode;
+        if (this.picker.dots.length) {
+            // Trick: Call getGradient with dummy data to force-update private #currentLightness
+            // This ensures subsequent handleColorPositions uses the correct lightness for explicit modes
+            if (mode.lightness !== undefined) {
+                this.picker.getGradient([{
+                    type: mode.type,
+                    lightness: mode.lightness,
+                    algorithm: this.picker.useAlgo || "", // Preserve current harmony!
+                    c: [0, 0, 0],
+                    position: { x: 0, y: 0 }
+                }]);
+            }
+
+            // Use Native Recalculation
+            const positions = this.picker.dots.map(d => ({
+                ID: d.ID,
+                position: d.position,
+                type: mode.type
+            }));
+
+            this.picker.handleColorPositions(positions, true);
+            this.picker.updateCurrentWorkspace(false);
+        }
+        this.updateUI();
+    }
+
+    updateUI() {
+        const btn = document.getElementById("zen-picker-palette-cycle");
+        if (!btn) return;
+
+        const dotCount = this.picker.dots?.length || 0;
+        btn.disabled = dotCount === 0;
+
+        const mode = PaletteModule.MODES[this.getCurrentModeIndex()];
+        btn.setAttribute("tooltiptext", `Palette: ${mode.label}${this._selectedMode ? " (Forced)" : ""}`);
     }
 }
 
@@ -1187,11 +1400,15 @@ class FavoritesModule {
         opacitySlider?.addEventListener("input", () => self.updateButtonState());
 
         const textureWrapper = document.getElementById("PanelUI-zen-gradient-generator-texture-wrapper");
+        let _hadRecentTextureDrag = false;
         textureWrapper?.addEventListener("mousedown", () => {
+            const onMove = () => { _hadRecentTextureDrag = true; };
             const up = () => {
-                self.updateButtonState();
+                setTimeout(() => { _hadRecentTextureDrag = false; }, 200);
+                window.removeEventListener("mousemove", onMove);
                 window.removeEventListener("mouseup", up);
             };
+            window.addEventListener("mousemove", onMove);
             window.addEventListener("mouseup", up);
         });
 
@@ -1213,7 +1430,7 @@ class FavoritesModule {
             textureWrapper.addEventListener("mouseleave", () => textureWrapper.classList.remove("knob-hover"));
 
             textureWrapper.addEventListener("click", (e) => {
-                if (!textureWrapper.classList.contains("knob-hover")) return;
+                if (!textureWrapper.classList.contains("knob-hover") || _hadRecentTextureDrag) return;
                 this._animateState(picker.currentOpacity, 0);
                 self.updateButtonState();
             });
@@ -1487,10 +1704,8 @@ class FavoritesModule {
 }
 
 // Start Execution
-if (window.gBrowserInit?.delayedStartupFinished) ZenPickerMods.init();
-else Services.obs.addObserver(function l(s, t) {
-    if (t === "browser-delayed-startup-finished") {
-        Services.obs.removeObserver(l, t);
-        ZenPickerMods.init();
-    }
-}, "browser-delayed-startup-finished");
+if (document.readyState === "complete") {
+    ZenPickerMods.init();
+} else {
+    window.addEventListener("load", () => ZenPickerMods.init());
+}
