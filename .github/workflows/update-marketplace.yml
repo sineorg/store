@@ -9,6 +9,8 @@ on:
       mod_id:
         description: "Custom mod id to process"
         required: false
+  pull_request:
+    types: [closed]
 
 permissions:
   contents: write
@@ -16,6 +18,9 @@ permissions:
 
 jobs:
   update:
+    if: >
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
@@ -42,34 +47,42 @@ jobs:
       - name: Select next mod
         id: pick
         run: |
-          next_mod=$(
-            jq -r '
-              # Load inputs
-              (input | .cursor // "") as $cursor
-              | (keys | sort) as $keys
+          if [ "${{ github.event_name }}" = "pull_request" ] && \
+             [ "${{ github.event.pull_request.merged }}" = "true" ]; then
       
-              | if ($keys | length) == 0 then
-                  empty
-                elif $cursor == "" then
-                  $keys[0]
-                else
-                  ($keys | index($cursor)) as $i
-                  | if $i == null then
-                      $keys[0]
-                    else
-                      $keys[($i + 1) % ($keys | length)]
-                    end
-                end
-            ' marketplace.json meta.json
-          )
+            branch="${{ github.event.pull_request.head.ref }}"
+            next_mod="${branch#mod/}"
       
-          if [ -n "${{ github.event.inputs.mod_id }}" ]; then
-            next_mod="${{ github.event.inputs.mod_id }}"
+            echo "Using mod from merged PR: $next_mod"
+      
+          else
+            next_mod=$(
+              jq -r '
+                (input | .cursor // "") as $cursor
+                | (keys | sort) as $keys
+      
+                | if ($keys | length) == 0 then
+                    empty
+                  elif $cursor == "" then
+                    $keys[0]
+                  else
+                    ($keys | index($cursor)) as $i
+                    | if $i == null then
+                        $keys[0]
+                      else
+                        $keys[($i + 1) % ($keys | length)]
+                      end
+                  end
+              ' marketplace.json meta.json
+            )
+      
+            if [ -n "${{ github.event.inputs.mod_id }}" ]; then
+              next_mod="${{ github.event.inputs.mod_id }}"
+            fi
           fi
       
           echo "modId=$next_mod" >> "$GITHUB_OUTPUT"
           echo "branch=mod/$next_mod" >> "$GITHUB_OUTPUT"
-      
           echo "Selected mod: $next_mod"
 
       - name: Commit cursor progress
