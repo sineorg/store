@@ -226,6 +226,7 @@ jobs:
 
               echo "THEME_AUTHOR=${theme_data[author]}" >> $GITHUB_ENV
               echo "THEME_NAME=${theme_data[name]}" >> $GITHUB_ENV
+              echo "THEME_ID=$theme_id" >> $GITHUB_ENV
               
               with open(marketplace_file, "w") as f:
                   json.dump(data, f, indent=2)
@@ -302,7 +303,7 @@ jobs:
             * **Name**: ${{ env.THEME_NAME }}
             * **Homepage**: ${{ env.THEME_HOMEPAGE }}
             * **Author**: @${{ env.THEME_AUTHOR }}
-          branch: add-theme-${{ github.event.issue.number }}
+          branch: mod/${{ env.THEME_ID }}
           base: main
 
       - name: Debug Comment Issue
@@ -316,7 +317,7 @@ jobs:
           echo "Your theme \"${{ env.THEME_NAME }}\" has been successfully submitted. The maintainers will review it and get back to you soon."
           echo "Here are some details about your submission:"
           echo "* Your theme has been requested into a new pull request."
-          echo "* It has been created in the branch [add-theme-${{ github.event.issue.number }}](https://github.com/${{ github.repository }}/tree/add-theme-${{ github.event.issue.number }})."
+          echo "* It has been created in the branch [mod/${{ env.THEME_ID }}](https://github.com/${{ github.repository }}/tree/mod/${{ env.THEME_ID }})."
 
       - name: Comment on Issue
         if: success() && env.EXISTING_FOUND != 'true' && env.EXISTING_CHECK_FAILED != 'true'
@@ -324,7 +325,7 @@ jobs:
           curl -s -X POST \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            -d "{\"body\": \"# Thank you for your contribution! :tada:\n\nYour theme \\\"${{ env.THEME_NAME }}\\\" has been successfully submitted. The maintainers will review it and get back to you soon.\n\nHere are some details about your submission:\n* Your theme has been requested into a new pull request.\n* It has been created in the branch [add-theme-${{ github.event.issue.number }}](https://github.com/${{ github.repository }}/tree/add-theme-${{ github.event.issue.number }}).\"}" \
+            -d "{\"body\": \"# Thank you for your contribution! :tada:\n\nYour theme \\\"${{ env.THEME_NAME }}\\\" has been successfully submitted. The maintainers will review it and get back to you soon.\n\nHere are some details about your submission:\n* Your theme has been requested into a new pull request.\n* It has been created in the branch [mod/${{ env.THEME_ID }}](https://github.com/${{ github.repository }}/tree/mod/${{ env.THEME_ID }}).\"}" \
             https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments > comment_response.txt
           if [ $? -eq 0 ]; then
             echo "DEBUG: Comment posted successfully"
