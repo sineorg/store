@@ -681,7 +681,7 @@
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
     "name": "Tidy Popup & Extension",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
     "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "style": {
@@ -1272,5 +1272,26 @@
       "firefox"
     ],
     "stars": 0
+  },
+  "floating-statusbar": {
+    "id": "floating-statusbar",
+    "homepage": "https://github.com/qumeqa/floating-statusbar",
+    "author": "qumeqa",
+    "name": "Floating Statusbar",
+    "description": "A floating statusbar for Zen",
+    "version": "1.0",
+    "style": {
+      "chrome": "userChrome.css"
+    },
+    "readme": "https://raw.githubusercontent.com/qumeqa/floating-statusbar/refs/heads/main/README.md",
+    "image": "https://raw.githubusercontent.com/qumeqa/floating-statusbar/refs/heads/main/cover.png",
+    "tags": [
+      "Float",
+      "Floating",
+      "Statusbar"
+    ],
+    "fork": [
+      "zen"
+    ]
   }
 }
