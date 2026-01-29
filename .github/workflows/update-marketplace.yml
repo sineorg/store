@@ -1,9 +1,6 @@
 name: Update marketplace
 
 on:
-  workflow_call:
-  schedule:
-    - cron: "*/13 * * * *"
   workflow_dispatch:
     inputs:
       mod_id:
