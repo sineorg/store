@@ -52,8 +52,6 @@ jobs:
           homepage="${{ fromJson(steps.issue-parser.outputs.jsonString)['homepage'] }}"
         
           echo "THEME_HOMEPAGE=$homepage" >> $GITHUB_ENV
-          echo "THEME_AUTHOR=${{ github.event.issue.user.login }}" >> $GITHUB_ENV
-          echo "THEME_NAME=$(echo '${{ github.event.issue.title }}' | sed 's/^\[add-theme\]://' | xargs)" >> $GITHUB_ENV
 
           pattern='^https?://(www\.)?github\.com/([^/]+)/([^/]+)(/tree/([^/]+)(/(.*))?)?$'
           
@@ -205,7 +203,7 @@ jobs:
                   print("Error: theme.json must contain 'id' property", file=sys.stderr)
                   raise ValueError("theme.json must contain 'id' property")
           
-              return theme_id, theme_data
+              return theme_data
 
           def update_marketplace():
               marketplace_file = "marketplace.json"
@@ -221,9 +219,13 @@ jobs:
                   raise ValueError(f"Failed to read {marketplace_file}: {str(e)}")
               
               homepage = "${{ env.THEME_HOMEPAGE }}"
-              theme_id, theme_data = get_repo_info(homepage)
-              
+              theme_data = get_repo_info(homepage)
+
+              theme_id = theme_data["id"]
               data[theme_id] = theme_data
+
+              echo "THEME_AUTHOR=${theme_data[author]}" >> $GITHUB_ENV
+              echo "THEME_NAME=${theme_data[name]}" >> $GITHUB_ENV
               
               with open(marketplace_file, "w") as f:
                   json.dump(data, f, indent=2)
