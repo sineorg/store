@@ -654,7 +654,7 @@
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
     "name": "Tidy Popup & Extension",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
     "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "style": {
@@ -1254,5 +1254,23 @@
       "customization"
     ],
     "stars": 0
+  },
+  "zen-auto-wallpaper": {
+    "id": "zen-auto-wallpaper",
+    "name": "Zen Auto Wallpaper",
+    "description": "Sync your wallpaper with your workspace.",
+    "style": {
+      "chrome": "userChrome.css"
+    },
+    "scripts": {
+      "zen-auto-wallpaper.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "version": "0.1.0",
+    "createdAt": "2026-01-28",
+    "updatedAt": "2026-01-28"
   }
 }
