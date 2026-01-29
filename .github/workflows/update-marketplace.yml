@@ -13,10 +13,6 @@ permissions:
   contents: write
   pull-requests: write
 
-concurrency:
-  group: updates-serial
-  cancel-in-progress: false
-
 jobs:
   update:
     if: >
@@ -92,6 +88,8 @@ jobs:
       
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
+
+          git pull origin main
       
           # Advance cursor
           jq --arg mod "$modId" '
@@ -187,6 +185,8 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
 
+          git pull origin main
+
           # Fetch stars for current mod
           stars=$(curl -s \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
@@ -279,6 +279,8 @@ jobs:
 
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
+
+          git pull origin main
 
           git add marketplace.json "mods/$modId"
 
