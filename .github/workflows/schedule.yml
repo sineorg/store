@@ -16,6 +16,6 @@ jobs:
       - name: Trigger update workflow
         uses: benc-uk/workflow-dispatch@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.DISPATCH_PAT }}
           workflow: update-marketplace.yml
           ref: main
