@@ -223,10 +223,10 @@ jobs:
 
               theme_id = theme_data["id"]
               data[theme_id] = theme_data
-
-              echo "THEME_AUTHOR=${theme_data[author]}" >> $GITHUB_ENV
-              echo "THEME_NAME=${theme_data[name]}" >> $GITHUB_ENV
-              echo "THEME_ID=$theme_id" >> $GITHUB_ENV
+              
+              echo "THEME_AUTHOR=$(jq -r '.author' <<<"$theme_data")" >> "$GITHUB_ENV"
+              echo "THEME_NAME=$(jq -r '.name' <<<"$theme_data")" >> "$GITHUB_ENV"
+              echo "THEME_ID=$theme_id" >> "$GITHUB_ENV"
               
               with open(marketplace_file, "w") as f:
                   json.dump(data, f, indent=2)
