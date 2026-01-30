@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           BetterZenGradientPicker
-// @version        1.2
+// @version        1.3
 // @description    A Sine mod which aims to overhaul Zen's gradient picker with tons of new features :))
 // @author         JustAdumbPrsn
 // @include        main
@@ -14,11 +14,16 @@ const ZenPickerMods = {
 
     init() {
         this.log("Initializing Main Controller...");
+        const pm = new PaletteModule();
         this.modules.push(new OpacityModule());
         this.modules.push(new HarmonyModule());
         this.modules.push(new RotationModule());
-        this.modules.push(new PaletteModule());
+        this.modules.push(pm);
         this.modules.push(new FavoritesModule());
+
+        // Expose PaletteModule for fastProjectLightness usage
+        this.paletteMod = pm;
+
         this.waitForZen();
     },
 
@@ -534,7 +539,7 @@ class RotationModule {
             document.head.appendChild(style);
         }
         style.textContent = `
-            #zen-rotation-dial-wrapper { width: 5rem; height: 5rem; position: relative; overflow: visible; display: flex !important; align-items: center; justify-content: center; margin-left: 0.5rem; border-radius: 50%; }
+            #zen-rotation-dial-wrapper { width: 5rem; height: 5rem; position: relative; overflow: visible; display: flex !important; align-items: center; justify-content: center; border-radius: 50%; }
             @media (-moz-platform: macos) { #zen-rotation-dial-wrapper { width: 6rem; height: 6rem; } }
             #zen-rotation-dial-wrapper::after { content: ""; position: absolute; width: 60%; height: 60%; border: 1px solid color-mix(in srgb, var(--zen-colors-border) 50%, transparent 50%); border-radius: 50%; background: linear-gradient(-45deg, transparent -10%, light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1)) 110%); z-index: 2; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
             #zen-rotation-dial-wrapper:not([disabled]):hover::after { pointer-events: all; cursor: pointer; }
@@ -550,10 +555,10 @@ class RotationModule {
 
             #zen-rotation-dial-handler-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 10 !important; }
             #zen-rotation-dial-handler-container.zen-programmatic-change { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-            #zen-rotation-dial-handler { width: 6px; height: 12px; background: light-dark(#666, #ccc); position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); border-radius: 2px; cursor: pointer; pointer-events: all !important; transition: height 0.1s, background 0.2s; }
+            #zen-rotation-dial-handler { width: 6px; height: 12px; background: light-dark(#757575, #d1d1d1); position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); border-radius: 2px; cursor: pointer; pointer-events: all !important; transition: height 0.1s; }
             #zen-rotation-dial-wrapper[disabled] { opacity: 0.4; pointer-events: none !important; }
             #zen-rotation-dial-wrapper[disabled] #zen-rotation-dial-handler { pointer-events: none !important; cursor: default; }
-            #zen-rotation-dial-handler:hover { height: 14px; background: light-dark(#888, #eee); }
+            #zen-rotation-dial-handler:hover { height: 14px; }
 
             /* Grain Reset UI */
             #PanelUI-zen-gradient-generator-texture-wrapper { position: relative; cursor: default; }
@@ -613,7 +618,25 @@ class RotationModule {
         this.dialHandler = container;
         this._dialHandleEl = handler;
 
-        textureWrapper.parentNode.insertBefore(wrapper, textureWrapper.nextSibling);
+        // Create or get secondary row for our custom controls
+        let secondaryRow = document.getElementById("zen-picker-secondary-row");
+        if (!secondaryRow) {
+            const nativeRow = document.getElementById("PanelUI-zen-gradient-colors-wrapper");
+            if (!nativeRow) return;
+
+            secondaryRow = document.createElement("hbox");
+            secondaryRow.id = "zen-picker-secondary-row";
+            nativeRow.parentNode.insertBefore(secondaryRow, nativeRow.nextSibling);
+        }
+
+        // Create wrapper for rotation dial (right side of secondary row)
+        const rotationWrapper = document.createElement("vbox");
+        rotationWrapper.id = "zen-picker-rotation-wrapper";
+        // User requested 20px left shift
+        rotationWrapper.style.marginRight = "20px";
+        rotationWrapper.appendChild(wrapper);
+
+        secondaryRow.appendChild(rotationWrapper);
         this.dialWrapper = wrapper;
 
         this._boundMouseMove = this.onDialMouseMove.bind(this);
@@ -728,7 +751,9 @@ class RotationModule {
             this.updateUI();
             this._ignoreNextThemeUpdate = true;
             try {
-                this.picker.updateCurrentWorkspace();
+                // BUG FIX: passing true here suppresses the "deep refresh" (preference change logic) 
+                // which was causing the infinite dot flickering during rotation.
+                this.picker.updateCurrentWorkspace(true);
             } finally {
                 this._ignoreNextThemeUpdate = false;
             }
@@ -761,6 +786,7 @@ class RotationModule {
         }
         this._ignoreNextThemeUpdate = true;
         try {
+            // Only update visuals, don't trigger full refresh
             if (this.picker.updateCurrentWorkspace) this.picker.updateCurrentWorkspace(false);
         } finally {
             this._ignoreNextThemeUpdate = false;
@@ -793,7 +819,9 @@ class RotationModule {
             panel.addEventListener("popupshowing", () => this.restoreRotation());
             panel.addEventListener("popupshown", () => {
                 this._ignoreNextThemeUpdate = true;
-                picker.updateCurrentWorkspace();
+                const ws = this.activeWorkspace;
+                if (ws?.theme) ws.theme.rotation = this.currentRotation;
+                // Avoid full updateCurrentWorkspace call which triggers redundant refreshes
                 this._ignoreNextThemeUpdate = false;
             });
         }
@@ -929,11 +957,16 @@ class PaletteModule {
         { id: "bw", label: "B&W", type: "explicit-black-white", lightness: 50 }
     ];
 
+    constructor() {
+        this._isAnimating = false;
+    }
+
     init(picker) {
         if (picker._paletteModPatched) return;
         this.picker = picker;
         this._selectedMode = null; // Forces mode when set
         this.injectUI();
+        this.injectSlider();
         this.patchPicker(picker);
         picker._paletteModPatched = true;
     }
@@ -946,6 +979,13 @@ class PaletteModule {
         btn.id = "zen-picker-palette-cycle";
         btn.className = "subviewbutton";
 
+        btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: translate(-1px, -1px);">
+ <path d="M2 12C2 17.5228 6.47715 22 12 22C13.6569 22 15 20.6569 15 19V18.5C15 18.0356 15 17.8034 15.0257 17.6084C15.2029 16.2622 16.2622 15.2029 17.6084 15.0257C17.8034 15 18.0356 15 18.5 15H19C20.6569 15 22 13.6569 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+ <path d="M7 13C7.55228 13 8 12.5523 8 12C8 11.4477 7.55228 11 7 11C6.44772 11 6 11.4477 6 12C6 12.5523 6.44772 13 7 13Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+ <path d="M16 9C16.5523 9 17 8.55228 17 8C17 7.44772 16.5523 7 16 7C15.4477 7 15 7.44772 15 8C15 8.55228 15.4477 9 16 9Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+ <path d="M10 8C10.5523 8 11 7.55228 11 7C11 6.44772 10.5523 6 10 6C9.44772 6 9 6.44772 9 7C9 7.55228 9.44772 8 10 8Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+ </svg>`;
+
         ["mousedown", "click", "mouseup", "command"].forEach(type => {
             btn.addEventListener(type, (e) => {
                 e.stopPropagation();
@@ -955,13 +995,6 @@ class PaletteModule {
                 }
             }, true);
         });
-
-        btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
- <path d="M2 12C2 17.5228 6.47715 22 12 22C13.6569 22 15 20.6569 15 19V18.5C15 18.0356 15 17.8034 15.0257 17.6084C15.2029 16.2622 16.2622 15.2029 17.6084 15.0257C17.8034 15 18.0356 15 18.5 15H19C20.6569 15 22 13.6569 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
- <path d="M7 13C7.55228 13 8 12.5523 8 12C8 11.4477 7.55228 11 7 11C6.44772 11 6 11.4477 6 12C6 12.5523 6.44772 13 7 13Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
- <path d="M16 9C16.5523 9 17 8.55228 17 8C17 7.44772 16.5523 7 16 7C15.4477 7 15 7.44772 15 8C15 8.55228 15.4477 9 16 9Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
- <path d="M10 8C10.5523 8 11 7.55228 11 7C11 6.44772 10.5523 6 10 6C9.44772 6 9 6.44772 9 7C9 7.55228 9.44772 8 10 8Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
- </svg>`;
 
         const heart = document.getElementById("zen-picker-favorite-save");
         if (heart) actions.insertBefore(btn, heart);
@@ -980,12 +1013,126 @@ class PaletteModule {
                 justify-content: center;
                 list-style-image: none !important;
             }
-            #zen-picker-palette-cycle svg {
-                transform: translate(-1px, -1px);
+            #zen-picker-lightness-wrapper {
+                position: relative;
+                flex: 1;
+                height: 40px;
+                display: flex;
+                align-items: center;
             }
-            #zen-picker-palette-cycle[disabled] {
-                opacity: 0.3 !important;
-                pointer-events: none !important;
+            #zen-picker-lightness-slider {
+                flex: 1;
+                margin: 0 !important;
+                background: transparent;
+                z-index: 5;
+                padding: 0 5px;
+                transition: opacity 0.1s;
+                opacity: 0.1;
+            }
+            #zen-picker-lightness-slider.zen-programmatic-change::-moz-range-thumb {
+                transition: none !important;
+            }
+            #zen-picker-lightness-slider[disabled="true"] {
+                pointer-events: none;
+            }
+            #zen-picker-lightness-slider[disabled="true"]::-moz-range-thumb {
+                display: none !important;
+            }
+            #zen-picker-lightness-slider:focus,
+            #zen-picker-lightness-slider:active,
+            #zen-picker-lightness-slider:not([disabled]):hover {
+                opacity: 1;
+            }
+            #zen-picker-lightness-slider::-moz-range-thumb {
+                background: light-dark(black, white);
+                border-radius: 999px;
+                height: var(--zen-thumb-height, 40px);
+                width: var(--zen-thumb-width, 10px);
+                cursor: pointer;
+                border: none;
+                transition: height 0.2s ease-out, width 0.2s ease-out;
+            }
+            #zen-picker-lightness-wrapper.zen-programmatic-change #zen-picker-lightness-slider::-moz-range-thumb {
+                /* Thumb position is handled by browser, but we can animate size */
+                transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            #zen-picker-lightness-slider::-moz-range-track {
+                border-radius: 999px;
+                height: 18px; /* Match native track */
+                background: transparent;
+            }
+            #zen-picker-lightness-slider::-moz-range-progress {
+                background: transparent;
+            }
+            #zen-picker-lightness-slider[disabled] {
+                pointer-events: none;
+            }
+            #zen-picker-lightness-slider[disabled]::-moz-range-thumb {
+                visibility: hidden;
+            }
+            /* SVG line styling - EXACT MATCH to native opacity slider */
+            #zen-picker-lightness-wave {
+                position: absolute;
+                left: -5px;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 1;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+            }
+            #zen-picker-lightness-wave::before {
+                content: "";
+                position: absolute;
+                width: calc(100% - 8px);
+                height: 16px;
+                background: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
+                border-radius: 999px;
+                pointer-events: none;
+                z-index: -1;
+                top: 50%;
+                left: 8px;
+                transform: translateY(-50%);
+            }
+            #zen-picker-lightness-wave svg {
+                overflow: visible;
+                min-width: calc(100% * 1.1);
+                scale: 1.2;
+                margin-left: 4px;
+            }
+            #zen-picker-lightness-path {
+                stroke-width: 8px;
+                transition: stroke 0.2s ease-out;
+            }
+            #zen-picker-lightness-wrapper[disabled="true"] #zen-picker-lightness-path {
+                stroke: light-dark(rgba(77, 77, 77, 0.5), rgba(161, 161, 161, 0.5)) !important;
+            }
+            /* Secondary Row - matches native #PanelUI-zen-gradient-colors-wrapper */
+            #zen-picker-secondary-row {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                margin-bottom: 10px;
+                align-items: center;
+                gap: 1.5rem;
+                padding: 0 var(--panel-padding, 10px);
+            }
+            /* Rotation wrapper in secondary row - match native layout */
+            #zen-picker-rotation-wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex: 0 0 auto;
+                position: relative;
+                z-index: 20;
+                transition: opacity 0.2s;
+            }
+            /* Controls layout */
+            #PanelUI-zen-gradient-generator-controls {
+                flex-direction: column !important;
+                align-items: stretch !important;    
+                display: flex !important;
             }
         `;
         this.updateUI();
@@ -993,16 +1140,18 @@ class PaletteModule {
 
     patchPicker(picker) {
         const self = this;
+        // Capture original for forceNativeLightness
+        this.origGetColor = picker.getColorFromPosition.bind(picker);
 
         // 1. Authoritative Update & Sync
         const origUpdate = picker.updateCurrentWorkspace.bind(picker);
         picker.updateCurrentWorkspace = function (skipSave = true) {
             // A. Detect workspace change and reset palette override
             const currentWsId = gZenWorkspaces?.activeWorkspace?.uuid;
-            if (currentWsId && self._lastWorkspaceId && currentWsId !== self._lastWorkspaceId) {
+            const isWsChange = currentWsId && self._lastWorkspaceId && currentWsId !== self._lastWorkspaceId;
+            if (isWsChange) {
                 self._selectedMode = null;
             }
-            self._lastWorkspaceId = currentWsId;
 
             // B. Default back to Full if no dots (User request)
             if (this.dots.length === 0 && self._selectedMode) {
@@ -1013,7 +1162,21 @@ class PaletteModule {
             const res = origUpdate.apply(this, [skipSave]);
 
             // D. Refresh our own tool UI (Heart/Palette icons)
-            self.updateUI();
+            // Trigger animation if: Workspace changed OR Lightness changed substantially OR manual save
+            const newL = this.dots[0]?.lightness ?? 50;
+            const lightnessChanged = Math.abs((self._lastSyncedLightness ?? 50) - newL) > 0.5;
+            const rotationInProg = picker._rotationModule?._isDragging;
+
+            // If lightness changed from an external source (preset/favorite), reset our override mode
+            // We ignore changes triggered by our own palette cycle via _internalUpdate
+            if (lightnessChanged && !rotationInProg && !self._internalUpdate) {
+                self._selectedMode = null;
+            }
+
+            self.updateUI((!skipSave && !rotationInProg) || isWsChange || (lightnessChanged && !rotationInProg));
+
+            self._lastWorkspaceId = currentWsId;
+            self._lastSyncedLightness = newL;
             if (this._favoritesMod) this._favoritesMod.updateButtonState();
 
             return res;
@@ -1033,9 +1196,15 @@ class PaletteModule {
         picker.getGradient = function (colors, forToolbar = false) {
             if (self._selectedMode && colors.length > 0) {
                 const mode = self._selectedMode;
+                const currentAlgo = this.useAlgo || "";
                 colors.forEach(c => {
                     c.type = mode.type;
                     if (mode.lightness !== undefined) c.lightness = mode.lightness;
+                    // Force re-assertion of harmony (Use private storage if possible, or just set c.algorithm)
+                    if (currentAlgo) {
+                        c.algorithm = currentAlgo;
+                        // Avoid setting this.useAlgo here to prevent infinite recursion loop
+                    }
                 });
             }
             return origGetGradient(colors, forToolbar);
@@ -1049,15 +1218,35 @@ class PaletteModule {
                     self.updateUI();
                 }
             }, true);
+    }
 
-        // 5. Reset override when workspace changes
-        const origOnWorkspaceChange = picker.onWorkspaceChange?.bind(picker);
-        if (origOnWorkspaceChange) {
-            picker.onWorkspaceChange = function (...args) {
-                self._selectedMode = null;
-                return origOnWorkspaceChange.apply(this, args);
-            };
-        }
+    forceNativeLightness(lightness) {
+        if (!this.origGetColor || !this.picker.panel) return;
+
+        try {
+            const panel = this.picker.panel.querySelector(".zen-theme-picker-gradient");
+            if (!panel) return;
+
+            const rect = panel.getBoundingClientRect();
+            // Constants matched to Zen's native logic
+            const padding = 30;
+            const width = rect.width + padding * 2;
+            const height = rect.height + padding * 2;
+            const radius = (width - padding) / 2;
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            // Corrected Formula: Lightness = (dist / radius) * 100
+            // Distance = (Lightness / 100) * radius
+            const dist = radius * (lightness / 100);
+
+            // Calculate x, y relative to center, then adjust for dotHalfSize(29)
+            const x = centerX + dist - 29;
+            const y = centerY - 29;
+
+            // Call original to trigger side-effect update of #currentLightness
+            this.origGetColor(x, y, "force-update");
+        } catch (e) { console.error("Force Lightness Error", e); }
     }
 
     getCurrentModeIndex() {
@@ -1090,32 +1279,34 @@ class PaletteModule {
     applyMode(mode) {
         this._selectedMode = mode;
         if (this.picker.dots.length) {
-            // Trick: Call getGradient with dummy data to force-update private #currentLightness
-            // This ensures subsequent handleColorPositions uses the correct lightness for explicit modes
-            if (mode.lightness !== undefined) {
-                this.picker.getGradient([{
-                    type: mode.type,
-                    lightness: mode.lightness,
-                    algorithm: this.picker.useAlgo || "", // Preserve current harmony!
-                    c: [0, 0, 0],
-                    position: { x: 0, y: 0 }
-                }]);
+            this._internalUpdate = true;
+            try {
+                // Correctly update local dots array avoid stale reads in updateUI/hooks
+                this.picker.dots.forEach(d => {
+                    if (mode.lightness !== undefined) d.lightness = mode.lightness;
+                    d.type = mode.type;
+                });
+
+                if (mode.lightness !== undefined) {
+                    this.forceNativeLightness(mode.lightness);
+                }
+
+                const positions = this.picker.dots.map(d => ({
+                    ID: d.ID,
+                    position: d.position,
+                    type: mode.type
+                }));
+
+                this.picker.handleColorPositions(positions, true);
+                this.picker.updateCurrentWorkspace(false);
+            } finally {
+                this._internalUpdate = false;
             }
-
-            // Use Native Recalculation
-            const positions = this.picker.dots.map(d => ({
-                ID: d.ID,
-                position: d.position,
-                type: mode.type
-            }));
-
-            this.picker.handleColorPositions(positions, true);
-            this.picker.updateCurrentWorkspace(false);
         }
-        this.updateUI();
+        this.updateUI(true);
     }
 
-    updateUI() {
+    updateUI(animate = false, skipSaveOnSync = false) {
         const btn = document.getElementById("zen-picker-palette-cycle");
         if (!btn) return;
 
@@ -1124,6 +1315,427 @@ class PaletteModule {
 
         const mode = PaletteModule.MODES[this.getCurrentModeIndex()];
         btn.setAttribute("tooltiptext", `Palette: ${mode.label}${this._selectedMode ? " (Forced)" : ""}`);
+
+        // Sync Lightness Slider
+        const slider = document.getElementById("zen-picker-lightness-slider");
+        const sliderWrapper = document.getElementById("zen-picker-lightness-wrapper");
+
+        if (slider) {
+            // Disable slider if: No Dots OR Full Mode OR B&W Mode
+            const isExplicit = mode.type === "explicit-lightness";
+            const isDisabled = dotCount === 0 || !isExplicit;
+
+            slider.disabled = isDisabled;
+            // Native opacity slider disabled style handling
+            sliderWrapper?.setAttribute("disabled", isDisabled);
+            slider.style.opacity = "1"; // Keep visible as requested
+
+            // Only update slider value if we are in an explicit mode
+            if (isExplicit) {
+                // Restoration Fix: Priority = Theme > Dot > 50
+                const currentL = this._selectedMode?.lightness ??
+                    this.picker.currentWorkspace?.theme?.lightness ??
+                    this.picker.dots[0]?.lightness ?? 50;
+
+                if (animate && slider && !this._isAnimating) {
+                    sliderWrapper?.classList.add("zen-programmatic-change");
+                    this.animateSliderValue(slider, currentL);
+                    setTimeout(() => sliderWrapper?.classList.remove("zen-programmatic-change"), 500);
+                } else if (!this._isAnimating) {
+                    slider.value = currentL;
+                    slider.setAttribute("tooltiptext", `Lightness: ${Math.round(currentL)}%`);
+                    this.updateLightnessVisuals(currentL);
+                }
+            } else {
+                // Update wave visual state even when disabled (e.g. 0% for B&W)
+                const l = (mode.type === "explicit-black-white") ? 0 : 50;
+                this.updateLightnessVisuals(l);
+            }
+        }
+    }
+
+    // Helper to parse SVG path commands for interpolation
+    parseSinePath(pathStr) {
+        const points = [];
+        const commands = pathStr.match(/[MCL]\s*[\d\s.\-,]+/g);
+        if (!commands) return points;
+
+        commands.forEach((command) => {
+            const type = command.charAt(0);
+            const coordsStr = command.slice(1).trim();
+            const coords = coordsStr.split(/[\s,]+/).map(Number);
+
+            switch (type) {
+                case "M":
+                    points.push({ x: coords[0], y: coords[1], type: "M" });
+                    break;
+                case "C":
+                    if (coords.length >= 6 && coords.length % 6 === 0) {
+                        for (let i = 0; i < coords.length; i += 6) {
+                            points.push({
+                                x1: coords[i],
+                                y1: coords[i + 1],
+                                x2: coords[i + 2],
+                                y2: coords[i + 3],
+                                x: coords[i + 4],
+                                y: coords[i + 5],
+                                type: "C",
+                            });
+                        }
+                    }
+                    break;
+                case "L":
+                    points.push({ x: coords[0], y: coords[1], type: "L" });
+                    break;
+            }
+        });
+        return points;
+    }
+
+    interpolateWavePath(progress) {
+        // Native Zen paths (Exact match: 367.037 length)
+        const linePath = `M 51.373 27.395 L 367.037 27.395`;
+        const sinePath = `M 51.373 27.395 C 60.14 -8.503 68.906 -8.503 77.671 27.395 C 86.438 63.293 95.205 63.293 103.971 27.395 C 112.738 -8.503 121.504 -8.503 130.271 27.395 C 139.037 63.293 147.803 63.293 156.57 27.395 C 165.335 -8.503 174.101 -8.503 182.868 27.395 C 191.634 63.293 200.4 63.293 209.167 27.395 C 217.933 -8.503 226.7 -8.503 235.467 27.395 C 244.233 63.293 252.999 63.293 261.765 27.395 C 270.531 -8.503 279.297 -8.503 288.064 27.395 C 296.83 63.293 305.596 63.293 314.363 27.395 C 323.13 -8.503 331.896 -8.503 340.662 27.395 M 314.438 27.395 C 323.204 -8.503 331.97 -8.503 340.737 27.395 C 349.503 63.293 358.27 63.293 367.037 27.395`;
+
+        if (!this._sinePoints) {
+            this._sinePoints = this.parseSinePath(sinePath);
+        }
+
+        if (progress <= 0.001) return linePath;
+        if (progress >= 0.999) return sinePath;
+
+        const referenceY = 27.395;
+        const t = progress;
+        let newPathData = "";
+
+        this._sinePoints.forEach((p) => {
+            switch (p.type) {
+                case "M": {
+                    const interpolatedY = referenceY + (p.y - referenceY) * t;
+                    newPathData += `M ${p.x} ${interpolatedY} `;
+                    break;
+                }
+                case "C": {
+                    const y1 = referenceY + (p.y1 - referenceY) * t;
+                    const y2 = referenceY + (p.y2 - referenceY) * t;
+                    const y = referenceY + (p.y - referenceY) * t;
+                    newPathData += `C ${p.x1} ${y1} ${p.x2} ${y2} ${p.x} ${y} `;
+                    break;
+                }
+                case "L":
+                    newPathData += `L ${p.x} ${p.y} `;
+                    break;
+            }
+        });
+        return newPathData;
+    }
+
+    injectSlider() {
+        if (document.getElementById("zen-picker-lightness-wrapper")) return;
+
+        // Create or get secondary row for our custom controls
+        let secondaryRow = document.getElementById("zen-picker-secondary-row");
+        if (!secondaryRow) {
+            const nativeRow = document.getElementById("PanelUI-zen-gradient-colors-wrapper");
+            if (!nativeRow) return;
+
+            secondaryRow = document.createElement("hbox");
+            secondaryRow.id = "zen-picker-secondary-row";
+            nativeRow.parentNode.insertBefore(secondaryRow, nativeRow.nextSibling);
+        }
+
+        // Create our new Lightness Slider Wrapper (left side of secondary row)
+        const sliderContainer = document.createElement("vbox");
+        sliderContainer.id = "zen-picker-lightness-wrapper";
+        sliderContainer.setAttribute("flex", "1");
+        sliderContainer.setAttribute("align", "stretch");
+
+        // 1. The Wave Box
+        const waveBox = document.createElement("hbox");
+        waveBox.id = "zen-picker-lightness-wave";
+        waveBox.setAttribute("flex", "1");
+        waveBox.style.pointerEvents = "none";
+
+        // Unique IDs for gradient to prevent conflicts
+        const gradientId = "zen-picker-lightness-generator-gradient";
+        const stop1Id = "zen-picker-lightness-stop-1";
+        const stop2Id = "zen-picker-lightness-stop-2";
+        const stop3Id = "zen-picker-lightness-stop-3";
+
+        waveBox.innerHTML = `
+            <svg viewBox="0 -7.605 455 70" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="${gradientId}" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop id="${stop1Id}" offset="0%" stop-color="light-dark(rgb(90, 90, 90), rgb(161, 161, 161))"/>
+                    <stop id="${stop2Id}" offset="0%" stop-color="light-dark(rgb(90, 90, 90), rgb(161, 161, 161))"/>
+                    <stop id="${stop3Id}" offset="100%" stop-color="light-dark(rgba(77, 77, 77, 0.5), rgba(161, 161, 161, 0.5))"/>
+                  </linearGradient>
+                </defs>
+                <path id="zen-picker-lightness-path" 
+                      d="M 51.373 27.395 L 367.037 27.395" 
+                      fill="none" 
+                      stroke-linecap="round" 
+                      stroke-linejoin="round" 
+                      style="stroke-width: 8px; stroke: light-dark(rgba(77, 77, 77, 0.5), rgba(161, 161, 161, 0.5));"/>
+            </svg>
+        `;
+
+        // 2. The Input
+        const slider = document.createElement("input");
+        slider.type = "range";
+        slider.id = "zen-picker-lightness-slider";
+        slider.min = "5";
+        slider.max = "95";
+        slider.step = "any"; // Fixes bounce/snapping during JS animations
+        slider.value = "50";
+        slider.setAttribute("flex", "1");
+
+        let lastRun = 0;
+        const limit = 50;
+
+        // Initial update
+        this.updateLightnessVisuals(50); // Start at mid
+
+        // High performance local update while dragging
+        slider.addEventListener("input", (e) => {
+            const val = parseFloat(e.target.value); // Use parseFloat for "any" step
+            e.target.setAttribute("tooltiptext", `Lightness: ${Math.round(val)}%`);
+            this.updateLightnessVisuals(val);
+
+            const modeIdx = this.getCurrentModeIndex();
+            let baseMode = PaletteModule.MODES[modeIdx];
+            if (!baseMode || (baseMode.type !== "explicit-lightness" && baseMode.type !== "explicit-black-white")) {
+                baseMode = PaletteModule.MODES.find(m => m.id === "vibrant");
+            }
+
+            // Update current forced state object
+            this._selectedMode = { ...baseMode, lightness: val };
+
+            // 1. PROJECT: Direct Dot & Background projection (Fast)
+            if (this.picker.dots.length) {
+                // Access via main controller or direct instance if possible.
+                // Since this listener is inside PaletteModule, we can call directly.
+                // But fastProjectLightness is on ZenPickerMods (this.picker is unrelated there?)
+                // Wait, fastProjectLightness is defined in PaletteModule?
+                // Let's check the context of 'this' in fastProjectLightness usage.
+
+                // NO, fastProjectLightness is defined in PaletteModule in the file view!
+                // Let me verify the class structure.
+                // Line 943: class PaletteModule
+                // Line 1604: fastProjectLightness(lightness) { ... }
+                // So fastProjectLightness is a method of PaletteModule.
+
+                this._internalUpdate = true;
+                try {
+                    this.fastProjectLightness(val);
+                } finally {
+                    this._internalUpdate = false;
+                }
+            }
+        });
+
+        // Heavy Sync only on release (change)
+        slider.addEventListener("change", (e) => {
+            const val = parseFloat(e.target.value);
+            this._internalUpdate = true; // Prevent mode reset during sync
+            try {
+                this.forceNativeLightness(val);
+
+                const positions = this.picker.dots.map(d => ({
+                    ID: d.ID,
+                    position: d.position,
+                    type: mode.type
+                }));
+                this.picker.handleColorPositions(positions, true);
+                this.picker.updateCurrentWorkspace(false);
+            } finally {
+                this._internalUpdate = false;
+            }
+            this.updateUI(false, true);
+        });
+
+        sliderContainer.appendChild(waveBox);
+        sliderContainer.appendChild(slider);
+
+        // Prepend to secondary row (left side)
+        secondaryRow.insertBefore(sliderContainer, secondaryRow.firstChild);
+    }
+    animateSliderValue(slider, target) {
+        if (this._isAnimating) {
+            if (this._rafId) cancelAnimationFrame(this._rafId);
+            this._isAnimating = false;
+        }
+        const start = parseFloat(slider.value);
+        if (Math.abs(start - target) < 0.5) { // Threshold to prevent animation for tiny changes
+            slider.value = target;
+            this.updateLightnessVisuals(target);
+            slider.setAttribute("tooltiptext", `Lightness: ${Math.round(target)}%`);
+            return;
+        }
+
+        this._isAnimating = true;
+        let startTimestamp = null;
+        const duration = 400;
+
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            // Ease out cubic
+            const ease = 1 - Math.pow(1 - progress, 3);
+            const current = start + (target - start) * ease;
+
+            slider.classList.add("zen-programmatic-change");
+            slider.value = current;
+            this.updateLightnessVisuals(current);
+            // RESIZE DURING SLIDE: Update thumb size in the loop
+            const opacity = (current - 5) / 90;
+            slider.style.setProperty("--zen-thumb-height", `${40 + opacity * 15}px`);
+            slider.style.setProperty("--zen-thumb-width", `${10 + opacity * 15}px`);
+
+            if (progress < 1) {
+                this._rafId = requestAnimationFrame(step);
+            } else {
+                slider.value = target; // Final snap to target
+                this.updateLightnessVisuals(target);
+                this._isAnimating = false;
+                this._rafId = null;
+                slider.classList.remove("zen-programmatic-change");
+                slider.setAttribute("tooltiptext", `Lightness: ${Math.round(target)}%`);
+                // Final sized sync
+                const finalOpacity = (target - 5) / 90;
+                slider.style.setProperty("--zen-thumb-height", `${40 + finalOpacity * 15}px`);
+                slider.style.setProperty("--zen-thumb-width", `${10 + finalOpacity * 15}px`);
+            }
+        };
+        requestAnimationFrame(step);
+    }
+
+    updateLightnessVisuals(val) {
+        if (this._lastVisualVal === val) return;
+        this._lastVisualVal = val;
+
+        const slider = document.getElementById("zen-picker-lightness-slider");
+        if (!slider) return;
+
+        // Normalized 0-1
+        const opacity = (val - 5) / 90;
+
+        const svgPath = document.getElementById("zen-picker-lightness-path");
+        const gradientId = "zen-picker-lightness-generator-gradient";
+
+        if (svgPath) {
+            const d = this.interpolateWavePath(opacity);
+            svgPath.setAttribute("d", d);
+
+            // Native stop syncing
+            // Native dual-stop syncing for progress fill
+            const stop2 = document.getElementById("zen-picker-lightness-stop-2");
+            const stop3 = document.getElementById("zen-picker-lightness-stop-3");
+            const fillPct = `${Math.max(0, Math.min(100, opacity * 100))}%`;
+            if (stop2) stop2.setAttribute("offset", fillPct);
+            if (stop3) stop3.setAttribute("offset", fillPct);
+
+            if (opacity <= 0.01) {
+                svgPath.style.stroke = stop3?.getAttribute("stop-color") || "light-dark(rgba(77, 77, 77, 0.5), rgba(161, 161, 161, 0.5))";
+            } else {
+                svgPath.style.stroke = `url(#${gradientId})`;
+            }
+
+            // Sync overall wave opacity with slider state
+            const wave = document.getElementById("zen-picker-lightness-wave");
+            if (wave) {
+                // User requested track and base of sine wave to remain same opacity
+                // We only hide fill and thumb via CSS if [disabled="true"]
+                wave.style.opacity = "1";
+            }
+        }
+
+        // Thumb size
+        const h = 40 + opacity * 15;
+        const w = 10 + opacity * 15;
+        slider.style.setProperty("--zen-thumb-height", `${h}px`);
+        slider.style.setProperty("--zen-thumb-width", `${w}px`);
+    }
+
+    /**
+     * Fast Projector: Directly updates dot colors and background CSS
+     * without triggering heavy native reconciliation.
+     */
+    fastProjectLightness(lightness) {
+        const picker = this.picker;
+        const docElem = document.documentElement;
+        const panel = picker.panel.querySelector(".zen-theme-picker-gradient");
+
+        if (!panel) return;
+        const rect = panel.getBoundingClientRect();
+        const padding = 30;
+        const dotHalfSize = 29;
+        const width = rect.width + padding * 2;
+        const height = rect.height + padding * 2;
+        const cx = width / 2, cy = height / 2;
+        const radius = (width - padding) / 2;
+
+        // 0. Sync Private State (Lightweight)
+        if (this.paletteMod) {
+            this.paletteMod.forceNativeLightness(lightness);
+        }
+
+        // 1. Update Dot Visuals (Calculate Hue & Saturation from Position)
+        const updatedColors = picker.dots.map(dot => {
+            const x = dot.position.x + dotHalfSize;
+            const y = dot.position.y + dotHalfSize;
+            const dx = x - cx;
+            const dy = y - cy;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const normalizedDistance = 1 - Math.min(distance / radius, 1);
+
+            const h = ((Math.atan2(dy, dx) * 180 / Math.PI) + 360) % 360;
+            // Exact parity with Zen's getColorFromPosition
+            let s = normalizedDistance * 100;
+            if (dot.type && dot.type !== "explicit-lightness") {
+                s = 90 + (1 - normalizedDistance) * 10;
+            }
+            if (dot.type === "explicit-black-white") s = 0;
+
+            dot.lightness = lightness;
+            const rgb = picker.hslToRgb(h / 360, s / 100, lightness / 100);
+            const colorStr = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+
+            dot.element.style.setProperty("--zen-theme-picker-dot-color", colorStr);
+            return { ...dot, c: rgb, type: dot.type, lightness };
+        });
+
+        // 2. Update Background Visuals
+        const gradient = picker.getGradient(updatedColors);
+        const toolbarGradient = picker.getGradient(updatedColors, true);
+
+        docElem.style.setProperty("--zen-main-browser-background", gradient);
+        docElem.style.setProperty("--zen-main-browser-background-toolbar", toolbarGradient);
+
+        // 3. Update Primary/Accent UI Color
+        const dominant = picker.getMostDominantColor(updatedColors);
+        if (dominant) {
+            const primary = picker.getAccentColorForUI(dominant);
+            docElem.style.setProperty("--zen-primary-color", primary);
+
+            // 4. Update Text Contrast (Text Color)
+            try {
+                const isDarkMode = picker.shouldBeDarkMode(dominant);
+                docElem.setAttribute("zen-should-be-dark-mode", isDarkMode);
+
+                const textColor = picker.getToolbarColor(isDarkMode);
+                docElem.style.setProperty(
+                    "--toolbox-textcolor",
+                    `rgba(${textColor[0]}, ${textColor[1]}, ${textColor[2]}, ${textColor[3]})`
+                );
+            } catch (e) { /* ignore contrast errors during drag */ }
+        }
+
+        // 4. Persistence Fix: Update native theme object to prevent reset during dot dragging
+        const ws = picker.currentWorkspace;
+        if (ws?.theme) {
+            ws.theme.lightness = lightness;
+        }
     }
 }
 
