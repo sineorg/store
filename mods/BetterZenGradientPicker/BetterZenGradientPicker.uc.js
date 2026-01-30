@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           BetterZenGradientPicker
-// @version        1.3
+// @version        1.4
 // @description    A Sine mod which aims to overhaul Zen's gradient picker with tons of new features :))
 // @author         JustAdumbPrsn
 // @include        main
@@ -20,6 +20,7 @@ const ZenPickerMods = {
         this.modules.push(new RotationModule());
         this.modules.push(pm);
         this.modules.push(new FavoritesModule());
+        this.modules.push(new DynamicThemeModule());
 
         // Expose PaletteModule for fastProjectLightness usage
         this.paletteMod = pm;
@@ -1736,7 +1737,162 @@ class PaletteModule {
         if (ws?.theme) {
             ws.theme.lightness = lightness;
         }
+
+        // 5. Dynamic Theme Switching (Hook)
+        if (this.dynamicThemeMod) {
+            this.dynamicThemeMod.checkAndApplyTheme(updatedColors, picker);
+        }
     }
+}
+
+/**
+ * DynamicThemeModule - Switches Browser Theme based on Lightness
+ */
+class DynamicThemeModule {
+    static PREF = "zen.theme.dynamic-theme-switching";
+
+    constructor() {
+        this._enabled = false;
+        this._lastIsDark = null;
+    }
+
+    init(picker) {
+        // Expose ourselves to PaletteModule for the hook
+        if (ZenPickerMods.paletteMod) {
+            ZenPickerMods.paletteMod.dynamicThemeMod = this;
+        } else {
+            // Fallback if init order is swapped (though PaletteMod is pushed before in main list)
+            // Just wait a tick or check main array
+            const pm = ZenPickerMods.modules.find(m => m instanceof PaletteModule);
+            if (pm) pm.dynamicThemeMod = this;
+        }
+
+        this._loadPref();
+        this.patchPicker(picker);
+    }
+
+    patchPicker(picker) {
+        const self = this;
+
+        // 1. Patch updateCurrentWorkspace (Covers palette changes, dot changes, native presets)
+        const origUpdate = picker.updateCurrentWorkspace.bind(picker);
+        picker.updateCurrentWorkspace = function (...args) {
+            const res = origUpdate.apply(this, args);
+            setTimeout(() => {
+                try {
+                    self.checkFromPickerState(this);
+                } catch (e) { console.error("DynamicTheme update hook error", e); }
+            }, 50);
+            return res;
+        };
+
+        // 2. Patch onWorkspaceChange (Covers workspace switching, favorites restoration)
+        const origOnWsChange = picker.onWorkspaceChange.bind(picker);
+        picker.onWorkspaceChange = function (...args) {
+            const res = origOnWsChange.apply(this, args);
+            setTimeout(() => {
+                try {
+                    self.checkFromPickerState(this);
+                } catch (e) { console.error("DynamicTheme ws-change hook error", e); }
+            }, 50);
+            return res;
+        };
+    }
+
+    _loadPref() {
+        try {
+            this._enabled = Services.prefs.getBoolPref(DynamicThemeModule.PREF, false);
+        } catch (e) {
+            this._enabled = false;
+        }
+    }
+
+    checkFromPickerState(picker) {
+        if (!picker.dots || !picker.dots.length) return;
+
+        const panel = picker.panel?.querySelector(".zen-theme-picker-gradient");
+        if (!panel) return;
+
+        const rect = panel.getBoundingClientRect();
+        const padding = 30;
+        const width = rect.width + padding * 2;
+        const radius = (width - padding) / 2;
+        const dotHalfSize = 29;
+        const cx = width / 2;
+        const cy = (rect.height + padding * 2) / 2;
+
+        const computedDots = picker.dots.map(dot => {
+            // If 'c' exists and looks valid, use it
+            if (dot.c && Array.isArray(dot.c) && dot.c.length === 3) return dot;
+
+            const x = dot.position.x + dotHalfSize;
+            const y = dot.position.y + dotHalfSize;
+            const dx = x - cx;
+            const dy = y - cy;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const normDist = 1 - Math.min(dist / radius, 1);
+
+            const deg = ((Math.atan2(dy, dx) * 180 / Math.PI) + 360) % 360;
+
+            let s = normDist * 100;
+            if (dot.type && dot.type !== "explicit-lightness") {
+                s = 90 + (1 - normDist) * 10;
+            }
+            if (dot.type === "explicit-black-white") s = 0;
+
+            // Lightness: Prefer dot.lightness, fallback to theme/workspace, or 50
+            const l = dot.lightness !== undefined ? dot.lightness :
+                (picker.dots[0]?.lightness ?? 50);
+
+            const rgb = picker.hslToRgb(deg / 360, s / 100, l / 100);
+            return { ...dot, c: rgb };
+        });
+
+        this.checkAndApplyTheme(computedDots, picker);
+    }
+
+    checkAndApplyTheme(colors, picker) {
+        // 1. Refresh Pref (Fast read)
+        try {
+            if (!Services.prefs.getBoolPref(DynamicThemeModule.PREF, false)) return;
+        } catch (e) { return; }
+
+        // 2. Determine "Should be Dark Mode"
+        // picker.shouldBeDarkMode(color) returns true if the background is DARK (requiring light text)
+        // Therefore, we want the browser theme to be DARK (1) if shouldBeDarkMode is TRUE.
+
+        try {
+            const dominant = picker.getMostDominantColor(colors);
+            if (!dominant) return;
+
+            const shouldBeDark = picker.shouldBeDarkMode(dominant);
+
+            // 3. Check Current System State to avoid redundant "sets"
+            // Note: We can't easily read "ui.systemUsesDarkTheme" directly as a property trust-ably if it's set to "0" (auto).
+            // But we can check our last applied state or just set it if different.
+
+            if (this._lastIsDark === shouldBeDark) return;
+
+            // 4. Apply
+            this._lastIsDark = shouldBeDark;
+            // 1 = Dark, 0 = Light (actually 0 is auto/light, usually 0 forces light if 1 is dark in older Gecko, 
+            // but in Zen/Gecko, ui.systemUsesDarkTheme: 1 is Dark, 0 is Light.
+            // Wait, let's verify. usually checking standard user.js:
+            // ui.systemUsesDarkTheme = 1 (Dark)
+            // ui.systemUsesDarkTheme = 0 (Light) 
+
+            // Actually, let's be safer:
+            // If shouldBeDark is true -> We want DARK theme -> Set 1
+            // If shouldBeDark is false -> We want LIGHT theme -> Set 0
+
+            Services.prefs.setIntPref("ui.systemUsesDarkTheme", shouldBeDark ? 1 : 0);
+
+        } catch (e) {
+            // calculated color might be invalid during drag transition
+        }
+    }
+
+
 }
 
 /**
