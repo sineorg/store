@@ -1283,6 +1283,7 @@
   },
   "zen-auto-wallpaper": {
     "id": "zen-auto-wallpaper",
+    "homepage": "https://github.com/Vertex-Mods/zen-auto-wallpaper",
     "name": "Zen Auto Wallpaper",
     "description": "Sync your wallpaper with your workspace.",
     "style": {
