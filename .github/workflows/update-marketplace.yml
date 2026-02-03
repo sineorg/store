@@ -202,8 +202,13 @@ jobs:
             --argjson stars "$stars" \
             '.[$mod].stars = $stars' \
             marketplace.json > tmp.json && mv tmp.json marketplace.json
-
-          theme_json=$(jq -c ".\"$modId\"" marketplace.json)
+            
+          theme_json=$(
+            jq -c \
+              --argjson stars "$stars" \
+              '.stars = $stars' \
+              <<<"$theme_json"
+          )
           {
             echo "theme_json<<EOF"
             echo "$theme_json"
@@ -265,11 +270,11 @@ jobs:
           # ─── Update marketplace entry ────────────────
           jq \
             --arg mod "$modId" \
-            --arg theme "$theme_json" '
+            --argjson theme "$theme_json" '
               .[$mod] =
-                (( $theme | fromjson ) + {
+                ($theme + {
                   id: $mod,
-                  homepage: (.homepage // null)
+                  homepage: ($theme.homepage // null)
                 })
             ' marketplace.json > tmp.json && mv tmp.json marketplace.json
 
