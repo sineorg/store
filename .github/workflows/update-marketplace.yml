@@ -265,11 +265,11 @@ jobs:
           # ─── Update marketplace entry ────────────────
           jq \
             --arg mod "$modId" \
-            --argjson theme "$theme_json" '
+            --arg theme "$theme_json" '
               .[$mod] =
-                ($theme + {
+                (( $theme | fromjson ) + {
                   id: $mod,
-                  homepage: ($theme.homepage // null)
+                  homepage: (.homepage // null)
                 })
             ' marketplace.json > tmp.json && mv tmp.json marketplace.json
 
