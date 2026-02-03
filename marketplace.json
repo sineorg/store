@@ -757,11 +757,12 @@
   },
   "zen-command-palette": {
     "id": "zen-command-palette",
+    "homepage": "https://github.com/Vertex-Mods/Zen-Command-Palette",
     "name": "Zen Command Palette",
     "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
     "author": "Bibek Bhusal",
-    "version": "1.8.0",
-    "updatedAt": "2026-01-04",
+    "version": "1.8.91",
+    "updatedAt": "2026-02-03",
     "tags": [
       "command",
       "palette",
@@ -774,13 +775,20 @@
     "fork": [
       "zen"
     ],
-    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/preferences.json",
-    "style": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/style.css",
-    "js": true,
+    "preferences": "preferences.json",
+    "style": {
+      "chrome": "style.css"
+    },
+    "scripts": {
+      "zen-command-palette.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/readme.md",
     "createdAt": "2024-09-07",
-    "stars": 5,
-    "homepage": "https://github.com/Vertex-Mods/Zen-Command-Palette"
+    "stars": 5
   },
   "cfafe94c-5a29-4dae-8489-6be514185474": {
     "id": "cfafe94c-5a29-4dae-8489-6be514185474",
