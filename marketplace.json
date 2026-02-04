@@ -409,13 +409,9 @@
     "author": "SehajveerSingh2005",
     "name": "Wireframe 2.0",
     "description": "A minimal theme for Zen. Unconventional by design.",
-    "version": "2.9.2",
+    "version": "2.9.3",
     "createdAt": "2025-09-10",
     "updatedAt": "2026-01-25",
-    "style": {
-      "chrome": "userChrome.css",
-      "content": "userContent.css"
-    },
     "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
     "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
     "tags": [
