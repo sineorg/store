@@ -908,11 +908,12 @@
   },
   "browse-bot": {
     "id": "browse-bot",
+    "homepage": "https://github.com/Vertex-Mods/Browse-Bot",
     "name": "Browse Bot",
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
     "author": "Bibek Bhusal",
-    "version": "2.5.1",
-    "updatedAt": "2026-01-04",
+    "version": "2.5.8",
+    "updatedAt": "2026-01-29",
     "tags": [
       "ai",
       "findbar",
@@ -930,13 +931,25 @@
     "fork": [
       "zen"
     ],
-    "preferences": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/preferences.json",
-    "style": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/style.css",
-    "js": true,
+    "preferences": "preferences.json",
+    "style": {
+      "chrome": "style.css"
+    },
+    "scripts": {
+      "browse-bot.uc.mjs": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      },
+      "vercel-ai-sdk.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/README.md",
     "createdAt": "2024-05-22",
-    "stars": 3,
-    "homepage": "https://github.com/Vertex-Mods/Browse-Bot"
+    "stars": 3
   },
   "3c8ebf69-1042-49b1-8f08-9178f9490659": {
     "id": "3c8ebf69-1042-49b1-8f08-9178f9490659",
