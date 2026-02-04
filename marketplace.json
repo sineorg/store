@@ -823,8 +823,8 @@
     "name": "Compact Settings",
     "description": "Make settings and addons sidebar compact",
     "author": "Bibek Bhusal",
-    "version": "1.0.0",
-    "updatedAt": "2026-01-26",
+    "version": "1.0.3",
+    "updatedAt": "2026-01-29",
     "tags": [
       "Settings",
       "Compact",
