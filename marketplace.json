@@ -1060,15 +1060,15 @@
       "chrome": "userChrome.css"
     },
     "scripts": {
-      "zen-auto-wallpaper.uc.js": {
+      "zen-auto-wallpaper.uc.mjs": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ]
       }
     },
-    "version": "0.1.0",
+    "version": "0.2.2",
     "createdAt": "2026-01-28",
-    "updatedAt": "2026-01-28",
+    "updatedAt": "2026-02-05",
     "stars": 2
   },
   "3699917d-0238-422a-bb4b-9d37344c0c5f": {
