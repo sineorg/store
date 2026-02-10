@@ -1017,7 +1017,7 @@
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
     "name": "Tidy Popup & Extension",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
     "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "style": {
@@ -1346,5 +1346,38 @@
       "zen"
     ],
     "stars": 0
+  },
+  "nova": {
+    "id": "nova",
+    "homepage": "https://github.com/qumeqa/nova",
+    "author": "qumeqa",
+    "name": "Nova UI",
+    "description": "A Zen theme enhancement that refines spacing, padding, and visual consistency across the interface",
+    "version": "1.5",
+    "createdAt": "2026-01-30",
+    "updatedAt": "2026-03-30",
+    "style": {
+      "chrome": "userChrome.css"
+    },
+    "preferences": "preferences.json",
+    "readme": "https://raw.githubusercontent.com/qumeqa/nova/refs/heads/main/README.md",
+    "image": "https://raw.githubusercontent.com/qumeqa/nova/refs/heads/main/img/cover.jpg",
+    "tags": [
+      "modern",
+      "ui",
+      "theme",
+      "visual",
+      "enhancements",
+      "styling",
+      "minimal",
+      "clean",
+      "statusbar",
+      "popup",
+      "panel",
+      "custom font"
+    ],
+    "fork": [
+      "zen"
+    ]
   }
 }
