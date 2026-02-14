@@ -802,11 +802,11 @@
     "id": "new-icons",
     "homepage": "https://github.com/qumeqa/zen-icons",
     "author": "qumeqa",
-    "name": "New icons",
+    "name": "New Icons",
     "description": "New icons for the toolbar, popups, site data panel, and better locale button",
-    "version": "1.2",
+    "version": "1.3",
     "createdAt": "2025-12-24",
-    "updatedAt": "2026-01-29",
+    "updatedAt": "2026-02-13",
     "style": {
       "chrome": "userChrome.css"
     },
