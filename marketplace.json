@@ -1364,12 +1364,12 @@
   },
   "zen-auto-expand-sidebar": {
     "id": "zen-auto-expand-sidebar",
-    "name": "Zen Auto Expand Sidebar",
+    "name": "Sidebar Expand on Hover",
     "description": "Expand the sidebar on hover, with many configurations avaliable",
-    "homepage": "https://github.com/StormAnon/zen-auto-expand-sidebar/tree/sine",
-    "style": "https://raw.githubusercontent.com/StormAnon/zen-auto-expand-sidebar/sine/chrome.css",
-    "readme": "https://raw.githubusercontent.com/StormAnon/zen-auto-expand-sidebar/sine/README.md",
-    "image": "https://raw.githubusercontent.com/StormAnon/zen-auto-expand-sidebar/sine/image.png",
+    "homepage": "https://github.com/StormAnon/zen-sidebar-expand-on-hover/tree/sine",
+    "style": "https://raw.githubusercontent.com/StormAnon/zen-sidebar-expand-on-hover/sine/chrome.css",
+    "readme": "https://raw.githubusercontent.com/StormAnon/zen-sidebar-expand-on-hover/sine/README.md",
+    "image": "https://raw.githubusercontent.com/StormAnon/zen-sidebar-expand-on-hover/sine/image.png",
     "author": "StormAnon",
     "version": "1.0.0",
     "fork": [
