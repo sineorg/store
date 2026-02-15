@@ -1051,7 +1051,7 @@
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
     "name": "Tidy Popup & Extension",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
     "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "style": {
@@ -1380,5 +1380,35 @@
       "zen"
     ],
     "stars": 0
+  },
+  "bubble-pop-deleting": {
+    "id": "bubble-pop-deleting",
+    "name": "Tab Closing Bubble Animation",
+    "description": "Adds a bubble explosion animation when a tab or tab group is closed.",
+    "scripts": {
+      "tab_explode_animation.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "homepage": "https://github.com/Zylaah/bubble-pop-deleting",
+    "readme": "https://raw.githubusercontent.com/Zylaah/bubble-pop-deleting/main/README.md",
+    "author": "Zylaah",
+    "version": "1.0",
+    "tags": [
+      "sine",
+      "Bubble animation",
+      "Deleting tab",
+      "fx-autoconfig",
+      "JavaScript",
+      "Zylaah"
+    ],
+    "preferences": "preferences.json",
+    "createdAt": "2025-05-08",
+    "updatedAt": "2026-02-06",
+    "fork": [
+      "zen"
+    ]
   }
 }
