@@ -952,9 +952,9 @@
     "author": "qumeqa",
     "name": "Nova UI",
     "description": "A Zen theme enhancement that refines spacing, padding, and visual consistency across the interface",
-    "version": "1.7",
+    "version": "1.8",
     "createdAt": "2026-01-30",
-    "updatedAt": "2026-02-16",
+    "updatedAt": "2026-02-17",
     "style": {
       "chrome": "userChrome.css"
     },
