@@ -1253,7 +1253,7 @@
     "homepage": "https://github.com/qumeqa/dialog-fix",
     "author": "qumeqa",
     "name": "Dialog Fix",
-    "description": "Fixe dialog colors to match your current theme",
+    "description": "Fixes dialog colors to match your current theme",
     "version": "1.0",
     "createdAt": "2026-01-17",
     "updatedAt": "2026-02-17",
