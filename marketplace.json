@@ -983,7 +983,7 @@
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
     "name": "Tidy Popup & Extension",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
     "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "style": {
@@ -1411,5 +1411,27 @@
       "customization"
     ],
     "stars": 0
+  },
+  "dialog-fix": {
+    "id": "dialog-fix",
+    "homepage": "https://github.com/qumeqa/dialog-fix",
+    "author": "qumeqa",
+    "name": "Dialog Fix",
+    "description": "Fixe dialog colors to match your current theme",
+    "version": "1.0",
+    "createdAt": "2026-01-17",
+    "updatedAt": "2026-02-17",
+    "style": {
+      "chrome": "userChrome.css"
+    },
+    "readme": "https://raw.githubusercontent.com/qumeqa/dialog-fix/refs/heads/main/README.md",
+    "image": "https://raw.githubusercontent.com/qumeqa/dialog-fix/refs/heads/main/cover.png",
+    "tags": [
+      "dialog",
+      "fix"
+    ],
+    "fork": [
+      "zen"
+    ]
   }
 }
