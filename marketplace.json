@@ -805,9 +805,9 @@
     "author": "qumeqa",
     "name": "New Icons",
     "description": "New icons for the toolbar, popups, site data panel, and better locale button",
-    "version": "1.3",
+    "version": "1.4",
     "createdAt": "2025-12-24",
-    "updatedAt": "2026-02-13",
+    "updatedAt": "2026-02-19",
     "style": {
       "chrome": "userChrome.css"
     },
