@@ -925,6 +925,7 @@
     "stars": 4
   },
   "auto-pip-setting": {
+    "version": "1.1",
     "id": "auto-pip-setting",
     "name": "Auto-PiP-Setting",
     "description": "Adds auto-picture-in-picture setting in the unified panel",
@@ -938,14 +939,13 @@
     "homepage": "https://github.com/Zylaah/zen-mods/tree/main/auto-pip",
     "readme": "https://raw.githubusercontent.com/Zylaah/zen-mods/refs/heads/main/auto-pip/README.md",
     "author": "Bxth",
-    "version": "1.0",
     "tags": [
       "Zen Browser",
       "Auto-PiP",
       "Unified Panel"
     ],
     "createdAt": "2025-12-08",
-    "updatedAt": "2025-12-09",
+    "updatedAt": "2026-02-24",
     "fork": [
       "zen"
     ],
