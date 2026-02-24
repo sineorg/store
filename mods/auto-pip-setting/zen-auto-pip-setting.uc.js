@@ -2,7 +2,7 @@
 // @name           Auto-pip
 // @description    Adds auto-pip option in the unified panel
 // @author         Bxth
-// @version        1.0
+// @version        1.1
 // @namespace      https://github.com/zen-browser/desktop
 // ==/UserScript==
 
@@ -22,6 +22,8 @@
     window.addEventListener('load', init, { once: true });
   }
 
+  let addAutoPiPSettingTimeout = null;
+
   function init() {
     // Find the panel element
     const panel = document.getElementById('zen-unified-site-data-panel');
@@ -39,25 +41,36 @@
     // Update the panel when tab changes (in case panel is open)
     window.addEventListener('TabSelect', () => {
       if (!panel.hasAttribute('hidden')) {
-        setTimeout(addAutoPiPSetting, 0);
+        scheduleAddAutoPiPSetting(0);
       }
     });
 
     // Update the panel when media playback starts or stops (in case panel is open)
+    // Debounce to avoid rapid recreate cycles that can race with click handling
     window.addEventListener('DOMAudioPlaybackStarted', () => {
       if (!panel.hasAttribute('hidden')) {
-        setTimeout(addAutoPiPSetting, 100);
+        scheduleAddAutoPiPSetting(150);
       }
     });
 
     window.addEventListener('DOMAudioPlaybackStopped', () => {
       if (!panel.hasAttribute('hidden')) {
-        setTimeout(addAutoPiPSetting, 100);
+        scheduleAddAutoPiPSetting(150);
       }
     });
 
     // Handle clicks on our custom setting
     document.addEventListener('click', handleAutoPiPClick, true);
+  }
+
+  function scheduleAddAutoPiPSetting(delay) {
+    if (addAutoPiPSettingTimeout) {
+      clearTimeout(addAutoPiPSettingTimeout);
+    }
+    addAutoPiPSettingTimeout = setTimeout(() => {
+      addAutoPiPSettingTimeout = null;
+      addAutoPiPSetting();
+    }, delay);
   }
 
   function hasMediaOnCurrentTab() {
@@ -172,13 +185,13 @@
     const nameLabel = document.createXULElement('label');
     nameLabel.setAttribute('flex', '1');
     nameLabel.setAttribute('class', 'permission-popup-permission-label');
-    nameLabel.textContent = 'Auto Picture-in-Picture';
+    nameLabel.textContent = 'Picture-in-Picture';
     labelContainer.appendChild(nameLabel);
 
     // Create state label
     const stateLabel = document.createXULElement('label');
     stateLabel.setAttribute('class', 'zen-permission-popup-permission-state-label');
-    stateLabel.textContent = isEnabled ? 'Enabled' : 'Disabled';
+    stateLabel.textContent = isEnabled ? 'Automatic' : 'Off';
     labelContainer.appendChild(stateLabel);
 
     // Store the preference info on the label container for click handling
@@ -214,10 +227,24 @@
       return;
     }
 
-    // Prevent default behavior
+    // Prevent default behavior and stop propagation (e.g. panel close, menu cycling)
+    event.preventDefault();
     event.stopPropagation();
 
-    const currentValue = label._prefValue;
+    // Always read from pref as source of truth - handles stale _prefValue when
+    // addAutoPiPSetting recreates the element or when element was detached
+    let currentValue;
+    try {
+      currentValue = Services.prefs.getBoolPref(PREF_PIP_AUTO, false);
+    } catch (e) {
+      return;
+    }
+
+    // Skip if pref is locked (e.g. enterprise policy)
+    if (Services.prefs.prefIsLocked(PREF_PIP_AUTO)) {
+      return;
+    }
+
     const newValue = !currentValue;
 
     // Update the preference
@@ -228,13 +255,13 @@
       return;
     }
 
-    // Update UI
+    // Update UI immediately (in case addAutoPiPSetting runs and recreates the element)
     item.setAttribute('state', newValue ? 'allow' : 'block');
     label._prefValue = newValue;
 
     const stateLabel = item.querySelector('.zen-permission-popup-permission-state-label');
     if (stateLabel) {
-      stateLabel.textContent = newValue ? 'Enabled' : 'Disabled';
+      stateLabel.textContent = newValue ? 'Automatic' : 'Off';
     }
   }
 })();
