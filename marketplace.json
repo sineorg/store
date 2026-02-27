@@ -988,7 +988,7 @@
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
     "name": "Tidy Popup & Extension",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
     "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "style": {
@@ -1439,5 +1439,38 @@
       "zen"
     ],
     "stars": 0
+  },
+  "zenleap-relative-tab-nav": {
+    "id": "zenleap-relative-tab-nav",
+    "name": "ZenLeap",
+    "description": "Vim-powered keyboard navigation suite for Zen Browser. Relative tab numbers, leap mode, browse mode, command palette, marks, jump history, tab search, split view, workspace sessions, plugin system, and 20+ themes.",
+    "homepage": "https://github.com/yashas-salankimatt/ZenLeap",
+    "author": "yashas-salankimatt",
+    "version": "3.3.5",
+    "tags": [
+      "tabs",
+      "keyboard",
+      "vim",
+      "navigation"
+    ],
+    "createdAt": "2025-02-05",
+    "updatedAt": "2026-02-26T00:00:00Z",
+    "fork": [
+      "zen"
+    ],
+    "scripts": {
+      "JS/zenleap.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "exclude": [],
+        "loadOrder": 10
+      }
+    },
+    "style": {
+      "chrome": "chrome.css",
+      "content": ""
+    },
+    "preferences": "preferences.json"
   }
 }
