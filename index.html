@@ -1,30 +1,61 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
     <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Sine - Store</title>
-        <link rel="stylesheet" href="src/styles.css"/>
-        <script type="module" src="src/script.js" defer></script>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Sine Store</title>
+        <link rel="stylesheet" href="src/style/main.css" />
+        <link rel="stylesheet" href="src/style/styles.css" />
+        <script type="module" src="src/js/script.js" defer></script>
+        <link rel="shortcut icon" href="assets/icon.png" type="image/x-icon" />
     </head>
+
     <body>
         <header>
-            <img class="logo" src="assets/sine.png"/>
-            <h1>sine</h1>
-            <input class="action" type="text" placeholder="Type to search..."/>
-            <button class="action hidden"></button>
+            <a class="sine" href="#">
+                <img class="logo" src="assets/sine.png" />
+                <h3>Sine</h3>
+            </a>
+            <input class="search" type="text" placeholder="Type to search..." autocomplete="off" />
         </header>
-        <!-- text will be modified by the Sine extension if
-             the user has it installed. -->
-        <p id="greeting">
-            Welcome to the Sine store.
-            This place is a great way to explore Sine mods and themes without having to have Sine installed.
-        </p>
 
-        <div class="warning">
-            This site is under construction.
-            <br/>
-            Nothing is guaranteed to work at the moment, do not post issues about this project on the github repository.
+        <div class="container">
+            <div class="greeting">
+                <h1>Welcome to Sine Store</h1>
+                <!-- Id must be the same to be compatible with the Zen Mods website as well -->
+                <p class="g" id="install-theme-error">
+                    You must have Sine installed to be able to install mods
+                    through the store. <br />Regardless, you may still explore
+                    our large selection of trusted and verified mods. <br />:)
+                </p>
+                <p class="g" id="sineOnly">
+                    Hello fellow Sine user! <br />Please explore and pick from
+                    our large selection of trusted and verified mods. INSTALLATION IS NOT WORKING YET. <br />:)
+                </p>
+                <img src="assets/bg.png" />
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="sort-dropdown">
+                <button class="sort-button" id="sortButton">
+                    <span id="currentSort">Popularity</span>
+                </button>
+                <div class="sort-menu" id="sortMenu">
+                    <button class="sort-option selected" data-sort="stars">
+                        Popularity
+                    </button>
+                    <button class="sort-option" data-sort="updated">
+                        Last Updated
+                    </button>
+                    <button class="sort-option" data-sort="added">
+                        Date Added
+                    </button>
+                </div>
+            </div>
+
+            <div class="theme-container"></div>
+            <div class="theme-container"></div>
         </div>
     </body>
 </html>
