@@ -137,6 +137,14 @@ button:hover,
         display: none;
     }
 
+    #install-theme-error.hidden {
+        display: none;
+    }
+
+    #install-theme-error.hidden ~ #sineOnly {
+        display: block;
+    }
+
     img {
         position: absolute;
         right: 0;
