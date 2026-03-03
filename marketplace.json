@@ -1036,7 +1036,7 @@
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
     "name": "Tidy Popup & Extension",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
     "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "style": {
@@ -1439,5 +1439,37 @@
       "zen"
     ],
     "stars": 0
+  },
+  "zen-site-appearance-toggle": {
+    "id": "zen-site-appearance-toggle",
+    "name": "Zen Site Appearance Toggle",
+    "description": "A toolbar button that toggles website dark/light mode with a single click \u2014 draggable anywhere in the toolbar like a native button.",
+    "homepage": "https://github.com/ravenothere/Zen-Site-Appearance-Toggle",
+    "image": "https://raw.githubusercontent.com/ravenothere/Zen-Site-Appearance-Toggle/refs/heads/main/images/zen-site-appearance-toggle-preview.png",
+    "style": {
+      "chrome": "chrome/userChrome.css"
+    },
+    "scripts": {
+      "sine/JS/zen-colorscheme-toggle.uc.js": {
+        "name": "Zen Site Appearance Toggle",
+        "description": "Toggles website dark/light mode with a toolbar button",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "preferences": "preferences.json",
+    "readme": "https://raw.githubusercontent.com/ravenothere/Zen-Site-Appearance-Toggle/main/README.md",
+    "author": "ravenothere",
+    "version": "1.0.0",
+    "tags": [
+      "Javascript",
+      "Toolbar"
+    ],
+    "createdAt": "2026-03-03",
+    "updatedAt": "2026-03-03",
+    "fork": [
+      "zen"
+    ]
   }
 }
