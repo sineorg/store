@@ -86,8 +86,8 @@ jobs:
         run: |
           modId="${{ steps.pick.outputs.modId }}"
       
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git config user.name "CosmoCreeper"
+          git config user.email "179134799+CosmoCreeper@users.noreply.github.com"
           git config pull.rebase false
 
           git pull origin main
@@ -183,8 +183,8 @@ jobs:
         run: |
           modId="${{ steps.pick.outputs.modId }}"
 
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git config user.name "CosmoCreeper"
+          git config user.email "179134799+CosmoCreeper@users.noreply.github.com"
           git config pull.rebase false
 
           git pull origin main
@@ -284,8 +284,8 @@ jobs:
           modId="${{ steps.pick.outputs.modId }}"
           branch="mod/$modId"
 
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git config user.name "CosmoCreeper"
+          git config user.email "179134799+CosmoCreeper@users.noreply.github.com"
           git config pull.rebase false
 
           git pull origin main
