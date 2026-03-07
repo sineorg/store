@@ -1027,6 +1027,7 @@
     "name": "Better New Tab button",
     "version": "1.0.6",
     "description": "A Zen Browser mod that enhances the New Tab button experience",
+    "ai": "yes",
     "style": {
       "chrome": "userChrome.css"
     },
