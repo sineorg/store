@@ -489,6 +489,7 @@
     "modules": [
       "Vertex-Mods/Advanced-Tab-Groups"
     ],
+    "ai": "yes",
     "fork": [
       "zen"
     ],
