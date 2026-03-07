@@ -505,15 +505,29 @@
       "chrome": "chrome.css"
     },
     "scripts": {
+      "tidy-downloads-utils.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 1
+      },
+      "tidy-downloads-sync.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 2
+      },
       "tidy-downloads.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
-        ]
+        ],
+        "loadOrder": 3
       },
       "zen-stuff.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
-        ]
+        ],
+        "loadOrder": 3
       }
     },
     "preferences": "preferences.json",
