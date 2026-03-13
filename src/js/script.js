@@ -6,9 +6,7 @@ const themeContainer = document.querySelector(".theme-container");
 const searchInput = document.querySelector("input.search");
 const params = new URLSearchParams(window.location.search);
 const githubCache = {};
-let themes = await fetch(
-    "https://sineorg.github.io/store/marketplace.json",
-).then((res) => res.json());
+let themes = await fetch("./marketplace.json").then((res) => res.json());
 let sortBy = "stars";
 let filteredThemes = themes;
 
@@ -53,37 +51,6 @@ const truncateText = (text, maxLength) => {
     return { text: truncated, truncated: true };
 };
 
-const getGitHubRepoData = async (homepage) => {
-    if (!homepage || !homepage.includes("github.com")) return null;
-    try {
-        const paths = new URL(homepage).pathname.split("/").filter(Boolean);
-        if (paths.length < 2) return null;
-        const repoKey = `${paths[0]}/${paths[1]}`;
-        if (githubCache[repoKey]) return githubCache[repoKey];
-
-        const response = await fetch(`https://api.github.com/repos/${repoKey}`);
-
-        if (response.status === 403) {
-            console.warn(`Rate limit exceeded for ${repoKey}`);
-            return null;
-        }
-
-        if (!response.ok) return null;
-
-        const data = await response.json();
-        const result = {
-            createdAt: data.created_at,
-            updatedAt: data.updated_at || data.pushed_at,
-            stars: data.stargazers_count,
-        };
-        githubCache[repoKey] = result;
-        return result;
-    } catch (e) {
-        console.warn("GitHub API error:", e);
-        return null;
-    }
-};
-
 // Modal
 const closeModal = () => {
     const modal = document.getElementById("themeModal");
@@ -120,7 +87,8 @@ const openThemeModal = (themeId, theme) => {
         </div>
         <p class="theme-modal-description">${theme.description || ""}</p>
         <div class="theme-modal-buttons">
-          <button class="action install-btn theme-modal-install-btn" id="${themeId}-install">Install</button>
+          <button class="action action-install install-btn theme-modal-install-btn hidden" theme-id="${themeId}">Install</button>
+	  <button class="action action-uninstall install-btn theme-modal-install-btn hidden" theme-id="${themeId}">Uninstall</button>
           <a href="${repoLink}" rel="noopener noreferrer" class="btn" target="_blank">View on GitHub</a>
         </div>
       </div>
@@ -156,7 +124,8 @@ const displayTheme = (themeId, theme) => {
       ${imageHtml}
       <div class="title">
         <a href="#" class="theme-link" data-theme-id="${themeId}"><h3>${theme.name || themeId}</h3></a>
-        <button class="install-btn" id="${themeId}-install">Install</button>
+        <button class="install-btn action-install hidden" theme-id="${themeId}">Install</button>
+	<button class="install-btn action-uninstall hidden" theme-id="${themeId}">Uninstall</button>
       </div>
       <subnote>
         v${theme.version || "1.0.0"}
@@ -168,27 +137,6 @@ const displayTheme = (themeId, theme) => {
   `;
 };
 
-const enrichThemesWithGitHub = async (themesArray) => {
-    const promises = themesArray.map(async (theme) => {
-        if (!theme.updatedAt || !theme.createdAt || theme.stars === undefined) {
-            const githubData = await getGitHubRepoData(theme.homepage);
-            if (githubData) {
-                return {
-                    ...theme,
-                    createdAt: theme.createdAt || githubData.createdAt,
-                    updatedAt: theme.updatedAt || githubData.updatedAt,
-                    stars:
-                        theme.stars !== undefined
-                            ? theme.stars
-                            : githubData.stars,
-                };
-            }
-        }
-        return theme;
-    });
-    return await Promise.all(promises);
-};
-
 const sortAndDisplay = async (sortType) => {
     themeContainer.innerHTML = '<div class="loading">Loading...</div>';
 
@@ -196,7 +144,6 @@ const sortAndDisplay = async (sortType) => {
         id,
         ...theme,
     }));
-    themesArray = await enrichThemesWithGitHub(themesArray);
 
     const sortFunctions = {
         stars: (a, b) => (b.stars || 0) - (a.stars || 0),
