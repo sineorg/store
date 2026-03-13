@@ -10,6 +10,8 @@ let themes = await fetch("./marketplace.json").then((res) => res.json());
 let sortBy = "stars";
 let filteredThemes = themes;
 
+window.sineStatus = 0;
+
 // Utilities
 const getValidTimestamp = (dateString) => {
     if (!dateString) return 0;
@@ -163,6 +165,7 @@ const sortAndDisplay = async (sortType) => {
     }
     
     themesArray.forEach((theme) => displayTheme(theme.id, theme));
+    window.sineStatus = 1;
 };
 
 themeContainer.addEventListener("click", (e) => {
