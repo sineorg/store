@@ -1,4 +1,3 @@
-window.loadStatus = 0;
 const MAX_DESCRIPTION_LENGTH = 120;
 const sortButton = document.getElementById("sortButton");
 const sortMenu = document.getElementById("sortMenu");
@@ -164,7 +163,7 @@ const sortAndDisplay = async (sortType) => {
     }
     
     themesArray.forEach((theme) => displayTheme(theme.id, theme));
-	window.loadStatus = 1;
+	document.body.setAttribute("loaded", "true");
 };
 
 themeContainer.addEventListener("click", (e) => {
