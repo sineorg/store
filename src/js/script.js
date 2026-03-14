@@ -174,7 +174,6 @@ const sortAndDisplay = async (sortType) => {
     }
     
     themesArray.forEach((theme) => displayTheme(theme.id, theme));
-    window.addButtons();
 };
 
 themeContainer.addEventListener("click", (e) => {
