@@ -75,27 +75,35 @@ const openThemeModal = (themeId, theme) => {
     const imageHtml = `<img src="${theme.image || "assets/no-image.jpg"}" class="theme-modal-image" onerror="this.src='assets/no-image.jpg'"/>`;
 
     const modalHtml = `
-    <div id="themeModal">
-      <div class="theme-modal-content">
-        <button id="closeModal" class="theme-modal-close">&times;</button>
-        ${imageHtml}
-        <h2 class="theme-modal-title">${theme.name || themeId}</h2>
-        <div class="theme-modal-meta">
-          v${theme.version || "1.0.0"}
-          &bull; <a href="${authorLink}" target="_blank">@${author}</a>
-          &bull; <a href="${starsLink}" target="_blank">&starf; ${theme.stars || 0}</a>
-        </div>
-        <p class="theme-modal-description">${theme.description || ""}</p>
-        <div class="theme-modal-buttons">
-          <button class="action action-install install-btn theme-modal-install-btn hidden" theme-id="${themeId}">Install</button>
-	  <button class="action action-uninstall install-btn theme-modal-install-btn hidden" theme-id="${themeId}">Uninstall</button>
-          <a href="${repoLink}" rel="noopener noreferrer" class="btn" target="_blank">View on GitHub</a>
-        </div>
-      </div>
-    </div>
-  `;
-
+	    <div id="themeModal">
+	      <div class="theme-modal-content">
+	        <button id="closeModal" class="theme-modal-close">&times;</button>
+	        ${imageHtml}
+	        <h2 class="theme-modal-title">${theme.name || themeId}</h2>
+	        <div class="theme-modal-meta">
+	          v${theme.version || "1.0.0"}
+	          &bull; <a href="${authorLink}" target="_blank">@${author}</a>
+	          &bull; <a href="${starsLink}" target="_blank">&starf; ${theme.stars || 0}</a>
+	        </div>
+	        <p class="theme-modal-description">${theme.description || ""}</p>
+	        <div class="theme-modal-buttons">
+	          <button class="action action-install install-btn theme-modal-install-btn hidden">Install</button>
+	          <button class="action action-uninstall install-btn theme-modal-install-btn hidden">Uninstall</button>
+	          <a href="${repoLink}" rel="noopener noreferrer" class="btn" target="_blank">View on GitHub</a>
+	        </div>
+	      </div>
+	    </div>
+	`;
     document.body.insertAdjacentHTML("beforeend", modalHtml);
+
+	const modalButtons = document.querySelector("#themeModal .theme-modal-buttons");
+	modalButtons.querySelector(".action-install").addEventListener("click", () => {
+		document.querySelector(`.theme .action-install[theme-id="${themeId}"]`).click();
+	});
+	modalButtons.querySelector(".action-uninstall").addEventListener("click", () => {
+		document.querySelector(`.theme .action-uninstall[theme-id="${themeId}"]`).click();
+	});
+	
     document.getElementById("closeModal").addEventListener("click", closeModal);
     document.getElementById("themeModal").addEventListener("click", (e) => {
         if (e.target.id === "themeModal") closeModal();
@@ -120,21 +128,21 @@ const displayTheme = (themeId, theme) => {
         : description || "";
 
     themeContainer.innerHTML += `
-    <div class="theme" data-id="${themeId}">
-      ${imageHtml}
-      <div class="title">
-        <a href="#" class="theme-link" data-theme-id="${themeId}"><h3>${theme.name || themeId}</h3></a>
-        <button class="install-btn action-install hidden" theme-id="${themeId}">Install</button>
-	<button class="install-btn action-uninstall hidden" theme-id="${themeId}">Uninstall</button>
-      </div>
-      <subnote>
-        v${theme.version || "1.0.0"}
-        &bull; <a href="${authorLink}" target="_blank">@${author}</a>
-        &bull; <a href="${starsLink}" target="_blank">&starf; ${theme.stars || 0}</a>
-      </subnote>
-      <div class="description">${descriptionHtml}</div>
-    </div>
-  `;
+	    <div class="theme" data-id="${themeId}">
+	      ${imageHtml}
+	      <div class="title">
+	        <a href="#" class="theme-link" data-theme-id="${themeId}"><h3>${theme.name || themeId}</h3></a>
+	        <button class="install-btn action-install hidden" theme-id="${themeId}">Install</button>
+	        <button class="install-btn action-uninstall hidden" theme-id="${themeId}">Uninstall</button>
+	      </div>
+	      <subnote>
+	        v${theme.version || "1.0.0"}
+	        &bull; <a href="${authorLink}" target="_blank">@${author}</a>
+	        &bull; <a href="${starsLink}" target="_blank">&starf; ${theme.stars || 0}</a>
+	      </subnote>
+	      <div class="description">${descriptionHtml}</div>
+	    </div>
+    `;
 };
 
 const sortAndDisplay = async (sortType) => {
