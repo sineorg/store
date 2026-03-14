@@ -507,34 +507,64 @@
       "chrome": "chrome.css"
     },
     "scripts": {
-      "tidy-downloads-utils.uc.js": {
+      "modules/tidy-downloads-utils.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 1
       },
-      "tidy-downloads-sync.uc.js": {
+      "modules/tidy-downloads-sync.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 2
       },
-      "tidy-downloads.uc.js": {
+      "modules/tidy-downloads-toasts.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 3
       },
+      "modules/tidy-downloads-preview.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 4
+      },
+      "modules/tidy-downloads-fileops.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 5
+      },
+      "modules/tidy-downloads-animation.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 6
+      },
+      "modules/tidy-downloads-ai-rename.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 7
+      },
+      "tidy-downloads.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 8
+      },
       "zen-stuff.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
-        "loadOrder": 3
+        "loadOrder": 9
       }
     },
     "preferences": "preferences.json",
     "author": "Vertex",
-    "version": "3.2.0",
+    "version": "3.3.0",
     "tags": [
       "sine",
       "fx-autoconfig",
@@ -542,7 +572,7 @@
       "Tidy Pack"
     ],
     "createdAt": "2025-05-24",
-    "updatedAt": "2026-02-04",
+    "updatedAt": "2026-03-13",
     "ai": "yes",
     "fork": [
       "zen"
