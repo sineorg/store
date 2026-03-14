@@ -88,8 +88,8 @@ const openThemeModal = (themeId, theme) => {
 	        </div>
 	        <p class="theme-modal-description">${theme.description || ""}</p>
 	        <div class="theme-modal-buttons">
-	          <button class="action action-install install-btn theme-modal-install-btn hidden">Install</button>
-	          <button class="action action-uninstall install-btn theme-modal-install-btn hidden">Uninstall</button>
+	          <button class="action action-install install-btn theme-modal-install-btn">Install</button>
+	          <button class="action action-uninstall install-btn theme-modal-install-btn">Uninstall</button>
 	          <a href="${repoLink}" rel="noopener noreferrer" class="btn" target="_blank">View on GitHub</a>
 	        </div>
 	      </div>
