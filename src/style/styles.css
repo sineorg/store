@@ -360,11 +360,11 @@ subnote,
     padding-top: 1.5rem;
 }
 
-.container:has(.theme[open]:has(.action-install.hidden)) ~ #themeModal .action-install {
+.container:has(.theme[open] .action-install.hidden) ~ #themeModal .action-install {
     display: none;
 }
 
-.container:has(.theme[open]:has(.action-uninstall.hidden)) ~ #themeModal .action-uninstall {
+.container:has(.theme[open] .action-uninstall.hidden) ~ #themeModal .action-uninstall {
     display: none;
 }
 
