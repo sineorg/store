@@ -55,6 +55,7 @@ const truncateText = (text, maxLength) => {
 const closeModal = () => {
     const modal = document.getElementById("themeModal");
     if (modal) {
+		document.querySelector(".theme[open]").removeAttribute("open");
         modal.classList.add("closing");
         modal.addEventListener(
             "animationend",
@@ -108,6 +109,8 @@ const openThemeModal = (themeId, theme) => {
     document.getElementById("themeModal").addEventListener("click", (e) => {
         if (e.target.id === "themeModal") closeModal();
     });
+
+	document.querySelector(`.theme[data-id="${themeId}"]`).setAttribute("open", true);
 };
 
 // Display
