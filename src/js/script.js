@@ -55,12 +55,12 @@ const truncateText = (text, maxLength) => {
 const closeModal = () => {
     const modal = document.getElementById("themeModal");
     if (modal) {
-		document.querySelector(".theme[open]").removeAttribute("open");
         modal.classList.add("closing");
         modal.addEventListener(
             "animationend",
             () => {
                 modal.remove();
+				document.querySelector(".theme[open]").removeAttribute("open");
             },
             { once: true },
         );
