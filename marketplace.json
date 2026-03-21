@@ -513,58 +513,88 @@
         ],
         "loadOrder": 1
       },
-      "modules/tidy-downloads-sync.uc.js": {
+      "modules/tidy-downloads-store.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 2
       },
-      "modules/tidy-downloads-toasts.uc.js": {
+      "modules/tidy-downloads-downloads-adapter.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 3
       },
-      "modules/tidy-downloads-preview.uc.js": {
+      "modules/tidy-downloads-sync.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 4
       },
-      "modules/tidy-downloads-fileops.uc.js": {
+      "modules/tidy-downloads-toasts.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 5
       },
-      "modules/tidy-downloads-animation.uc.js": {
+      "modules/tidy-downloads-preview.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 6
       },
-      "modules/tidy-downloads-ai-rename.uc.js": {
+      "modules/tidy-downloads-fileops.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 7
       },
-      "tidy-downloads.uc.js": {
+      "modules/tidy-downloads-animation.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 8
       },
-      "zen-stuff.uc.js": {
+      "modules/tidy-downloads-ai-rename.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 9
+      },
+      "modules/tidy-downloads-pods.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 10
+      },
+      "modules/tidy-downloads-tooltip-layout.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 11
+      },
+      "modules/tidy-downloads-public-api.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 12
+      },
+      "tidy-downloads.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 13
+      },
+      "zen-stuff.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 14
       }
     },
     "preferences": "preferences.json",
     "author": "Vertex",
-    "version": "3.3.3",
+    "version": "3.3.4",
     "tags": [
       "sine",
       "fx-autoconfig",
