@@ -555,46 +555,52 @@
         ],
         "loadOrder": 8
       },
-      "modules/tidy-downloads-ai-rename.uc.js": {
+      "modules/tidy-downloads-library-pie.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 9
       },
-      "modules/tidy-downloads-pods.uc.js": {
+      "modules/tidy-downloads-ai-rename.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 10
       },
-      "modules/tidy-downloads-tooltip-layout.uc.js": {
+      "modules/tidy-downloads-pods.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 11
       },
-      "modules/tidy-downloads-public-api.uc.js": {
+      "modules/tidy-downloads-tooltip-layout.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 12
       },
-      "tidy-downloads.uc.js": {
+      "modules/tidy-downloads-public-api.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 13
       },
-      "zen-stuff.uc.js": {
+      "tidy-downloads.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 14
+      },
+      "zen-stuff.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 15
       }
     },
     "preferences": "preferences.json",
     "author": "Vertex",
-    "version": "3.3.4",
+    "version": "3.4.0",
     "tags": [
       "sine",
       "fx-autoconfig",
