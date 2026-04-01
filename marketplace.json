@@ -507,100 +507,184 @@
       "chrome": "chrome.css"
     },
     "scripts": {
-      "modules/tidy-downloads-utils.uc.js": {
+      "modules/tidy-downloads/tidy-downloads-utils.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 1
       },
-      "modules/tidy-downloads-store.uc.js": {
+      "modules/tidy-downloads/tidy-downloads-store.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 2
       },
-      "modules/tidy-downloads-downloads-adapter.uc.js": {
+      "modules/tidy-downloads/tidy-downloads-downloads-adapter.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 3
       },
-      "modules/tidy-downloads-sync.uc.js": {
+      "modules/tidy-downloads/tidy-downloads-sync.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 4
       },
-      "modules/tidy-downloads-toasts.uc.js": {
+      "modules/tidy-downloads/tidy-downloads-toasts.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 5
       },
-      "modules/tidy-downloads-preview.uc.js": {
+      "modules/tidy-downloads/tidy-downloads-preview.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 6
       },
-      "modules/tidy-downloads-fileops.uc.js": {
+      "modules/tidy-downloads/tidy-downloads-fileops.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 7
       },
-      "modules/tidy-downloads-animation.uc.js": {
+      "modules/tidy-downloads/tidy-downloads-animation.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 8
       },
-      "modules/tidy-downloads-library-pie.uc.js": {
+      "modules/tidy-downloads/tidy-downloads-library-pie.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 9
       },
-      "modules/tidy-downloads-ai-rename.uc.js": {
+      "modules/tidy-downloads/tidy-downloads-ai-rename.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 10
       },
-      "modules/tidy-downloads-pods.uc.js": {
+      "modules/tidy-downloads/tidy-downloads-pods.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 11
       },
-      "modules/tidy-downloads-tooltip-layout.uc.js": {
+      "modules/tidy-downloads/tidy-downloads-tooltip-layout.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 12
       },
-      "modules/tidy-downloads-public-api.uc.js": {
+      "modules/tidy-downloads/tidy-downloads-compact-visibility.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 13
       },
-      "tidy-downloads.uc.js": {
+      "modules/tidy-downloads/tidy-downloads-card-lifecycle.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 14
       },
-      "zen-stuff.uc.js": {
+      "modules/tidy-downloads/tidy-downloads-download-ui.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 15
+      },
+      "modules/tidy-downloads/tidy-downloads-downloads-listener.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 16
+      },
+      "modules/tidy-downloads/tidy-downloads-public-api.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 17
+      },
+      "tidy-downloads.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 18
+      },
+      "modules/zen-stuff/zen-stuff-core.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 19
+      },
+      "modules/zen-stuff/zen-stuff-session.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 20
+      },
+      "modules/zen-stuff/zen-stuff-pile-dom.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 21
+      },
+      "modules/zen-stuff/zen-stuff-pod-element.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 22
+      },
+      "modules/zen-stuff/zen-stuff-pile-layout.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 23
+      },
+      "modules/zen-stuff/zen-stuff-pile-visibility.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 24
+      },
+      "modules/zen-stuff/zen-stuff-pile-prefs.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 25
+      },
+      "modules/zen-stuff/zen-stuff-pile-theme-colors.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 26
+      },
+      "modules/zen-stuff/zen-stuff-pile-mask-repair.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 27
+      },
+      "modules/zen-stuff/zen-stuff-context-fileops.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 28
+      },
+      "zen-stuff.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 29
       }
     },
     "preferences": "preferences.json",
     "author": "Vertex",
-    "version": "3.4.0",
+    "version": "3.7.6",
     "tags": [
       "sine",
       "fx-autoconfig",
