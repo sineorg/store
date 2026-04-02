@@ -937,8 +937,8 @@
     "name": "Zen Command Palette",
     "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
     "author": "Bibek Bhusal",
-    "version": "1.8.92",
-    "updatedAt": "2026-02-04",
+    "version": "1.8.94",
+    "updatedAt": "2026-04-01",
     "tags": [
       "command",
       "palette",
