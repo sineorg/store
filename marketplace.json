@@ -858,7 +858,7 @@
   "zen-site-appearance-toggle": {
     "id": "zen-site-appearance-toggle",
     "name": "Zen Site Appearance Toggle",
-    "description": "A toolbar button that toggles website dark/light mode with a single click — with per-workspace defaults. Draggable anywhere in the toolbar like a native button.",
+    "description": "A toolbar button that toggles website dark/light mode with a single click \u2014 with per-workspace defaults. Draggable anywhere in the toolbar like a native button.",
     "homepage": "https://github.com/ravenothere/Zen-Site-Appearance-Toggle",
     "image": "https://raw.githubusercontent.com/ravenothere/Zen-Site-Appearance-Toggle/refs/heads/main/images/zen-site-appearance-toggle-preview.png",
     "style": {
@@ -1277,7 +1277,7 @@
   "f966100a-4fed-4df5-a082-f001c5bd654e": {
     "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
     "name": "Tidy Popup & Extension",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser\u2019s primary color or manual light/dark hover colors with conditional preferences.",
     "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
     "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
     "style": {
@@ -1715,5 +1715,24 @@
       "waterfox"
     ],
     "stars": 0
+  },
+  "zenwallpapers": {
+    "id": "zenwallpapers",
+    "name": "Zen Wallpapers",
+    "description": "Add wallpapers to Zen",
+    "homepage": "https://github.com/CosmoCreeper/ZenWallpapers",
+    "readme": "https://raw.githubusercontent.com/CosmoCreeper/ZenWallpapers/main/README.md",
+    "preferences": "https://raw.githubusercontent.com/CosmoCreeper/ZenWallpapers/main/preferences.json",
+    "style": "https://raw.githubusercontent.com/CosmoCreeper/ZenWallpapers/main/chrome.css",
+    "author": "CosmoCreeper",
+    "version": "1.0.0",
+    "tags": [
+      "wallpapers",
+      "zen",
+      "sidebar",
+      "images"
+    ],
+    "createdAt": "2025-05-12",
+    "updatedAt": "2026-02-04"
   }
 }
