@@ -137,10 +137,6 @@ button:hover,
         display: none;
     }
 
-    #install-theme-error.hidden {
-        display: none;
-    }
-
     #install-theme-error.hidden ~ #sineOnly {
         display: block;
     }
@@ -362,6 +358,14 @@ subnote,
     display: flex;
     gap: 0.5rem;
     padding-top: 1.5rem;
+}
+
+.container:has(.theme[open] .action-install.hidden) ~ #themeModal .action-install {
+    display: none;
+}
+
+.container:has(.theme[open] .action-uninstall.hidden) ~ #themeModal .action-uninstall {
+    display: none;
 }
 
 @keyframes fadeIn {
