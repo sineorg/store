@@ -1,59 +1,46 @@
 <!DOCTYPE HTML>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Sine Store</title>
-        <link rel="stylesheet" href="src/style/main.css" />
-        <link rel="stylesheet" href="src/style/styles.css" />
-        <script type="module" src="src/js/script.js" defer></script>
-        <link rel="shortcut icon" href="assets/icon.png" type="image/x-icon" />
-    </head>
-    <body>
-        <header>
-            <a class="sine" href="#">
-                <img class="logo" src="assets/sine.png" />
-                <h3>Sine</h3>
-            </a>
-            <input class="search" type="text" placeholder="Type to search..." autocomplete="off" />
-        </header>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sine Store</title>
 
-        <div class="container">
-            <div class="greeting">
-                <h1>Welcome to Sine Store</h1>
-                <!-- Id must be the same to be compatible with the Zen Mods website as well -->
-                <p class="g" id="install-theme-error">
-                    You must have Sine installed to be able to install mods
-                    through the store. <br />Regardless, you may still explore
-                    our large selection of trusted and verified mods. <br />:)
-                </p>
-                <p class="g" id="sineOnly">
-                    Hello fellow Sine user! <br />Please explore and pick from
-                    our large selection of trusted and verified mods. INSTALLATION IS NOT WORKING YET. <br />:)
-                </p>
-                <img src="assets/bg.png" />
-            </div>
-        </div>
+<link rel="stylesheet" href="src/style/main.css" />
+<link rel="stylesheet" href="src/style/styles.css" />
+<script type="module" src="src/js/script.js" defer></script>
+<link rel="shortcut icon" href="assets/icon.png" type="image/x-icon" />
 
-        <div class="container">
-            <div class="sort-dropdown">
-                <button class="sort-button" id="sortButton">
-                    <span id="currentSort">Popularity</span>
-                </button>
-                <div class="sort-menu" id="sortMenu">
-                    <button class="sort-option selected" data-sort="stars">
-                        Popularity
-                    </button>
-                    <button class="sort-option" data-sort="updated">
-                        Last Updated
-                    </button>
-                    <button class="sort-option" data-sort="added">
-                        Date Added
-                    </button>
-                </div>
-            </div>
+</head>
 
-            <div class="theme-container"></div>
-        </div>
-    </body>
+<body style="margin:0;height:100vh;display:flex;align-items:center;justify-content:center;">
+
+<div style="position:relative;width:420px;height:420px;display:flex;align-items:center;justify-content:center;">
+
+<h1 style="margin:0;line-height:1em;z-index:2;">
+WIP &nbsp;:)
+</h1>
+
+<svg viewBox="0 0 400 400" style="position:absolute;width:100%;height:100%;">
+
+<!-- bottom semicircle -->
+<path
+id="bottomArc"
+d="M 50 150 A 150 150 0 0 0 350 150"
+fill="none"
+/>
+
+<text style="font-size:14px;fill:gray;">
+<textPath
+href="#bottomArc"
+startOffset="15%"
+text-anchor="start">
+Please don't make any GitHub issues about this.
+</textPath>
+</text>
+
+</svg>
+
+</div>
+
+</body>
 </html>
