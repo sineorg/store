@@ -1783,5 +1783,39 @@
       "waterfox"
     ],
     "stars": 0
+  },
+  "open-in-container-window": {
+    "id": "open-in-container-window",
+    "js": true,
+    "name": "Open in Container Window",
+    "description": "Adds 'Open in New Container Window' to both bookmark and link context menus. Automatically opens bookmarks/links in their workspace container or the current tab's container.",
+    "scripts": {
+      "openInContainerWindow.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "homepage": "https://github.com/t4nk3rchu/open-in-container-window",
+    "style": {
+      "chrome": "userChrome.css"
+    },
+    "preferences": "preferences.json",
+    "readme": "https://raw.githubusercontent.com/t4nk3rchu/open-in-container-window/refs/heads/main/README.md",
+    "image": "https://raw.githubusercontent.com/t4nk3rchu/open-in-container-window/refs/heads/main/ScreenshotDemo.png",
+    "author": "TankerChu",
+    "version": "1.3.0",
+    "ai": "yes",
+    "tags": [
+      "container",
+      "bookmark",
+      "JavaScript"
+    ],
+    "createdAt": "2026-03-03",
+    "updatedAt": "2026-03-09",
+    "fork": [
+      "zen"
+    ],
+    "stars": 0
   }
 }
