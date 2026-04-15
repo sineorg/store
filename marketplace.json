@@ -212,7 +212,7 @@
         }
       }
     },
-    "stars": 649
+    "stars": 650
   },
   "Arc-2.0": {
     "id": "Arc-2.0",
@@ -236,7 +236,7 @@
     "fork": [
       "zen"
     ],
-    "stars": 385
+    "stars": 386
   },
   "advanced-tab-groups": {
     "id": "advanced-tab-groups",
@@ -335,8 +335,16 @@
     "name": "SuperPins",
     "description": "This Zen Mod enhances pinned tabs/Essentials, by making some UI/UX changes.",
     "homepage": "https://github.com/CosmoCreeper/Zen-Themes/tree/main/SuperPins",
+    "supportsUnload": true,
     "style": {
       "chrome": "chrome.css"
+    },
+    "scripts": {
+      "dist/patches.uc.mjs": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
     },
     "readme": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/readme.md",
     "image": "https://raw.githubusercontent.com/zen-browser/theme-store/main/themes/ad97bb70-0066-4e42-9b5f-173a5e42c6fc/image.png",
@@ -755,7 +763,7 @@
     "fork": [
       "zen"
     ],
-    "stars": 14
+    "stars": 15
   },
   "customize-collapsed-sidebar": {
     "id": "customize-collapsed-sidebar",
@@ -1756,7 +1764,7 @@
     "preferences": "preferences.json",
     "readme": "https://raw.githubusercontent.com/Louis047/Square-UI/main/README.md",
     "author": "Lone",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "tags": [
       "ui",
       "minimal",
@@ -1765,7 +1773,7 @@
       "customization"
     ],
     "createdAt": "2026-03-07",
-    "updatedAt": "2026-03-07",
+    "updatedAt": "2026-04-14",
     "fork": [
       "zen",
       "firefox",
