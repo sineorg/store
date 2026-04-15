@@ -1561,7 +1561,8 @@
     "readme": "https://raw.githubusercontent.com/t4nk3rchu/open-in-container-window/refs/heads/main/README.md",
     "image": "https://raw.githubusercontent.com/t4nk3rchu/open-in-container-window/refs/heads/main/ScreenshotDemo.png",
     "author": "TankerChu",
-    "version": "1.2.0",
+    "version": "1.3.0",
+    "ai": "yes",
     "tags": [
       "container",
       "bookmark",
