@@ -1203,15 +1203,12 @@
   },
   "bada16c1-3b14-483b": {
     "id": "bada16c1-3b14-483b",
-    "homepage": "https://github.com/themaster5209/zen-better-new-tab-button",
     "name": "Better New Tab button",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "A Zen Browser mod that enhances the New Tab button experience",
     "ai": "yes",
-    "style": {
-      "chrome": "userChrome.css"
-    },
-    "stars": 4
+    "stars": 4,
+    "homepage": null
   },
   "auto-pip-setting": {
     "version": "1.2",
