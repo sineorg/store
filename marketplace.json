@@ -1835,17 +1835,5 @@
       "zen"
     ],
     "stars": 0
-  },
-  "arc2.0": {
-    "stars": 0
-  },
-  "bada16c1-3b14-483b": {
-    "id": "bada16c1-3b14-483b",
-    "name": "Better New Tab button",
-    "version": "1.0.7",
-    "description": "A Zen Browser mod that enhances the New Tab button experience",
-    "ai": "yes",
-    "stars": 0,
-    "homepage": null
   }
 }
