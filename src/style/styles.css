@@ -217,6 +217,13 @@ subnote,
     color: var(--text-g);
 }
 
+.controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
 .sort-dropdown {
     position: relative;
     display: inline-block;
@@ -256,7 +263,8 @@ subnote,
     display: flex;
 }
 
-.sort-option {
+.sort-option,
+.browser-option {
     border: none;
     width: 100%;
 
@@ -270,7 +278,8 @@ subnote,
     }
 }
 
-.sort-option.selected {
+.sort-option.selected,
+.browser-option.selected {
     color: var(--accent);
 }
 

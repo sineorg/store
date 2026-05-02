@@ -36,20 +36,37 @@
         </div>
 
         <div class="container">
-            <div class="sort-dropdown">
-                <button class="sort-button" id="sortButton">
-                    <span id="currentSort">Popularity</span>
-                </button>
-                <div class="sort-menu" id="sortMenu">
-                    <button class="sort-option selected" data-sort="stars">
-                        Popularity
+            <div class="controls-row">
+                <div class="sort-dropdown">
+                    <button class="sort-button" id="sortButton">
+                        <span id="currentSort">Popularity</span>
                     </button>
-                    <button class="sort-option" data-sort="updated">
-                        Last Updated
+                    <div class="sort-menu" id="sortMenu">
+                        <button class="sort-option selected" data-sort="stars">
+                            Popularity
+                        </button>
+                        <button class="sort-option" data-sort="updated">
+                            Last Updated
+                        </button>
+                        <button class="sort-option" data-sort="added">
+                            Date Added
+                        </button>
+                        <button class="sort-option" data-sort="alphabetical">
+                            Alphabetical
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sort-dropdown">
+                    <button class="sort-button" id="browserButton">
+                        <span id="currentBrowser">All Browsers</span>
                     </button>
-                    <button class="sort-option" data-sort="added">
-                        Date Added
-                    </button>
+                    <div class="sort-menu" id="browserMenu">
+                        <button class="browser-option selected" data-browser="all">
+                            All Browsers
+                        </button>
+                        <!-- Dynamic options will be inserted here -->
+                    </div>
                 </div>
             </div>
 
