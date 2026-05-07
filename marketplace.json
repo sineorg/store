@@ -15,7 +15,7 @@
       "content": "userContent.css"
     },
     "scripts": {
-      "JS/Nebula.uc.js": {
+      "js/nebula.uc.js": {
         "name": "Core script",
         "description": "Central script for Nebula.",
         "include": [
