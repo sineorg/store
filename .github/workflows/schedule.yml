@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: "*/13 * * * *"
 
+permissions:
+  actions: write
+
 jobs:
   trigger-workflow:
     runs-on: ubuntu-latest
