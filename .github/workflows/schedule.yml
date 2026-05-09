@@ -69,7 +69,7 @@ jobs:
           git pull origin main
 
           # Advance cursor
-          jq --arg mod "$modId" '
+          jq --arg mod "$mod_id" '
             .cursor = $mod
           ' meta.json > tmp.json && mv tmp.json meta.json
 
