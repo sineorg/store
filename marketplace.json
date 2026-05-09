@@ -1459,6 +1459,7 @@
       }
     },
     "version": "0.2.2",
+    "ai": "no",
     "createdAt": "2026-01-28",
     "updatedAt": "2026-02-05",
     "fork": [
