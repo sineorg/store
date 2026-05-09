@@ -29,6 +29,7 @@ jobs:
       - name: Get mod id
         id: get_id
         run: |
+          git pull origin main
           next_mod=$(
             jq -r '
               (input | .cursor // "") as $cursor
@@ -80,6 +81,6 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Advance marketplace cursor to $modId"
+          git commit -m "Advance marketplace cursor to $mod_id"
           git push origin main
 
