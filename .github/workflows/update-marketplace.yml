@@ -230,8 +230,6 @@ jobs:
           git config user.email "179134799+CosmoCreeper@users.noreply.github.com"
           git config pull.rebase false
 
-          git pull --ff-only origin "$branch"
-
           git add marketplace.json "mods/$modId"
 
           if git diff --cached --quiet; then
