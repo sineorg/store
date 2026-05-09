@@ -5,7 +5,7 @@ on:
     inputs:
       mod_id:
         description: "Custom mod id to process"
-        required: false
+        required: true
   pull_request:
     types: [closed]
 
