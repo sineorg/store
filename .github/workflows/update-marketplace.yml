@@ -29,18 +29,6 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y jq curl gh
 
-      - name: Ensure marketplace.json exists
-        run: |
-          if [[ ! -f marketplace.json ]]; then
-            echo '{}' > marketplace.json
-          fi
-
-      - name: Ensure meta.json exists
-        run: |
-          if [[ ! -f meta.json ]]; then
-            echo '{}' > meta.json
-          fi
-
       - name: Select next mod
         id: pick
         run: |
@@ -51,61 +39,14 @@ jobs:
             next_mod="${branch#mod/}"
       
             echo "Using mod from merged PR: $next_mod"
-      
-          else
-            next_mod=$(
-              jq -r '
-                (input | .cursor // "") as $cursor
-                | (keys | sort) as $keys
-      
-                | if ($keys | length) == 0 then
-                    empty
-                  elif $cursor == "" then
-                    $keys[0]
-                  else
-                    ($keys | index($cursor)) as $i
-                    | if $i == null then
-                        $keys[0]
-                      else
-                        $keys[($i + 1) % ($keys | length)]
-                      end
-                  end
-              ' marketplace.json meta.json
-            )
-      
-            if [ -n "${{ github.event.inputs.mod_id }}" ]; then
-              next_mod="${{ github.event.inputs.mod_id }}"
-            fi
+
+          elif [[ -n "${{ github.event.inputs.mod_id }}" ]]; then
+            next_mod="${{ github.event.inputs.mod_id }}"
           fi
       
           echo "modId=$next_mod" >> "$GITHUB_OUTPUT"
           echo "branch=mod/$next_mod" >> "$GITHUB_OUTPUT"
           echo "Selected mod: $next_mod"
-
-      - name: Commit cursor progress
-        run: |
-          modId="${{ steps.pick.outputs.modId }}"
-      
-          git config user.name "CosmoCreeper"
-          git config user.email "179134799+CosmoCreeper@users.noreply.github.com"
-          git config pull.rebase false
-
-          git pull origin main
-      
-          # Advance cursor
-          jq --arg mod "$modId" '
-            .cursor = $mod
-          ' meta.json > tmp.json && mv tmp.json meta.json
-      
-          git add meta.json
-      
-          if git diff --cached --quiet; then
-            echo "Cursor already up to date"
-            exit 0
-          fi
-      
-          git commit -m "Advance marketplace cursor to $modId"
-          git push origin main
 
       - name: Resolve GitHub repo and theme info
         id: resolve_theme
@@ -184,6 +125,7 @@ jobs:
           modId="${{ steps.pick.outputs.modId }}"
 
           git config user.name "CosmoCreeper"
+          # No-reply email that can be viewed by any git user, no need to hide
           git config user.email "179134799+CosmoCreeper@users.noreply.github.com"
           git config pull.rebase false
 
