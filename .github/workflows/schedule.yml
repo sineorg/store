@@ -6,8 +6,12 @@ on:
     - cron: "*/13 * * * *"
 
 jobs:
-  prepare:
+  trigger-workflow:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        run: [1, 2, 3, 4, 5]
+      max-parallel: 1
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -16,14 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y jq
-
-  trigger-workflow:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        run: [1, 2, 3, 4, 5]
-      max-parallel: 1
-    steps:
+    
       - name: Get mod id
         id: get_id
         run: |
