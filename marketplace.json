@@ -15,7 +15,7 @@
       "content": "userContent.css"
     },
     "scripts": {
-      "JS/Nebula.uc.js": {
+      "js/nebula.uc.js": {
         "name": "Core script",
         "description": "Central script for Nebula.",
         "include": [
@@ -31,7 +31,7 @@
     "fork": [
       "zen"
     ],
-    "stars": 1316
+    "stars": 1318
   },
   "natsumi-browser": {
     "id": "natsumi-browser",
@@ -41,6 +41,7 @@
     "description": "A skin for Firefox and its forks that makes things flow.",
     "version": "6.3.4",
     "createdAt": "2024-12-06T10:19:47Z",
+    "ai": "no",
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
     "image": "https://github.com/greeeen-dev/natsumi-browser/raw/dev/images/main-backgroundless.png",
     "style": {
@@ -212,22 +213,23 @@
         }
       }
     },
-    "stars": 660
+    "stars": 666
   },
   "Arc-2.0": {
     "id": "Arc-2.0",
-    "homepage": "https://github.com/YashjitPal/Arc-2.0/",
+    "homepage": "https://github.com/YashjitPal/Arc-2.0",
     "author": "YashjitPal",
     "name": "Arc 2.0",
     "description": "Arc-like Zen Browser theme.",
-    "version": "3.3",
+    "version": "3.3.3",
     "style": {
-      "chrome": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/refs/heads/main/userChrome.css",
-      "content": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/refs/heads/main/userContent.css"
+      "chrome": "userChrome.css",
+      "content": "userContent.css"
     },
-    "preferences": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/refs/heads/main/preferences.json",
-    "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/main/README.md",
+    "preferences": "preferences.json",
+    "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/refs/heads/main/README.md",
     "image": "https://github.com/user-attachments/assets/f9a25afb-2503-421a-bed0-6e94f2ab43db",
+    "ai": "partial",
     "tags": [
       "content",
       "chrome",
@@ -236,7 +238,7 @@
     "fork": [
       "zen"
     ],
-    "stars": 388
+    "stars": 392
   },
   "advanced-tab-groups": {
     "id": "advanced-tab-groups",
@@ -271,7 +273,7 @@
     "fork": [
       "zen"
     ],
-    "stars": 377
+    "stars": 376
   },
   "zaps-cool-photon-theme": {
     "id": "zaps-cool-photon-theme",
@@ -301,7 +303,7 @@
       "floorp",
       "mullvad"
     ],
-    "stars": 140
+    "stars": 142
   },
   "Neo-Zen": {
     "id": "Neo-Zen",
@@ -328,7 +330,31 @@
     "fork": [
       "zen"
     ],
-    "stars": 87
+    "stars": 89
+  },
+  "macaron": {
+    "id": "macaron",
+    "homepage": "https://github.com/SehajveerSingh2005/macaron",
+    "author": "SehajveerSingh2005",
+    "name": "macaron",
+    "description": "a neobrutalist theme to make zen and you happy!",
+    "version": "1.5.1",
+    "createdAt": "2026-04-27",
+    "updatedAt": "2026-05-05",
+    "readme": "https://github.com/SehajveerSingh2005/macaron/blob/main/README.md",
+    "image": "https://private-user-images.githubusercontent.com/156107192/585564291-08be252f-6bca-4dde-9429-52f676ac854b.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Nzc2NDYwMzIsIm5iZiI6MTc3NzY0NTczMiwicGF0aCI6Ii8xNTYxMDcxOTIvNTg1NTY0MjkxLTA4YmUyNTJmLTZiY2EtNGRkZS05NDI5LTUyZjY3NmFjODU0Yi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwNTAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDUwMVQxNDI4NTJaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT03YjE3OGM3Y2Y1YTBkMmE0MzRmZDQ4M2VlZDBlZmMwMTI2MmNkNTg2YjU2ZWZmN2ZjMDg5MTYzYWVlZGViMzEyJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZyZXNwb25zZS1jb250ZW50LXR5cGU9aW1hZ2UlMkZwbmcifQ._bqLS-F3xtyQTP-aBF87_7ymdCu3-pFOGbWaZohLWyA",
+    "tags": [
+      "Theme",
+      "Neo Brutalism",
+      "Playful",
+      "Retro",
+      "Colorful",
+      "Tactile"
+    ],
+    "fork": [
+      "zen"
+    ],
+    "stars": 86
   },
   "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
     "id": "ad97bb70-0066-4e42-9b5f-173a5e42c6fc",
@@ -383,19 +409,41 @@
     "preferences": "preferences.json",
     "readme": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/README.md",
     "author": "Starry-AXQG",
-    "version": "2.7.2.3",
+    "version": "2.7.2.4",
     "tags": [
       "Context Menu",
       "Icons",
       "Icon Pack"
     ],
     "createdAt": "2025-06-02",
-    "updatedAt": "2026-04-25",
+    "updatedAt": "2026-05-02",
     "fork": [
       "zen",
       "firefox"
     ],
-    "stars": 47
+    "stars": 49
+  },
+  "wireframe-2.0": {
+    "id": "wireframe-2.0",
+    "homepage": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0",
+    "author": "SehajveerSingh2005",
+    "name": "Wireframe 2.0",
+    "description": "A minimal theme for Zen. Unconventional by design.",
+    "version": "2.9.8",
+    "createdAt": "2025-09-10",
+    "updatedAt": "2026-04-13",
+    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
+    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
+    "tags": [
+      "Theme",
+      "Minimal",
+      "Squared",
+      "Wireframe"
+    ],
+    "fork": [
+      "zen"
+    ],
+    "stars": 42
   },
   "quick-search-zen-browser": {
     "id": "quick-search-zen-browser",
@@ -425,29 +473,7 @@
     "fork": [
       "zen"
     ],
-    "stars": 41
-  },
-  "wireframe-2.0": {
-    "id": "wireframe-2.0",
-    "homepage": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0",
-    "author": "SehajveerSingh2005",
-    "name": "Wireframe 2.0",
-    "description": "A minimal theme for Zen. Unconventional by design.",
-    "version": "2.9.8",
-    "createdAt": "2025-09-10",
-    "updatedAt": "2026-04-13",
-    "readme": "https://github.com/SehajveerSingh2005/zen-wireframe-2.0/blob/main/README.md",
-    "image": "https://i.ibb.co/8DWnx9Hp/Screenshot-2025-09-09-235105.png",
-    "tags": [
-      "Theme",
-      "Minimal",
-      "Squared",
-      "Wireframe"
-    ],
-    "fork": [
-      "zen"
-    ],
-    "stars": 37
+    "stars": 42
   },
   "vizen-floaty-ui": {
     "id": "vizen-floaty-ui",
@@ -512,7 +538,7 @@
     "fork": [
       "zen"
     ],
-    "stars": 20
+    "stars": 22
   },
   "zen-tidy-downloads": {
     "id": "zen-tidy-downloads",
@@ -708,7 +734,7 @@
     },
     "preferences": "preferences.json",
     "author": "Vertex",
-    "version": "3.8.5",
+    "version": "4.0.6",
     "tags": [
       "sine",
       "fx-autoconfig",
@@ -716,12 +742,31 @@
       "Tidy Pack"
     ],
     "createdAt": "2025-05-24",
-    "updatedAt": "2026-04-19",
+    "updatedAt": "2026-05-09",
     "ai": "yes",
     "fork": [
       "zen"
     ],
     "stars": 18
+  },
+  "zen-auto-expand-sidebar": {
+    "id": "zen-auto-expand-sidebar",
+    "name": "Sidebar Expand on Hover",
+    "description": "Expand the sidebar on hover, with many configurations avaliable",
+    "homepage": "https://github.com/StormAnon/zen-sidebar-expand-on-hover/tree/sine",
+    "style": "https://raw.githubusercontent.com/StormAnon/zen-sidebar-expand-on-hover/sine/chrome.css",
+    "readme": "https://raw.githubusercontent.com/StormAnon/zen-sidebar-expand-on-hover/sine/README.md",
+    "image": "https://raw.githubusercontent.com/StormAnon/zen-sidebar-expand-on-hover/sine/image.png",
+    "author": "StormAnon",
+    "version": "1.0.0",
+    "fork": [
+      "zen"
+    ],
+    "tags": [
+      "ui",
+      "customization"
+    ],
+    "stars": 17
   },
   "BetterZenGradientPicker": {
     "id": "BetterZenGradientPicker",
@@ -751,25 +796,6 @@
       "zen"
     ],
     "stars": 17
-  },
-  "zen-auto-expand-sidebar": {
-    "id": "zen-auto-expand-sidebar",
-    "name": "Sidebar Expand on Hover",
-    "description": "Expand the sidebar on hover, with many configurations avaliable",
-    "homepage": "https://github.com/StormAnon/zen-sidebar-expand-on-hover/tree/sine",
-    "style": "https://raw.githubusercontent.com/StormAnon/zen-sidebar-expand-on-hover/sine/chrome.css",
-    "readme": "https://raw.githubusercontent.com/StormAnon/zen-sidebar-expand-on-hover/sine/README.md",
-    "image": "https://raw.githubusercontent.com/StormAnon/zen-sidebar-expand-on-hover/sine/image.png",
-    "author": "StormAnon",
-    "version": "1.0.0",
-    "fork": [
-      "zen"
-    ],
-    "tags": [
-      "ui",
-      "customization"
-    ],
-    "stars": 16
   },
   "ZenFolderTreeConnectors": {
     "id": "ZenFolderTreeConnectors",
@@ -1201,18 +1227,6 @@
     "createdAt": "2024-01-26",
     "stars": 4
   },
-  "bada16c1-3b14-483b": {
-    "id": "bada16c1-3b14-483b",
-    "homepage": "https://github.com/themaster5209/zen-better-new-tab-button",
-    "name": "Better New Tab button",
-    "version": "1.0.6",
-    "description": "A Zen Browser mod that enhances the New Tab button experience",
-    "ai": "yes",
-    "style": {
-      "chrome": "userChrome.css"
-    },
-    "stars": 4
-  },
   "auto-pip-setting": {
     "version": "1.2",
     "id": "auto-pip-setting",
@@ -1237,6 +1251,33 @@
     "updatedAt": "2026-03-19",
     "fork": [
       "zen"
+    ],
+    "stars": 4
+  },
+  "f966100a-4fed-4df5-a082-f001c5bd654e": {
+    "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
+    "name": "Tidy Popup & Extension",
+    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
+    "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
+    "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
+    "style": {
+      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/chrome.css"
+    },
+    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
+    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/preferences.json",
+    "author": "rasyidrafi",
+    "version": "2.9.1",
+    "tags": [
+      "Customization",
+      "Popup",
+      "Theme",
+      "UI"
+    ],
+    "createdAt": "2025-01-27",
+    "updatedAt": "2025-11-12",
+    "fork": [
+      "zen",
+      "firefox"
     ],
     "stars": 4
   },
@@ -1324,33 +1365,6 @@
     ],
     "stars": 3
   },
-  "f966100a-4fed-4df5-a082-f001c5bd654e": {
-    "id": "f966100a-4fed-4df5-a082-f001c5bd654e",
-    "name": "Tidy Popup & Extension",
-    "description": "Cleans up popup panels & extensions with optional dividers, compact buttons, and customizable hover colors. Supports using Zen Browser’s primary color or manual light/dark hover colors with conditional preferences.",
-    "homepage": "https://github.com/rasyidrafi/zen-tidy-popup/",
-    "image": "https://github.com/rasyidrafi/zen-tidy-popup/blob/main/thumbnail.png?raw=true",
-    "style": {
-      "chrome": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/chrome.css"
-    },
-    "readme": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/README.md",
-    "preferences": "https://raw.githubusercontent.com/rasyidrafi/zen-tidy-popup/refs/heads/main/preferences.json",
-    "author": "rasyidrafi",
-    "version": "2.9.1",
-    "tags": [
-      "Customization",
-      "Popup",
-      "Theme",
-      "UI"
-    ],
-    "createdAt": "2025-01-27",
-    "updatedAt": "2025-11-12",
-    "fork": [
-      "zen",
-      "firefox"
-    ],
-    "stars": 3
-  },
   "bubble-pop-deleting": {
     "id": "bubble-pop-deleting",
     "name": "Tab Closing Bubble Animation",
@@ -1382,29 +1396,27 @@
     ],
     "stars": 3
   },
-  "macaron": {
-    "id": "macaron",
-    "homepage": "https://github.com/SehajveerSingh2005/macaron",
-    "author": "SehajveerSingh2005",
-    "name": "macaron",
-    "description": "a neobrutalist theme to make zen and you happy!",
-    "version": "1.3.0",
-    "createdAt": "2026-04-27",
-    "updatedAt": "2026-04-29",
-    "readme": "https://github.com/SehajveerSingh2005/macaron/blob/main/README.md",
-    "image": "",
+  "livstheme": {
+    "id": "livstheme",
+    "name": "Livs Theme",
+    "description": "A refreshing new look for Zen browser.",
+    "homepage": "https://github.com/designlivs/livstheme",
+    "readme": "https://raw.githubusercontent.com/designlivs/livstheme/main/README.md",
+    "style": {
+      "chrome": "userChrome.css"
+    },
+    "author": "designlivs",
+    "version": "1.0.0",
     "tags": [
-      "Theme",
-      "Neo Brutalism",
-      "Playful",
-      "Retro",
-      "Colorful",
-      "Tactile"
+      "chrome",
+      "minimal",
+      "zen"
     ],
+    "createdAt": "2026-04-20",
     "fork": [
       "zen"
     ],
-    "stars": 2
+    "stars": 3
   },
   "zen-auto-wallpaper": {
     "id": "zen-auto-wallpaper",
@@ -1422,6 +1434,7 @@
       }
     },
     "version": "0.2.2",
+    "ai": "no",
     "createdAt": "2026-01-28",
     "updatedAt": "2026-02-05",
     "fork": [
@@ -1570,6 +1583,41 @@
       "firefox"
     ],
     "stars": 1
+  },
+  "square-ui": {
+    "id": "square-ui",
+    "name": "Square UI",
+    "description": "Removes rounded corners across browser chrome and website content with separate Sine toggles for each area.",
+    "homepage": "https://github.com/Louis047/Square-UI",
+    "style": {
+      "chrome": "userChrome.css",
+      "content": "userContent.css"
+    },
+    "preferences": "preferences.json",
+    "readme": "https://raw.githubusercontent.com/Louis047/Square-UI/main/README.md",
+    "author": "Lone",
+    "version": "2.1.0",
+    "tags": [
+      "ui",
+      "minimal",
+      "squared",
+      "corners",
+      "customization"
+    ],
+    "createdAt": "2026-03-07",
+    "updatedAt": "2026-04-14",
+    "fork": [
+      "zen",
+      "firefox",
+      "floorp",
+      "librewolf",
+      "mullvad",
+      "waterfox"
+    ],
+    "stars": 1
+  },
+  "Wireframe-2.0": {
+    "stars": 0
   },
   "RenderJS": {
     "id": "RenderJS",
@@ -1782,38 +1830,6 @@
     ],
     "stars": 0
   },
-  "square-ui": {
-    "id": "square-ui",
-    "name": "Square UI",
-    "description": "Removes rounded corners across browser chrome and website content with separate Sine toggles for each area.",
-    "homepage": "https://github.com/Louis047/Square-UI",
-    "style": {
-      "chrome": "userChrome.css",
-      "content": "userContent.css"
-    },
-    "preferences": "preferences.json",
-    "readme": "https://raw.githubusercontent.com/Louis047/Square-UI/main/README.md",
-    "author": "Lone",
-    "version": "2.1.0",
-    "tags": [
-      "ui",
-      "minimal",
-      "squared",
-      "corners",
-      "customization"
-    ],
-    "createdAt": "2026-03-07",
-    "updatedAt": "2026-04-14",
-    "fork": [
-      "zen",
-      "firefox",
-      "floorp",
-      "librewolf",
-      "mullvad",
-      "waterfox"
-    ],
-    "stars": 0
-  },
   "open-in-container-window": {
     "id": "open-in-container-window",
     "js": true,
@@ -1846,6 +1862,100 @@
     "fork": [
       "zen"
     ],
+    "stars": 0
+  },
+  "zen-library": {
+    "id": "zen-library",
+    "homepage": "https://github.com/12th-devs/Zen-Library",
+    "author": "JustADumbPrsn",
+    "name": "Zen Library",
+    "description": "Adds library feature to Zen Browser",
+    "version": "1.0.0",
+    "createdAt": "2026-01-19",
+    "updatedAt": "2025-01-26",
+    "readme": "https://github.com/12th-devs/Zen-Library/blob/main/README.md",
+    "image": "https://private-user-images.githubusercontent.com/73780892/537569729-bfa5ee66-77e0-4d95-943d-8958bc40046a.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Njg4MjYyNjQsIm5iZiI6MTc2ODgyNTk2NCwicGF0aCI6Ii83Mzc4MDg5Mi81Mzc1Njk3MjktYmZhNWVlNjYtNzdlMC00ZDk1LTk0M2QtODk1OGJjNDAwNDZhLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAxMTklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMTE5VDEyMzI0NFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWMxNmYxM2I4ODAxYWY5ODhiZmYzYjJhNTYxMjM2Y2YyMGE4NDgzMDY0MjljZmI2NzU0MDY4MzcyODU3YmE1NGYmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.t322wCGGP9ex9A4w_g_NFBgfXEzVcxi78UC_FjZJCMo",
+    "style": {
+      "chrome": "ZenLibrary.css"
+    },
+    "scripts": {
+      "features/Downloads.uc.js": {
+        "name": "Zen Library Downloads",
+        "description": "Downloads Module",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      },
+      "features/History.uc.js": {
+        "name": "Zen Library History",
+        "description": "History Module",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      },
+      "features/Media.uc.js": {
+        "name": "Zen Library Media",
+        "description": "Media Module",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      },
+      "features/Spaces.uc.js": {
+        "name": "Zen Library Spaces",
+        "description": "Spaces Module",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      },
+      "features/Boosts.uc.js": {
+        "name": "Zen Library Boosts",
+        "description": "Boosts Module",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      },
+      "ZenLibrary.uc.js": {
+        "name": "Zen Library Core",
+        "description": "Zen Library Main Shell",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "tags": [
+      "Javascript"
+    ],
+    "fork": [
+      "zen"
+    ],
+    "stars": 0
+  },
+  "zen-workspace-toast": {
+    "id": "zen-workspace-toast",
+    "name": "Workspace Toast",
+    "description": "Shows a toast notification with the workspace icon and name when switching workspaces in onlysidebar mode.",
+    "version": "1.0.3",
+    "author": "Nelkit",
+    "homepage": "https://github.com/Nelkit/zen-workspace-toast",
+    "readme": "https://raw.githubusercontent.com/Nelkit/zen-workspace-toast/main/readme.md",
+    "style": "chrome.css",
+    "scripts": {
+      "chrome.uc.js": {
+        "name": "Workspace Toast",
+        "description": "Intercepts workspace changes and shows a toast notification.",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "tags": [
+      "workspace",
+      "toast",
+      "notification",
+      "sidebar"
+    ],
+    "createdAt": "2026-04-21",
+    "updatedAt": "2026-04-21",
     "stars": 0
   }
 }

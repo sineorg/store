@@ -5,6 +5,11 @@ on:
   schedule:
     - cron: "*/13 * * * *"
 
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
 jobs:
   trigger-workflow:
     runs-on: ubuntu-latest
@@ -13,9 +18,69 @@ jobs:
         run: [1, 2, 3, 4, 5]
       max-parallel: 1
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y jq
+    
+      - name: Get mod id
+        id: get_id
+        run: |
+          git pull origin main
+          next_mod=$(
+            jq -r '
+              (input | .cursor // "") as $cursor
+              | (keys | sort) as $keys
+      
+              | if ($keys | length) == 0 then
+                  empty
+                elif $cursor == "" then
+                  $keys[0]
+                else
+                  ($keys | index($cursor)) as $i
+                  | if $i == null then
+                      $keys[0]
+                    else
+                      $keys[($i + 1) % ($keys | length)]
+                    end
+                end
+            ' marketplace.json meta.json
+          )
+          echo "mod_id=$next_mod" >> $GITHUB_OUTPUT
+
       - name: Trigger update workflow
         uses: benc-uk/workflow-dispatch@v1
         with:
-          token: ${{ secrets.DISPATCH_PAT }}
           workflow: update-marketplace.yml
-          ref: main
+          inputs: '{ "mod_id": "${{ steps.get_id.outputs.mod_id }}" }'
+          wait-for-completion: true
+
+      - name: Commit cursor progress
+        run: |
+          mod_id="${{ steps.get_id.outputs.mod_id }}"
+
+          git config user.name "CosmoCreeper"
+          # No-reply email that can be viewed by any git user, no need to hide
+          git config user.email "179134799+CosmoCreeper@users.noreply.github.com"
+          git config pull.rebase false
+
+          git pull origin main
+
+          # Advance cursor
+          jq --arg mod "$mod_id" '
+            .cursor = $mod
+          ' meta.json > tmp.json && mv tmp.json meta.json
+
+          git add meta.json
+
+          if git diff --cached --quiet; then
+            echo "Cursor already up-to-date"
+            exit 0
+          fi
+
+          git commit -m "Advance marketplace cursor to $mod_id"
+          git push origin main
+

@@ -1,13 +1,6 @@
 ## 🛒 Store
 This is the official marketplace of Sine for installing mods, themes, and JS.
 
-## 🗒️ Watchlist
-We care about our mods and developers, so we dedicate a portion of our time towards helping other developers out by fixing issues with their mods for them. Here are some that we are eyeing for when we get time:
-- [Floaty UI](https://github.com/moktavizen/floaty-ui) (Has some visual bugs).
-- [Advanced Tab Groups](https://github.com/Vertex-Mods/Advanced-Tab-Groups) (Has some bugs and needs refactoring).
-- [Zen Library](https://github.com/Vertex-Mods/Zen-Library) (Needs more feature implementation).
-- [Nebula](https://github.com/JustADumbPrsn/Zen-Nebula) (Needs neat formatting checks).
-
 -------------\
 <a href="https://github.com/CosmoCreeper/Sine/">
   <picture>

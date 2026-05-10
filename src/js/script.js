@@ -2,13 +2,37 @@ const MAX_DESCRIPTION_LENGTH = 120;
 const sortButton = document.getElementById("sortButton");
 const sortMenu = document.getElementById("sortMenu");
 const currentSort = document.getElementById("currentSort");
+
+const browserButton = document.getElementById("browserButton");
+const browserMenu = document.getElementById("browserMenu");
+const currentBrowser = document.getElementById("currentBrowser");
+
 const themeContainer = document.querySelector(".theme-container");
 const searchInput = document.querySelector("input.search");
 const params = new URLSearchParams(window.location.search);
 const githubCache = {};
 let themes = await fetch("./marketplace.json").then((res) => res.json());
 let sortBy = "stars";
+let filterBrowser = "all";
 let filteredThemes = themes;
+
+// Extract unique browsers for filter menu
+const extractBrowsers = () => {
+    const browsers = new Set();
+    Object.values(themes).forEach(theme => {
+        if (theme.fork && Array.isArray(theme.fork)) {
+            theme.fork.forEach(f => browsers.add(f.toLowerCase()));
+        }
+    });
+    
+    Array.from(browsers).sort().forEach(browser => {
+        const option = document.createElement("button");
+        option.className = "browser-option";
+        option.dataset.browser = browser;
+        option.textContent = browser.charAt(0).toUpperCase() + browser.slice(1);
+        browserMenu.appendChild(option);
+    });
+};
 
 // Utilities
 const getValidTimestamp = (dateString) => {
@@ -151,10 +175,16 @@ const displayTheme = (themeId, theme) => {
 const sortAndDisplay = async (sortType) => {
     themeContainer.innerHTML = '<div class="loading">Loading...</div>';
 
-    let themesArray = Object.entries(filteredThemes).map(([id, theme]) => ({
-        id,
-        ...theme,
-    }));
+    let themesArray = Object.entries(filteredThemes)
+        .map(([id, theme]) => ({
+            id,
+            ...theme,
+        }))
+        .filter(theme => {
+            if (filterBrowser === 'all') return true;
+            const forks = (theme.fork || []).map(f => f.toLowerCase());
+            return forks.includes(filterBrowser);
+        });
 
     const sortFunctions = {
         stars: (a, b) => (b.stars || 0) - (a.stars || 0),
@@ -162,6 +192,8 @@ const sortAndDisplay = async (sortType) => {
             getValidTimestamp(b.updatedAt) - getValidTimestamp(a.updatedAt),
         added: (a, b) =>
             getValidTimestamp(b.createdAt) - getValidTimestamp(a.createdAt),
+        alphabetical: (a, b) =>
+            (a.name || a.id).localeCompare(b.name || b.id)
     };
 
     themesArray.sort(sortFunctions[sortType] || sortFunctions.stars);
@@ -187,26 +219,42 @@ themeContainer.addEventListener("click", (e) => {
     }
 });
 
-// Sort menu
-sortButton.addEventListener("click", (e) => {
-    e.stopPropagation();
-    sortMenu.classList.toggle("active");
+// Dropdowns setup
+const setupDropdown = (button, menu, optionsClass, currentSpan, onSelect) => {
+    button.addEventListener("click", (e) => {
+        e.stopPropagation();
+        // Close other menus
+        document.querySelectorAll(".sort-menu").forEach(m => {
+            if (m !== menu) m.classList.remove("active");
+        });
+        menu.classList.toggle("active");
+    });
+
+    menu.addEventListener("click", (e) => {
+        const option = e.target.closest(`.${optionsClass}`);
+        if (!option) return;
+        e.stopPropagation();
+        
+        menu.querySelectorAll(`.${optionsClass}`).forEach((opt) => opt.classList.remove("selected"));
+        option.classList.add("selected");
+        currentSpan.textContent = option.textContent.trim();
+        menu.classList.remove("active");
+        onSelect(option);
+    });
+};
+
+setupDropdown(sortButton, sortMenu, "sort-option", currentSort, (option) => {
+    sortBy = option.dataset.sort;
+    sortAndDisplay(sortBy);
 });
 
-document.addEventListener("click", () => sortMenu.classList.remove("active"));
+setupDropdown(browserButton, browserMenu, "browser-option", currentBrowser, (option) => {
+    filterBrowser = option.dataset.browser;
+    sortAndDisplay(sortBy);
+});
 
-document.querySelectorAll(".sort-option").forEach((option) => {
-    option.addEventListener("click", (e) => {
-        e.stopPropagation();
-        document
-            .querySelectorAll(".sort-option")
-            .forEach((opt) => opt.classList.remove("selected"));
-        option.classList.add("selected");
-        currentSort.textContent = option.textContent;
-        sortMenu.classList.remove("active");
-        sortBy = option.dataset.sort;
-        sortAndDisplay(sortBy);
-    });
+document.addEventListener("click", () => {
+    document.querySelectorAll(".sort-menu").forEach(m => m.classList.remove("active"));
 });
 
 // Search
@@ -242,6 +290,9 @@ if (searchInput) {
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeModal();
 });
+
+// Start initialization
+extractBrowsers();
 
 // Initial load
 sortAndDisplay(sortBy);
