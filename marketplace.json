@@ -275,6 +275,43 @@
     ],
     "stars": 376
   },
+  "blended-addressbar": {
+    "id": "blended-addressbar",
+    "name": "Blended Addressbar",
+    "description": "A page-aware addressbar that blends Zen chrome with the active website.",
+    "homepage": "https://github.com/kkugot/blended-addressbar",
+    "readme": "https://raw.githubusercontent.com/kkugot/blended-addressbar/main/README.md",
+    "image": "https://raw.githubusercontent.com/kkugot/blended-addressbar/main/marketplace-preview.png",
+    "author": "Kostiantyn Kugot",
+    "version": "0.9.4",
+    "createdAt": "2026-01-29",
+    "updatedAt": "2026-05-13",
+    "style": {
+      "chrome": "style.css",
+      "content": ""
+    },
+    "scripts": {
+      "blended-bar.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "preferences": "preferences.json",
+    "tags": [
+      "addressbar",
+      "urlbar",
+      "sidebar",
+      "adaptive",
+      "theming",
+      "zen browser"
+    ],
+    "fork": [
+      "zen"
+    ],
+    "js": true,
+    "stars": 0
+  },
   "zaps-cool-photon-theme": {
     "id": "zaps-cool-photon-theme",
     "name": "zap's cool photon theme",
