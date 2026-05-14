@@ -31,7 +31,7 @@
     "fork": [
       "zen"
     ],
-    "stars": 1318
+    "stars": 1321
   },
   "natsumi-browser": {
     "id": "natsumi-browser",
@@ -354,7 +354,7 @@
     "fork": [
       "zen"
     ],
-    "stars": 86
+    "stars": 89
   },
   "ad97bb70-0066-4e42-9b5f-173a5e42c6fc": {
     "id": "ad97bb70-0066-4e42-9b5f-173a5e42c6fc",
@@ -385,7 +385,7 @@
     "fork": [
       "zen"
     ],
-    "stars": 61
+    "stars": 62
   },
   "context-menu-icons": {
     "id": "context-menu-icons",
@@ -409,14 +409,14 @@
     "preferences": "preferences.json",
     "readme": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/README.md",
     "author": "Starry-AXQG",
-    "version": "2.7.2.4",
+    "version": "2.7.2.5",
     "tags": [
       "Context Menu",
       "Icons",
       "Icon Pack"
     ],
     "createdAt": "2025-06-02",
-    "updatedAt": "2026-05-02",
+    "updatedAt": "2026-05-13",
     "fork": [
       "zen",
       "firefox"
@@ -1228,7 +1228,7 @@
     "stars": 4
   },
   "auto-pip-setting": {
-    "version": "1.2",
+    "version": "1.3",
     "id": "auto-pip-setting",
     "name": "Auto-PiP-Setting",
     "description": "Adds auto-picture-in-picture setting in the unified panel",
@@ -1616,6 +1616,99 @@
     ],
     "stars": 1
   },
+  "zen-library": {
+    "id": "zen-library",
+    "homepage": "https://github.com/12th-devs/Zen-Library",
+    "author": "JustADumbPrsn",
+    "name": "Zen Library",
+    "description": "Adds library feature to Zen Browser",
+    "version": "1.0.0",
+    "createdAt": "2026-01-19",
+    "updatedAt": "2025-01-26",
+    "readme": "https://github.com/12th-devs/Zen-Library/blob/main/README.md",
+    "image": "https://private-user-images.githubusercontent.com/73780892/537569729-bfa5ee66-77e0-4d95-943d-8958bc40046a.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Njg4MjYyNjQsIm5iZiI6MTc2ODgyNTk2NCwicGF0aCI6Ii83Mzc4MDg5Mi81Mzc1Njk3MjktYmZhNWVlNjYtNzdlMC00ZDk1LTk0M2QtODk1OGJjNDAwNDZhLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAxMTklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMTE5VDEyMzI0NFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWMxNmYxM2I4ODAxYWY5ODhiZmYzYjJhNTYxMjM2Y2YyMGE4NDgzMDY0MjljZmI2NzU0MDY4MzcyODU3YmE1NGYmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.t322wCGGP9ex9A4w_g_NFBgfXEzVcxi78UC_FjZJCMo",
+    "style": {
+      "chrome": "ZenLibrary.css"
+    },
+    "scripts": {
+      "features/Downloads.uc.js": {
+        "name": "Zen Library Downloads",
+        "description": "Downloads Module",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      },
+      "features/History.uc.js": {
+        "name": "Zen Library History",
+        "description": "History Module",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      },
+      "features/Media.uc.js": {
+        "name": "Zen Library Media",
+        "description": "Media Module",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      },
+      "features/Spaces.uc.js": {
+        "name": "Zen Library Spaces",
+        "description": "Spaces Module",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      },
+      "features/Boosts.uc.js": {
+        "name": "Zen Library Boosts",
+        "description": "Boosts Module",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      },
+      "ZenLibrary.uc.js": {
+        "name": "Zen Library Core",
+        "description": "Zen Library Main Shell",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "tags": [
+      "Javascript"
+    ],
+    "fork": [
+      "zen"
+    ],
+    "stars": 1
+  },
+  "Zenslop": {
+    "id": "Zenslop",
+    "name": "Zenslop",
+    "description": "Adds a live video preview of a currently playing video above the existing media controls in Zen Browser",
+    "author": "Rishu Sharma",
+    "version": "1.0.0",
+    "scripts": {
+      "main.uc.js": {
+        "name": "Zenslop",
+        "description": "Sidebar UI hook and JSWindowActor registration",
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "tags": [
+      "picture-in-picture",
+      "pip"
+    ],
+    "fork": [
+      "zen"
+    ],
+    "ai": "yes",
+    "homepage": "https://github.com/Firebolt9907/Zenslop",
+    "readme": "https://raw.githubusercontent.com/Firebolt9907/Zenslop/main/README.md",
+    "stars": 0
+  },
   "Wireframe-2.0": {
     "stars": 0
   },
@@ -1859,72 +1952,6 @@
     ],
     "createdAt": "2026-03-03",
     "updatedAt": "2026-03-09",
-    "fork": [
-      "zen"
-    ],
-    "stars": 0
-  },
-  "zen-library": {
-    "id": "zen-library",
-    "homepage": "https://github.com/12th-devs/Zen-Library",
-    "author": "JustADumbPrsn",
-    "name": "Zen Library",
-    "description": "Adds library feature to Zen Browser",
-    "version": "1.0.0",
-    "createdAt": "2026-01-19",
-    "updatedAt": "2025-01-26",
-    "readme": "https://github.com/12th-devs/Zen-Library/blob/main/README.md",
-    "image": "https://private-user-images.githubusercontent.com/73780892/537569729-bfa5ee66-77e0-4d95-943d-8958bc40046a.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Njg4MjYyNjQsIm5iZiI6MTc2ODgyNTk2NCwicGF0aCI6Ii83Mzc4MDg5Mi81Mzc1Njk3MjktYmZhNWVlNjYtNzdlMC00ZDk1LTk0M2QtODk1OGJjNDAwNDZhLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAxMTklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMTE5VDEyMzI0NFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWMxNmYxM2I4ODAxYWY5ODhiZmYzYjJhNTYxMjM2Y2YyMGE4NDgzMDY0MjljZmI2NzU0MDY4MzcyODU3YmE1NGYmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.t322wCGGP9ex9A4w_g_NFBgfXEzVcxi78UC_FjZJCMo",
-    "style": {
-      "chrome": "ZenLibrary.css"
-    },
-    "scripts": {
-      "features/Downloads.uc.js": {
-        "name": "Zen Library Downloads",
-        "description": "Downloads Module",
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      },
-      "features/History.uc.js": {
-        "name": "Zen Library History",
-        "description": "History Module",
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      },
-      "features/Media.uc.js": {
-        "name": "Zen Library Media",
-        "description": "Media Module",
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      },
-      "features/Spaces.uc.js": {
-        "name": "Zen Library Spaces",
-        "description": "Spaces Module",
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      },
-      "features/Boosts.uc.js": {
-        "name": "Zen Library Boosts",
-        "description": "Boosts Module",
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      },
-      "ZenLibrary.uc.js": {
-        "name": "Zen Library Core",
-        "description": "Zen Library Main Shell",
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      }
-    },
-    "tags": [
-      "Javascript"
-    ],
     "fork": [
       "zen"
     ],
