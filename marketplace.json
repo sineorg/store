@@ -1957,29 +1957,5 @@
   },
   "Wireframe-2.0": {
     "stars": 0
-  },
-  "Zenslop": {
-    "id": "Zenslop",
-    "name": "Zenslop",
-    "description": "Adds a live video preview of a currently playing video above the existing media controls in Zen Browser",
-    "author": "Rishu Sharma",
-    "version": "1.0.0",
-    "scripts": {
-      "main.uc.js": {
-        "name": "Zenslop",
-        "description": "Sidebar UI hook and JSWindowActor registration",
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      }
-    },
-    "tags": [
-      "Javascript"
-    ],
-    "fork": [
-      "zen"
-    ],
-    "ai": "yes",
-    "stars": 0
   }
 }
