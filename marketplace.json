@@ -284,6 +284,7 @@
     "image": "https://raw.githubusercontent.com/kkugot/blended-addressbar/main/marketplace-preview.png",
     "author": "Kostiantyn Kugot",
     "version": "1.0.0",
+    "ai": "partial",
     "createdAt": "2026-01-29",
     "updatedAt": "2026-05-13",
     "style": {
@@ -309,7 +310,6 @@
     "fork": [
       "zen"
     ],
-    "js": true,
     "stars": 0
   },
   "zaps-cool-photon-theme": {
