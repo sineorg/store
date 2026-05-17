@@ -998,9 +998,9 @@
     "name": "Blended Addressbar",
     "description": "A page-aware addressbar that blends Zen chrome with the active website.",
     "author": "Kostiantyn Kugot",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "ai": "partial",
-    "updatedAt": "2026-05-13",
+    "updatedAt": "2026-05-16",
     "tags": [
       "addressbar",
       "urlbar",
@@ -1024,7 +1024,7 @@
       "content": ""
     },
     "preferences": "preferences.json",
-    "readme": "README.md",
+    "readme": "https://raw.githubusercontent.com/kkugot/blended-addressbar/main/README.md",
     "createdAt": "2026-01-29",
     "homepage": "https://github.com/kkugot/blended-addressbar",
     "stars": 9
