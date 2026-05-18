@@ -970,7 +970,7 @@
     "name": "Blended Addressbar",
     "description": "A page-aware addressbar that blends Zen chrome with the active website.",
     "author": "Kostiantyn Kugot",
-    "version": "1.1.0",
+    "version": "1.1.2",
     "ai": "partial",
     "updatedAt": "2026-05-18",
     "tags": [
