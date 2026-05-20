@@ -1530,7 +1530,7 @@
     "name": "Zenslop",
     "description": "Adds a live video preview of a currently playing video above the existing media controls in Zen Browser",
     "author": "Rishu Sharma",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "scripts": {
       "main.uc.js": {
         "name": "Zenslop",
