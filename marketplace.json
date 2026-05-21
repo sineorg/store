@@ -1768,9 +1768,10 @@
         ]
       }
     },
-    "readme": "README.md",
-    "image": "image.png",
+    "readme": "https://raw.githubusercontent.com/flantig/Zen-Tab-Wand/main/README.md",
+    "image": "https://raw.githubusercontent.com/flantig/Zen-Tab-Wand/main/image.png",
     "author": "franklinl",
+    "ai": "yes",
     "version": "1.0.1",
     "preferences": "preferences.json",
     "tags": [
@@ -1781,7 +1782,7 @@
       "Ollama"
     ],
     "createdAt": "2026-05-15",
-    "updatedAt": "2026-05-19",
+    "updatedAt": "2026-05-21",
     "fork": [
       "zen"
     ],
