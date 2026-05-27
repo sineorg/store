@@ -39,7 +39,7 @@
     "author": "greeeen-dev",
     "name": "Natsumi Browser",
     "description": "A skin for Firefox and its forks that makes things flow.",
-    "version": "6.5.1",
+    "version": "6.6.0",
     "createdAt": "2024-12-06T10:19:47Z",
     "ai": "no",
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
@@ -75,10 +75,11 @@
             "chrome://browser/content/browser.xhtml"
           ]
         },
-        "statusbar-in-sidebar.uc.mjs": {
-          "loadOrder": 11,
+        "tab-animations.uc.mjs": {},
+        "addons.uc.mjs": {
+          "loadOrder": 10,
           "include": [
-            "chrome://browser/content/browser.xhtml"
+            "about:addons*"
           ]
         },
         "pip.uc.mjs": {
@@ -92,9 +93,11 @@
           ]
         },
         "notifications.sys.mjs": {},
-        "linux-border-radius.uc.mjs": {
+        "preferences-sidebar.uc.mjs": {
+          "loadOrder": 11,
           "include": [
-            "chrome://browser/content/browser.xhtml"
+            "about:preferences*",
+            "about:settings*"
           ]
         },
         "sidebar-actions.uc.mjs": {
@@ -159,8 +162,24 @@
             "about:settings*"
           ]
         },
+        "css-injector.uc.mjs": {
+          "include": [
+            "chrome://browser/content/browser.xhtml"
+          ]
+        },
+        "floorp-gestures.uc.mjs": {
+          "loadOrder": 11,
+          "include": [
+            "chrome://browser/content/browser.xhtml"
+          ]
+        },
         "pinned-tabs-icon.uc.mjs": {
           "loadOrder": 11,
+          "include": [
+            "chrome://browser/content/browser.xhtml"
+          ]
+        },
+        "updater.uc.mjs": {
           "include": [
             "chrome://browser/content/browser.xhtml"
           ]
@@ -168,6 +187,15 @@
         "postload.uc.mjs": {
           "include": [
             "chrome://browser/content/browser.xhtml"
+          ]
+        },
+        "files.sys.mjs": {},
+        "fonts.uc.mjs": {
+          "include": [
+            "chrome://browser/content/browser.xhtml",
+            "chrome://global/content/pictureinpicture/player.xhtml*",
+            "about:preferences*",
+            "about:settings*"
           ]
         },
         "reset-tab-style.sys.mjs": {},
@@ -188,7 +216,6 @@
           ]
         },
         "shortcut-actions.sys.mjs": {},
-        "single-toolbar-customization.sys.mjs": {},
         "glimpse.uc.mjs": {
           "include": [
             "chrome://browser/content/browser.xhtml"
