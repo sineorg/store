@@ -537,6 +537,7 @@ subnote,
     .theme {
         padding: 1.25rem;
         cursor: pointer;
+        min-width: 0;
     }
     .theme .title {
         display: flex;
@@ -632,6 +633,17 @@ subnote,
         justify-content: center;
         text-align: center;
         height: 2.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Compact filters on extra thin screens to prevent overflow */
+    .controls-row {
+        gap: 0.5rem;
+    }
+    .sort-button {
+        padding: 0 0.75rem;
+        font-size: 0.85rem;
     }
 }
 
