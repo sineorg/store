@@ -420,3 +420,230 @@ subnote,
         transform: translateY(2rem);
     }
 }
+
+@media (max-width: 768px) {
+    /* Header optimization */
+    header {
+        position: sticky;
+        top: 0;
+        left: 0;
+        transform: none;
+        max-width: 100%;
+        padding: 1rem var(--p);
+        background: rgba(16, 16, 16, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        gap: 0.75rem;
+        pointer-events: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 100;
+    }
+    header * {
+        pointer-events: auto;
+    }
+    .sine {
+        height: 3rem;
+        padding-left: 1rem;
+        padding-right: 1.5rem;
+        border-radius: var(--bor-r);
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+    .logo {
+        width: 2.5rem;
+    }
+    .search {
+        min-width: 0;
+        flex: 1;
+        height: 3rem;
+        padding: 0 1.5rem;
+        border-radius: var(--bor-r);
+    }
+
+    /* Greeting Banner optimization */
+    .greeting {
+        margin-top: 1.5rem;
+        padding: var(--p);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .greeting h1 {
+        font-size: 1.75rem;
+        position: relative;
+        z-index: 2;
+    }
+    .greeting p {
+        font-size: 0.9rem;
+        line-height: 1.4;
+        position: relative;
+        z-index: 2;
+    }
+    .greeting img {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        height: 100%;
+        width: auto;
+        opacity: 0.25;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    /* Sticky Controls Row & Dropdowns */
+    .controls-row {
+        position: sticky;
+        top: calc(5rem - 2px); /* sticks right below header, overlapping slightly to eliminate sub-pixel gaps */
+        background: rgba(16, 16, 16, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 0.75rem var(--p);
+        margin-left: calc(-1 * var(--p));
+        margin-right: calc(-1 * var(--p));
+        z-index: 99;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        flex-direction: row;
+        gap: 0.75rem;
+        align-items: center;
+    }
+    .sort-dropdown {
+        flex: 1;
+        min-width: 0;
+    }
+    .sort-button {
+        width: 100%;
+        height: 3rem;
+        font-size: 0.95rem;
+        padding: 0 1.25rem;
+    }
+    .sort-menu {
+        width: 100%;
+    }
+
+    /* Grid layout */
+    .theme-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    /* Card adjustments */
+    .theme {
+        padding: 1.25rem;
+        cursor: pointer;
+        min-width: 0;
+    }
+    .theme .title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 1rem;
+        padding-bottom: 0.5rem;
+        padding-right: 0;
+        gap: 0.75rem;
+    }
+    .theme .title .theme-link {
+        flex: 1;
+        min-width: 0;
+    }
+    .theme .title h3 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .theme .title .install-btn {
+        position: static;
+        flex-shrink: 0;
+        height: 2.5rem;
+        padding: 0 1.25rem;
+        font-size: 0.9rem;
+    }
+
+    /* Modal adjustments */
+    .theme-modal-content {
+        padding: 1.5rem;
+        max-width: 100%;
+        width: 100%;
+        overflow-y: auto;
+        max-height: 90vh;
+    }
+    .theme-modal-close {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        left: auto;
+        z-index: 1010;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        background: rgba(16, 16, 16, 0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        line-height: 1;
+        padding: 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+    .theme-modal-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    .theme-modal-close::after {
+        display: none;
+    }
+    .theme-modal-buttons {
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    /* Compact Header on smaller screens */
+    .sine {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        width: 3rem;
+        justify-content: center;
+    }
+    .sine h3 {
+        display: none;
+    }
+    .sine img {
+        margin: 0;
+    }
+
+    /* Modal buttons stack on small screens */
+    .theme-modal-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+    .theme-modal-buttons button,
+    .theme-modal-buttons .btn {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+        height: 2.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Compact filters on extra thin screens to prevent overflow */
+    .controls-row {
+        gap: 0.5rem;
+    }
+    .sort-button {
+        padding: 0 0.75rem;
+        font-size: 0.85rem;
+    }
+}
+

@@ -209,6 +209,19 @@ const sortAndDisplay = async (sortType) => {
 };
 
 themeContainer.addEventListener("click", (e) => {
+    // Mobile click behavior: click anywhere on card (excluding install buttons or external links)
+    const isMobile = window.innerWidth <= 768;
+    const themeCard = e.target.closest(".theme");
+    const isInteractive = e.target.closest("button, a:not(.theme-link, .view-more)");
+
+    if (isMobile && themeCard && !isInteractive) {
+        e.preventDefault();
+        const themeId = themeCard.dataset.id;
+        openThemeModal(themeId, themes[themeId]);
+        return;
+    }
+
+    // Desktop click behavior: only on name/link
     const themeLink = e.target.closest(".theme-link");
     const viewMore = e.target.closest(".view-more");
 
