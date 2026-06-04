@@ -535,7 +535,7 @@
     "name": "Zen Folder Tree Connectors",
     "description": "Draws tree connectors for Zen Browser folders",
     "author": "JustAdumbPrsn",
-    "version": "2.0",
+    "version": "2.1",
     "homepage": "https://github.com/JustAdumbPrsn/ZenFolderTreeConnectors",
     "readme": "https://github.com/JustAdumbPrsn/ZenFolderTreeConnectors/blob/main/README.md",
     "style": {
@@ -553,8 +553,9 @@
       "JavaScript",
       "JustAdumbPrsn"
     ],
+    "preferences": "preferences.json",
     "createdAt": "2026-03-06",
-    "updatedAt": "2026-05-26",
+    "updatedAt": "2026-05-27",
     "fork": [
       "zen"
     ],
