@@ -1821,7 +1821,7 @@
     "name": "Zen's Missing Hotkeys",
     "description": "Adds the tab keyboard shortcuts Zen is missing — close tabs below and close other tabs — each fully customizable (unbound by default).",
     "author": "JiPaix",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "ai": "partial",
     "image": "https://raw.githubusercontent.com/JiPaix/zen-missing-hotkeys/main/logo.png",
     "scripts": {
@@ -1830,7 +1830,8 @@
         "description": "Registers the configurable tab hotkeys and their settings UI.",
         "include": [
           "chrome://browser/content/browser.xhtml",
-          "about:preferences*"
+          "about:preferences*",
+          "about:settings*"
         ]
       }
     },
@@ -1847,7 +1848,7 @@
     "readme": "https://raw.githubusercontent.com/JiPaix/zen-missing-hotkeys/main/README.md",
     "homepage": "https://github.com/JiPaix/zen-missing-hotkeys",
     "createdAt": "2026-06-07",
-    "updatedAt": "2026-06-07",
+    "updatedAt": "2026-06-09",
     "stars": 0
   },
   "RenderJS": {
