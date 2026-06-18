@@ -1,76 +1,102 @@
 <!DOCTYPE HTML>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Sine Store</title>
-        <link rel="stylesheet" href="src/style/main.css" />
-        <link rel="stylesheet" href="src/style/styles.css" />
-        <script type="module" src="src/js/script.js" defer></script>
-        <link rel="shortcut icon" href="assets/icon.png" type="image/x-icon" />
-    </head>
-    <body>
-        <header>
-            <a class="sine" href="#">
-                <img class="logo" src="assets/sine.png" />
-                <h3>Sine</h3>
-            </a>
-            <input class="search" type="text" placeholder="Type to search..." autocomplete="off" />
-        </header>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#11111b" />
+  <title>Sine Marketplace</title>
+  <link rel="stylesheet" href="src/style/main.css" />
+  <script type="module" src="src/js/script.js" defer></script>
+  <link rel="shortcut icon" href="assets/icon.png" type="image/x-icon" />
+</head>
+<body>
 
-        <div class="container">
-            <div class="greeting">
-                <h1>Welcome to Sine Store</h1>
-                <!-- Id must be the same to be compatible with the Zen Mods website as well -->
-                <p class="g" id="install-theme-error">
-                    You must have Sine installed to be able to install mods
-                    through the store. <br />Regardless, you may still explore
-                    our large selection of trusted and verified mods. <br />:)
-                </p>
-                <p class="g" id="sineOnly">
-                    Hello fellow Sine user! <br />Please explore and pick from
-                    our large selection of trusted and verified mods. INSTALLATION IS NOT WORKING YET. <br />:)
-                </p>
-                <img src="assets/bg.png" />
-            </div>
+  <header>
+    <div class="header-inner">
+      <a class="sine" href="#">
+        <img class="logo" src="assets/sine.png" alt="Sine" />
+        <span class="sine-label">Sine Marketplace</span>
+      </a>
+      <div class="header-center">
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input class="search" type="text" placeholder="Search mods..." autocomplete="off" id="searchInput" />
+          <div class="search-panel" id="searchPanel">
+            <div class="search-panel-inner" id="searchPanelInner"></div>
+          </div>
         </div>
+      </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </header>
 
-        <div class="container">
-            <div class="controls-row">
-                <div class="sort-dropdown">
-                    <button class="sort-button" id="sortButton">
-                        <span id="currentSort">Popularity</span>
-                    </button>
-                    <div class="sort-menu" id="sortMenu">
-                        <button class="sort-option selected" data-sort="stars">
-                            Popularity
-                        </button>
-                        <button class="sort-option" data-sort="updated">
-                            Last Updated
-                        </button>
-                        <button class="sort-option" data-sort="added">
-                            Date Added
-                        </button>
-                        <button class="sort-option" data-sort="alphabetical">
-                            Alphabetical
-                        </button>
-                    </div>
-                </div>
+  <main>
+    <section class="hero" id="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-fade"></div>
+      <div class="hero-inner" id="motd"></div>
+    </section>
 
-                <div class="sort-dropdown">
-                    <button class="sort-button" id="browserButton">
-                        <span id="currentBrowser">All Browsers</span>
-                    </button>
-                    <div class="sort-menu" id="browserMenu">
-                        <button class="browser-option selected" data-browser="all">
-                            All Browsers
-                        </button>
-                        <!-- Dynamic options will be inserted here -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="theme-container"></div>
+    <section class="featured" id="featuredSection">
+      <div class="section-header">
+        <h2>Featured</h2>
+        <div class="carousel-controls">
+          <button class="carousel-btn" id="carouselPrev" aria-label="Previous">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <button class="carousel-btn" id="carouselNext" aria-label="Next">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
         </div>
-    </body>
+      </div>
+      <div class="carousel-wrap">
+        <div class="carousel-track" id="carouselTrack"></div>
+      </div>
+    </section>
+
+    <section class="recently-published" id="recentlyPublished">
+      <div class="section-header">
+        <h2>Recently Published</h2>
+      </div>
+      <div class="carousel-wrap">
+        <div class="carousel-track" id="recentTrack"></div>
+      </div>
+    </section>
+
+    <section class="all-mods" id="allMods">
+      <div class="section-header">
+        <h2>All Mods</h2>
+        <div class="section-header-controls">
+          <div class="sort-group">
+            <div class="sort-dropdown">
+              <button class="sort-button" id="sortButton">
+                <span id="currentSort">Popularity</span>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="sort-menu" id="sortMenu">
+                <button class="sort-option selected" data-sort="stars">Popularity</button>
+                <button class="sort-option" data-sort="updated">Last Updated</button>
+                <button class="sort-option" data-sort="added">Date Added</button>
+                <button class="sort-option" data-sort="alphabetical">Alphabetical</button>
+              </div>
+            </div>
+            <div class="sort-dropdown">
+              <button class="sort-button" id="browserButton">
+                <span id="currentBrowser">All Browsers</span>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="sort-menu" id="browserMenu"></div>
+            </div>
+          </div>
+          <span class="results-count" id="resultsCount"></span>
+        </div>
+      </div>
+      <div class="theme-container" id="themeContainer"></div>
+    </section>
+  </main>
+
+</body>
 </html>
