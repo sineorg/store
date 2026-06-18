@@ -415,7 +415,7 @@ const openModal = (id, mod) => {
         </div>
         <div class="theme-modal-meta">
           <span class="meta-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <img class="author-avatar" src="https://github.com/${author}.png" alt="" onerror="this.style.display='none'" />
             <a href="${authorLink}" target="_blank" rel="noopener">${author}</a>
           </span>
           <span class="meta-item">
