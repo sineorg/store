@@ -1505,6 +1505,7 @@
     "id": "auto-pip-setting",
     "name": "Auto-PiP-Setting",
     "description": "Adds auto-picture-in-picture setting in the unified panel",
+    "image": "https://github.com/Zylaah/zen-mods/blob/main/auto-pip/image.png",
     "scripts": {
       "zen-auto-pip-setting.uc.js": {
         "include": [
