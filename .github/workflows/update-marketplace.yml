@@ -173,7 +173,7 @@ jobs:
           fi
       
           git commit -m "Update stars for $modId"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main
+          git push origin main
 
       - name: Checkout mod branch
         id: branch
