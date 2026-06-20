@@ -571,7 +571,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 25
+    "stars": 25,
+    "commit": "1780bc182068ebc24bb55320ec8a9145f264e3f4"
   },
   "ZenFolderTreeConnectors": {
     "id": "ZenFolderTreeConnectors",
