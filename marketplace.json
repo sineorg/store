@@ -1400,7 +1400,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 6
+    "stars": 6,
+    "commit": "fe6c33083ae0ded89c046f5a5c9a52fb3c66944b"
   },
   "compact-settings": {
     "id": "compact-settings",
