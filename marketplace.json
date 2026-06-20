@@ -925,7 +925,8 @@
     "readme": "README.md",
     "no-updates": false,
     "enabled": true,
-    "stars": 16
+    "stars": 16,
+    "commit": "6b46331c3ecdabc04a01aa09e0a9090607564972"
   },
   "zen-command-palette": {
     "id": "zen-command-palette",
