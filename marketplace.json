@@ -506,7 +506,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 42
+    "stars": 42,
+    "commit": "2daf64ad2db4c4625112cb88b8ccfab523c745ec"
   },
   "vizen-floaty-ui": {
     "id": "vizen-floaty-ui",
