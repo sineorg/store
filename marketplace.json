@@ -1826,7 +1826,7 @@
     "preferences": "preferences.json",
     "readme": "https://raw.githubusercontent.com/Louis047/Square-UI/main/README.md",
     "author": "Lone",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "tags": [
       "ui",
       "minimal",
@@ -1835,7 +1835,7 @@
       "customization"
     ],
     "createdAt": "2026-03-07",
-    "updatedAt": "2026-04-14",
+    "updatedAt": "2026-06-19",
     "fork": [
       "zen",
       "firefox",
