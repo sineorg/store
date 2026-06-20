@@ -268,7 +268,7 @@ jobs:
           if [[ -n "$homepage" && ! "$homepage" =~ ^https?:// ]]; then
             homepage="https://github.com/$homepage"
           fi
-          body="Automated update for [$modId]($homepage).\nBased off of repository full-length commit SHA: $modSHA"
+          body="Automated update for [$modId]($homepage).\\Based off of repository full-length commit SHA: $modSHA"
 
           gh pr create \
             --repo "$GITHUB_REPOSITORY" \
