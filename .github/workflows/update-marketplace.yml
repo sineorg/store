@@ -195,6 +195,7 @@ jobs:
           fi
 
       - name: Process mod
+        id: process_mod
         run: |
           set -euo pipefail
 
@@ -202,22 +203,31 @@ jobs:
           echo "Processing mod: $modId"
 
           mkdir -p "mods/$modId"
+          
+          echo "Fetching latest SHA for $repo..."
+          sha=$(curl -fsSL "https://api.github.com/repos/$repo/commits/HEAD" | jq -r '.sha')
+          
+          if [ -z "$sha" ] || [ "$sha" = "null" ]; then
+            echo "Error: Could not retrieve SHA for $repo" >&2
+            exit 1
+          fi
+          echo "Latest SHA: $sha"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
 
-          # ─── Download ZIP (once per run) ─────────────
-          for branch in main master; do
-            zip_url="https://codeload.github.com/$repo/zip/refs/heads/$branch"
-            if curl -fsSL "$zip_url" -o "mods/$modId/mod.zip"; then
-              break
-            fi
-          done
+          # Section will be removed on v2.3.4 when store downloads are SHA-based
+          zip_url="https://codeload.github.com/$repo/zip/$sha"
+          echo "Downloading $zip_url..."
+          curl -fsSL "$zip_url" -o "mods/$modId/mod.zip"
 
-          # ─── Update marketplace entry ────────────────
+          # Update marketplace entry
           jq \
             --arg mod "$modId" \
+            --arg sha "$sha" \
             --argjson theme "$theme_json" '
               .[$mod] =
                 ($theme + {
                   id: $mod,
+                  commit: $sha,
                   homepage: ($theme.homepage // null)
                 })
             ' marketplace.json > tmp.json && mv tmp.json marketplace.json
@@ -251,13 +261,14 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           modId="${{ steps.pick.outputs.modId }}"
+          modSHA="${{ steps.process_mod.outputs.sha }}"
           branch="mod/$modId"
 
           homepage=$(jq -r ".\"$modId\".homepage // empty" marketplace.json)
           if [[ -n "$homepage" && ! "$homepage" =~ ^https?:// ]]; then
             homepage="https://github.com/$homepage"
           fi
-          body="Automated update for [$modId]($homepage)."
+          body="Automated update for [$modId]($homepage).\nBased off of repository full-length commit SHA: $modSHA"
 
           gh pr create \
             --repo "$GITHUB_REPOSITORY" \
