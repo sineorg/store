@@ -336,7 +336,8 @@
       "floorp",
       "mullvad"
     ],
-    "stars": 147
+    "stars": 147,
+    "commit": "9b80fd41ee4c5f4659f4b787d8c0127d8554a9ad"
   },
   "macaron": {
     "id": "macaron",
