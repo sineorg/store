@@ -993,7 +993,8 @@
     },
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Reopen-Closed-Tabs-Menu/main/readme.md",
     "createdAt": "2025-09-22",
-    "stars": 14
+    "stars": 14,
+    "commit": "4fa9cb349653504b2db22dbdb570d00252ed41f8"
   },
   "customize-collapsed-sidebar": {
     "id": "customize-collapsed-sidebar",
