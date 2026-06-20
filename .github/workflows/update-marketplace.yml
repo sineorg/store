@@ -269,7 +269,7 @@ jobs:
             homepage="https://github.com/$homepage"
           fi
           body="Automated update for [$modId]($homepage).
-          Based off of repository full-length commit SHA: $modSHA"
+          Based off of repository full-length commit SHA: [$modSHA](https://github.com/$repo/tree/$modSHA)"
 
           gh pr create \
             --repo "$GITHUB_REPOSITORY" \
