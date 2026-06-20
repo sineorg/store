@@ -830,7 +830,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 19
+    "stars": 19,
+    "commit": "e1445cc6917ff7152891fbc4014a8d76b1b9c363"
   },
   "BetterZenGradientPicker": {
     "id": "BetterZenGradientPicker",
