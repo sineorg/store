@@ -245,7 +245,8 @@
         }
       }
     },
-    "stars": 722
+    "stars": 722,
+    "commit": "5e8baba06ab1caa5a713ef1785a21f307ad05340"
   },
   "Arc-2.0": {
     "id": "Arc-2.0",
