@@ -1816,7 +1816,8 @@
       "zen",
       "firefox"
     ],
-    "stars": 1
+    "stars": 1,
+    "commit": "d0e0db7fc919c7bd08eed47588f4b3aada039ca5"
   },
   "square-ui": {
     "id": "square-ui",
