@@ -1617,7 +1617,8 @@
       "Widgets",
       "Status Bar"
     ],
-    "stars": 4
+    "stars": 4,
+    "commit": "a24d3d650f3282315392a4f6de558669f5f0ba14"
   },
   "bubble-pop-deleting": {
     "id": "bubble-pop-deleting",
