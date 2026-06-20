@@ -1787,7 +1787,8 @@
     },
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Search-Engine-Select/main/README.md",
     "createdAt": "2025-06-23",
-    "stars": 2
+    "stars": 2,
+    "commit": "2ed769b5b5454114b6061913c0e8d1248a8990a4"
   },
   "zen-missing-hotkeys": {
     "id": "zen-missing-hotkeys",
