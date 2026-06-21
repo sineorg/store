@@ -1648,7 +1648,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 3
+    "stars": 3,
+    "commit": "3153d07e159aea333783a122fc7e1b8cadf41b7b"
   },
   "zen-auto-wallpaper": {
     "id": "zen-auto-wallpaper",
