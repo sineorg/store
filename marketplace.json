@@ -418,7 +418,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 66
+    "stars": 66,
+    "commit": "88639a2587d076925baa33d4af3c867499da526e"
   },
   "context-menu-icons": {
     "id": "context-menu-icons",
