@@ -454,7 +454,8 @@
       "zen",
       "firefox"
     ],
-    "stars": 53
+    "stars": 53,
+    "commit": "e13a8e988f5515abb64d3262915c046d26aaaede"
   },
   "quick-search-zen-browser": {
     "id": "quick-search-zen-browser",
