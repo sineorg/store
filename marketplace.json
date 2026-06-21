@@ -1975,7 +1975,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 0
+    "stars": 0,
+    "commit": "fdf12ed8fefe95e109a090fecda89b6ec0d91a26"
   },
   "floating-findbar": {
     "id": "floating-findbar",
