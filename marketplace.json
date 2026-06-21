@@ -1175,8 +1175,8 @@
     "name": "Browse Bot",
     "description": "Transforms the standard Zen Browser findbar into a modern, floating, AI-powered chat interface. Inspired by Arc Browser.",
     "author": "Bibek Bhusal",
-    "version": "2.5.82",
-    "updatedAt": "2026-02-05",
+    "version": "2.5.86",
+    "updatedAt": "2026-06-21",
     "tags": [
       "ai",
       "findbar",
@@ -1207,7 +1207,8 @@
     },
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Browse-Bot/main/README.md",
     "createdAt": "2024-05-22",
-    "stars": 7
+    "stars": 7,
+    "commit": "8e0bce4b19427b2b3013d0d7e4a644f49deed113"
   },
   "zen-library": {
     "id": "zen-library",
