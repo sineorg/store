@@ -1036,7 +1036,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 13
+    "stars": 13,
+    "commit": "abf8aec97d0848131bf1c4a429529b79e88426d9"
   },
   "paneru": {
     "id": "paneru",
