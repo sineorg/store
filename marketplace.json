@@ -1764,7 +1764,8 @@
       "zen",
       "firefox"
     ],
-    "stars": 2
+    "stars": 2,
+    "commit": "43c78f9ad9c166a4ff1d73df2bc054b89eddf9a2"
   },
   "floating-sidebar": {
     "id": "floating-sidebar",
