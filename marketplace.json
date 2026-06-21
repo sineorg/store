@@ -859,7 +859,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 18
+    "stars": 18,
+    "commit": "ae51ea42ea913b5a54f96ded92e168aa0861abfa"
   },
   "blended-addressbar": {
     "id": "blended-addressbar",
