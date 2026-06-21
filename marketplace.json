@@ -1617,7 +1617,8 @@
       "zen",
       "firefox"
     ],
-    "stars": 4
+    "stars": 4,
+    "commit": "d088dfa1d8e01e6911963ee4e71dc71595433884"
   },
   "zen-auto-wallpaper": {
     "id": "zen-auto-wallpaper",
