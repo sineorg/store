@@ -1953,7 +1953,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 0
+    "stars": 0,
+    "commit": "63e90c5b4c2d0dd7361f35ca4e2acc2c59232382"
   },
   "floating-statusbar": {
     "id": "floating-statusbar",
