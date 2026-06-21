@@ -2023,7 +2023,8 @@
       "zen",
       "firefox"
     ],
-    "stars": 0
+    "stars": 0,
+    "commit": "0af6b54b41750e8107352ede66c8fdb8f0f3fc10"
   },
   "quick-tabs": {
     "id": "quick-tabs",
