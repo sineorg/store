@@ -1059,7 +1059,8 @@
       "ui",
       "customization"
     ],
-    "stars": 12
+    "stars": 12,
+    "commit": "ba8da16fbede075c4f0882ee7834026569fd201f"
   },
   "zen-site-appearance-toggle": {
     "id": "zen-site-appearance-toggle",
