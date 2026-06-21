@@ -1292,7 +1292,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 7
+    "stars": 7,
+    "commit": "cd0cf2c0eb963cababf33e68ef260ae4d8cb518d"
   },
   "browse-bot": {
     "id": "browse-bot",
