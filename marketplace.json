@@ -1530,7 +1530,8 @@
       "zen",
       "firefox"
     ],
-    "stars": 4
+    "stars": 4,
+    "commit": "fd5c4979ab7fe65573d95ffc7323f89bd42cc311"
   },
   "auto-pip-setting": {
     "version": "1.3",
