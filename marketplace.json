@@ -1996,7 +1996,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 0
+    "stars": 0,
+    "commit": "93be3ffb9be94eb8b74e41f6d6c992247335f895"
   },
   "remove-tabs-separator": {
     "id": "remove-tabs-separator",
