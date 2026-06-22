@@ -1407,7 +1407,7 @@
     "image": "https://raw.githubusercontent.com/flantig/Zen-Tab-Wand/main/image.png",
     "author": "franklinl",
     "ai": "yes",
-    "version": "1.0.2",
+    "version": "1.0.4",
     "preferences": "preferences.json",
     "tags": [
       "Tabs",
@@ -1417,12 +1417,12 @@
       "Ollama"
     ],
     "createdAt": "2026-05-15",
-    "updatedAt": "2026-06-01",
+    "updatedAt": "2026-06-22",
     "fork": [
       "zen"
     ],
     "stars": 6,
-    "commit": "d6cc8cd670523c53c831a9d0f18b28e328e1caee"
+    "commit": "09d7baa17b6fdef0612763643ed1852c52efb814"
   },
   "compact-settings": {
     "id": "compact-settings",
