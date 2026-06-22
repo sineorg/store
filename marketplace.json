@@ -1607,7 +1607,8 @@
       "zen",
       "firefox"
     ],
-    "stars": 4
+    "stars": 4,
+    "commit": "baf25ed8001f669d7f545255f55f69e065b2a9ca"
   },
   "zen-developer-statusbar": {
     "id": "zen-developer-statusbar",
