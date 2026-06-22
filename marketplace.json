@@ -31,7 +31,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 1350
+    "stars": 1350,
+    "commit": "31ba4a3bde77391e173a6a3460d9fb0ab9bca8a0"
   },
   "natsumi-browser": {
     "id": "natsumi-browser",
