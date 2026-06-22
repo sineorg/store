@@ -1680,7 +1680,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 3
+    "stars": 3,
+    "commit": "0679fca413b38bc53e49ad0be7a05209c3b7e1ed"
   },
   "floating-sidebar": {
     "id": "floating-sidebar",
