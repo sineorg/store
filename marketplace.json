@@ -1858,7 +1858,8 @@
     "homepage": "https://github.com/JiPaix/zen-missing-hotkeys",
     "createdAt": "2026-06-07",
     "updatedAt": "2026-06-09",
-    "stars": 1
+    "stars": 1,
+    "commit": "3d1efb490a636468066ef72e686dd3d0dc0ab5ac"
   },
   "square-ui": {
     "id": "square-ui",
