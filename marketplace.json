@@ -607,7 +607,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 24
+    "stars": 24,
+    "commit": "912af66a325928af0365bb1a4fa70317a3891ed3"
   },
   "zen-auto-expand-sidebar": {
     "id": "zen-auto-expand-sidebar",
