@@ -1202,7 +1202,8 @@
     "ai": "yes",
     "homepage": "https://github.com/Firebolt9907/Zenslop",
     "readme": "https://raw.githubusercontent.com/Firebolt9907/Zenslop/main/README.md",
-    "stars": 7
+    "stars": 7,
+    "commit": "830fab79965f348c43a876203b193fb6dd4b3b00"
   },
   "zen-live-calendar": {
     "id": "zen-live-calendar",
