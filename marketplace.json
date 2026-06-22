@@ -306,7 +306,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 379
+    "stars": 379,
+    "commit": "3c1e1c87ace2f98445e94626d1b33bb083e83d96"
   },
   "zaps-cool-photon-theme": {
     "id": "zaps-cool-photon-theme",
