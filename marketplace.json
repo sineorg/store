@@ -899,7 +899,8 @@
     "readme": "https://raw.githubusercontent.com/kkugot/blended-addressbar/main/README.md",
     "createdAt": "2026-01-29",
     "homepage": "https://github.com/kkugot/blended-addressbar",
-    "stars": 16
+    "stars": 16,
+    "commit": "11351d403efb5f0ebba0b063ff881e84bca791f4"
   },
   "zen-page-tint": {
     "id": "zen-page-tint",
