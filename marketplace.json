@@ -1495,7 +1495,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 5
+    "stars": 5,
+    "commit": "4bb16cf338fe9507a85669de3f7ad4c901288d70"
   },
   "zen-developer-statusbar": {
     "id": "zen-developer-statusbar",
