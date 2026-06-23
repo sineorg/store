@@ -1154,7 +1154,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 8
+    "stars": 8,
+    "commit": "27e54dfd32bc786a53a5c19438a991980f469ecf"
   },
   "new-icons": {
     "id": "new-icons",
