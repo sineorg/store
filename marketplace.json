@@ -1736,7 +1736,8 @@
         ]
       }
     },
-    "stars": 2
+    "stars": 2,
+    "commit": "bca925fcfdd876712a8624161175e00b0de76122"
   },
   "search-engine-select": {
     "id": "search-engine-select",
