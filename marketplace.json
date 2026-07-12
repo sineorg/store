@@ -1919,13 +1919,6 @@
     "name": "Square UI",
     "description": "Removes rounded corners across browser chrome and website content with separate Sine toggles for each area.",
     "homepage": "https://github.com/Louis047/Square-UI",
-    "scripts": {
-      "squareui-injector.uc.js": {
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      }
-    },
     "style": {
       "chrome": "userChrome.css",
       "content": "userContent.css"
@@ -1933,7 +1926,7 @@
     "preferences": "preferences.json",
     "readme": "https://raw.githubusercontent.com/Louis047/Square-UI/main/README.md",
     "author": "Lone",
-    "version": "2.2.0",
+    "version": "2.2.1",
     "tags": [
       "ui",
       "minimal",
@@ -1942,7 +1935,7 @@
       "customization"
     ],
     "createdAt": "2026-03-07",
-    "updatedAt": "2026-06-19",
+    "updatedAt": "2026-07-12",
     "fork": [
       "zen",
       "firefox",
@@ -1952,7 +1945,7 @@
       "waterfox"
     ],
     "stars": 1,
-    "commit": "b5457e23bfa61185a77c1930adca6e0bf4b38c71"
+    "commit": "96da150de537db31dc06c6becbe701cd5c5a4972"
   },
   "zen-missing-hotkeys": {
     "id": "zen-missing-hotkeys",
