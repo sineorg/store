@@ -40,7 +40,7 @@
     "author": "greeeen-dev",
     "name": "Natsumi Browser",
     "description": "Welcome to your personal internet.",
-    "version": "6.10.2",
+    "version": "6.11.0",
     "createdAt": "2024-12-06T10:19:47Z",
     "ai": "no",
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
@@ -76,7 +76,14 @@
             "chrome://browser/content/browser.xhtml"
           ]
         },
+        "pinned-tabs.uc.mjs": {
+          "loadOrder": 11,
+          "include": [
+            "chrome://browser/content/browser.xhtml"
+          ]
+        },
         "tab-animations.uc.mjs": {},
+        "bento.uc.mjs": {},
         "addons.uc.mjs": {
           "loadOrder": 10,
           "include": [
@@ -163,6 +170,12 @@
             "about:settings*"
           ]
         },
+        "floorp-modules.sys.mjs": {
+          "loadOrder": 11,
+          "include": [
+            "chrome://browser/content/browser.xhtml"
+          ]
+        },
         "css-injector.uc.mjs": {
           "include": [
             "chrome://browser/content/browser.xhtml"
@@ -174,12 +187,7 @@
             "chrome://browser/content/browser.xhtml"
           ]
         },
-        "pinned-tabs-icon.uc.mjs": {
-          "loadOrder": 11,
-          "include": [
-            "chrome://browser/content/browser.xhtml"
-          ]
-        },
+        "injector.sys.mjs": {},
         "updater.uc.mjs": {
           "include": [
             "chrome://browser/content/browser.xhtml"
@@ -191,6 +199,7 @@
           ]
         },
         "files.sys.mjs": {},
+        "version.sys.mjs": {},
         "fonts.uc.mjs": {
           "include": [
             "chrome://browser/content/browser.xhtml",
@@ -222,6 +231,11 @@
             "chrome://browser/content/browser.xhtml"
           ]
         },
+        "theme-builder.uc.mjs": {
+          "include": [
+            "chrome://browser/content/browser.xhtml"
+          ]
+        },
         "single-toolbar.uc.mjs": {
           "include": [
             "chrome://browser/content/browser.xhtml"
@@ -247,7 +261,7 @@
       }
     },
     "stars": 783,
-    "commit": "73700da7a54e1272a83f148e53a9fe6ff18b3313"
+    "commit": "3f50ef91d6b322a80c3ae5a2cede9915928d93dc"
   },
   "Arc-2.0": {
     "id": "Arc-2.0",
