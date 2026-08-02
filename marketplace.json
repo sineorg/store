@@ -470,7 +470,8 @@
       "librewolf",
       "mullvad"
     ],
-    "stars": 58
+    "stars": 58,
+    "commit": "e4781eca01ac4e84a1c3f452bd74d99eac889cec"
   },
   "context-menu-icons": {
     "id": "context-menu-icons",
