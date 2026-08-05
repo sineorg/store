@@ -593,7 +593,7 @@
     "description": "Adaptive Zen chrome color from the active page. Single rAF-coalesced sampler, per-origin LRU cache, no retry storms, no per-tab paint cascade. Built for heavy-tab sessions.",
     "author": "caezium",
     "homepage": "https://github.com/caezium/zen-page-tint",
-    "version": "1.2.0",
+    "version": "2.0.0",
     "tags": [
       "adaptive",
       "theming"
@@ -612,10 +612,12 @@
       "chrome": "style.css",
       "content": ""
     },
+    "preferences": "preferences.json",
     "readme": "README.md",
     "no-updates": false,
     "enabled": true,
-    "stars": 27
+    "stars": 27,
+    "commit": "a7125c0f4d52121edf81ac9f5f662308b74a8446"
   },
   "ZenFolderTreeConnectors": {
     "id": "ZenFolderTreeConnectors",
