@@ -666,7 +666,8 @@
       "ui",
       "customization"
     ],
-    "stars": 25
+    "stars": 25,
+    "commit": "b790fb1a45d41f8de488122c3ad6faec71925584"
   },
   "zen-tidy-tabs": {
     "id": "zen-tidy-tabs",
