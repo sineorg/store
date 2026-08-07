@@ -467,13 +467,13 @@
       "Icon Pack"
     ],
     "createdAt": "2025-06-02",
-    "updatedAt": "2026-08-04",
+    "updatedAt": "2026-08-07",
     "fork": [
       "zen",
       "firefox"
     ],
     "stars": 59,
-    "commit": "57bbf581186a73ca388459e11eecd908cabf047a"
+    "commit": "de2cd0de3707d76f6f4fa4f8b1b0e7ef2fc33a92"
   },
   "ff-better-findbar": {
     "id": "ff-better-findbar",
