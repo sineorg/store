@@ -1547,8 +1547,8 @@
     "name": "Compact Settings",
     "description": "Make settings and addons sidebar compact",
     "author": "Bibek Bhusal",
-    "version": "1.0.3",
-    "updatedAt": "2026-01-29",
+    "version": "1.1.2",
+    "updatedAt": "2026-08-01",
     "tags": [
       "Settings",
       "Compact",
@@ -1561,7 +1561,8 @@
     },
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Compact-Settings/main/README.md",
     "createdAt": "2024-01-26",
-    "stars": 5
+    "stars": 5,
+    "commit": "9349c378c4e6b44d0676b27a65496297088e3e0a"
   },
   "auto-pip-setting": {
     "version": "1.3",
