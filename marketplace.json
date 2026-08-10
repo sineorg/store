@@ -286,7 +286,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 413
+    "stars": 413,
+    "commit": "70c6eb5d205cca4b4595e93a895020d3ff362dca"
   },
   "advanced-tab-groups": {
     "id": "advanced-tab-groups",
