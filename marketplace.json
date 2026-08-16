@@ -1156,6 +1156,7 @@
     "name": "Customize Collapsed Sidebar",
     "description": "Allows you to customize your collapsed sidebar to its fullest potential!",
     "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
+    "image": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/Compact%20Collapsed%20Sidebar.png",
     "style": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/chrome.css",
     "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
     "version": "1.0.5",
@@ -1163,7 +1164,7 @@
       "zen"
     ],
     "stars": 13,
-    "commit": "675487822586a34a1f58a0e716dab6266819216e"
+    "commit": "859e8898a3a57c3f7838e92732e5ffbd33ce3bbb"
   },
   "paneru": {
     "id": "paneru",
