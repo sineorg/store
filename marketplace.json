@@ -337,8 +337,8 @@
       "chrome": "https://raw.githubusercontent.com/zapSNH/zapsCoolPhotonTheme/main/userChrome.css"
     },
     "image": "https://i.imgur.com/FyzTFKg.png",
-    "author": "ZapSNH",
-    "version": "151.0.2",
+    "author": "zapsnh",
+    "version": "156.0.0",
     "tags": [
       "firefox",
       "photon",
@@ -346,14 +346,16 @@
       "square"
     ],
     "createdAt": "2023-08-09",
-    "updatedAt": "2026-06-05",
+    "updatedAt": "2026-08-20",
     "fork": [
       "firefox",
       "waterfox",
       "floorp",
       "mullvad"
     ],
-    "stars": 156
+    "ai": "no",
+    "stars": 156,
+    "commit": "20d4c6eea55fdebf8def7205b6c310ece18f9c55"
   },
   "macaron": {
     "id": "macaron",
