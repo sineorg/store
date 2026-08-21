@@ -2370,7 +2370,8 @@
       "ui",
       "customization"
     ],
-    "stars": 0
+    "stars": 0,
+    "commit": "315d2273bee4f64e7420df1be24eb9eb82185b1a"
   },
   "dialog-fix": {
     "id": "dialog-fix",
