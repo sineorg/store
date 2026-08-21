@@ -1804,7 +1804,8 @@
     "fork": [
       "zen"
     ],
-    "stars": 4
+    "stars": 4,
+    "commit": "e62855635cea4e76b5fcc443fe3e4f89ca37e37b"
   },
   "bubble-pop-deleting": {
     "id": "bubble-pop-deleting",
