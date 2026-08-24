@@ -1792,7 +1792,7 @@
     },
     "version": "0.3.0",
     "createdAt": "2026-01-28",
-    "updatedAt": "2026-08-18",
+    "updatedAt": "2026-08-23",
     "ai": "partial",
     "tags": [
       "little window",
@@ -1805,7 +1805,7 @@
       "zen"
     ],
     "stars": 4,
-    "commit": "e62855635cea4e76b5fcc443fe3e4f89ca37e37b"
+    "commit": "d69add49cfda69777c7ffa18eae419c1c4273b77"
   },
   "search-engine-select": {
     "id": "search-engine-select",
