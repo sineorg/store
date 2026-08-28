@@ -972,8 +972,8 @@
     "name": "Zen Command Palette",
     "description": "A powerful, extensible command interface for Zen Browser, seamlessly integrated into the URL bar. Inspired by Raycast and Arc.",
     "author": "Bibek Bhusal",
-    "version": "1.8.98",
-    "updatedAt": "2026-08-04",
+    "version": "1.9.1",
+    "updatedAt": "2026-08-25",
     "tags": [
       "command",
       "palette",
@@ -1000,7 +1000,7 @@
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Command-Palette/main/readme.md",
     "createdAt": "2024-09-07",
     "stars": 19,
-    "commit": "82499ee75f81ed1d7d5f0a8d924d88c193ce22aa"
+    "commit": "78ebb4a0db034d62256b5799642474d85eecf1ec"
   },
   "blended-addressbar": {
     "id": "blended-addressbar",
