@@ -950,7 +950,7 @@
     },
     "preferences": "preferences.json",
     "author": "Vertex",
-    "version": "4.0.9",
+    "version": "4.0.10",
     "tags": [
       "sine",
       "fx-autoconfig",
@@ -964,7 +964,7 @@
       "zen"
     ],
     "stars": 20,
-    "commit": "2ae21cafdfc02802cd8688a7be2b900b286ff1e8"
+    "commit": "0688ab5fcd4c2cc9dec068613467daf793e63bf8"
   },
   "zen-command-palette": {
     "id": "zen-command-palette",
