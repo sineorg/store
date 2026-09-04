@@ -329,13 +329,13 @@
       "12th"
     ],
     "createdAt": "2025-05-25",
-    "updatedAt": "2026-08-28",
+    "updatedAt": "2026-09-04",
     "ai": "yes",
     "fork": [
       "zen"
     ],
     "stars": 386,
-    "commit": "ca273928692b25b6490a0197d1f49c055ad5a018"
+    "commit": "f7d1b718ad56881c657372eb82454d8e62472e53"
   },
   "zaps-cool-photon-theme": {
     "id": "zaps-cool-photon-theme",
