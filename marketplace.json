@@ -951,11 +951,17 @@
           "chrome://browser/content/browser.xhtml"
         ],
         "loadOrder": 30
+      },
+      "modules/tidy-downloads/tidy-downloads-ai-models.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 31
       }
     },
     "preferences": "preferences.json",
     "author": "Vertex",
-    "version": "4.0.12",
+    "version": "4.0.13",
     "tags": [
       "sine",
       "fx-autoconfig",
@@ -969,7 +975,7 @@
       "zen"
     ],
     "stars": 20,
-    "commit": "d61bf63e3a011af581b8bf3d2e9002365f9cc76c"
+    "commit": "25a16f449fb2b63b66524a70f40a88b94dde82a6"
   },
   "zen-command-palette": {
     "id": "zen-command-palette",
