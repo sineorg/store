@@ -1396,40 +1396,6 @@
     "stars": 10,
     "commit": "09d7baa17b6fdef0612763643ed1852c52efb814"
   },
-  "zen-live-calendar": {
-    "id": "zen-live-calendar",
-    "name": "Live Calendar",
-    "description": "Brings the live calendar functionality from Arc to Zen, making it feel as native as possible.",
-    "homepage": "https://github.com/Vertex-Mods/Zen-Live-Calendar",
-    "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Live-Calendar/refs/heads/main/README.md",
-    "image": "https://github.com/Vertex-Mods/Zen-Live-Calendar/blob/main/image.png?raw=true",
-    "scripts": {
-      "live-calendar.uc.mjs": {
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ],
-        "version": "2.0",
-        "name": "Live Calendar",
-        "description": "Arc-style calendar preview for Google Calendar tabs (Firefox/Zen)"
-      }
-    },
-    "author": "Vertex",
-    "version": "1.0.0",
-    "tags": [
-      "Zen",
-      "fx-autoconfig",
-      "Calendar",
-      "Arc",
-      "Live"
-    ],
-    "createdAt": "2025-06-18",
-    "updatedAt": "2025-06-18",
-    "fork": [
-      "zen"
-    ],
-    "stars": 8,
-    "commit": "f1dd98a9a1667b30210e16444d3da213faf4be30"
-  },
   "zen-drop-link": {
     "id": "zen-drop-link",
     "name": "Zen Drop Link to Split",
