@@ -997,7 +997,7 @@
     },
     "preferences": "preferences.json",
     "author": "Vertex",
-    "version": "4.0.13",
+    "version": "4.0.15",
     "tags": [
       "sine",
       "fx-autoconfig",
@@ -1005,13 +1005,13 @@
       "Tidy Pack"
     ],
     "createdAt": "2025-05-24",
-    "updatedAt": "2026-05-15",
+    "updatedAt": "2026-09-06",
     "ai": "yes",
     "fork": [
       "zen"
     ],
     "stars": 20,
-    "commit": "25a16f449fb2b63b66524a70f40a88b94dde82a6"
+    "commit": "3215ca40e275540e9acc87a1f79bf2a088909c20"
   },
   "blended-addressbar": {
     "id": "blended-addressbar",
