@@ -269,22 +269,18 @@
     "author": "YashjitPal",
     "name": "Arc 2.0",
     "description": "Arc-like Zen Browser theme.",
-    "version": "3.3.3",
+    "version": "3.4",
     "style": {
       "chrome": "userChrome.css",
       "content": "userContent.css"
     },
     "scripts": {
-      "arc-group-scroll.uc.js": {
+      "arc.uc.js": {
         "include": [
           "chrome://browser/content/browser.xhtml"
         ]
       },
-      "arc-media-cover.uc.js": {
-        "include": [
-          "chrome://browser/content/browser.xhtml"
-        ]
-      }
+      "invertPDF.sys.mjs": {}
     },
     "preferences": "preferences.json",
     "readme": "https://raw.githubusercontent.com/YashjitPal/Arc-2.0/refs/heads/main/README.md",
@@ -298,8 +294,9 @@
     "fork": [
       "zen"
     ],
+    "origin": "store",
     "stars": 421,
-    "commit": "88e08ae65c22d9ec92f5c995284c1181ffd7abaa"
+    "commit": "79e12a4980a9030f4661071bfbc9def7ff486e50"
   },
   "advanced-tab-groups": {
     "id": "advanced-tab-groups",
