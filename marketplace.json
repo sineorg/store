@@ -1823,8 +1823,8 @@
     "name": "Search Engine Select",
     "description": "Adds a floating UI to switch search engines on a search results page.",
     "author": "Bibek Bhusal",
-    "version": "1.1.31",
-    "updatedAt": "2026-09-06",
+    "version": "1.1.32",
+    "updatedAt": "2026-09-07",
     "tags": [
       "Search",
       "Search Engine",
@@ -1847,7 +1847,7 @@
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Search-Engine-Select/main/README.md",
     "createdAt": "2025-06-23",
     "stars": 3,
-    "commit": "9b3c319ca37568ce1c1b5340e692a1eb1d0ac13e"
+    "commit": "b58353d29d9cca5c431e3b3989a74f07eb4953ce"
   },
   "bubble-pop-deleting": {
     "id": "bubble-pop-deleting",
