@@ -1917,8 +1917,8 @@
     "name": "Search Keyboard shortcuts",
     "description": "Lightweight script to add search and filter options in keyboard shortcuts in settings",
     "author": "Bibek Bhusal",
-    "version": "1.1.4",
-    "updatedAt": "2026-06-21",
+    "version": "1.1.5",
+    "updatedAt": "2026-09-07",
     "tags": [
       "Search",
       "sine",
@@ -1944,7 +1944,7 @@
     "image": "https://raw.githubusercontent.com/Vertex-Mods/Search-Keyboard-Shortcuts/main/image.png",
     "createdAt": "2025-06-23",
     "stars": 3,
-    "commit": "4f8a83664476d4e75cd693a23a12f9165736542a"
+    "commit": "29d11246f2b07f15cde132c4286283184947f572"
   },
   "unloaded-tabs": {
     "id": "unloaded-tabs",
