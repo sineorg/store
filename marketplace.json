@@ -500,7 +500,7 @@
     "preferences": "preferences.json",
     "readme": "https://raw.githubusercontent.com/RobotoSkunk/ff-better-findbar/refs/heads/main/README.md",
     "author": "RobotoSkunk",
-    "version": "1.7.0",
+    "version": "1.7.1",
     "tags": [
       "better",
       "find",
@@ -512,7 +512,7 @@
       "search-bar"
     ],
     "createdAt": "2024-11-24",
-    "updatedAt": "2026-07-25",
+    "updatedAt": "2026-09-8",
     "fork": [
       "zen",
       "floorp",
@@ -521,7 +521,7 @@
       "mullvad"
     ],
     "stars": 60,
-    "commit": "e4781eca01ac4e84a1c3f452bd74d99eac889cec"
+    "commit": "abaefc964507b1b3ed88ebff7d7744d4e9782c17"
   },
   "quick-search-zen-browser": {
     "id": "quick-search-zen-browser",
