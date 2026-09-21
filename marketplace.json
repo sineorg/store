@@ -1353,7 +1353,7 @@
     "image": "https://raw.githubusercontent.com/flantig/Zen-Tab-Wand/main/image.png",
     "author": "franklinl",
     "ai": "yes",
-    "version": "1.0.4",
+    "version": "1.0.6",
     "preferences": "preferences.json",
     "tags": [
       "Tabs",
@@ -1368,7 +1368,7 @@
       "zen"
     ],
     "stars": 8,
-    "commit": "09d7baa17b6fdef0612763643ed1852c52efb814"
+    "commit": "8c098c7c3b18da7839ee04c273b3ae3a7e08439d"
   },
   "new-icons": {
     "id": "new-icons",
