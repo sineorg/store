@@ -2528,5 +2528,44 @@
     ],
     "stars": 0,
     "commit": "a54b3a5714d974a7f26b25f3c3d8c5510083b071"
+  },
+  "alt-click-split-view": {
+    "id": "alt-click-split-view",
+    "name": "Alt-click Split View",
+    "description": "Open Alt-clicked links in Zen Split View.",
+    "author": "Kostiantyn Kugot",
+    "version": "1.3.0",
+    "ai": "yes",
+    "updatedAt": "2026-09-20",
+    "tags": [
+      "split-view",
+      "links",
+      "navigation"
+    ],
+    "fork": [
+      "zen"
+    ],
+    "scripts": {
+      "settings.uc.js": {
+        "include": [
+          "about:preferences*"
+        ]
+      },
+      "alt-click-split-view.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ]
+      }
+    },
+    "style": {
+      "chrome": "",
+      "content": ""
+    },
+    "preferences": "preferences.json",
+    "image": "https://raw.githubusercontent.com/kkugot/alt-click-split-view/main/marketplace-preview.png",
+    "readme": "https://raw.githubusercontent.com/kkugot/alt-click-split-view/main/README.md",
+    "createdAt": "2026-09-12",
+    "homepage": "https://github.com/kkugot/alt-click-split-view",
+    "supportsUnload": true
   }
 }
