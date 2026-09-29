@@ -552,7 +552,8 @@
     ],
     "preferences": "preferences.json",
     "homepage": "https://github.com/z1n-k/zia",
-    "stars": 50
+    "stars": 50,
+    "commit": "d42b27e7e2943be939f521c34236bddfd4aebaf4"
   },
   "quick-search-zen-browser": {
     "id": "quick-search-zen-browser",
