@@ -778,29 +778,34 @@
     "author": "JustADumbPrsn",
     "name": "BetterZenGradientPicker",
     "description": "A complete overhaul to the gradient picker",
-    "version": "1.7 Zen 1.19.1b",
+    "version": "2.0 for Zen 1.22.3b",
     "createdAt": "2026-01-28",
-    "updatedAt": "2025-03-06",
+    "updatedAt": "2026-10-01",
     "readme": "https://github.com/JustAdumbPrsn/BetterZenGradientPicker/blob/main/README.md",
-    "image": "https://private-user-images.githubusercontent.com/73780892/541634058-c7363c97-534d-43b3-8ebb-0219d4e17867.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Njk2MDg5NjYsIm5iZiI6MTc2OTYwODY2NiwicGF0aCI6Ii83Mzc4MDg5Mi81NDE2MzQwNTgtYzczNjNjOTctNTM0ZC00M2IzLThlYmItMDIxOWQ0ZTE3ODY3LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjAxMjglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwMTI4VDEzNTc0NlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWE2ZmM3OWU1NTdkZWE3ZTRhNTgzYjRmN2JkZjgzMzIzNDBjN2JlNzc4MjlhZDhlN2NjMDhjNmEzOGYyMjllM2EmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.tAbw-PMXBLeGXP9d4r3Qt8dtUg-QVmZZikpRq-1Ihus",
+    "image": "https://private-user-images.githubusercontent.com/73780892/558061928-e1034a8b-9c0e-4c1c-b855-fdd2cd357514.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3OTA4NzQ4MjgsIm5iZiI6MTc5MDg3NDUyOCwicGF0aCI6Ii83Mzc4MDg5Mi81NTgwNjE5MjgtZTEwMzRhOGItOWMwZS00YzFjLWI4NTUtZmRkMmNkMzU3NTE0LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjEwMDElMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYxMDAxVDE3MDg0OFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTZiMTdmYzc4OWFhNDFlZmEzMDM0MWM0NWFhZWY2OWNkZWIxMzExYjA3NTA2YTI1ODIyNTc5ZmFlOTE4MmIwYzImWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JnJlc3BvbnNlLWNvbnRlbnQtdHlwZT1pbWFnZSUyRnBuZyJ9.7WW5BcMDgk96v9GvRgJD0X8P_ByrPQM0JMVDm_P0Grk",
+    "preferences": "preferences.json",
     "js": true,
+    "style": {
+      "chrome": "BetterZenGradientPicker.css"
+    },
     "scripts": {
       "BetterZenGradientPicker.uc.js": {
-        "name": "Zen Library Downloads",
-        "description": "Downloads Module",
+        "name": "BetterZenGradientPicker",
+        "description": "A complete overhaul to the gradient picker",
         "include": [
           "chrome://browser/content/browser.xhtml"
         ]
       }
     },
     "tags": [
-      "Javascript"
+      "Javascript",
+      "Gradient"
     ],
     "fork": [
       "zen"
     ],
     "stars": 22,
-    "commit": "ae51ea42ea913b5a54f96ded92e168aa0861abfa"
+    "commit": "478fb71cceae4a82fdc0c39dbf5a811ddc47f59c"
   },
   "zen-tidy-downloads": {
     "id": "zen-tidy-downloads",
