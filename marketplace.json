@@ -379,8 +379,8 @@
     "image": "https://github.com/user-attachments/assets/998f92b8-74ea-4bac-8131-6ab4a9993ab7",
     "readme": "https://raw.githubusercontent.com/z1n-k/zia/main/README.md",
     "author": "z1n-k",
-    "version": "2.81.2",
-    "updatedAt": "2026-09-29T07:20:00Z",
+    "version": "2.89.0",
+    "updatedAt": "2026-10-03T21:20:00Z",
     "style": {
       "chrome": "chrome.css"
     },
@@ -402,7 +402,7 @@
     "preferences": "preferences.json",
     "homepage": "https://github.com/z1n-k/zia",
     "stars": 124,
-    "commit": "fbf6e1e369ffa81a9dbb4ade7062f44a56f367b9"
+    "commit": "9c8b77eb36257d0568d49a2e4e0d6a93e3c5a8a6"
   },
   "macaron": {
     "id": "macaron",
