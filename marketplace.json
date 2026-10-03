@@ -40,7 +40,7 @@
     "author": "greeeen-dev",
     "name": "Natsumi Browser",
     "description": "Welcome to your personal internet.",
-    "version": "6.12.2",
+    "version": "6.12.3",
     "createdAt": "2024-12-06T10:19:47Z",
     "ai": "no",
     "readme": "https://raw.githubusercontent.com/greeeen-dev/natsumi-browser/main/README.md",
@@ -261,7 +261,7 @@
       }
     },
     "stars": 857,
-    "commit": "6d64256b444f349feff85794d72263fb26a1c015"
+    "commit": "6002858f7766389a0b6a3bf0834e68ba56d603b3"
   },
   "Arc-2.0": {
     "id": "Arc-2.0",
