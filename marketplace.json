@@ -307,6 +307,12 @@
         "include": [
           "chrome://browser/content/browser.xhtml"
         ]
+      },
+      "folder-look.uc.js": {
+        "include": [
+          "chrome://browser/content/browser.xhtml"
+        ],
+        "loadOrder": 20
       }
     },
     "homepage": "https://github.com/Vertex-Mods/Advanced-Tab-Groups",
@@ -332,7 +338,7 @@
       "zen"
     ],
     "stars": 396,
-    "commit": "c5a1657c043a2e92b60325b0af939a9c0f50d3a8"
+    "commit": "cd3d2e4fc29a0226db096651d646f9724831719a"
   },
   "zaps-cool-photon-theme": {
     "id": "zaps-cool-photon-theme",
