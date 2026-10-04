@@ -1923,7 +1923,7 @@
     "homepage": "https://github.com/Zylaah/bubble-pop-deleting",
     "readme": "https://raw.githubusercontent.com/Zylaah/bubble-pop-deleting/main/README.md",
     "author": "Zylaah",
-    "version": "1.4",
+    "version": "1.5",
     "tags": [
       "sine",
       "Bubble animation",
@@ -1934,12 +1934,12 @@
     ],
     "preferences": "preferences.json",
     "createdAt": "2025-05-08",
-    "updatedAt": "2026-02-06",
+    "updatedAt": "2026-09-29",
     "fork": [
       "zen"
     ],
     "stars": 3,
-    "commit": "3aacbc81064760a56e22b493d0c08c06865ddcaf"
+    "commit": "96afe0bda3c01c84b8bdcc6f0e150f7c63c37d9d"
   },
   "settings-shortcuts-search": {
     "id": "settings-shortcuts-search",
