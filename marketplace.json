@@ -1084,7 +1084,7 @@
     "name": "Zenslop",
     "description": "Adds a live video preview of a currently playing video above the existing media controls in Zen Browser",
     "author": "Rishu Sharma",
-    "version": "1.2.0",
+    "version": "2.0.0",
     "scripts": {
       "main.uc.js": {
         "name": "Zenslop",
@@ -1105,7 +1105,7 @@
     "homepage": "https://github.com/Firebolt9907/Zenslop",
     "readme": "https://raw.githubusercontent.com/Firebolt9907/Zenslop/main/README.md",
     "stars": 17,
-    "commit": "03560749347cd0672e0b7d2c181b2f053f9ba506"
+    "commit": "6f4a78bb5fe544ae38a4411201e6ae817d921dfb"
   },
   "reopen-closed-tabs": {
     "id": "reopen-closed-tabs",
