@@ -748,9 +748,9 @@
     "author": "JustADumbPrsn",
     "name": "BetterZenGradientPicker",
     "description": "A complete overhaul to the gradient picker",
-    "version": "2.0 for Zen 1.22.3b",
+    "version": "2.1 for Zen 1.23b",
     "createdAt": "2026-01-28",
-    "updatedAt": "2026-10-02",
+    "updatedAt": "2026-10-03",
     "readme": "https://github.com/JustAdumbPrsn/BetterZenGradientPicker/blob/main/README.md",
     "image": "https://private-user-images.githubusercontent.com/73780892/558061928-e1034a8b-9c0e-4c1c-b855-fdd2cd357514.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3OTA4NzQ4MjgsIm5iZiI6MTc5MDg3NDUyOCwicGF0aCI6Ii83Mzc4MDg5Mi81NTgwNjE5MjgtZTEwMzRhOGItOWMwZS00YzFjLWI4NTUtZmRkMmNkMzU3NTE0LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjEwMDElMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYxMDAxVDE3MDg0OFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTZiMTdmYzc4OWFhNDFlZmEzMDM0MWM0NWFhZWY2OWNkZWIxMzExYjA3NTA2YTI1ODIyNTc5ZmFlOTE4MmIwYzImWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JnJlc3BvbnNlLWNvbnRlbnQtdHlwZT1pbWFnZSUyRnBuZyJ9.7WW5BcMDgk96v9GvRgJD0X8P_ByrPQM0JMVDm_P0Grk",
     "preferences": "preferences.json",
@@ -782,7 +782,7 @@
       "zen"
     ],
     "stars": 25,
-    "commit": "8c4c359016fd6944c14d80514c2f0f8932b2088d"
+    "commit": "4cb5ef0c6390fb4f720da27aa1f29b7d0726c2e6"
   },
   "zen-command-palette": {
     "id": "zen-command-palette",
