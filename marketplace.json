@@ -546,20 +546,20 @@
     "preferences": "preferences.json",
     "readme": "https://raw.githubusercontent.com/Starry-AXQG/Context-Menu-Icons/refs/heads/main/README.md",
     "author": "Starry-AXQG",
-    "version": "2.7.4.4",
+    "version": "2.7.5.1",
     "tags": [
       "Context Menu",
       "Icons",
       "Icon Pack"
     ],
     "createdAt": "2025-06-02",
-    "updatedAt": "2026-09-14",
+    "updatedAt": "2026-10-08",
     "fork": [
       "zen",
       "firefox"
     ],
     "stars": 63,
-    "commit": "2ac1fb345d844299fafcb4734b3397c38cf1dca0"
+    "commit": "e05aaf388d2c6ba416d3ab9a567b8c4997540a40"
   },
   "quick-search-zen-browser": {
     "id": "quick-search-zen-browser",
