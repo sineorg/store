@@ -1176,23 +1176,23 @@
     "homepage": "https://github.com/Ciuriya/zen-themes/tree/main/Customize%20Collapsed%20Sidebar",
     "image": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/Compact%20Collapsed%20Sidebar.png",
     "style": {
-      "chrome": "Customize Collapsed Sidebar/userChrome.css"
+      "chrome": "userChrome.css"
     },
-    "preferences": "Customize Collapsed Sidebar/preferences.json",
+    "preferences": "preferences.json",
     "readme": "https://raw.githubusercontent.com/Ciuriya/zen-themes/main/Customize%20Collapsed%20Sidebar/readme.md",
     "author": "Ciuriya",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "ai": "no",
     "tags": [
       "UI"
     ],
     "createdAt": "2025-06-20",
-    "updatedAt": "2026-10-06",
+    "updatedAt": "2026-10-13",
     "fork": [
       "zen"
     ],
     "stars": 12,
-    "commit": "fe3227002e18a52415db4a074e8e78b8a991a5ba"
+    "commit": "ca6f8d39f594edd9cd5cb7eebab421e52da1b877"
   },
   "paneru": {
     "id": "paneru",
