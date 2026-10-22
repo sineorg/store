@@ -764,7 +764,7 @@
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
     "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
     "author": "Vertex",
-    "version": "1.2.0s",
+    "version": "1.3.1",
     "tags": [
       "Vertex",
       "Zen Browser",
@@ -786,7 +786,7 @@
       "zen"
     ],
     "stars": 30,
-    "commit": "b9214f70b2f60f74019a5e9c76decdd46839742b"
+    "commit": "91ae2e5ab80f40530800dc7fa8fa287f76532864"
   },
   "zen-page-tint": {
     "id": "zen-page-tint",
