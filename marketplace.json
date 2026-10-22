@@ -347,8 +347,8 @@
     "image": "https://github.com/user-attachments/assets/998f92b8-74ea-4bac-8131-6ab4a9993ab7",
     "readme": "https://raw.githubusercontent.com/z1n-k/zia/main/README.md",
     "author": "z1n-k",
-    "version": "2.103.10",
-    "updatedAt": "2026-10-21T17:18:54Z",
+    "version": "2.103.12",
+    "updatedAt": "2026-10-21T22:43:05Z",
     "style": {
       "chrome": "chrome.css"
     },
@@ -370,7 +370,7 @@
     "preferences": "preferences.json",
     "homepage": "https://github.com/z1n-k/zia",
     "stars": 202,
-    "commit": "5b2698062e705810b5549fca0e17772580685eb5"
+    "commit": "76487d0bf5e7f55441442296a328bb558aa5c97e"
   },
   "zaps-cool-photon-theme": {
     "id": "zaps-cool-photon-theme",
