@@ -126,9 +126,8 @@ jobs:
         run: |
           modId="${{ steps.pick.outputs.modId }}"
 
-          git config user.name "CosmoCreeper"
-          # No-reply email that can be viewed by any git user, no need to hide
-          git config user.email "179134799+CosmoCreeper@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config pull.rebase false
 
           git pull origin main
@@ -238,8 +237,8 @@ jobs:
           modId="${{ steps.pick.outputs.modId }}"
           branch="mod/$modId"
 
-          git config user.name "CosmoCreeper"
-          git config user.email "179134799+CosmoCreeper@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config pull.rebase false
 
           git add marketplace.json "mods/$modId"
