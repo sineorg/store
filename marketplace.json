@@ -347,8 +347,8 @@
     "image": "https://raw.githubusercontent.com/z1n-k/zia/readme-images/hero.webp",
     "readme": "https://raw.githubusercontent.com/z1n-k/zia/main/README.md",
     "author": "z1n-k",
-    "version": "2.114.0",
-    "updatedAt": "2026-10-30T18:46:30Z",
+    "version": "2.114.1",
+    "updatedAt": "2026-10-31T16:01:44Z",
     "style": {
       "chrome": "chrome.css"
     },
@@ -370,7 +370,7 @@
     "preferences": "preferences.json",
     "homepage": "https://github.com/z1n-k/zia",
     "stars": 229,
-    "commit": "b1b00f79958e811b947c0cc1de61687e24b2cfed"
+    "commit": "4bbd6c57338970765b18eb54de162267ae115dfa"
   },
   "zaps-cool-photon-theme": {
     "id": "zaps-cool-photon-theme",
