@@ -2317,7 +2317,7 @@
   "zen-tidy-pinned-tabs": {
     "id": "zen-tidy-pinned-tabs",
     "name": "Tidy Pinned Tabs",
-    "author": "",
+    "author": "Zylaah",
     "description": "Shorten pinned tab titles with Mistral, OpenAI, OpenRouter, Gemini, or local Ollama; Shift+click the tab icon to revert.",
     "homepage": "https://github.com/Zylaah/tidy-pinned-tabs",
     "readme": "https://raw.githubusercontent.com/Zylaah/tidy-pinned-tabs/main/README.md",
@@ -2351,7 +2351,7 @@
       }
     },
     "preferences": "preferences.json",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "tags": [
       "fx-autoconfig",
       "zen",
@@ -2359,13 +2359,13 @@
       "ai"
     ],
     "createdAt": "2026-04-24",
-    "updatedAt": "2026-04-24",
+    "updatedAt": "2026-10-30",
     "ai": "yes",
     "fork": [
       "zen"
     ],
     "stars": 0,
-    "commit": "a9ceafa98ca3348f6988b7ab03085e5742f3f626"
+    "commit": "b2ac78b978778191964e5e8bd4eab9411b67b582"
   },
   "dialog-fix": {
     "id": "dialog-fix",
