@@ -2268,7 +2268,7 @@
     "readme": "https://raw.githubusercontent.com/apoapostolov/Zen-Glance-Plus/main/README.md",
     "image": "https://raw.githubusercontent.com/apoapostolov/Zen-Glance-Plus/main/assets/icon.png",
     "createdAt": "2026-10-27",
-    "updatedAt": "2026-10-27",
+    "updatedAt": "2026-10-28",
     "tags": [
       "glance",
       "tabs",
@@ -2288,7 +2288,8 @@
         ]
       }
     },
-    "stars": 0
+    "stars": 0,
+    "commit": "fd0ba686011af27136d0f43a8058e2a84a1b6b67"
   },
   "vizen-floaty-ui": {
     "id": "vizen-floaty-ui",
