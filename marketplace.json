@@ -708,7 +708,7 @@
     "readme": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/README.md",
     "image": "https://raw.githubusercontent.com/Vertex-Mods/Zen-Tidy-Tabs/main/image.png",
     "author": "Vertex",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "tags": [
       "Vertex",
       "Zen Browser",
@@ -721,7 +721,7 @@
       "12th"
     ],
     "createdAt": "2025-09-20",
-    "updatedAt": "2026-10-25",
+    "updatedAt": "2026-11-04",
     "modules": [
       "Vertex-Mods/Advanced-Tab-Groups"
     ],
@@ -730,7 +730,7 @@
       "zen"
     ],
     "stars": 33,
-    "commit": "422e7df155fb3ba5611176d897e26992004e398a"
+    "commit": "0cec7152b7e1982d3d0b3d19decb1f0cc2dad628"
   },
   "zen-auto-expand-sidebar": {
     "id": "zen-auto-expand-sidebar",
