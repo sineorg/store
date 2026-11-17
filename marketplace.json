@@ -791,10 +791,10 @@
   "zen-page-tint": {
     "id": "zen-page-tint",
     "name": "Zen Page Tint",
-    "description": "Adaptive Zen chrome color from the active page. Single rAF-coalesced sampler, per-origin LRU cache, no retry storms, no per-tab paint cascade. Built for heavy-tab sessions.",
+    "description": "Adaptive Zen chrome color from the active page. Single rAF-coalesced sampler, per-URL LRU cache, no retry storms, no per-tab paint cascade. Built for heavy-tab sessions.",
     "author": "caezium",
     "homepage": "https://github.com/caezium/zen-page-tint",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "tags": [
       "adaptive",
       "theming"
@@ -818,7 +818,7 @@
     "no-updates": false,
     "enabled": true,
     "stars": 30,
-    "commit": "a7125c0f4d52121edf81ac9f5f662308b74a8446"
+    "commit": "fa7bc90db182d5c290b0fb64635adc097f4bc7a0"
   },
   "zen-tidy-downloads": {
     "id": "zen-tidy-downloads",
