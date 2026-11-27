@@ -501,7 +501,7 @@
     "preferences": "preferences.json",
     "readme": "https://raw.githubusercontent.com/RobotoSkunk/ff-better-findbar/refs/heads/main/README.md",
     "author": "RobotoSkunk",
-    "version": "1.7.1",
+    "version": "1.8.0",
     "tags": [
       "better",
       "find",
@@ -522,7 +522,7 @@
       "mullvad"
     ],
     "stars": 76,
-    "commit": "abaefc964507b1b3ed88ebff7d7744d4e9782c17"
+    "commit": "64f829db8a2eaeca241f6ae5f8d81cab90351f78"
   },
   "context-menu-icons": {
     "id": "context-menu-icons",
